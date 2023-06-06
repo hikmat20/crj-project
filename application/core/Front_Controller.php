@@ -13,7 +13,7 @@ class Front_Controller extends Base_Controller
     {
         parent::__construct();
 
-        $this->load->library(array('form_validation','template'));
+        $this->load->library(array('form_validation', 'template'));
 
         $this->load->model('identitas_model');
 
@@ -22,14 +22,13 @@ class Front_Controller extends Base_Controller
         $idt = $this->identitas_model->find(1);
 
         $this->template->set('idt', $idt);
-        $this->template->set_theme('default');
+        $this->template->set_theme('bracket');
         $this->template->set_layout('index');
         //Overwrite if the request is ajax
-        if($this->input->is_ajax_request())
-        {
+        if ($this->input->is_ajax_request()) {
             $this->template->set_layout('ajax');
         }
-    }//end __construct()
+    } //end __construct()
 
     //--------------------------------------------------------------------
 

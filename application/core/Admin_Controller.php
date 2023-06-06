@@ -50,7 +50,7 @@ class Admin_Controller extends Base_Controller
         // Basic setup
         $this->template->set('userData', $this->user_data);
         $this->template->set('idt', $idt);
-        $this->template->set_theme('backet');
+        $this->template->set_theme('bracket');
         $this->template->set_layout('index');
 
         //Overwrite if the request is ajax

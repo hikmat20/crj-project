@@ -17,8 +17,7 @@ class Admin_Controller extends Base_Controller
         $this->load->model('identitas_model');
 
         /*Check If user has logged in*/
-        if (!$this->auth->is_login())
-        {
+        if (!$this->auth->is_login()) {
             redirect('login');
         }
 
@@ -51,15 +50,15 @@ class Admin_Controller extends Base_Controller
         // Basic setup
         $this->template->set('userData', $this->user_data);
         $this->template->set('idt', $idt);
-        $this->template->set_theme('admin');
+        $this->template->set_theme('backet');
         $this->template->set_layout('index');
+
         //Overwrite if the request is ajax
-        if($this->input->is_ajax_request())
-        {
+        if ($this->input->is_ajax_request()) {
             $this->template->set_layout('ajax');
         }
-        
-        $this->form_validation->set_error_delimiters('<p>','</p>');
+
+        // $this->form_validation->set_error_delimiters('', '');
     }
 }
 /* End of file Admin_Controller.php */

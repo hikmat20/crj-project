@@ -1,4 +1,5 @@
-</div><!-- br-pagebody -->
+<!-- </div> -->
+<!-- br-pagebody -->
 
 
 <div class="pos-fixed b-0 bg-white float-right r-0">
@@ -11,7 +12,6 @@
         <div class="footer-right">
             <?= date('l, m F Y') ; ?>&nbsp;|<strong>&nbsp; {elapsed_time}</strong>&nbsp;s
         </div>
-
     </footer>
 </div>
 </div><!-- br-mainpanel -->
@@ -22,6 +22,14 @@
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/moment/min/moment.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/peity/jquery.peity.min.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/highlightjs/highlight.pack.min.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js">
+</script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js">
+</script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/select2/js/select2.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/bracket.js"></script>
 </body>
 

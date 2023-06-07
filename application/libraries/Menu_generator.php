@@ -43,14 +43,12 @@ class Menu_generator
 							->get()
 							->result();
 
-			$html = "<ul class='sidebar-menu'>
-							<li class='header'></li>
-	                        <li class='".check_class('dashboard', TRUE)."'>
-	                            <a href='".site_url()."'>
-	                                <i class='fa fa-dashboard'></i> <span>Dashboard</span>
-	                            </a>
-	                        </li>"
-			;
+			$html = "<ul class='br-sideleft-menu'>
+            			<li class='br-menu-item'>
+							<a href='".site_url()."' class='br-menu-link ".check_class('dashboard', TRUE)."'>
+								<i class='menu-item-icon icon ion-ios-home-outline tx-24'></i> <span class='menu-item-label'>Dashboard</span>
+							</a>
+						</li>";
 
 			if(is_array($menu) && count($menu))
 			{
@@ -102,15 +100,12 @@ class Menu_generator
 						}
 					}
 					$html .= "
-            			  <li class='treeview {$active}'>
-                      <a href='#'>
-                        <i class='".$icon."'></i>
-                        <span>".ucwords($title)."</span>
-                        <span class='pull-right-container'>
-						            	<i class='fa fa-angle-left pull-right'></i>
-						          	</span>
+            			  <li class='br-menu-item' >
+                      <a href='#' class='br-menu-link with-sub {$active}'>
+                        <i class='menu-item-icon icon ion-ios-photos-outline tx-20 ".$icon."'></i>
+                        <span class='menu-item-label'>".ucwords($title)."</span>
                       </a>
-                      <ul class='treeview-menu'>"
+                      <ul class='br-menu-sub'>"
 					;
 
 					//Make Sub Menu
@@ -155,9 +150,9 @@ class Menu_generator
 									$active = "active";
 								}
 								$html .= "
-								<li class='".$active."'>
-									<a href='".($sublink == '#' ? '#' : site_url($sublink))."'"." ".$subtarget.">
-										<i class='".$subicon."'></i>".ucwords($subtitle)."
+								<li class='sub-item'>
+									<a class='sub-link ".$active."' href='".($sublink == '#' ? '#' : site_url($sublink))."'"." ".$subtarget.">
+										".ucwords($subtitle)."
 									</a>
 								</li>";
 							}
@@ -172,14 +167,12 @@ class Menu_generator
 							}
 						}
 						$html .= "
-	            			  <li class='treeview {$active}'>
-	                      <a href='#'>
-	                        <i class='".$subicon."'></i>".ucwords($subtitle)."
-	                        <span class='pull-right-container'>
-							            	<i class='fa fa-angle-left pull-right'></i>
-							          	</span>
-	                      </a>
-	                      <ul class='treeview-menu'>"
+	            			  <li class='br-menu-item'>
+								<a href='#' class='br-menu-link with-sub {$active}'>
+									<i class='menu-item-icon icon ion-ios-photos-outline tx-20 ".$subicon."'></i>
+									<span class='pmenu-item-label'>".ucwords($subtitle)."</span>
+								</a>
+								<ul class='br-menu-sub'>"
 						;
 						//Make Sub Menu
 						foreach ($submenusub as $subsub) {
@@ -203,36 +196,15 @@ class Menu_generator
 								$active="";
 							}
 							$html .= "
-							<li class='".$active."'>
-								<a href='".($sublinksub == '#' ? '#' : site_url($sublinksub))."'"." ".$subtargetsub.">
-									<i class='".$subiconsub."'></i>".ucwords($subtitlesub)."
+							<li class='sub-item'>
+								<a class='sub-link ".$active."' href='".($sublinksub == '#' ? '#' : site_url($sublinksub))."'"." ".$subtargetsub.">
+									".ucwords($subtitlesub)."
 								</a>
 							</li>";
 						}
-
-						/*$html .="
-							</ul>
-						</li>";*/
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 						$html .="
 							</ul>
 						</li>";
-
-						//Check current link
-						/*if(strpos($this->uri, '/'.$sublink.'/')!==FALSE)
-						{
-							$active = "active";
-						}
-						else
-						{
-							$active="";
-						}
-						$html .= "
-						<li class='".$active."'>
-							<a href='".($sublink == '#' ? '#' : site_url($sublink))."'"." ".$subtarget.">
-								<i class='".$subicon."'></i>".ucwords($subtitle)."
-							</a>
-						</li>";*/
 						end_for_sub:
 					}
 					$html .="

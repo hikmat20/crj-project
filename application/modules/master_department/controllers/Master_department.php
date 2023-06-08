@@ -23,7 +23,7 @@ class Master_department extends Admin_Controller
     {
         parent::__construct();
 
-        $this->load->library(array('Mpdf', 'upload', 'Image_lib'));
+        $this->load->library(array('upload', 'Image_lib'));
         $this->load->model(array('Master_department/Department_model',
 		                         'Crud/Crud_model',
                                  'Aktifitas/aktifitas_model',

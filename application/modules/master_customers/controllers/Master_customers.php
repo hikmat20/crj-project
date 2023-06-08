@@ -23,7 +23,7 @@ class Master_customers extends Admin_Controller
     {
         parent::__construct();
 
-        $this->load->library(array('Mpdf', 'upload', 'Image_lib'));
+        $this->load->library(array('MPDF','upload', 'Image_lib'));
         $this->load->model(array('Master_customers/Customer_model',
                                  'Aktifitas/aktifitas_model',
                                 ));
@@ -950,6 +950,17 @@ class Master_customers extends Admin_Controller
 		$this->template->title('View Customer');
         $this->template->render('view_customer');
 		
+	}
+
+	public function print_out()
+	{
+		$mpdf = new mpdf();
+
+		// Write some HTML code:`
+		$mpdf->WriteHTML('Hello World');
+
+		// Output a PDF file directly to the browser
+		$mpdf->Output();
 	}
 	
 }

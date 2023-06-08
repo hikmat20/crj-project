@@ -23,7 +23,7 @@ class Master_karyawan extends Admin_Controller
     {
         parent::__construct();
 
-        $this->load->library(array('Mpdf', 'upload', 'Image_lib'));
+        $this->load->library(array('upload', 'Image_lib'));
         $this->load->model(array('Master_karyawan/Karyawan_model',
                                  'Aktifitas/aktifitas_model',
                                 ));

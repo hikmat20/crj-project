@@ -32,7 +32,7 @@ define('_BORDER_BOTTOM',2);
 define('_BORDER_LEFT',1);
 /*-- END HTML-CSS --*/
 
-if (!defined('_MPDF_PATH')) define('_MPDF_PATH','assets/mpdf/');
+if (!defined('_MPDF_PATH')) define('_MPDF_PATH',APPPATH.'/libraries/MPDF/');
 if (!defined('_MPDF_URI')) define('_MPDF_URI',_MPDF_PATH);
 
 require_once(_MPDF_PATH.'includes/functions.php');

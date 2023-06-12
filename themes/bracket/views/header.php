@@ -5,23 +5,23 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo base_url('assets/favicon'); ?>/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo base_url('assets/favicon'); ?>/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url('assets/favicon'); ?>/favicon-16x16.png">
-    <link rel="manifest" href="<?php echo base_url('assets/favicon'); ?>/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= base_url('assets/favicon'); ?>/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/favicon'); ?>/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url('assets/favicon'); ?>/favicon-16x16.png">
+    <link rel="manifest" href="<?= base_url('assets/favicon'); ?>/site.webmanifest">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="<?php echo base_url('assets/favicon'); ?>/apple-touch-icon.png">
+    <meta name="msapplication-TileImage" content="<?= base_url('assets/favicon'); ?>/apple-touch-icon.png">
     <meta name="theme-color" content="#ffffff">
 
-    <meta property="og:image" content="<?php echo base_url('assets/logo.png'); ?>">
-    <meta property="og:image:secure_url" content="<?php echo base_url('assets/logo.png'); ?>">
+    <meta property="og:image" content="<?= base_url('assets/logo.png'); ?>">
+    <meta property="og:image:secure_url" content="<?= base_url('assets/logo.png'); ?>">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="600">
 
     <!-- Meta -->
-    <meta name="description" content="Premium Quality and Responsive UI for Dashboard.">
-    <meta name="author" content="ThemePixels">
+    <meta name="description" content="">
+    <meta name="author" content="Sentralsistem">
 
     <title>
         <?= isset($template['title']) ? $template['title'] : ''; ?>
@@ -29,23 +29,32 @@
     </title>
 
     <!-- vendor css -->
-    <link href="<?= base_url(); ?>themes/bracket/assets/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>themes/bracket/assets/lib/@fortawesome/fontawesome-free/css/all.min.css"
+        rel="stylesheet">
     <link href="<?= base_url(); ?>themes/bracket/assets/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
     <link href="<?= base_url(); ?>themes/bracket/assets/lib/highlightjs/styles/github.css" rel="stylesheet">
     <link href="<?= base_url(); ?>themes/bracket/assets/lib/select2/css/select2.min.css" rel="stylesheet">
-    <link href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-dt/css/jquery.dataTables.min.css"
+        rel="stylesheet">
+    <link
+        href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/rickshaw/rickshaw.min.css">
 
     <!-- Bracket CSS -->
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.css">
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.oreo.css">
+    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/ssc-style.css">
     <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery/jquery.min.js"></script>
+
+
+
     <script type="text/javascript">
-        var baseurl = "<?= base_url(); ?>";
-        var siteurl = "<?= site_url(); ?>";
-        var base_url = "<?= site_url(); ?>";
-        var thisController = '<?= $this->uri->segment(1); ?>' + '/';
-        var thisFunction = '<?= $this->uri->segment(2); ?>' + '/';
+    var baseurl = "<?= base_url(); ?>";
+    var siteurl = "<?= site_url(); ?>";
+    var base_url = "<?= site_url(); ?>";
+    var thisController = '<?= $this->uri->segment(1); ?>' + '/';
+    var thisFunction = '<?= $this->uri->segment(2); ?>' + '/';
     </script>
 </head>
 
@@ -53,7 +62,8 @@
     <!-- ########## START: LEFT PANEL ########## -->
     <div class="br-logo">
         <a href="/">
-            <img src="<?php echo base_url('assets/csj-logo-white.png'); ?>" class="text-center" alt="csj logo" width="60">
+            <img src="<?php echo base_url('assets/csj-logo-white.png'); ?>" class="text-center" alt="csj logo"
+                width="60">
             <i>App</i>
         </a>
     </div>
@@ -67,8 +77,10 @@
     <!-- ########## START: HEAD PANEL ########## -->
     <div class="br-header">
         <div class="br-header-left">
-            <div class="navicon-left hidden-md-down border-0"><a id="btnLeftMenu" href="#"><i class="icon ion-navicon-round"></i></a></div>
-            <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i class="icon ion-navicon-round"></i></a></div>
+            <div class="navicon-left hidden-md-down border-0"><a id="btnLeftMenu" href="#"><i
+                        class="icon ion-navicon-round"></i></a></div>
+            <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i
+                        class="icon ion-navicon-round"></i></a></div>
             <div class="input-group hidden-xs-down wd-170 transition border-0">
                 <h4 class="text-white mb-0"><?= isset($template['title']) ? $template['title'] : ''; ?></h4>
             </div><!-- input-group -->
@@ -99,7 +111,8 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-header wd-250">
                         <div class="tx-center">
-                            <a href="#"><img src="https://via.placeholder.com/500" class="wd-80 rounded-circle" alt=""></a>
+                            <a href="#"><img src="https://via.placeholder.com/500" class="wd-80 rounded-circle"
+                                    alt=""></a>
                             <h6 class="logged-fullname">Katherine P. Lumaad</h6>
                             <p>youremail@domain.com</p>
                         </div>
@@ -115,7 +128,6 @@
         </div><!-- br-header-right -->
     </div><!-- br-header -->
     <!-- ########## END: HEAD PANEL ########## -->
-
 
     <div class="br-mainpanel mg-b-50">
         <!-- <div class="br-pageheader">

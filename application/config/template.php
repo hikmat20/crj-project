@@ -92,14 +92,23 @@ $config['theme'] = '';
 // To set the class for the type of message (error, success, etc), the {type}
 // placeholder will be replaced. The message will replace the {message}
 // placeholder.
+// <div class="alert alert-{type} alert-dismissable">
+//    <i class="{icon}"></i>
+//    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+//    <b>
+//        {title}
+//    </b>
+//    <br>{message}
+// </div>
 $config['template.message_template'] =<<<EOD
- <div class="alert alert-{type} alert-dismissable">
-    <i class="{icon}"></i>
-    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-    <b>
-        {title}
-    </b>
-    <br>{message}
+<div class="alert alert-solid alert-{type}" role="alert">
+  <button type="button" class="close btn-icon btn-default btn-xs wd-20" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <div class="d-flex align-items-center justify-content-start">
+    <i class="{icon} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
+    <span><strong>{title}!</strong>&nbsp;{message}</span>
+  </div>
 </div>
 EOD;
 

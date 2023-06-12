@@ -69,13 +69,18 @@ class Setting extends Admin_Controller
                     simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
                 }
 
-                if ($result) {
-                    $this->template->set_message(count($sukses) . ' ' . lang('users_del_success') . '.', 'success');
-                } else {
-                    $this->template->set_message(lang('users_del_fail') . $this->users_model->error, 'error');
+                if ($result)
+                {
+                    $this->template->set_message(count($sukses) .' '. lang('users_del_success') .'.', 'success');
                 }
-            } else {
-                $this->template->set_message(lang('users_del_error'), 'error');
+                else
+                {
+                    $this->template->set_message(lang('users_del_fail') . $this->users_model->error, 'danger');
+                }
+            }
+            else
+            {
+                $this->template->set_message(lang('danger'), 'danger');
             }
 
             unset($_POST['delete']);
@@ -155,8 +160,9 @@ class Setting extends Admin_Controller
     {
         $this->auth->restrict($this->managePermission);
 
-        if ($id == 0 || is_numeric($id) == FALSE) {
-            $this->template->set_message(lang('users_invalid_id'), 'error');
+        if($id == 0 || is_numeric($id) == FALSE)
+        {
+            $this->template->set_message(lang('users_invalid_id'), 'danger');
             redirect('users/setting');
         }
 
@@ -169,9 +175,11 @@ class Setting extends Admin_Controller
 
         $data = $this->users_model->find($id);
 
-        if ($data) {
-            if ($data->deleted == 1) {
-                $this->template->set_message(lang('users_already_deleted'), 'error');
+        if($data)
+        {
+            if($data->deleted == 1)
+            {
+                $this->template->set_message(lang('users_already_deleted'), 'danger');
                 redirect('users/setting');
             }
         }
@@ -188,8 +196,9 @@ class Setting extends Admin_Controller
     {
         $this->auth->restrict($this->managePermission);
 
-        if ($id == 0 || is_numeric($id) == FALSE || $id == 1) {
-            $this->template->set_message(lang('users_invalid_id'), 'error');
+        if($id == 0 || is_numeric($id) == FALSE || $id == 1)
+        {
+            $this->template->set_message(lang('users_invalid_id'), 'danger');
             redirect('users/setting');
         }
 
@@ -202,9 +211,11 @@ class Setting extends Admin_Controller
         //User data
         $data = $this->users_model->find($id);
 
-        if ($data) {
-            if ($data->deleted == 1) {
-                $this->template->set_message(lang('users_already_deleted'), 'error');
+        if($data)
+        {
+            if($data->deleted == 1)
+            {
+                $this->template->set_message(lang('users_already_deleted'), 'danger');
                 redirect('users/setting');
             }
         }
@@ -251,8 +262,9 @@ class Setting extends Admin_Controller
 
     protected function save_permission($id_user = 0)
     {
-        if ($id_user == 0 || $id_user == "") {
-            $this->template->set_message(lang('users_invalid_id'), 'error');
+        if($id_user == 0 || $id_user == "")
+        {
+            $this->template->set_message(lang('users_invalid_id'), 'danger');
             return FALSE;
         }
 
@@ -276,8 +288,9 @@ class Setting extends Admin_Controller
             $result = $this->user_permissions_model->insert_batch($insert_data);
         }
 
-        if ($result === FALSE) {
-            $this->template->set_message(lang('users_permission_edit_fail'), 'error');
+        if($result === FALSE)
+        {
+            $this->template->set_message(lang('users_permission_edit_fail'), 'danger');
             return FALSE;
         }
 
@@ -353,9 +366,9 @@ class Setting extends Admin_Controller
         $this->form_validation->set_rules('phone', 'Phone Number', 'required');
         $this->form_validation->set_rules('status', 'Status', 'required');
 
-        if ($this->form_validation->run($this) === FALSE) {
-
-            $this->template->set_message(validation_errors(), 'danger');
+        if($this->form_validation->run($this) === FALSE)
+        {
+            $this->template->set_message(validation_errors(),'danger');
             return FALSE;
         }
 
@@ -425,8 +438,10 @@ class Setting extends Admin_Controller
                 }
 
                 return TRUE;
-            } else {
-                $this->template->set_message(lang('users_create_fail') . $this->users_model->error, 'danger');
+            }
+            else
+            {
+                $this->template->set_message(lang('users_create_fail').$this->users_model->error,'danger');
                 return FALSE;
             }
         } else {
@@ -449,8 +464,10 @@ class Setting extends Admin_Controller
 
             if ($result) {
                 return TRUE;
-            } else {
-                $this->template->set_message(lang('users_edit_fail') . $this->users_model->error, 'error');
+            }
+            else
+            {
+                $this->template->set_message(lang('users_edit_fail').$this->users_model->error,'danger');
                 return FALSE;
             }
         }

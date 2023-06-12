@@ -62,7 +62,7 @@ class Menus extends Admin_Controller {
       $data  = $this->Menus_model->find_by(array('id' => $id));
       if(!$data)
       {
-        $this->template->set_message("Invalid ID", 'error');
+        $this->template->set_message("Invalid ID", 'danger');
         redirect('Menus');
       }
       $datmenu    	 = $this->Menus_model->pilih_menu();

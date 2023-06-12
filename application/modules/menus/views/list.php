@@ -14,39 +14,30 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
     </div>
 </div><!-- d-flex -->
 
+<div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
+    <div class="btn-group hidden-sm-down">
+        <?php if ($ENABLE_ADD) : ?>
+        <button class="btn btn-info wd-150 btn-oblong" title="Add" onclick="add_data()"><i
+                class="icon ion-plus">&nbsp;</i>Add Menu</button>
+        <?php endif; ?>
+    </div><!-- btn-group -->
+
+    <!-- <div class="hidden-xs-down">
+        <input type="text" placeholder="Search..." id="searchInput" class="form-control wd-300">
+    </div> -->
+    <!-- btn-group -->
 
 
-<div class="d-flex align-items-center justify-content-start pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <!-- START: DISPLAYED FOR MOBILE ONLY -->
     <div class="hidden-sm-up">
         <input type="text" placeholder="Search..." id="searchInputMobile" class="form-control">
     </div><!-- btn-group -->
-    <!-- END: DISPLAYED FOR MOBILE ONLY -->
 
-    <div class="hidden-xs-down">
-        <input type="text" placeholder="Search..." id="searchInput" class="form-control wd-300">
-    </div><!-- btn-group -->
-
-    <div class="btn-group mg-l-auto hidden-sm-down">
+    <div class="dropdown hidden-md-up">
         <?php if ($ENABLE_ADD) : ?>
-        <button class="btn btn-outline-secondary" title="Add" onclick="add_data()"><i
-                class="fa fa-plus">&nbsp;</i>New</button>
+        <button class="btn btn-info wd-100" title="Add" onclick="add_data()"><i class="fa fa-plus">&nbsp;</i>Add
+            Menu</button>
         <?php endif; ?>
-    </div><!-- btn-group -->
-
-    <!-- START: DISPLAYED FOR MOBILE ONLY -->
-    <div class="dropdown mg-l-auto hidden-md-up">
-        <a href="#" class="btn btn-outline-secondary" data-toggle="dropdown">All <i
-                class="fa fa-angle-down mg-l-5"></i></a>
-        <div class="dropdown-menu dropdown-menu-right pd-10">
-            <nav class="nav nav-style-1 flex-column">
-                <a href="" class="nav-link">All</a>
-                <a href="" class="nav-link">Images</a>
-                <a href="" class="nav-link">Videos</a>
-                <a href="" class="nav-link">Documents</a>
-                <a href="" class="nav-link">Audio</a>
-            </nav>
-        </div><!-- dropdown-menu -->
     </div><!-- dropdown -->
     <!-- END: DISPLAYED FOR MOBILE ONLY -->
 
@@ -54,17 +45,17 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
 
 
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
-    <div class="card border-0">
-        <div class="">
+    <div class="card bd-gray-400">
+        <div class="table-wrapper">
             <table id="dataTable" width="100%"
-                class="table table-condensed responsive display border-left-0 border-left-0 border-right-0">
+                class="table mg-b-0 table-sm border-left-0 border-right-0 responsive display">
                 <thead class="bg-light">
                     <tr>
-                        <th width="50">#</th>
-                        <th class="p-2 desktop">MenusID</th>
-                        <th class="p-2 desktop">Nama Menu</th>
-                        <th class="p-2 desktop">Link</th>
-                        <th class="p-2 desktop">Target</th>
+                        <th width="5">#</th>
+                        <th class="p-2 desktop mobile tablet">MenusID</th>
+                        <th class="p-2 desktop mobile tablet">Nama Menu</th>
+                        <th class="p-2 desktop tablet">Link</th>
+                        <th class="p-2 desktop tablet">Target</th>
                         <th class="p-2 desktop">Group Menu</th>
                         <th class="p-2 desktop">Parent ID</th>
                         <th class="p-2 desktop">Permission ID</th>
@@ -80,22 +71,22 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
                     foreach ($results as $record) {
                         $numb++; ?>
                     <tr>
-                        <td class="p-2"><?= $numb; ?></td>
-                        <td class="p-2"><?= $record->id ?></td>
-                        <td class="p-2"><?= $record->title ?></td>
-                        <td class="p-2"><?= $record->link ?></td>
-                        <td class="p-2"><?= $record->target ?></td>
-                        <td class="p-2"><?= $record->group_menu ?></td>
-                        <td class="p-2"><?= $record->parent_id ?></td>
-                        <td class="p-2"><?= $record->permission_id ?></td>
-                        <td class="p-2">
+                        <td class="text-center align-middle"><?= $numb; ?></td>
+                        <td class="p-1 align-middle"><?= $record->id ?></td>
+                        <td class="p-1 align-middle"><?= $record->title ?></td>
+                        <td class="p-1 align-middle"><?= $record->link ?></td>
+                        <td class="p-1 align-middle"><?= $record->target ?></td>
+                        <td class="p-1 align-middle"><?= $record->group_menu ?></td>
+                        <td class="p-1 align-middle"><?= $record->parent_id ?></td>
+                        <td class="p-1 align-middle"><?= $record->permission_id ?></td>
+                        <td class="p-1 align-middle">
                             <?php if ($record->status == '1') { ?>
                             <label class="label label-success">Aktif</label>
                             <?php } else { ?>
                             <label class="label label-danger">Non Aktif</label>
                             <?php } ?>
                         </td>
-                        <td class="p-2">
+                        <td class="p-1 align-middle">
                             <?php if ($ENABLE_VIEW) : ?>
                             <!--<a href="#dialog-popup" data-toggle="modal" onclick="PreviewPdf('')">
                 <span class="glyphicon glyphicon-print"></span>
@@ -104,7 +95,7 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
 
                             <?php if ($ENABLE_MANAGE) : ?>
                             <a class="text-green" href="javascript:void(0)" title="Edit"
-                                onclick="edit_data('<?= $record->id ?>')"><i class="fa fa-pencil"></i>
+                                onclick="edit_data('<?= $record->id ?>')"><i class="fa fa-pen"></i>
                             </a>
                             <?php endif; ?>
 
@@ -120,7 +111,7 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
 
                 <tfoot>
                     <tr>
-                        <th width="50">#</th>
+                        <th>#</th>
                         <th>MenusID</th>
                         <th>Nama Menu</th>
                         <th>Link</th>
@@ -137,10 +128,6 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
             </table>
         </div>
     </div><!-- card -->
-
-    <div class="card">
-
-    </div>
 </div>
 
 
@@ -170,31 +157,6 @@ $ENABLE_DELETE  = has_permission('menus.Delete');
     </div>
 </div>
 
-<style>
-.dataTables_filter {
-    float: left !important;
-    padding: 5px 5px;
-}
-
-.dataTables_length {
-    float: right !important;
-    padding: 5px 5px;
-}
-
-.select2-selection__arrow {
-    display: none;
-}
-
-table.dataTable thead .sorting_asc,
-.sorting_desc,
-.sorting {
-    background-image: none !important;
-}
-
-/* table.responsive {
-    width: 100% !important;
-} */
-</style>
 
 <!-- page script -->
 <script type="text/javascript">
@@ -207,11 +169,11 @@ $(document).ready(function() {
                 },
                 {
                     name: 'tablet',
-                    width: 860
+                    width: 1148
                 },
                 {
                     name: 'mobile',
-                    width: 480
+                    width: 680
                 },
                 {
                     name: 'mobile-p',
@@ -219,11 +181,11 @@ $(document).ready(function() {
                 }
             ],
         },
-        "dom": "<'row'<'col-sm-12 col-md-6'da><'col-sm-12 col-md-6'l>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        dom: 'Pfltip',
         language: {
             lengthMenu: 'Display _MENU_',
+            sSearch: '',
+            searchPlaceholder: 'Search...',
         },
     });
 

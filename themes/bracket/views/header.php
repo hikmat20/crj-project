@@ -40,13 +40,24 @@
         href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css"
         rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/rickshaw/rickshaw.min.css">
+    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/spinkit/css/spinkit.css">
+    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/ssc-style.css">
 
     <!-- Bracket CSS -->
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.css">
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.oreo.css">
-    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/ssc-style.css">
+    <!-- <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.dark.css"> -->
     <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery/jquery.min.js"></script>
+    <style>
+    .dataTables_wrapper #dataTable_processing {
+        height: 60% !important;
+        background-color: #ffffffd4 !important;
+    }
 
+    .sk-wave .sk-rect {
+        background-color: #ff790b !important;
+    }
+    </style>
 
 
     <script type="text/javascript">

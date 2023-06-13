@@ -75,19 +75,19 @@ class Auth
 
     	if(!$user)
     	{
-    		$this->ci->template->set_message(lang('users_login_fail'), 'error');
+    		$this->ci->template->set_message(lang('users_login_fail'), 'danger');
     		return FALSE;
     	}
 
         if($user->deleted == 1)
         {
-            $this->ci->template->set_message(lang('users_already_deleted'), 'error');
+            $this->ci->template->set_message(lang('users_already_deleted'), 'danger');
             return FALSE;
         }
 
-    	if($user->st_aktif == 0)
+    	if($user->status == 0)
     	{
-    		$this->ci->template->set_message(lang('users_not_active'), 'error');
+    		$this->ci->template->set_message(lang('users_not_active'), 'danger');
     		return FALSE;
     	}
 
@@ -116,7 +116,7 @@ class Auth
     		redirect("/");
     	}
 
-        $this->ci->template->set_message(lang('users_wrong_password'), 'error');
+        $this->ci->template->set_message(lang('users_wrong_password'), 'danger');
         $this->ci->template->message();
         return FALSE;
 	}
@@ -204,7 +204,7 @@ class Auth
     {
         // If user isn't logged in, redirect to the login page.
         if ($this->is_login() === false) {
-            $this->ci->template->set_message(lang('users_must_login'), 'error');
+            $this->ci->template->set_message(lang('users_must_login'), 'danger');
             redirect('login');
         }
 
@@ -227,7 +227,7 @@ class Auth
         }
 
         // Inform the user of the lack of permission and redirect.
-        $this->ci->template->set_message(lang('users_no_permission'), 'error');
+        $this->ci->template->set_message(lang('users_no_permission'), 'danger');
         redirect($uri);
     }
 }

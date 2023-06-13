@@ -36,14 +36,14 @@ class Menus extends Admin_Controller {
 
         $this->template->set('results', $data);
         $this->template->title('Menus');
-        $this->template->render('list');
+        $this->template->render('index');
     }
 
     //Create New Customer
     public function create()
     {
       $this->auth->restrict($this->addPermission);
-      $datmenu    	 = $this->Menus_model->pilih_menu();
+      $datmenu    	   = $this->Menus_model->pilih_menu();
       $datgroupmenu    = $this->Menus_model->pilih_menu_group();
       $permission      = $this->Menus_model->pilih_permission();
       $parent_id       = $this->Menus_model->pilih_parent();
@@ -54,6 +54,7 @@ class Menus extends Admin_Controller {
       $this->template->title('Input Master Menus');
       $this->template->render('menus_form');
     }
+    
     //Edit Menus
     public function edit()
     {

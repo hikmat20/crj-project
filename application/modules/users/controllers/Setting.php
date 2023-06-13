@@ -38,6 +38,109 @@ class Setting extends Admin_Controller
         $this->template->page_icon('fa fa-users');
     }
 
+    public function getData()
+    {
+        $requestData    = $_REQUEST;
+        $status         = $requestData['status'];
+        $search         = $requestData['search']['value'];
+        $column         = $requestData['order'][0]['column'];
+        $dir            = $requestData['order'][0]['dir'];
+        $start          = $requestData['start'];
+        $length         = $requestData['length'];
+
+        $where = "";
+        $where = " AND `status` = '$status'";
+
+        $string = $this->db->escape_like_str($search);
+        $sql = "SELECT *,(@row_number:=@row_number + 1) AS num
+        FROM users, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND ( id_user LIKE '%$string%'
+        OR full_name LIKE '%$string%'
+        OR `address` LIKE '%$string%'
+        OR city LIKE '%$string%'
+        OR phone LIKE '%$string%'
+        OR `status` LIKE '%$string%'  
+            )";
+
+        $totalData = $this->db->query($sql)->num_rows();
+        $totalFiltered = $this->db->query($sql)->num_rows();
+
+        $columns_order_by = array(
+            0 => 'num',
+            1 => 'id_user',
+            2 => 'full_name',
+            3 => 'address',
+            4 => 'city',
+            5 => 'phone',
+            6 => 'status',
+        );
+
+        $sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir ." ";
+        $sql .= " LIMIT " . $start . " ," . $length . " ";
+        $query  = $this->db->query($sql);
+
+        $data  = array();
+        $urut1  = 1;
+        $urut2  = 0;
+
+        $status = [
+            '1' => '<span class="bg-primary tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
+            '0' => '<span class="bg-danger tx-white pd-5 tx-11 tx-bold rounded-5">Inactive</span>',
+        ];
+
+        /* Button */
+
+        foreach ($query->result_array() as $row) {
+            $buttons = '';
+            $total_data     = $totalData;
+            $start_dari     = $start;
+            $asc_desc       = $dir;
+            if ($asc_desc == 'asc') {
+                $nomor = ($total_data - $start_dari) - $urut2;
+            }
+            if ($asc_desc == 'desc') {
+                $nomor = $urut1 + $start_dari;
+            }
+
+            $info           = "<a href='" . base_url('users/setting/edit/' . $row['id_user']) . "" . $row['id_user'] . "' class='btn btn-outline-success view btn-sm' data-bs-toggle='tooltip' title='Edit Data'><i class='fa fa-edit' aria-hidden='true'></i></a>";
+            $edit           = "<a href='" . base_url('users/setting/permission/' . $row['id_user']) . "' data-id='" . $row['id_user'] . "' class='btn btn-outline-primary btn-sm' data-bs-toggle='tooltip' title='Edit Permission'><i class='fa fa-user-shield' aria-hidden='true'></i></a>";            
+            if ($row['status'] == '1') {
+                $buttons = $info;
+                if($row['id_user'] != 1){
+                    $buttons .= "&nbsp;". $edit;
+                }
+            } else if ($row['status'] == '0') {
+                $buttons = $info;
+            } else {
+                $buttons = $info;
+            }
+
+            $nestedData   = array();
+            $nestedData[]  = "<div class='text-center'>" . $nomor . "</div>";
+            // $nestedData[]  = "<div><a href='javascript:void(0)' data-id='" . $row['id_user'] . "' class='btn-link view'>" . $row['id_user'] . "</a></div>";
+            $nestedData[]  = "<div class='text-dark'>" . $row['username'] . "</div>";
+            $nestedData[]  = "<div class='tx-bold text-dark'>" . $row['full_name'] . "</div>";
+            $nestedData[]  = "<div class=''>" . $row['email'] . "</div>";
+            $nestedData[]  = "<div class=''>" . $row['address'] . "</div>";
+            $nestedData[]  = "<div class=''>" . ($row['city']) . "</div>";
+            $nestedData[]  = "<div class=''>" . ($row['phone']) . "</div>";
+            $nestedData[]  = "<div class='text'>" . $status[$row['status']] . "</div>";
+            $nestedData[]  = "<div class='text-center'>" . $buttons . "</div>";
+            $data[] = $nestedData;
+            $urut1++;
+            $urut2++;
+        }
+
+        $json_data = array(
+            "draw"              => intval($requestData['draw']),
+            "recordsTotal"      => intval($totalData),
+            "recordsFiltered"   => intval($totalFiltered),
+            "data"              => $data
+        );
+
+        echo json_encode($json_data);
+    }
+
     public function index()
     {
         $this->auth->restrict($this->viewPermission);
@@ -86,55 +189,55 @@ class Setting extends Admin_Controller
             unset($_POST['delete']);
         }
 
-        // Pagination
-        $this->load->library('pagination');
+        // // Pagination
+        // $this->load->library('pagination');
 
-        if (isset($_POST['table_search'])) {
-            $search = isset($_POST['table_search']) ? $this->input->post('table_search') : '';
-        } else {
-            $search = isset($_GET['search']) ? $this->input->get('search') : '';
-        }
+        // if (isset($_POST['table_search'])) {
+        //     $search = isset($_POST['table_search']) ? $this->input->post('table_search') : '';
+        // } else {
+        //     $search = isset($_GET['search']) ? $this->input->get('search') : '';
+        // }
 
-        $filter = "";
-        if ($search != "") {
-            $filter = "?search=" . $search;
-        }
+        // $filter = "";
+        // if ($search != "") {
+        //     $filter = "?search=" . $search;
+        // }
 
-        $search2 = $this->db->escape_str($search);
+        // $search2 = $this->db->escape_str($search);
 
-        $where = "users.deleted = 0
-                    AND (`username` LIKE '%$search2%'
-                    OR `full_name` LIKE '%$search2%'
-                    OR `users`.`address` LIKE '%$search2%'
-                    OR `users`.`city` LIKE '%$search2%'
-                    OR `users`.`phone` LIKE '%$search2%'
-                   )";
+        // $where = "users.deleted = 0
+        //             AND (`username` LIKE '%$search2%'
+        //             OR `full_name` LIKE '%$search2%'
+        //             OR `users`.`address` LIKE '%$search2%'
+        //             OR `users`.`city` LIKE '%$search2%'
+        //             OR `users`.`phone` LIKE '%$search2%'
+        //            )";
 
-        $total = $this->users_model
-            ->where($where)
-            ->count_all();
+        // $total = $this->users_model
+        //     ->where($where)
+        //     ->count_all();
 
-        $offset = $this->input->get('per_page');
+        // $offset = $this->input->get('per_page');
 
-        $limit = $this->config->item('list_limit');
+        // $limit = $this->config->item('list_limit');
 
-        $this->pager['base_url']            = current_url() . $filter;
-        $this->pager['total_rows']          = $total;
-        $this->pager['per_page']            = $limit;
-        $this->pager['page_query_string']   = TRUE;
+        // $this->pager['base_url']            = current_url() . $filter;
+        // $this->pager['total_rows']          = $total;
+        // $this->pager['per_page']            = $limit;
+        // $this->pager['page_query_string']   = TRUE;
 
-        $this->pagination->initialize($this->pager);
+        // $this->pagination->initialize($this->pager);
 
-        $data = $this->users_model->select("users.*")
-            ->where($where)
-            ->order_by('full_name', 'ASC')
-            ->limit($limit, $offset)->find_all();
+        // $data = $this->users_model->select("users.*")
+        //     ->where($where)
+        //     ->order_by('full_name', 'ASC')
+        //     ->limit($limit, $offset)->find_all();
 
-        $this->template->set('results', $data);
-        $this->template->set('search', $search);
+        // $this->template->set('results', $data);
+        // $this->template->set('search', $search);
 
-        $this->template->title(lang('users_manage_title'));
-        $this->template->set("numb", $offset + 1);
+        // $this->template->title(lang('users_manage_title'));
+        // $this->template->set("numb", $offset + 1);
         $this->template->render('list');
     }
 

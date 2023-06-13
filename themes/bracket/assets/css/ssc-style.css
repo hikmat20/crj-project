@@ -4,8 +4,8 @@
 
 .dataTables_length {
     float: right !important;
-
 }
+
 
 div.dataTables_info,
 div.dataTables_length,
@@ -23,7 +23,7 @@ span.select2.select2-container.select2-container--default {
     margin-right: 0;
 }
 
-.select2-selection__arrow {
+div.dataTables_length .select2-container--default .select2-selection--single .select2-selection__arrow {
     display: none;
 }
 

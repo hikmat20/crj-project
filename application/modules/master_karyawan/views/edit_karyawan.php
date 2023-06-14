@@ -1,346 +1,200 @@
-<?php
-    $ENABLE_ADD     = has_permission('Master_karyawan.Add');
-    $ENABLE_MANAGE  = has_permission('Master_karyawan.Manage');
-    $ENABLE_VIEW    = has_permission('Master_karyawan.View');
-    $ENABLE_DELETE  = has_permission('Master_karyawan.Delete');
-	foreach ($results['karyawan'] as $karyawan){
-}	
-
-?>
-<style type="text/css">
-thead input {
-	width: 100%;
-}
-</style>
-<link rel="stylesheet" href="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.css')?>">
-<link rel="stylesheet" href="<?= base_url('assets/plugins/sweetalert/dist/sweetalert.css')?>">
-
-          <div class="box box-primary">
-            <div class="box-body">
-			
-			<form id="data_form">
-				<div class="row">
-						<input type="hidden" name="id_karyawan" id="id_karyawan" value='<?= $karyawan->id_karyawan ?>'>
-					<div class="col-md-12">
-			<div class="form-group row">
-							<div class="col-md-2">
-							  <label for="">Id Number</label>
-							</div>
-							 <div class="col-md-6">
-							  <input type="text" class="form-control" id="nik" required name="nik" maxlength="16" value="<?= $karyawan->nik ?>" placeholder="ID Number">
-							</div>
-			</div>
-			<div class="form-group row">
-								<div class="col-md-2">
-							  <label for="">Employee Name</label>
-							</div>
-							 <div class="col-md-6">
-							  <input type="text" class="form-control" id="nama_karyawan" required name="nama_karyawan" value="<?= $karyawan->nama_karyawan ?>" placeholder="Employee Name">
-							</div>
-			</div>
-			<div class="form-group row">
-							<div class="col-md-2">
-							  <label for="">Birth Place And Date</label>
-							</div>
-							 <div class="col-md-6">
-							  <input type="text" class="form-control" id="tempat_lahir_karyawan" required name="tempat_lahir_karyawan" value="<?= $karyawan->tempat_lahir_karyawan ?>" placeholder="Birth Place">
-							  <input type="date" class="form-control" id="tanggal_lahir_karyawan" required name="tanggal_lahir_karyawan" value="<?= $karyawan->tanggal_lahir_karyawan ?>" placeholder="Employee Name">
-							</div>
-			</div>
-			<div class="form-group row">
-							<div class="col-md-2">
-							  <label for="">Division</label>
-							</div>
-							 <div class="col-md-6">
-						<select id="divisi" name="divisi" class="form-control input-sm" required>
-						<option value="">-- Divisi --</option>
-						<?php foreach ($results['divisi'] as $divisi){
-						$select = $karyawan->divisi == $divisi->id ? 'selected' : '';
-						?>
-						<option value="<?= $divisi->id?>" <?= $select ?>><?= $divisi->cost_center?></option>
-						<?php } ?>
-					  </select>
-							</div>
-			</div>
-			<div class="form-group row">
-							<div class="col-md-2">
-							  <label for="">Gender</label>
-							</div>
-							 <div class="col-md-6">
-						<select id="gender" name="gender"  class="form-control input-sm" required>
-						<?php if ($karyawan->jenis_kelamin == 'L'){?>
-						<option value="L" selected>Laki-Laki</option>
-						<option value="P" >Perempuan</option>
-						<?php } else { ?>
-						<option value="L">Laki-Laki</option>
-						<option value="P" selected>Perempuan</option>
-						<?php } ?>
-					  </select>
-							</div>
-			</div>
-			<div class="form-group row">
-							<div class="col-md-2">
-							  <label for="">Agama</label>
-							</div>
-							 <div class="col-md-6">
-						<select id="agama" name="agama"  class="form-control input-sm" required>
-						<option value="">-- Pilih Agama --</option>
-						<?php foreach ($results['agama'] as $agama){
-						$select = $karyawan->agama == $agama->id ? 'selected' : '';
-						?>
-						<option value="<?= $agama->id?>" <?= $select ?>><?= $agama->name_religion?></option>
-						<?php } ?>
-					  </select>
-							</div>
-			</div>
-			<div class="form-group row">
-							<div class="col-md-2">
-							  <label for="">Education</label>
-							</div>
-							 <div class="col-md-6">
-						<select id="levelpendidikan" name="levelpendidikan"  class="form-control input-sm" required>
-						<?php if ($karyawan->levelpendidikan == 'SD'){?>
-						<option value="SD" selected>SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA">SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'SMP'){?>
-						<option value="SD">SD</option>
-						<option value="SMP" selected>SMP</option>
-						<option value="SMA">SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'SMA'){?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" selected>SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'DIPLOMA'){?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" >SMA</option>
-						<option value="DIPLOMA" selected>DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'SARJANA'){?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" >SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA" selected>SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'MASTER'){?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" >SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'DOKTORAL'){?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" >SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER" selected>MASTER</option>
-						<option value="DOKTORAL" selected>DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } elseif ($karyawan->levelpendidikan == 'PROFESOR'){?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" >SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR" selected>PROFESOR</option>
-						<option value="LAIN-LAIN">LAIN-LAIN</option>
-						<?php } else { ?>
-						<option value="SD" >SD</option>
-						<option value="SMP">SMP</option>
-						<option value="SMA" >SMA</option>
-						<option value="DIPLOMA">DIPLOMA</option>
-						<option value="SARJANA">SARJANA</option>
-						<option value="MASTER">MASTER</option>
-						<option value="DOKTORAL">DOKTORAL</option>
-						<option value="PROFESOR">PROFESOR</option>
-						<option value="LAIN-LAIN" selected>LAIN-LAIN</option>
-						<?php } ?>
-					  </select>
-							</div>
-			</div>
-			<div class="form-group row">
-								<div class="col-md-2">
-							  <label for="">Address</label>
-							</div>
-							 <div class="col-md-6">
-							  <textarea type="text" class="form-control" id="alamataktif"  name="alamataktif" placeholder="Alamat"><?= $karyawan->alamataktif ?></textarea>
-							</div>
-			</div>
-						<div class="form-group row">
-								<div class="col-md-2">
-							  <label for="">No. Hp</label>
-							</div>
-							 <div class="col-md-6">
-							   <input type="text" class="form-control" id="nohp" required name="nohp"  value="<?= $karyawan->nohp ?>" placeholder="No Hp">
-							</div>
-			</div>
-						<div class="form-group row">
-								<div class="col-md-2">
-							  <label for="">Email</label>
-							</div>
-							 <div class="col-md-6">
-								<input type="email" class="form-control" id="email" required name="email"  value="<?= $karyawan->email ?>" placeholder="email@domain">
-							</div>
-			</div>
-						<div class="form-group row">
-								<div class="col-md-2">
-							  <label for="">NPWP</label>
-							</div>
-							 <div class="col-md-6">
-								 <input type="text" class="form-control" id="npwp" required name="npwp"  value="<?= $karyawan->npwp ?>" placeholder="No NPWP">
-							</div>
-			</div>
-			<div class="form-group row">
-								<div class="col-md-2">
-							  <label for="">Join Date</label>
-							</div>
-							 <div class="col-md-6">
-								 <input type="date" class="form-control" id="tgl_join" required name="tgl_join"  value="<?= $karyawan->tgl_join ?>" placeholder="No NPWP">
-							</div>
-			</div>
-			<div class="form-group row">
-								<div class="col-md-2">
-							  <label for=""></label>
-							</div>
-							 <div class="col-md-6">
-								 <input type="date" class="form-control" id="tgl_end" required name="tgl_end"  value="<?= $karyawan->tgl_end ?>" placeholder="No NPWP">
-							</div>
-			</div>
-			<div class="form-group row">
-			<div class="col-md-2">
-							  <label for="">Employee Status</label>
-							</div>
-							 <div class="col-md-6">
-						<select id="sts_karyawan" name="sts_karyawan"  class="form-control input-sm" required>
-						<option value="">-- Pilih Type --</option>
-						<?php if ($karyawan->sts_karyawan == 'Kontrak'){?>
-						<option value="Kontrak" selected>Kontrak</option>
-						<option value="Tetap">Tetap</option>
-						<?php } else { ?>
-						<option value="Kontrak">Kontrak</option>
-						<option value="Tetap" selected>Tetap</option>
-						<?php } ?>
-					  </select>
-							</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-md-2">
-							  <label for="">Rekening</label>
-							</div>
-							 <div class="col-md-6">
-								 <input type="text" class="form-control" id="norekening" required name="norekening" value="<?= $karyawan->norekening ?>" placeholder="No Rekening">
-							</div>
-			</div>
-			<div class="form-group row">
-			<div class="col-md-3">
-			<button type="submit" class="btn btn-primary" name="save" id="save"><i class="fa fa-save"></i> Save</button>
-			</div>
-			</div>
-					</div>
-				</div>
-				
-			</form>
+<div class="row">
+    <input type="hidden" name="id_karyawan" id="id_karyawan" value='<?= $karyawan->id_karyawan ?>'>
+    <div class="col-md-6">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Id Number</label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="nik" required name="nik" maxlength="16"
+                    value="<?= $karyawan->nik ?>" placeholder="ID Number">
+            </div>
         </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Employee Name</label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="nama_karyawan" required name="nama_karyawan"
+                    value="<?= $karyawan->nama_karyawan ?>" placeholder="Employee Name">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Birth Place And Date</label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="tempat_lahir_karyawan" required name="tempat_lahir_karyawan"
+                    value="<?= $karyawan->tempat_lahir_karyawan ?>" placeholder="Birth Place">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Birth Date</label>
+            </div>
+            <div class="col-md-6">
+                <input type="date" class="form-control" id="tanggal_lahir_karyawan" required
+                    name="tanggal_lahir_karyawan" value="<?= $karyawan->tanggal_lahir_karyawan ?>"
+                    placeholder="Employee Name">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Division</label>
+            </div>
+            <div class="col-md-6">
+                <select id="divisi" name="divisi" class="form-control select" required>
+                    <option value=""></option>
+                    <?php foreach ($divisi as $div){?>
+                    <option <?= ($karyawan->divisi == $div->id) ? 'selected' : '' ; ?> value="<?= $div->id?>">
+                        <?= $div->cost_center?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Gender</label>
+            </div>
+            <div class="col-md-6">
+                <select id="gender" name="gender" class="form-control select" required>
+                    <option value="L" <?= ($karyawan->jenis_kelamin == 'L')?'selected':'' ; ?>>Laki-Laki</option>
+                    <option value="P" <?= ($karyawan->jenis_kelamin == 'P')?'selected':'' ; ?>>Perempuan</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Agama</label>
+            </div>
+            <div class="col-md-6">
+                <select id="agama" name="agama" class="form-control select" required>
+                    <option value=""></option>
+                    <?php foreach ($agama as $ag){?>
+                    <option value="<?= $ag->id;?>" <?=  $karyawan->agama == $ag->id ? 'selected' : ''; ?>>
+                        <?= $ag->name_religion;?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Education</label>
+            </div>
+            <div class="col-md-6">
+                <select id="levelpendidikan" name="levelpendidikan" class="form-control select" required>
+                    <option value="SD" <?=  ($karyawan->levelpendidikan == 'SD')?'selected':''; ?>>SD</option>
+                    <option value="SMP" <?=  ($karyawan->levelpendidikan == 'SMP')?'selected':''; ?>>SMP</option>
+                    <option value="SMA" <?=  ($karyawan->levelpendidikan == 'SMA')?'selected':''; ?>>SMA</option>
+                    <option value="DIPLOMA" <?=  ($karyawan->levelpendidikan == 'DIPLOMA')?'selected':''; ?>>DIPLOMA
+                    </option>
+                    <option value="SARJANA" <?=  ($karyawan->levelpendidikan == 'SARJANA')?'selected':''; ?>>SARJANA
+                    </option>
+                    <option value="MASTER" <?=  ($karyawan->levelpendidikan == 'MASTER')?'selected':''; ?>>MASTER
+                    </option>
+                    <option value="DOKTORAL" <?=  ($karyawan->levelpendidikan == 'DOKTORAL')?'selected':''; ?>>
+                        DOKTORAL</option>
+                    <option value="PROFESOR" <?=  ($karyawan->levelpendidikan == 'PROFESOR')?'selected':''; ?>>
+                        PROFESOR</option>
+                    <option value="LAIN-LAIN" <?=  ($karyawan->levelpendidikan == 'LAIN-LAIN')?'selected':''; ?>>
+                        LAIN-LAIN
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-<!-- Modal Bidus-->
-<script src="<?= base_url('assets/plugins/datatables/jquery.dataTables.min.js')?>"></script>
-<script src="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.min.js')?>"></script>
-<script src="<?= base_url('assets/plugins/sweetalert/dist/sweetalert.js')?>"></script>
-<!-- End Modal Bidus-->
+    <div class="col-md-6">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Address</label>
+            </div>
+            <div class="col-md-6">
+                <textarea type="text" class="form-control" id="alamataktif" name="alamataktif"
+                    placeholder="Alamat"><?= $karyawan->alamataktif ?></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">No. Hp</label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="nohp" required name="nohp" value="<?= $karyawan->nohp ?>"
+                    placeholder="No Hp">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Email</label>
+            </div>
+            <div class="col-md-6">
+                <input type="email" class="form-control" id="email" required name="email"
+                    value="<?= $karyawan->email ?>" placeholder="email@domain">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">NPWP</label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="npwp" required name="npwp" value="<?= $karyawan->npwp ?>"
+                    placeholder="No NPWP">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Join Date</label>
+            </div>
+            <div class="col-md-6">
+                <input type="date" class="form-control" id="tgl_join" required name="tgl_join"
+                    value="<?= $karyawan->tgl_join ?>" placeholder="No NPWP">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for=""></label>
+            </div>
+            <div class="col-md-6">
+                <input type="date" class="form-control" id="tgl_end" required name="tgl_end"
+                    value="<?= $karyawan->tgl_end ?>" placeholder="No NPWP">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Employee Status</label>
+            </div>
+            <div class="col-md-6">
+                <select id="sts_karyawan" name="sts_karyawan" class="form-control select" required>
+                    <option value=""></option>
+                    <option value="Kontrak" <?= ($karyawan->sts_karyawan == 'Kontrak')?'selected':'' ; ?>>Kontrak
+                    </option>
+                    <option value="Tetap" <?= ($karyawan->sts_karyawan == 'Tetap')?'selected':'' ; ?>>Tetap
+                    </option>
+
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="">Rekening</label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="norekening" required name="norekening"
+                    value="<?= $karyawan->norekening ?>" placeholder="No Rekening">
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript">
+$(document).ready(function() {
+    $('.select').select2({
+        placeholder: "Choose one",
+        allowClear: true,
+        width: "100%",
+        dropdownParent: $("#dialog-popup"),
+        minimumResultsForSearch: -1
+    });
 
-  $(document).ready(function() {
-	$('.select2').select2();
-    $(document).on('submit', '#data_form', function(e){
-		e.preventDefault()
-		var data = $('#data_form').serialize();
-		// alert(data);
-
-		swal({
-		  title: "Anda Yakin?",
-		  text: "Data Supplier akan di simpan.",
-		  type: "warning",
-		  showCancelButton: true,
-		  confirmButtonClass: "btn-info",
-		  confirmButtonText: "Ya, Simpan!",
-		  cancelButtonText: "Batal",
-		  closeOnConfirm: false
-		},
-		function(){
-		  $.ajax({
-			  type:'POST',
-			  url:siteurl+'master_karyawan/saveEditKaryawan',
-			  dataType : "json",
-			  data:data,
-			  success:function(result){
-				  if(result.status == '1'){
-					 swal({
-						  title: "Sukses",
-						  text : "Data Inventory berhasil disimpan.",
-						  type : "success"
-						},
-						function (){
-							window.location.reload(true);
-						})
-				  } else {
-					swal({
-					  title : "Error",
-					  text  : "Data error. Gagal insert data",
-					  type  : "error"
-					})
-					
-				  }
-			  },
-			  error : function(){
-				swal({
-					  title : "Error",
-					  text  : "Data error. Gagal request Ajax",
-					  type  : "error"
-					})
-			  }
-		  })
-		});
-		
-	})
-   
-  });
-
-  
-
+});
 </script>

@@ -201,14 +201,15 @@ class Menus extends Admin_Controller
     $group_menu     = $this->input->post('group_menu');
     $parent_id      = $this->input->post('parent_id');
     $permission_id  = $this->input->post('permission_id');
-    if ($type != "edit") {
-      $query_id = $this->db->query("SHOW TABLE STATUS LIKE 'permissions' ");
-      $row_id = $query_id->row();
-      $id_permissions = $row_id->Auto_increment;
-      $permission_nm = str_replace(" ", "_", $title) . ".View";
 
+    $this->db->trans_begin();
+    if ($type != "edit") {
+      $query_id = $this->db->select("max(id_permission) id")->get('permissions');
+      $row_id = $query_id->row();
+      $id_permissions = $row_id->id;
+      
       $data_perm[0] = array(
-        'id_permission' => $id_permissions + 0,
+        'id_permission' => $id_permissions + 1,
         'nm_permission' => str_replace(" ", "_", $title) . ".View",
         'nm_menu' => $title,
         'ket' => 'View',
@@ -216,7 +217,7 @@ class Menus extends Admin_Controller
         'created_by' => $this->auth->user_id()
       );
       $data_perm[1] = array(
-        'id_permission' => $id_permissions + 1,
+        'id_permission' => $id_permissions + 2,
         'nm_permission' => str_replace(" ", "_", $title) . ".Add",
         'nm_menu' => $title,
         'ket' => 'Add',
@@ -224,7 +225,7 @@ class Menus extends Admin_Controller
         'created_by' => $this->auth->user_id()
       );
       $data_perm[2] = array(
-        'id_permission' => $id_permissions + 2,
+        'id_permission' => $id_permissions + 3,
         'nm_permission' => str_replace(" ", "_", $title) . ".Manage",
         'nm_menu' => $title,
         'ket' => 'Manage',
@@ -232,7 +233,7 @@ class Menus extends Admin_Controller
         'created_by' => $this->auth->user_id()
       );
       $data_perm[3] = array(
-        'id_permission' => $id_permissions + 3,
+        'id_permission' => $id_permissions + 4,
         'nm_permission' => str_replace(" ", "_", $title) . ".Delete",
         'nm_menu' => $title,
         'ket' => 'Delete',
@@ -242,6 +243,7 @@ class Menus extends Admin_Controller
       $this->db->insert_batch("permissions", $data_perm);
       $permission_id = $id_permissions;
     }
+
     $status         = $this->input->post('status');
     $order          = $this->input->post('order');
     if ($type == "edit") {
@@ -279,8 +281,7 @@ class Menus extends Admin_Controller
         $sql            = $this->db->last_query();
       }
       simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
-    } else //Add New
-    {
+    } else {
       $this->auth->restrict($this->addPermission);
       $data = array(
         'title' => $title,
@@ -315,9 +316,21 @@ class Menus extends Admin_Controller
       //Save Log
       simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
     }
-    $param = array(
-      'save' => $result
-    );
+
+    if($this->db->trans_status() === FALSE){
+      $this->db->trans_rollback();
+      $param = array(
+        'status' => 0,
+        'msg' => 'Faild add new Menu. Please try again.'
+      );
+    } else {
+      $this->db->trans_commit();
+      $param = array(
+        'status' => 1,
+        'msg' => "Successfull add new Menu."
+      );
+    }
+    
     echo json_encode($param);
   }
   function delete()
@@ -327,8 +340,8 @@ class Menus extends Admin_Controller
     if ($id) {
       $this->db->trans_begin();
       $get = $this->db->get_where('menus', array('id' => $id))->row();
-      // $this->db->where(array('nm_menu' => $get->title))->delete('permissions');
-      // $this->Menus_model->delete($id);
+      $this->db->where(array('nm_menu' => $get->title))->delete('permissions');
+      $this->Menus_model->delete($id);
 
       if ($this->db->trans_status() === FALSE) {
         $this->db->trans_rollback();

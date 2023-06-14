@@ -30,15 +30,19 @@
 
     <!-- vendor css -->
     <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery/jquery.min.js"></script>
-    <link href="<?= base_url(); ?>themes/bracket/assets/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>themes/bracket/assets/lib/@fortawesome/fontawesome-free/css/all.min.css"
+        rel="stylesheet">
     <link href="<?= base_url(); ?>themes/bracket/assets/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
     <link href="<?= base_url(); ?>themes/bracket/assets/lib/highlightjs/styles/github.css" rel="stylesheet">
     <link href="<?= base_url(); ?>themes/bracket/assets/lib/select2/css/select2.min.css" rel="stylesheet">
-    <link href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-dt/css/jquery.dataTables.min.css"
+        rel="stylesheet">
+    <link
+        href="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css"
+        rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/rickshaw/rickshaw.min.css">
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/spinkit/css/spinkit.css">
-    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/lobiani/css/Lobibox.min.css" />
+    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/lobiani/css/lobibox.min.css" />
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/sweetalert2/sweetalert2.css" />
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/animate/animate.css" />
 
@@ -49,23 +53,32 @@
     <!-- <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.dark.css"> -->
 
     <style>
-        .dataTables_wrapper #dataTable_processing {
-            height: 60% !important;
-            background-color: #ffffffd4 !important;
-        }
+    .dataTables_wrapper #dataTable_processing {
+        height: 60% !important;
+        background-color: #ffffffd4 !important;
+    }
 
-        .sk-wave .sk-rect {
-            background-color: #ff790b !important;
-        }
+    .sk-wave .sk-rect {
+        background-color: #ff790b !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 2.7rem;
+        display: block;
+        min-width: 50px;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__clear {
+        z-index: 5;
+    }
     </style>
 
-
     <script type="text/javascript">
-        var baseurl = "<?= base_url(); ?>";
-        var siteurl = "<?= site_url(); ?>";
-        var base_url = "<?= site_url(); ?>";
-        var thisController = '<?= $this->uri->segment(1); ?>' + '/';
-        var thisFunction = '<?= $this->uri->segment(2); ?>' + '/';
+    var baseurl = "<?= base_url(); ?>";
+    var siteurl = "<?= site_url(); ?>";
+    var base_url = "<?= site_url(); ?>";
+    var thisController = '<?= $this->uri->segment(1); ?>' + '/';
+    var thisFunction = '<?= $this->uri->segment(2); ?>' + '/';
     </script>
 </head>
 
@@ -73,7 +86,8 @@
     <!-- ########## START: LEFT PANEL ########## -->
     <div class="br-logo">
         <a href="/">
-            <img src="<?php echo base_url('assets/csj-logo-white.png'); ?>" class="text-center" alt="csj logo" width="60">
+            <img src="<?php echo base_url('assets/csj-logo-white.png'); ?>" class="text-center" alt="csj logo"
+                width="60">
             <i>App</i>
         </a>
     </div>
@@ -87,8 +101,10 @@
     <!-- ########## START: HEAD PANEL ########## -->
     <div class="br-header">
         <div class="br-header-left">
-            <div class="navicon-left hidden-md-down border-0"><a id="btnLeftMenu" href="#"><i class="icon ion-navicon-round"></i></a></div>
-            <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i class="icon ion-navicon-round"></i></a></div>
+            <div class="navicon-left hidden-md-down border-0"><a id="btnLeftMenu" href="#"><i
+                        class="icon ion-navicon-round"></i></a></div>
+            <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i
+                        class="icon ion-navicon-round"></i></a></div>
             <div class="input-group hidden-xs-down wd-170 transition border-0">
                 <h4 class="text-white mb-0"><?= isset($template['title']) ? $template['title'] : ''; ?></h4>
             </div><!-- input-group -->
@@ -119,7 +135,8 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-header wd-250">
                         <div class="tx-center">
-                            <a href="#"><img src="https://via.placeholder.com/500" class="wd-80 rounded-circle" alt=""></a>
+                            <a href="#"><img src="https://via.placeholder.com/500" class="wd-80 rounded-circle"
+                                    alt=""></a>
                             <h6 class="logged-fullname">Katherine P. Lumaad</h6>
                             <p>youremail@domain.com</p>
                         </div>

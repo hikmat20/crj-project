@@ -48,15 +48,14 @@ class Master_karyawan extends Admin_Controller
 		$this->auth->restrict($this->viewPermission);
         $session = $this->session->userdata('app_session');
 		$this->template->page_icon('fa fa-edit');
-		$karyawan = $this->db->get_where('ms_karyawan',array('id_karyawan' => $id))->result();
+		$karyawan = $this->db->get_where('ms_karyawan',array('id_karyawan' => $id))->row();
 		$divisi = $this->Karyawan_model->get_data('department_center');
 		$agama = $this->Karyawan_model->get_data('religion');
-		$data = [
+        $this->template->set([
 			'karyawan' => $karyawan,
 			'divisi' => $divisi,
 			'agama' => $agama
-		];
-        $this->template->set('results', $data);
+		]);
 		$this->template->title('Karyawan');
         $this->template->render('edit_karyawan');
 		
@@ -65,15 +64,32 @@ class Master_karyawan extends Admin_Controller
 		$this->auth->restrict($this->viewPermission);
         $session = $this->session->userdata('app_session');
 		$this->template->page_icon('fa fa-edit');
-		$karyawan = $this->db->get_where('ms_karyawan',array('id_karyawan' => $id))->result();
-		$divisi = $this->Karyawan_model->get_data('department_center');
-		$agama = $this->Karyawan_model->get_data('religion');
-		$data = [
-			'karyawan' => $karyawan,
-			'divisi' => $divisi,
-			'agama' => $agama
+		$karyawan = $this->db->get_where('ms_karyawan',array('id_karyawan' => $id))->row();
+		// $divisi = $this->Karyawan_model->get_data('department_center');
+		$divisi = $this->db->get_where('department_center')->result_array();
+		$agama = $this->db->get_where('religion')->result_array();
+
+		$div = array_column($divisi,'nm_dept','id_dept');
+		$agm = array_column($divisi,'nm_dept','id_dept');
+
+		$pendidikan = [
+			"SD" => "SD",
+			"SMP" => "SMP",
+			"SMA" => "SMA",
+			"DIPLOMA" => "DIPLOMA",
+			"SARJANA" => "SARJANA",
+			"MASTER" => "MASTER",
+			"DOKTORAL" => "DOKTORAL",
+			"PROFESOR" => "PROFESOR",
+			"LAIN-LAIN" => "LAIN-LAIN",
 		];
-        $this->template->set('results', $data);
+
+        $this->template->set([
+			'karyawan' => $karyawan,
+			'divisi' => $div,
+			'agama' => $agm,
+			'pendidikan' => $pendidikan,
+		]);
 		$this->template->title('Karyawan');
         $this->template->render('view_karyawan');
 	}
@@ -102,7 +118,7 @@ class Master_karyawan extends Admin_Controller
 			'modified_by'		=> $this->auth->user_id()
 		];
 	 
-		$this->db->where('id_karyawan',$post['id_karyawan'])->update("ms_karyawan",$data);
+		$this->db->where('ixd_karyawan',$post['id_karyawan'])->update("ms_karyawan",$data);
 		
 		if($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -137,7 +153,7 @@ class Master_karyawan extends Admin_Controller
         $this->template->render('add_karyawan');
 
     }
-	public function deleteInventory(){
+	public function deleteKaryawan(){
 		$this->auth->restrict($this->deletePermission);
 		$id = $this->input->post('id');
 		$data = [
@@ -164,7 +180,7 @@ class Master_karyawan extends Admin_Controller
 		
   		echo json_encode($status);
 	}
-	public function saveNewkaryawan()
+	public function saveKaryawan()
     {
         $this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
@@ -187,12 +203,18 @@ class Master_karyawan extends Admin_Controller
 			'sts_karyawan'			=> $post['sts_karyawan'],
 			'norekening'			=> $post['norekening'],
 			'sts_aktif'				=> 'aktif',
-			'created_on'			=> date('Y-m-d H:i:s'),
-			'created_by'			=> $this->auth->user_id(),
 			'deleted'				=> '0'
 		];
 		
-		$insert = $this->db->insert("ms_karyawan",$data);
+		if(isset($post['id_karyawan']) && $post['id_karyawan']){
+			$data['modified_on']	= date('Y-m-d H:i:s');
+			$data['modified_by']	= $this->auth->user_id();
+			$this->db->where('id_karyawan',$post['id_karyawan'])->update("ms_karyawan",$data);
+		} else {
+			$data['created_on']		= date('Y-m-d H:i:s');
+			$data['created_by']		= $this->auth->user_id();
+			$this->db->insert("ms_karyawan",$data);
+		}
 		
 		if($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();

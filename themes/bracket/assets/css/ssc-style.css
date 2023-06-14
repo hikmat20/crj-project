@@ -40,7 +40,7 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before 
 }
 
 table .dataTables_wrapper .dataTable_processing {
-    height: 60% !important;
+    height: 90% !important;
     background-color: #ffffffd4 !important;
 }
 .sk-wave .sk-rect{

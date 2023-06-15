@@ -23,7 +23,7 @@ class Customers extends Admin_Controller
 	{
 		parent::__construct();
 
-		$this->load->library(array('MPDF', 'upload', 'Image_lib'));
+		$this->load->library(array('mpdf', 'upload', 'Image_lib'));
 		$this->load->model(array(
 			'Customers/Customer_model',
 			'Aktifitas/aktifitas_model',
@@ -134,12 +134,28 @@ class Customers extends Admin_Controller
 	}
 
 
-
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
 		$this->template->render('index');
 	}
+
+	public function addCustomer()
+	{
+		$this->auth->restrict($this->viewPermission);
+		$category = $this->Customer_model->get_data('child_customer_category', 'activation', $aktif);
+		$prof = $this->Customer_model->get_data('provinsi');
+		$karyawan = $this->db->get_where('ms_karyawan', array('divisi' => 2, 'deleted' => 0))->result();
+		$data = [
+			'category' => $category,
+			'prof' => $prof,
+			'karyawan' => $karyawan
+		];
+		$this->template->set('results', $data);
+		$this->template->title('Add Customer');
+		$this->template->render('add_customer');
+	}
+	
 	public function editCustomer($id)
 	{
 		$this->auth->restrict($this->viewPermission);
@@ -209,22 +225,7 @@ class Customers extends Admin_Controller
 		$this->template->set('results', $data);
 		$this->template->render('view_inventory');
 	}
-	public function addCustomer()
-	{
-		$this->auth->restrict($this->viewPermission);
-		$aktif = 'active';
-		$category = $this->Customer_model->get_data('child_customer_category', 'activation', $aktif);
-		$prof = $this->Customer_model->get_data('provinsi');
-		$karyawan = $this->db->get_where('ms_karyawan', array('divisi' => 2, 'deleted' => 0))->result();
-		$data = [
-			'category' => $category,
-			'prof' => $prof,
-			'karyawan' => $karyawan
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Add Customer');
-		$this->template->render('add_customer');
-	}
+	
 
 	public function addInternational()
 	{

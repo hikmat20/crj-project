@@ -59,7 +59,7 @@ $(document).ready(function() {
             'class': 'lobibox-notify-success',
             'title': 'Success',
             'icon': 'fa fa-check',
-            sound: 'sound11'
+            sound: 'sound21'
         },
         error: {
             'class': 'lobibox-notify-error',

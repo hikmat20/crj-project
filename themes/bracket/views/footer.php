@@ -5,8 +5,7 @@
 <div class="pos-fixed b-0 bg-white float-right r-0">
     <footer class="br-footer px-3 py-2">
         <div class="footer-left">
-            <strong>Copyright &copy; <?= date('Y'); ?> <a
-                    href="<?= site_url(); ?>"><?= isset($idt->nm_perusahaan) ? $idt->nm_perusahaan : 'not-set'; ?></a>.</strong>
+            <strong>Copyright &copy; <?= date('Y'); ?> <a href="<?= site_url(); ?>"><?= isset($idt->nm_perusahaan) ? $idt->nm_perusahaan : 'not-set'; ?></a>.</strong>
             All rights reserved | &nbsp;
         </div>
         <div class="footer-right">
@@ -45,42 +44,50 @@
 <!-- <script src="<?= base_url(); ?>themes/bracket/assets/js/widgets.js"></script> -->
 
 <script>
-$(document).ready(function() {
-    // Select2
-    $('.dataTables_length select').select2({
-        // containerCs  sClass: 'select2-outline-success',
-        // dropdownCssClass: 'select2-hidden-accessible hover-success',
-        minimumResultsForSearch: Infinity
-    })
+    $(document).ready(function() {
+        // Select2
+        $('.select').select2({
+            // minimumResultsForSearch: -1,
+            placeholder: 'Choose one',
+            dropdownParent: $('#data-form-customer'),
+            width: "100%",
+            allowClear: true
+        });
 
-    Lobibox.notify.OPTIONS = {
-        'class': 'animated-fast animate__animated',
-        success: {
-            'class': 'lobibox-notify-success',
-            'title': 'Success',
-            'icon': 'fa fa-check',
-            sound: 'sound21'
-        },
-        error: {
-            'class': 'lobibox-notify-error',
-            'title': 'Error',
-            'icon': 'fa fa-check',
-            sound: 'sound9'
-        },
-        warning: {
-            'class': 'lobibox-notify-warning',
-            'title': 'Warning',
-            'icon': 'fa fa-check',
-            sound: 'sound14'
-        },
-        info: {
-            'class': 'lobibox-notify-info',
-            'title': 'info',
-            'icon': 'fa fa-check',
-            sound: 'sound7'
-        },
-    }
-})
+        $('.dataTables_length select').select2({
+            // containerCs  sClass: 'select2-outline-success',
+            // dropdownCssClass: 'select2-hidden-accessible hover-success',
+            minimumResultsForSearch: Infinity
+        })
+
+        Lobibox.notify.OPTIONS = {
+            'class': 'animated-fast animate__animated',
+            success: {
+                'class': 'lobibox-notify-success',
+                'title': 'Success',
+                'icon': 'fa fa-check',
+                sound: 'sound21'
+            },
+            error: {
+                'class': 'lobibox-notify-error',
+                'title': 'Error',
+                'icon': 'fa fa-check',
+                sound: 'sound9'
+            },
+            warning: {
+                'class': 'lobibox-notify-warning',
+                'title': 'Warning',
+                'icon': 'fa fa-check',
+                sound: 'sound14'
+            },
+            info: {
+                'class': 'lobibox-notify-info',
+                'title': 'info',
+                'icon': 'fa fa-check',
+                sound: 'sound7'
+            },
+        }
+    })
 </script>
 </body>
 

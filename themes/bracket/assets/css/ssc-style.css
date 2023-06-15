@@ -19,8 +19,13 @@ div.dataTables_filter input {
     margin-left: 0 !important;
 }
 
-span.select2.select2-container.select2-container--default {
+.dataTables_length span.select2.select2-container.select2-container--default {
     margin-right: 0;
+    width: 60px !important;
+}
+
+ul.select2-results__options{
+    max-height: 220px !important;
 }
 
 div.dataTables_length .select2-container--default .select2-selection--single .select2-selection__arrow {

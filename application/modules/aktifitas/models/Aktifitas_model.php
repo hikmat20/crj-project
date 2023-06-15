@@ -61,19 +61,18 @@ class Aktifitas_model extends BF_Model
         $this->load->model('aktifitas/permissions_model');
     }
     /**
-    * Fungsi untuk menyimpan aktivitas pengguna
-    * Variable yang wajib diisi adalah $nm_hak_akses, $kode_universal, dan $keterangan, $status
-    * Return TRUE jika sukses, FALSE jika gagal
-    */
-    public function simpan_aktifitas($nm_hak_akses = "", $kode_universal = "", $keterangan ="", $jumlah = 0, $sql = "", $status = NULL)
+     * Fungsi untuk menyimpan aktivitas pengguna
+     * Variable yang wajib diisi adalah $nm_hak_akses, $kode_universal, dan $keterangan, $status
+     * Return TRUE jika sukses, FALSE jika gagal
+     */
+    public function simpan_aktifitas($nm_hak_akses = "", $kode_universal = "", $keterangan = "", $jumlah = 0, $sql = "", $status = NULL)
     {
-        if($nm_hak_akses == "" || $kode_universal == "" || $keterangan == "" || $status === NULL)
-        {
+        if ($nm_hak_akses == "" || $kode_universal == "" || $keterangan == "" || $status === NULL) {
             return FALSE;
         }
 
         $user_id         = $this->auth->user_id();
-        $permission_data = $this->permissions_model->find_by(array('nm_permission' => $nm_hak_akses)); 
+        $permission_data = $this->permissions_model->find_by(array('nm_permission' => $nm_hak_akses));
         $fasilitas       = ($permission_data) ? $permission_data->id_permission : 0;
         $id_log          = gen_primary();
 
@@ -82,26 +81,26 @@ class Aktifitas_model extends BF_Model
         }
 
         $insert_data = array(
-                        'idlog' => $id_log,
-                        'kode_universal' => $kode_universal,
-                        'fasilitas'     => $fasilitas,
-                        'ket'       => $keterangan,
-                        'jumlah'    => $jumlah,
-                        'sql'       => $sql,
-                        'status'    => $status
-                        );
+            'idlog' => $id_log,
+            'kode_universal' => $kode_universal,
+            'fasilitas'     => $fasilitas,
+            'ket'       => $keterangan,
+            'jumlah'    => $jumlah,
+            'sql'       => $sql,
+            'status'    => $status
+        );
+
+        $this->db->trans_begin();
         $this->insert($insert_data);
+        $this->db->trans_commit();
 
         /*Cek apakah data berhasil disimpan ?, harus dicek manual karena 
         * type data pada field primary key-nya berupa string
         */
         $cek = $this->find($id_log);
-        if($cek != FALSE)
-        {
+        if ($cek != FALSE) {
             $result = TRUE;
-        }
-        else
-        {
+        } else {
             $result = FALSE;
         }
 

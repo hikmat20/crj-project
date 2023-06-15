@@ -68,11 +68,21 @@
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             line-height: 2.7rem;
             display: block;
+        }
+
+        .dataTables_length span.select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 2.7rem;
+            display: block;
             min-width: 50px;
+            text-align: center;
         }
 
         .select2-container .select2-selection--single .select2-selection__clear {
             z-index: 5;
+        }
+
+        .dataTables_length .select2-container {
+            width: 70px;
         }
 
         .select2-results__option {
@@ -139,7 +149,7 @@
         <div class="br-header-left">
             <div class="navicon-left hidden-md-down border-0"><a id="btnLeftMenu" href="#"><i class="icon ion-navicon-round"></i></a></div>
             <div class="navicon-left hidden-lg-up"><a id="btnLeftMenuMobile" href="#"><i class="icon ion-navicon-round"></i></a></div>
-            <div class="input-group hidden-xs-down wd-170 transition border-0">
+            <div class="input-group hidden-xs-down transition border-0">
                 <h4 class="text-white mb-0"><?= isset($template['title']) ? $template['title'] : ''; ?></h4>
             </div><!-- input-group -->
         </div><!-- br-header-left -->

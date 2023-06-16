@@ -15,16 +15,14 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
 <div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php echo Template::message(); ?>
     <div class="btn-group hidden-sm-down">
-        <?php if ($ENABLE_VIEW) : ?>
-            <a class="btn btn-primary btn-oblong add" href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Customer</a>
-        <?php endif; ?>
+        <a class="btn btn-primary btn-oblong add" href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Customer</a>
     </div><!-- btn-group -->
 </div>
 
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
     <div class="card bd-gray-400">
         <div class="table-wrapper">
-            <table id="dataTable" class="table table-bordered table-striped" width="100%">
+            <table id="dataTable" class="table table-bordered display table-striped" width="100%">
                 <thead>
                     <tr>
                         <th width="10">#</th>
@@ -49,7 +47,6 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
                     </tr>
                 </tfoot>
             </table>
-
         </div>
     </div>
 </div>
@@ -59,7 +56,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
         <form id="data-form" method="post" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel"><span class="fa fa-users"></span></h4>
+                    <h4 class="modal-title tx-dark" id="myModalLabel"><span class="<?= $template['page_icon']; ?>"></span></h4>
                     <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body"></div>
@@ -123,42 +120,14 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
             showCancelButton: true,
             confirmButtonText: "<i class='fa fa-check'></i> Yes",
             cancelButtonText: "<i class='fa fa-ban'></i> No",
-        }).then((val) => {
-            if (val.isConfirmed) {
-                $.ajax({
+            showLoaderOnConfirm: true,
+            preConfirm: (login) => {
+                return $.ajax({
                     url: siteurl + thisController + 'deleteCustomer',
                     type: "POST",
                     dataType: 'JSON',
                     data: {
                         id
-                    },
-                    success: function(result) {
-                        if (result.status == '1') {
-                            Lobibox.notify('success', {
-                                icon: 'fa fa-check',
-                                msg: result.msg,
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            });
-                            $("#dialog-popup").modal('hide');
-                            loadData()
-                            $('.dataTables_length select').select2({
-                                // containerCssClass: 'select2-outline-success',
-                                // dropdownCssClass: 'select2-hidden-accessible hover-success',
-                                minimumResultsForSearch: -1
-                            })
-                        } else {
-                            Lobibox.notify('warning', {
-                                icon: 'fa fa-ban',
-                                msg: result.msg,
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            });
-                        };
                     },
                     error: function() {
                         Lobibox.notify('error', {
@@ -171,6 +140,34 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
                         });
                     }
                 });
+            },
+            allowOutsideClick: true
+        }).then((val) => {
+            if (val.isConfirmed) {
+                if (val.value.status == '1') {
+                    Lobibox.notify('success', {
+                        icon: 'fa fa-check',
+                        msg: val.value.msg,
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                    });
+                    $("#dialog-popup").modal('hide');
+                    loadData()
+                    $('.dataTables_length select').select2({
+                        minimumResultsForSearch: -1
+                    })
+                } else {
+                    Lobibox.notify('warning', {
+                        icon: 'fa fa-ban',
+                        msg: val.value.msg,
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                    });
+                };
             }
         });
     });
@@ -245,6 +242,95 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
             }
         });
     });
+
+
+    /* PIC */
+
+    $(document).on('click', '.del-item', function() {
+        $(this).parents('tr').fadeOut('slow').css('background-color', '#d5d5d5')
+        setTimeout(() => {
+            $(this).parents('tr').remove()
+        }, 500);
+    })
+
+    $(document).on('click', '#add-pic', function() {
+        var n = 0;
+        var html = '';
+        n = $('table#list-pic tbody tr').length + 1;
+        html += `<tr id="tr_` + n + `" style="background-color:#fff5de">
+						<td class="text-center"><i class="fa fa-plus tx-10" aria-hidden="true"></i>
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][name]" placeholder="PIC Name"></td> 
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][phone_number]" placeholder="Phone Number"></td> 
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][email]" placeholder="Email"></td> 
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][position]" placeholder="Position"></td>
+						<td class="text-center"><button type="button" class="btn btn-sm btn-warning del-item" title="Hapus Data" data-role="qtip"><i class="fa fa-times"></i></button></td>
+					</tr>`;
+        $('table#list-pic tbody').append(html);
+    });
+
+    $(document).on('click', '.deletePic', function() {
+        var swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                cancelButton: 'btn btn-danger wd-100'
+            },
+            buttonsStyling: false
+        })
+        const btn = $(this)
+        let id = $(this).data('id')
+        swalWithBootstrapButtons.fire({
+            title: "Confirm",
+            text: "Are you sure to Delete this data PIC Customer?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "<i class='fa fa-check'></i> Yes",
+            cancelButtonText: "<i class='fa fa-ban'></i> No",
+        }).then((val) => {
+            if (val.isConfirmed) {
+                $.ajax({
+                    url: siteurl + thisController + 'deletePic',
+                    type: "POST",
+                    dataType: 'JSON',
+                    data: {
+                        id
+                    },
+                    success: function(result) {
+                        if (result.status == '1') {
+                            Lobibox.notify('success', {
+                                icon: 'fa fa-check',
+                                msg: result.msg,
+                                position: 'top right',
+                                showClass: 'zoomIn',
+                                hideClass: 'zoomOut',
+                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            });
+                            btn.parents('tr').addClass('bg-danger').fadeOut('slow').css('background-color', '#d5d5d5')
+                        } else {
+                            Lobibox.notify('warning', {
+                                icon: 'fa fa-ban',
+                                msg: result.msg,
+                                position: 'top right',
+                                showClass: 'zoomIn',
+                                hideClass: 'zoomOut',
+                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            });
+                        };
+                    },
+                    error: function() {
+                        Lobibox.notify('error', {
+                            icon: 'fa fa-times',
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            msg: 'Internal server error. Server timeout'
+                        });
+                    }
+                });
+            }
+        });
+    });
+
 
     function loadData() {
         var oTable = $('#dataTable').DataTable({

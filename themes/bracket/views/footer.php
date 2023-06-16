@@ -54,7 +54,7 @@
             allowClear: true
         });
 
-        $('.dataTables_length select').select2({
+        $('.dataTables_length select, #dataTables_length select').select2({
             // containerCs  sClass: 'select2-outline-success',
             // dropdownCssClass: 'select2-hidden-accessible hover-success',
             minimumResultsForSearch: Infinity

@@ -207,7 +207,7 @@ class Menus extends Admin_Controller
       $query_id = $this->db->select("max(id_permission) id")->get('permissions');
       $row_id = $query_id->row();
       $id_permissions = $row_id->id;
-      
+
       $data_perm[0] = array(
         'id_permission' => $id_permissions + 1,
         'nm_permission' => str_replace(" ", "_", $title) . ".View",
@@ -317,7 +317,7 @@ class Menus extends Admin_Controller
       simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
     }
 
-    if($this->db->trans_status() === FALSE){
+    if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
       $param = array(
         'status' => 0,
@@ -330,7 +330,7 @@ class Menus extends Admin_Controller
         'msg' => "Successfull add new Menu."
       );
     }
-    
+
     echo json_encode($param);
   }
   function delete()

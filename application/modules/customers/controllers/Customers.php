@@ -147,26 +147,33 @@ class Customers extends Admin_Controller
 			'karyawan' => $karyawan
 		];
 		$this->template->set($data);
-		$this->template->title('Add Customer');
-		$this->template->render('add_customer');
+		$this->template->render('form');
 	}
 
 	public function editCustomer($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$customer = $this->db->get_where('customers', array('id_customer' => $id))->row();
-		$pic = $this->db->get_where('customer_pic', array('id_customer' => $id))->result();
-		$countries = $this->Customer_model->get_data('countries');
-		$karyawan = $this->db->get_where('ms_karyawan', array('deleted' => 0, '', 'divisi' => 2))->result();
+		$customer 				= $this->db->get_where('customers', array('id_customer' => $id))->row();
+		$pic 					= $this->db->get_where('customer_pic', ['id_customer' => $id, 'status' => '1'])->result();
+		$countries 				= $this->Customer_model->get_data('countries');
+		$states 				= $this->Customer_model->get_data('states', 'country_id', $customer->country_id);
+		$cities 				= $this->Customer_model->get_data('cities', 'state_id', $customer->state_id);
+		$karyawan 				= $this->db->get_where('ms_karyawan', array('deleted' => 0, '', 'divisi' => 2))->result();
+		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
+		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
 
 		$data = [
-			'customer'	=> $customer,
-			'countries' => $countries,
-			'PIC' => $pic,
-			'karyawan' => $karyawan
+			'customer'					=> $customer,
+			'countries' 				=> $countries,
+			'PIC' 						=> $pic,
+			'states' 					=> $states,
+			'cities' 					=> $cities,
+			'karyawan' 					=> $karyawan,
+			'receive_invoice_day' 		=> $receive_invoice_day,
+			'invoicing_requirement' 	=> $invoicing_requirement
 		];
 		$this->template->set($data);
-		$this->template->render('add_customer');
+		$this->template->render('form');
 	}
 
 	public function saveCustomer()
@@ -175,11 +182,31 @@ class Customers extends Admin_Controller
 		$post = $this->input->post();
 
 		$data = $post;
-		$data['id_customer'] 			= $post['id_cust'] ?: $this->Customer_model->generate_id();
-		$data['receive_invoice_day'] 	= json_encode($post['receive_invoice_day']) ?: null;
-		$data['invoicing_requirement'] 	= json_encode($post['invoicing_requirement']) ?: null;
-		$data['down_payment_value'] 	= str_replace(",", "", $post['down_payment_value']);
-		$data['remain_payment'] 		= str_replace(",", "", $post['remain_payment']);
+		$data['id_customer'] 				= $post['id_customer'] ?: $this->Customer_model->generate_id();
+		$data['receive_invoice_day'] 		= $post['receive_invoice_day'] ? json_encode($post['receive_invoice_day']) : NULL;
+		$data['invoicing_requirement'] 		= $post['invoicing_requirement'] ? json_encode($post['invoicing_requirement']) : NULL;
+		$data['down_payment_value'] 		= str_replace(",", "", $post['down_payment_value']);
+		$data['remain_payment'] 			= str_replace(",", "", $post['remain_payment']);
+		$data['start_receive_time_invoice'] = ($post['end_receive_time_invoice']) ?: null;
+		$data['end_receive_time_invoice'] 	= ($post['end_receive_time_invoice']) ?: null;
+		$data['telephone_alt'] 				= ($post['telephone_alt']) ?: null;
+		$data['fax'] 						= ($post['fax']) ?: null;
+		$data['zip_code'] 					= ($post['zip_code']) ?: null;
+		$data['longitude'] 					= ($post['longitude']) ?: null;
+		$data['latitude'] 					= ($post['latitude']) ?: null;
+		$data['address_invoice'] 			= ($post['address_invoice']) ?: null;
+		$data['npwp_number'] 				= ($post['npwp_number']) ?: null;
+		$data['npwp_name'] 					= ($post['npwp_name']) ?: null;
+		$data['npwp_address'] 				= ($post['npwp_address']) ?: null;
+		$data['bank_name'] 					= ($post['bank_name']) ?: null;
+		$data['bank_account_number'] 		= ($post['bank_account_number']) ?: null;
+		$data['bank_account_name'] 			= ($post['bank_account_name']) ?: null;
+		$data['bank_account_address'] 		= ($post['bank_account_address']) ?: null;
+		$data['swift_code'] 				= ($post['swift_code']) ?: null;
+		$data['receive_invoice_day'] 		= ($post['receive_invoice_day']) ?: null;
+		$data['invoicing_requirement'] 		= ($post['invoicing_requirement']) ?: null;
+		$data['down_payment_value'] 		= ($post['down_payment_value']) ?: null;
+		$data['remain_payment'] 			= ($post['remain_payment']) ?: null;
 
 		$dataPIC = $post['PIC'];
 		unset($data['PIC']);
@@ -194,7 +221,7 @@ class Customers extends Admin_Controller
 		} else {
 			$data['modified_at'] 			= date('Y-m-d H:i:s');
 			$data['modified_by'] 			= $this->auth->user_id();
-			$this->db->update('customers', $data, $data['id_customer']);
+			$this->db->update('customers', $data, ['id_customer' => $data['id_customer']]);
 		}
 
 		$n = 0;
@@ -255,7 +282,7 @@ class Customers extends Admin_Controller
 		$data = $this->db->get_where('customers', ['id_customer' => $id])->row_array();
 
 		$this->db->trans_begin();
-		$sql = $this->db->update('customers', ['sstatus' => 'X', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id_customer' => $id]);
+		$sql = $this->db->update('customers', ['status' => 'X', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id_customer' => $id]);
 		$errMsg = $this->db->error()['message'];
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
@@ -272,10 +299,10 @@ class Customers extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success Save data Customer.',
+				'msg'		=> 'Delete data Customer.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
+			$keterangan     = "Delete data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id_customer'];
@@ -286,22 +313,26 @@ class Customers extends Admin_Controller
 		echo json_encode($return);
 	}
 
-
-	function getProvinceCities($id)
+	function getProvince()
 	{
+		$country_id = $_GET['country_id'];
+		$search 	= $_GET['q'];
+		$states 	= [];
+		if (isset($country_id) && $country_id) {
+			$states = $this->db->like(['name' => $search])->where(['country_id' => $country_id])->get('states')->result_array();
+		}
+		echo json_encode($states);
+	}
 
-		// exit;
-		// exit;
-		// $id_prov = $_GET['id_prov'];
-		$data = $this->db->get_where('states', ['country_id' => $id])->result_array();
-		// echo '<select id="state_id" name="state_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperProv" data-parsley-errors-container="#slErrorContainerProv">
-		// 		<option value=""></option>';
-		// foreach ($data as $st) :
-		// 	echo "<option value='$st->id'>$st->name</option>";
-		// endforeach;
-		// echo '</select>';
-		echo json_encode($data);
-		// set_select('state_id', $st->id, isset($data->id_prov) && $data->id_prov == $st->id_prov)
+	function getCities()
+	{
+		$state_id 	= $_GET['state_id'];
+		$search 	= $_GET['q'];
+		$cities 	= [];
+		if (isset($state_id) && $state_id) {
+			$cities = $this->db->like(['name' => $search])->where(['state_id' => $state_id])->get('cities')->result_array();
+		}
+		echo json_encode($cities);
 	}
 
 	public function viewCustomer($id)
@@ -330,5 +361,45 @@ class Customers extends Admin_Controller
 		$this->template->set('results', $data);
 		$this->template->title('View Customer');
 		$this->template->render('view_customer');
+	}
+
+
+	/* PIC */
+
+	function deletePic()
+	{
+		$id = $this->input->post('id');
+		$data = $this->db->get_where('customer_pic', ['id' => $id])->row_array();
+
+		$this->db->trans_begin();
+		$sql = $this->db->update('customer_pic', ['status' => '2', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
+		$errMsg = $this->db->error()['message'];
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$keterangan     = "FAILD " . $errMsg;
+			$status         = 0;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+			$return	= array(
+				'msg'		=> "Failed delete data PIC Customer. Please try again. " . $errMsg,
+				'status'	=> 0
+			);
+		} else {
+			$this->db->trans_commit();
+			$return	= array(
+				'msg'		=> 'Delete data PIC Customer.',
+				'status'	=> 1
+			);
+			$keterangan     = "Delete data PCI Customer " . $data['id'] . ", PIC name : " . $data['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		}
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
 	}
 }

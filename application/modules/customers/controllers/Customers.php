@@ -139,10 +139,11 @@ class Customers extends Admin_Controller
 	public function addCustomer()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$prof = $this->Customer_model->get_data('provinsi');
+		$countries = $this->Customer_model->get_data('countries');
 		$karyawan = $this->db->get_where('ms_karyawan', array('divisi' => 2, 'deleted' => 0))->result();
+
 		$data = [
-			'prof' => $prof,
+			'countries' => $countries,
 			'karyawan' => $karyawan
 		];
 		$this->template->set($data);
@@ -155,14 +156,12 @@ class Customers extends Admin_Controller
 		$this->auth->restrict($this->viewPermission);
 		$customer = $this->db->get_where('customers', array('id_customer' => $id))->row();
 		$pic = $this->db->get_where('customer_pic', array('id_customer' => $id))->result();
-		// $prof = $this->Customer_model->get_data('provinsi');
-		// $kota = $this->Customer_model->get_data('kota');
+		$countries = $this->Customer_model->get_data('countries');
 		$karyawan = $this->db->get_where('ms_karyawan', array('deleted' => 0, '', 'divisi' => 2))->result();
 
 		$data = [
 			'customer'	=> $customer,
-			// 'kota' => $kota,
-			// 'prof' => $prof,
+			'countries' => $countries,
 			'PIC' => $pic,
 			'karyawan' => $karyawan
 		];
@@ -288,17 +287,21 @@ class Customers extends Admin_Controller
 	}
 
 
-	function getkota()
+	function getProvinceCities($id)
 	{
-		$id_prov = $_GET['id_prov'];
-		$data = $this->Customer_model->carikota($id_prov);
-		echo "<select id='id_kota' name='id_kota' class='form-control input-sm select2'>";
-		echo "<option value=''>--Pilih--</option>";
-		foreach ($data as $key => $st) :
-			echo "<option value='$st->id_prov' set_select('id_kota', $st->id_prov, isset($data->id_prov) && $data->id_prov == $st->id_prov)>$st->nama_kota
-                    </option>";
-		endforeach;
-		echo "</select>";
+
+		// exit;
+		// exit;
+		// $id_prov = $_GET['id_prov'];
+		$data = $this->db->get_where('states', ['country_id' => $id])->result_array();
+		// echo '<select id="state_id" name="state_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperProv" data-parsley-errors-container="#slErrorContainerProv">
+		// 		<option value=""></option>';
+		// foreach ($data as $st) :
+		// 	echo "<option value='$st->id'>$st->name</option>";
+		// endforeach;
+		// echo '</select>';
+		echo json_encode($data);
+		// set_select('state_id', $st->id, isset($data->id_prov) && $data->id_prov == $st->id_prov)
 	}
 
 	public function viewCustomer($id)

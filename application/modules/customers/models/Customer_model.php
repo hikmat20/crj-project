@@ -88,9 +88,11 @@ class Customer_model extends BF_Model
         return $idcust;
     }
 
-    public function get_data($table, $where_field = '', $where_value = '')
+    public function get_data($table, $where_field = '', $where_value = '', $order_field = '', $order = '')
     {
-        if ($where_field != '' && $where_value != '') {
+        if ($where_field != '' && $where_value != '' && $order_field != '' && $order != '') {
+            $query = $this->db->order_by($order_field, $order)->get_where($table, array($where_field => $where_value));
+        } else if ($where_field != '' && $where_value != '') {
             $query = $this->db->get_where($table, array($where_field => $where_value));
         } else {
             $query = $this->db->get($table);

@@ -100,9 +100,9 @@ class Companies extends Admin_Controller
 				$nomor = ($total_data - $start_dari) - $urut2;
 			}
 
-			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id_customer'] . '"><i class="fa fa-eye"></i></button>';
-			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id_customer'] . '"><i class="fa fa-edit"></i></button>';
-			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id_customer'] . '"><i class="fa fa-trash"></i></button>';
+			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
+			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
+			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
 			$nestedData   = array();
@@ -150,17 +150,17 @@ class Companies extends Admin_Controller
 	public function edit($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$customer 				= $this->db->get_where('customers', array('id_customer' => $id))->row();
-		$pic 					= $this->db->get_where('customer_pic', ['id_customer' => $id, 'status' => '1'])->result();
+		$company 				= $this->db->get_where('companies', array('id' => $id))->row();
+		$pic 					= $this->db->get_where('companies_pic', ['id' => $id, 'status' => '1'])->result();
 		$countries 				= $this->Companies_model->get_data('countries');
-		$states 				= $this->Companies_model->get_data('states', 'country_id', $customer->country_id);
-		$cities 				= $this->Companies_model->get_data('cities', 'state_id', $customer->state_id);
+		$states 				= $this->Companies_model->get_data('states', 'country_id', $company->country_id);
+		$cities 				= $this->Companies_model->get_data('cities', 'state_id', $company->state_id);
 		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
-		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
-		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
+		$receive_invoice_day 	= json_decode($company->receive_invoice_day);
+		$invoicing_requirement 	= json_decode($company->invoicing_requirement);
 
 		$data = [
-			'customer'					=> $customer,
+			'company'					=> $company,
 			'countries' 				=> $countries,
 			'PIC' 						=> $pic,
 			'states' 					=> $states,
@@ -179,11 +179,13 @@ class Companies extends Admin_Controller
 		$post = $this->input->post();
 
 		$data = $post;
-		$data['id_customer'] 				= $post['id_customer'] ?: $this->Companies_model->generate_id();
+		$data['id'] 						= $post['id'] ?: $this->Companies_model->generate_id();
 		$data['receive_invoice_day'] 		= $post['receive_invoice_day'] ? json_encode($post['receive_invoice_day']) : NULL;
 		$data['invoicing_requirement'] 		= $post['invoicing_requirement'] ? json_encode($post['invoicing_requirement']) : NULL;
+
 		$data['down_payment_value'] 		= str_replace(",", "", $post['down_payment_value']);
 		$data['remain_payment'] 			= str_replace(",", "", $post['remain_payment']);
+
 		$data['start_receive_time_invoice'] = ($post['end_receive_time_invoice']) ?: null;
 		$data['end_receive_time_invoice'] 	= ($post['end_receive_time_invoice']) ?: null;
 		$data['telephone_alt'] 				= ($post['telephone_alt']) ?: null;
@@ -200,10 +202,6 @@ class Companies extends Admin_Controller
 		$data['bank_account_name'] 			= ($post['bank_account_name']) ?: null;
 		$data['bank_account_address'] 		= ($post['bank_account_address']) ?: null;
 		$data['swift_code'] 				= ($post['swift_code']) ?: null;
-		$data['receive_invoice_day'] 		= ($post['receive_invoice_day']) ?: null;
-		$data['invoicing_requirement'] 		= ($post['invoicing_requirement']) ?: null;
-		$data['down_payment_value'] 		= ($post['down_payment_value']) ?: null;
-		$data['remain_payment'] 			= ($post['remain_payment']) ?: null;
 
 		$dataPIC = $post['PIC'];
 		unset($data['PIC']);
@@ -211,14 +209,14 @@ class Companies extends Admin_Controller
 		unset($data['sisa_pembayaran']);
 
 		$this->db->trans_begin();
-		if (isset($post['id_customer']) && $post['id_customer'] == '') {
+		if (isset($post['id']) && $post['id'] == '') {
 			$data['created_at'] 			= date('Y-m-d H:i:s');
 			$data['created_by'] 			= $this->auth->user_id();
-			$this->db->insert('customers', $data);
+			$this->db->insert('companies', $data);
 		} else {
 			$data['modified_at'] 			= date('Y-m-d H:i:s');
 			$data['modified_by'] 			= $this->auth->user_id();
-			$this->db->update('customers', $data, ['id_customer' => $data['id_customer']]);
+			$this->db->update('companies', $data, ['id' => $data['id']]);
 		}
 
 		$n = 0;
@@ -226,7 +224,7 @@ class Companies extends Admin_Controller
 			foreach ($dataPIC as $pic) {
 				$n++;
 				$dataPic =  array(
-					'id_customer'	=> $data['id_customer'],
+					'id'	=> $data['id'],
 					'name'			=> $pic['name'],
 					'phone_number'	=> $pic['phone_number'],
 					'email'			=> $pic['email'],
@@ -234,12 +232,12 @@ class Companies extends Admin_Controller
 				);
 
 				if (isset($pic['id']) && $pic['id']) {
-					$check = $this->db->get_where('customer_pic', ['id' => $pic['id']])->num_rows();
+					$check = $this->db->get_where('companies_pic', ['id' => $pic['id']])->num_rows();
 					if ($check > 0) {
-						$this->db->update('customer_pic', $pic, ['id' => $pic['id']]);
+						$this->db->update('companies_pic', $pic, ['id' => $pic['id']]);
 					}
 				} else {
-					$this->db->insert('customer_pic', $dataPic);
+					$this->db->insert('companies_pic', $dataPic);
 				}
 			}
 		}
@@ -250,10 +248,10 @@ class Companies extends Admin_Controller
 				'msg'		=> 'Failed save data Customer.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILED save data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
+			$keterangan     = "FAILED save data Customer " . $data['id'] . ", Customer name : " . $data['customer_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
-			$kode_universal = $data['id_customer'];
+			$kode_universal = $data['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		} else {
@@ -262,10 +260,10 @@ class Companies extends Admin_Controller
 				'msg'		=> 'Success Save data Customer.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
+			$keterangan     = "SUCCESS save data Customer " . $data['id'] . ", Customer name : " . $data['customer_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
-			$kode_universal = $data['id_customer'];
+			$kode_universal = $data['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}
@@ -276,17 +274,17 @@ class Companies extends Admin_Controller
 	function deleteCustomer()
 	{
 		$id = $this->input->post('id');
-		$data = $this->db->get_where('customers', ['id_customer' => $id])->row_array();
+		$data = $this->db->get_where('companies', ['id' => $id])->row_array();
 
 		$this->db->trans_begin();
-		$sql = $this->db->update('customers', ['status' => 'X', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id_customer' => $id]);
+		$sql = $this->db->update('companies', ['status' => 'X', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
 		$errMsg = $this->db->error()['message'];
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$keterangan     = "FAILD " . $errMsg;
 			$status         = 0;
 			$nm_hak_akses   = $this->addPermission;
-			$kode_universal = $data['id_customer'];
+			$kode_universal = $data['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 			$return	= array(
@@ -299,10 +297,10 @@ class Companies extends Admin_Controller
 				'msg'		=> 'Delete data Customer.',
 				'status'	=> 1
 			);
-			$keterangan     = "Delete data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
+			$keterangan     = "Delete data Customer " . $data['id'] . ", Customer name : " . $data['customer_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
-			$kode_universal = $data['id_customer'];
+			$kode_universal = $data['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}
@@ -338,9 +336,9 @@ class Companies extends Admin_Controller
 		$session = $this->session->userdata('app_session');
 		$this->template->page_icon('fa fa-edit');
 		$aktif = 'active';
-		$cus = $this->db->get_where('master_customers', array('id_customer' => $id))->result();
-		$pic = $this->db->get_where('child_customer_pic', array('id_customer' => $id))->result();
-		$cate = $this->db->get_where('child_category_customer', array('id_customer' => $id))->result();
+		$cus = $this->db->get_where('master_companies', array('id' => $id))->result();
+		$pic = $this->db->get_where('companies_pic', array('id' => $id))->result();
+		$cate = $this->db->get_where('child_category_customer', array('id' => $id))->result();
 		$category = $this->Companies_model->get_data('child_customer_category', 'activation', $aktif);
 		$prof = $this->Companies_model->get_data('provinsi');
 		$kota = $this->Companies_model->get_data('kota');
@@ -366,10 +364,10 @@ class Companies extends Admin_Controller
 	function deletePic()
 	{
 		$id = $this->input->post('id');
-		$data = $this->db->get_where('customer_pic', ['id' => $id])->row_array();
+		$data = $this->db->get_where('companies_pic', ['id' => $id])->row_array();
 
 		$this->db->trans_begin();
-		$sql = $this->db->update('customer_pic', ['status' => '2', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
+		$sql = $this->db->update('companies_pic', ['status' => '2', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
 		$errMsg = $this->db->error()['message'];
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

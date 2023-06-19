@@ -201,10 +201,6 @@ class Customers extends Admin_Controller
 		$data['bank_account_name'] 			= ($post['bank_account_name']) ?: null;
 		$data['bank_account_address'] 		= ($post['bank_account_address']) ?: null;
 		$data['swift_code'] 				= ($post['swift_code']) ?: null;
-		$data['receive_invoice_day'] 		= ($post['receive_invoice_day']) ?: null;
-		$data['invoicing_requirement'] 		= ($post['invoicing_requirement']) ?: null;
-		$data['down_payment_value'] 		= ($post['down_payment_value']) ?: null;
-		$data['remain_payment'] 			= ($post['remain_payment']) ?: null;
 
 		$dataPIC = $post['PIC'];
 		unset($data['PIC']);

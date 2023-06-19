@@ -3,18 +3,18 @@
 		<div class="col-sm-6">
 			<div class="form-group row">
 				<div class="col-md-3 tx-dark tx-bold">
-					<label for="id_customer">ID Customer </label>
+					<label for="id">ID Company </label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="id_customer" name="id_customer" readonly placeholder="Auto" value="<?= isset($customer) ? $customer->id_customer : null; ?>">
+					<input type="text" class="form-control" id="id" name="id" readonly placeholder="Auto" value="<?= isset($company) ? $company->id : null; ?>">
 				</div>
 			</div>
 			<div class="form-group row">
 				<div class="col-md-3 tx-dark tx-bold">
-					<label for="customer_name">Nama Customer <span class="tx-danger">*</span></label>
+					<label for="company_name">Nama Company <span class="tx-danger">*</span></label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="customer_name" value="<?= isset($customer) ? $customer->customer_name : null; ?>" required name="customer_name" placeholder="Nama Customer">
+					<input type="text" class="form-control" id="company_name" value="<?= isset($company) ? $company->company_name : null; ?>" required name="company_name" placeholder="Nama Company">
 				</div>
 			</div>
 
@@ -23,7 +23,7 @@
 					<label for="telephone">Telephone <span class="tx-danger">*</span></label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="telephone" value="<?= isset($customer) ? $customer->telephone : ''; ?>" required name="telephone" placeholder="Nomor Telephone">
+					<input type="text" class="form-control" id="telephone" value="<?= isset($company) ? $company->telephone : ''; ?>" required name="telephone" placeholder="Nomor Telephone">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -31,7 +31,7 @@
 					<label for="telephone_alt"></label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="telephone_alt" value="<?= isset($customer) ? $customer->telephone_alt : ''; ?>" name="telephone_alt" placeholder="Alt. Telephone">
+					<input type="text" class="form-control" id="telephone_alt" value="<?= isset($company) ? $company->telephone_alt : ''; ?>" name="telephone_alt" placeholder="Alt. Telephone">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -39,7 +39,7 @@
 					<label for="fax">Fax</label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="fax" name="fax" value="<?= isset($customer) ? $customer->fax : ''; ?>" placeholder="Nomor Fax">
+					<input type="text" class="form-control" id="fax" name="fax" value="<?= isset($company) ? $company->fax : ''; ?>" placeholder="Nomor Fax">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -47,7 +47,7 @@
 					<label for="email">Email <span class="tx-danger">*</span></label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="email" value="<?= isset($customer) ? $customer->email : ''; ?>" required data-parsley-type="email" name="email" placeholder="email@domain.adress">
+					<input type="text" class="form-control" id="email" value="<?= isset($company) ? $company->email : ''; ?>" required data-parsley-type="email" name="email" placeholder="email@domain.adress">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -55,26 +55,26 @@
 					<label for="start_date">Tanggal Mulai</label>
 				</div>
 				<div class="col-md-8">
-					<input type="date" class="form-control" id="start_date" value="<?= isset($customer) ? $customer->start_date : ''; ?>" required name="start_date" placeholder="Tanggal Mulai">
+					<input type="date" class="form-control" id="start_date" value="<?= isset($company) ? $company->start_date : ''; ?>" required name="start_date" placeholder="Tanggal Mulai">
 				</div>
 			</div>
-			<div class="form-group row">
+			<!-- <div class="form-group row">
 				<div class="col-md-3 tx-dark tx-bold">
 					<label for="sales_id">Marketing <span class="tx-danger">*</span></label>
 				</div>
 				<div class="col-md-8">
 					<div id="slWrapperKaryawan" class="parsley-select">
-						<select id="sales_id" name="sales_id" class="form-control select not-search" value="<?= isset($customer) ? $customer->sales_id : ''; ?>" required data-parsley-inputs data-parsley-class-handler="#slWrapperKaryawan" data-parsley-errors-container="#slErrorContainerKaryawan">
+						<select id="sales_id" name="sales_id" class="form-control select not-search" value="<?= isset($company) ? $company->sales_id : ''; ?>" required data-parsley-inputs data-parsley-class-handler="#slWrapperKaryawan" data-parsley-errors-container="#slErrorContainerKaryawan">
 							<option value=""></option>
 							<?php foreach ($marketing as $mkt) { ?>
-								<option value="<?= $mkt->id ?>" <?= ($mkt->id == $customer->sales_id) ? 'selected' : ''; ?>>
+								<option value="<?= $mkt->id ?>" <?= ($mkt->id == $company->sales_id) ? 'selected' : ''; ?>>
 									<?= ucfirst(strtolower($mkt->name)) ?></option>
 							<?php } ?>
 						</select>
 					</div>
 					<div id="slErrorContainerKaryawan"></div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<div class="col-sm-6">
 			<div class="form-group row">
@@ -86,7 +86,7 @@
 						<select id="country_id" name="country_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#slErrorContainerCountry">
 							<option value=""></option>
 							<?php if ($countries) foreach ($countries as $country) : ?>
-								<option value="<?= $country->id; ?>" <?= ($country->id == $customer->country_id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
+								<option value="<?= $country->id; ?>" <?= ($country->id == $company->country_id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>
@@ -103,8 +103,8 @@
 						<div id="states_select">
 							<select id="state_id" name="state_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperProv" data-parsley-errors-container="#slErrorContainerProv">
 								<option value=""></option>
-								<?php if (isset($customer) && $customer->state_id) foreach ($states as $state) : ?>
-									<option value="<?= $customer->state_id; ?>" <?= (isset($customer) && $customer->state_id == $state->id) ? 'selected' : ''; ?>><?= $state->name; ?></option>
+								<?php if (isset($company) && $company->state_id) foreach ($states as $state) : ?>
+									<option value="<?= $company->state_id; ?>" <?= (isset($company) && $company->state_id == $state->id) ? 'selected' : ''; ?>><?= $state->name; ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -121,8 +121,8 @@
 					<div id="slWrapperCity" class="parsley-select">
 						<select id="city_id" name="city_id" class="form-control select" data-parsley-inputs data-parsley-class-handler="#slWrapperCity" data-parsley-errors-container="#slErrorContainerCity" required>
 							<option value=""></option>
-							<?php if (isset($customer) && $customer->city_id) foreach ($cities as $city) : ?>
-								<option value="<?= $customer->city_id; ?>" <?= (isset($customer) && $customer->city_id == $city->id) ? 'selected' : ''; ?>><?= $city->name; ?></option>
+							<?php if (isset($company) && $company->city_id) foreach ($cities as $city) : ?>
+								<option value="<?= $company->city_id; ?>" <?= (isset($company) && $company->city_id == $city->id) ? 'selected' : ''; ?>><?= $city->name; ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>
@@ -135,7 +135,7 @@
 					<label for="address">Alamat <span class="tx-danger">*</span></label>
 				</div>
 				<div class="col-md-8">
-					<textarea type="text" name="address" id="address" required class="form-control" placeholder="Alamat"><?= isset($customer) ? $customer->address : ''; ?></textarea>
+					<textarea type="text" name="address" id="address" required class="form-control" placeholder="Alamat"><?= isset($company) ? $company->address : ''; ?></textarea>
 				</div>
 			</div>
 
@@ -144,7 +144,7 @@
 					<label for="zip_code">Zip Code</label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="zip_code" value="<?= isset($customer) ? $customer->zip_code : ''; ?>" name="zip_code" placeholder="Kode Pos">
+					<input type="text" class="form-control" id="zip_code" value="<?= isset($company) ? $company->zip_code : ''; ?>" name="zip_code" placeholder="Kode Pos">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -152,7 +152,7 @@
 					<label for="longitude">Longtitude</label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="longitude" value="<?= isset($customer) ? $customer->longitude : ''; ?>" name="longitude" placeholder="Longtitude">
+					<input type="text" class="form-control" id="longitude" value="<?= isset($company) ? $company->longitude : ''; ?>" name="longitude" placeholder="Longtitude">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -160,7 +160,7 @@
 					<label for="latitude">Latitude</label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="latitude" value="<?= isset($customer) ? $customer->latitude : ''; ?>" name="latitude" placeholder="Latitude">
+					<input type="text" class="form-control" id="latitude" value="<?= isset($company) ? $company->latitude : ''; ?>" name="latitude" placeholder="Latitude">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -170,11 +170,11 @@
 				<div class="col-md-8">
 					<div id="cbWrapperStatus" class="parsley-checkbox mg-b-0">
 						<label class="rdiobox rdiobox-success d-inline-block mg-r-5">
-							<input type="radio" id="statusActive" <?= isset($customer) && $customer->status == '1' ? 'checked' : null; ?> name="status" value="1" required data-required="true" data-parsley-inputs data-parsley-class-handler="#cbWrapperStatus" data-parsley-errors-container="#cbErrorContainerStatus">
+							<input type="radio" id="statusActive" <?= isset($company) && $company->status == '1' ? 'checked' : null; ?> name="status" value="1" required data-required="true" data-parsley-inputs data-parsley-class-handler="#cbWrapperStatus" data-parsley-errors-container="#cbErrorContainerStatus">
 							<span>Active</span>
 						</label>
 						<label class="rdiobox rdiobox-success d-inline-block mg-r-5">
-							<input type="radio" id="statusInactive" <?= isset($customer) && $customer->status == '0' ? 'checked' : null; ?> name="status" value="0">
+							<input type="radio" id="statusInactive" <?= isset($company) && $company->status == '0' ? 'checked' : null; ?> name="status" value="0">
 							<span>Non Active</span>
 						</label>
 					</div>
@@ -188,11 +188,11 @@
 				<div class="col-md-8">
 					<div id="cbWrapper" class="parsley-checkbox mg-b-0">
 						<label class="rdiobox rdiobox-success d-inline-block mg-r-5">
-							<input type="radio" id="facility1" <?= isset($customer) && $customer->facility == 'DPIL' ? 'checked' : null; ?> name="facility" value="DPIL" data-required="false" data-parsley-inputs data-parsley-class-handler="#cbWrapper" data-parsley-errors-container="#cbErrorContainer">
+							<input type="radio" id="facility1" <?= isset($company) && $company->facility == 'DPIL' ? 'checked' : null; ?> name="facility" value="DPIL" data-required="false" data-parsley-inputs data-parsley-class-handler="#cbWrapper" data-parsley-errors-container="#cbErrorContainer">
 							<span>DPIL</span>
 						</label>
 						<label class="rdiobox rdiobox-success d-inline-block mg-r-5">
-							<input type="radio" id="facility2" <?= isset($customer) && $customer->facility == 'Kawasan Berikat' ? 'checked' : null; ?> name="facility" value="Kawasan Berikat">
+							<input type="radio" id="facility2" <?= isset($company) && $company->facility == 'Kawasan Berikat' ? 'checked' : null; ?> name="facility" value="Kawasan Berikat">
 							<span>Kawasan Berikat</span>
 						</label>
 					</div>
@@ -307,11 +307,11 @@
 									<div class="input-group-prepend">
 										<span class="input-group-text">Start</span>
 									</div>
-									<input type="time" class="form-control" id="start_receive_time_invoice" value="<?= isset($customer) ? $customer->start_receive_time_invoice : null; ?>" name="start_receive_time_invoice" placeholder="-">
+									<input type="time" class="form-control" id="start_receive_time_invoice" value="<?= isset($company) ? $company->start_receive_time_invoice : null; ?>" name="start_receive_time_invoice" placeholder="-">
 									<div class="input-group-prepend">
 										<span class="input-group-text">End</span>
 									</div>
-									<input type="time" class="form-control" id="end_receive_time_invoice" value="<?= isset($customer) ? $customer->end_receive_time_invoice : null; ?>" name="end_receive_time_invoice" placeholder="-">
+									<input type="time" class="form-control" id="end_receive_time_invoice" value="<?= isset($company) ? $company->end_receive_time_invoice : null; ?>" name="end_receive_time_invoice" placeholder="-">
 								</div>
 							</div>
 						</div>
@@ -320,7 +320,7 @@
 								<label for="address_invoice">Invoice Address</label>
 							</div>
 							<div class="col-md-9">
-								<textarea type="text" name="address_invoice" id="address_invoice" class="form-control input-sm w70" placeholder="Alamat"><?= isset($customer) ? $customer->address_invoice : ''; ?></textarea>
+								<textarea type="text" name="address_invoice" id="address_invoice" class="form-control input-sm w70" placeholder="Alamat"><?= isset($company) ? $company->address_invoice : ''; ?></textarea>
 							</div>
 						</div>
 					</div>
@@ -387,7 +387,7 @@
 						<label for="npwp_number">Nomor NPWP/PKP</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="npwp_number" value="<?= isset($customer) ? $customer->npwp_number : null; ?>" name="npwp_number" placeholder="Nama Number">
+						<input type="text" class="form-control" id="npwp_number" value="<?= isset($company) ? $company->npwp_number : null; ?>" name="npwp_number" placeholder="Nama Number">
 					</div>
 				</div>
 				<div class="form-group row">
@@ -395,7 +395,7 @@
 						<label for="npwp_name">Nama NPWP/PKP</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="npwp_name" value="<?= isset($customer) ? $customer->npwp_name : null; ?>" name="npwp_name" placeholder="Nama NPWP">
+						<input type="text" class="form-control" id="npwp_name" value="<?= isset($company) ? $company->npwp_name : null; ?>" name="npwp_name" placeholder="Nama NPWP">
 					</div>
 				</div>
 				<div class="form-group row">
@@ -403,7 +403,7 @@
 						<label for="npwp_address">Alamat NPWP</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="npwp_address" value="<?= isset($customer) ? $customer->npwp_address : null; ?>" name="npwp_address" placeholder="Alamat NPWP">
+						<input type="text" class="form-control" id="npwp_address" value="<?= isset($company) ? $company->npwp_address : null; ?>" name="npwp_address" placeholder="Alamat NPWP">
 					</div>
 				</div>
 			</div>
@@ -415,7 +415,7 @@
 						<label for="bank_name">Bank Name</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="bank_name" value="<?= isset($customer) ? $customer->bank_name : null; ?>" name="bank_name" placeholder="Nama Bank">
+						<input type="text" class="form-control" id="bank_name" value="<?= isset($company) ? $company->bank_name : null; ?>" name="bank_name" placeholder="Nama Bank">
 					</div>
 				</div>
 				<div class="form-group row">
@@ -423,7 +423,7 @@
 						<label for="bank_account_number">Account Number</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="bank_account_number" value="<?= isset($customer) ? $customer->bank_account_number : null; ?>" name="bank_account_number" placeholder="No Rekening">
+						<input type="text" class="form-control" id="bank_account_number" value="<?= isset($company) ? $company->bank_account_number : null; ?>" name="bank_account_number" placeholder="No Rekening">
 					</div>
 				</div>
 				<div class="form-group row">
@@ -431,7 +431,7 @@
 						<label for="bank_account_name">Account Name</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="bank_account_name" value="<?= isset($customer) ? $customer->bank_account_name : null; ?>" name="bank_account_name" placeholder="Nama Rekening">
+						<input type="text" class="form-control" id="bank_account_name" value="<?= isset($company) ? $company->bank_account_name : null; ?>" name="bank_account_name" placeholder="Nama Rekening">
 					</div>
 				</div>
 				<div class="form-group row">
@@ -439,7 +439,7 @@
 						<label for="bank_account_address">Bank Address</label>
 					</div>
 					<div class="col-md-6">
-						<textarea type="text" name="bank_account_address" id="bank_account_address" class="form-control input-sm w70" placeholder="Alamat_Bank"><?= isset($customer) ? $customer->bank_account_address : null; ?></textarea>
+						<textarea type="text" name="bank_account_address" id="bank_account_address" class="form-control input-sm w70" placeholder="Alamat_Bank"><?= isset($company) ? $company->bank_account_address : null; ?></textarea>
 					</div>
 				</div>
 				<div class="form-group row">
@@ -447,7 +447,7 @@
 						<label for="swift_code">Swift Code</label>
 					</div>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="swift_code" value="<?= isset($customer) ? $customer->swift_code : null; ?>" name="swift_code" placeholder="Swift Code">
+						<input type="text" class="form-control" id="swift_code" value="<?= isset($company) ? $company->swift_code : null; ?>" name="swift_code" placeholder="Swift Code">
 					</div>
 				</div>
 			</div>

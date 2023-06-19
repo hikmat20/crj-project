@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Customers.Add');
-$ENABLE_MANAGE  = has_permission('Customers.Manage');
-$ENABLE_VIEW    = has_permission('Customers.View');
-$ENABLE_DELETE  = has_permission('Customers.Delete');
+$ENABLE_ADD     = has_permission('Companies.Add');
+$ENABLE_MANAGE  = has_permission('Companies.Manage');
+$ENABLE_VIEW    = has_permission('Companies.View');
+$ENABLE_DELETE  = has_permission('Companies.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -15,7 +15,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
 <div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php echo Template::message(); ?>
     <div class="btn-group hidden-sm-down">
-        <a class="btn btn-primary btn-oblong add" href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Customer</a>
+        <a class="btn btn-primary btn-oblong add" href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Company</a>
     </div><!-- btn-group -->
 </div>
 
@@ -26,7 +26,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
                 <thead>
                     <tr>
                         <th width="10">#</th>
-                        <th class="desktop tablet mobile" width="20%">Customer Name</th>
+                        <th class="desktop tablet mobile" width="20%">Company Name</th>
                         <th class="desktop tablet mobile">Telephone</th>
                         <th class="desktop tablet">Email</th>
                         <th class="desktop">Address</th>
@@ -38,7 +38,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
                 <tfoot>
                     <tr>
                         <th width="10">#</th>
-                        <th>Customer Name</th>
+                        <th>Company Name</th>
                         <th>Telephone</th>
                         <th>Email</th>
                         <th>Address</th>
@@ -81,7 +81,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
     $(document).on('click', '.add', function() {
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
         $("#dialog-popup .modal-title").html(
-            '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Add New Customer');
+            '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Add New Company');
         $("#dialog-popup .modal-dialog").css({
             'max-width': '90%'
         });
@@ -93,7 +93,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
         if (id) {
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
             $("#dialog-popup .modal-title").html(
-                '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Customer');
+                '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Company');
             $("#dialog-popup .modal-dialog").css({
                 'max-width': '90%'
             });
@@ -115,7 +115,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
         let id = $(this).data('id')
         swalWithBootstrapButtons.fire({
             title: "Confirm",
-            text: "Are you sure to Delete this data Customer?",
+            text: "Are you sure to Delete this data Company?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "<i class='fa fa-check'></i> Yes",
@@ -123,7 +123,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
             showLoaderOnConfirm: true,
             preConfirm: (login) => {
                 return $.ajax({
-                    url: siteurl + thisController + 'deleteCustomer',
+                    url: siteurl + thisController + 'delete',
                     type: "POST",
                     dataType: 'JSON',
                     data: {
@@ -185,7 +185,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
         let formData = new FormData($('#data-form')[0]);
         swalWithBootstrapButtons.fire({
             title: "Confirm",
-            text: "Are you sure to save this data Customer?",
+            text: "Are you sure to save this data Company?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "<i class='fa fa-check'></i> Yes",
@@ -316,7 +316,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
         let id = $(this).data('id')
         swalWithBootstrapButtons.fire({
             title: "Confirm",
-            text: "Are you sure to Delete this data PIC Customer?",
+            text: "Are you sure to Delete this data PIC Company?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "<i class='fa fa-check'></i> Yes",

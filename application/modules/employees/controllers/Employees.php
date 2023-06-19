@@ -87,6 +87,16 @@ class Employees extends Admin_Controller
 			'1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
 		];
 
+		$empType = [
+			'Tetap' => '<span class="bg-indigo tx-white pd-5 tx-11 tx-bold rounded-5">Tetap</span>',
+			'Kontrak' => '<span class="bg-success tx-white pd-5 tx-11 tx-bold rounded-5">Kontrak</span>',
+		];
+
+		$gender = [
+			'L' => 'Laki-laki',
+			'P' => 'Perempuan',
+		];
+
 		/* Button */
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
@@ -115,8 +125,8 @@ class Employees extends Admin_Controller
 			$nestedData[]  = $row['phone_number'];
 			$nestedData[]  = $row['email'];
 			$nestedData[]  = $row['address'];
-			$nestedData[]  = $row['status'];
-			$nestedData[]  = $row['status'];
+			$nestedData[]  = $gender[$row['gender']];
+			$nestedData[]  = $empType[$row['employee_type']];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
@@ -140,29 +150,82 @@ class Employees extends Admin_Controller
 		$this->template->title('Employees');
 		$this->template->render('index');
 	}
-	public function edit($id)
+	public function add()
 	{
-		$this->auth->restrict($this->viewPermission);
-		$this->template->page_icon('fa fa-edit');
-		$karyawan = $this->db->get_where('employees', array('id' => $id))->row();
-		$divisi = $this->Employees_model->get_data('department_center');
-		$agama = $this->Employees_model->get_data('religion');
-		$this->template->set([
-			'karyawan' => $karyawan,
-			'divisi' => $divisi,
-			'agama' => $agama
-		]);
-		$this->template->title('Karyawan');
-		$this->template->render('edit_karyawan');
+		$this->auth->restrict($this->addPermission);
+		$divisions = $this->Employees_model->get_data('divisions');
+		$religions = $this->Employees_model->get_data('religions');
+
+		$data = [
+			'divisions' => $divisions,
+			'religions' => $religions
+		];
+		$this->template->set($data);
+		$this->template->render('form');
 	}
 
+	public function edit($id)
+	{
+		$this->auth->restrict($this->managePermission);
+		$employee = $this->db->get_where('employees', array('id' => $id))->row();
+		$divisions = $this->Employees_model->get_data('divisions');
+		$religions = $this->Employees_model->get_data('religions');
+
+		$this->template->set([
+			'employee' => $employee,
+			'divisions' => $divisions,
+			'religions' => $religions
+		]);
+		$this->template->render('form');
+	}
+
+	public function delete()
+	{
+		$this->auth->restrict($this->deletePermission);
+		$id = $this->input->post('id');
+		$employee = $this->db->get_where('employees')->row_array();
+		$data = [
+			'status' 		=> 0,
+			'deleted_at' 	=> date('Y-m-d H:i:s'),
+			'deleted_by' 	=> $this->auth->user_id()
+		];
+
+		$this->db->trans_begin();
+		$this->db->where('id', $id)->update("employees", $data);
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$return	= array(
+				'msg'		=> 'Failed delete data Employee.  Please try again.',
+				'status'	=> 0
+			);
+			$keterangan     = "FAILD delete data Employee " . $employee['id'] . ", Employee name : " . $employee['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $employee['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		} else {
+			$this->db->trans_commit();
+			$return	= array(
+				'msg'		=> 'Success delete data Employee.',
+				'status'	=> 1
+			);
+			$keterangan     = "SUCCESS delete data Employee " . $employee['id'] . ", Employee name : " . $employee['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $employee['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		}
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
+	}
 	public function viewKaryawan($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
 		$this->template->page_icon('fa fa-edit');
-		$karyawan = $this->db->get_where('ms_karyawan', array('id_karyawan' => $id))->row();
-		// $divisi = $this->Employees_model->get_data('department_center');
+		$karyawan = $this->db->get_where('employees', array('id_karyawan' => $id))->row();
 		$divisi = $this->db->get_where('department_center')->result_array();
 		$agama = $this->db->get_where('religion')->result_array();
 
@@ -190,143 +253,53 @@ class Employees extends Admin_Controller
 		$this->template->title('Karyawan');
 		$this->template->render('view_karyawan');
 	}
-	public function saveEditKaryawan()
-	{
-		$this->auth->restrict($this->editPermission);
-		$post = $this->input->post();
-		$this->db->trans_begin();
-		$data = [
-			'nik'					=> $post['nik'],
-			'nama_karyawan'			=> $post['nama_karyawan'],
-			'tempat_lahir_karyawan'	=> $post['tempat_lahir_karyawan'],
-			'tanggal_lahir_karyawan' => $post['tanggal_lahir_karyawan'],
-			'divisi'				=> $post['divisi'],
-			'jenis_kelamin'			=> $post['gender'],
-			'agama'					=> $post['agama'],
-			'levelpendidikan'		=> $post['levelpendidikan'],
-			'alamataktif'			=> $post['alamataktif'],
-			'nohp'					=> $post['nohp'],
-			'email'					=> $post['email'],
-			'npwp'					=> $post['npwp'],
-			'tgl_join'				=> $post['tgl_join'],
-			'tgl_end'				=> $post['tgl_end'],
-			'sts_karyawan'			=> $post['sts_karyawan'],
-			'norekening'			=> $post['norekening'],
-			'modified_on'		=> date('Y-m-d H:i:s'),
-			'modified_by'		=> $this->auth->user_id()
-		];
 
-		$this->db->where('ixd_karyawan', $post['id_karyawan'])->update("ms_karyawan", $data);
 
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function add()
-	{
-		$this->auth->restrict($this->viewPermission);
-		$this->template->page_icon('fa fa-edit');
-		$divisi = $this->Employees_model->get_data('department_center');
-		$religion = $this->Employees_model->get_data('religion');
-		$data = [
-			'divisi' => $divisi,
-			'religion' => $religion
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Add Material');
-		$this->template->render('form');
-	}
-
-	public function deleteKaryawan()
-	{
-		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		$data = [
-			'deleted' 		=> '1',
-			'deleted_by' 	=> $this->auth->user_id()
-		];
-
-		$this->db->trans_begin();
-		$this->db->where('id_karyawan', $id)->update("ms_karyawan", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function saveKaryawan()
+	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
-		$this->db->trans_begin();
-		$data = [
-			'nik'					=> $post['nik'],
-			'nama_karyawan'			=> $post['nama_karyawan'],
-			'tempat_lahir_karyawan'	=> $post['tempat_lahir_karyawan'],
-			'tanggal_lahir_karyawan' => $post['tanggal_lahir_karyawan'],
-			'divisi'				=> $post['divisi'],
-			'jenis_kelamin'			=> $post['gender'],
-			'agama'					=> $post['agama'],
-			'levelpendidikan'		=> $post['levelpendidikan'],
-			'alamataktif'			=> $post['alamataktif'],
-			'nohp'					=> $post['nohp'],
-			'email'					=> $post['email'],
-			'npwp'					=> $post['npwp'],
-			'tgl_join'				=> $post['tgl_join'],
-			'tgl_end'				=> $post['tgl_end'],
-			'sts_karyawan'			=> $post['sts_karyawan'],
-			'norekening'			=> $post['norekening'],
-			'sts_aktif'				=> 'aktif',
-			'deleted'				=> '0'
-		];
+		$data = $post;
+		$data['id'] = isset($post['id']) && $post['id'] ?: $this->Employees_model->generate_id();
 
-		if (isset($post['id_karyawan']) && $post['id_karyawan']) {
-			$data['modified_on']	= date('Y-m-d H:i:s');
+		$this->db->trans_begin();
+		if (isset($post['id']) && $post['id']) {
+			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id_karyawan', $post['id_karyawan'])->update("ms_karyawan", $data);
+			$this->db->where('id', $post['id'])->update("employees", $data);
 		} else {
-			$data['created_on']		= date('Y-m-d H:i:s');
-			$data['created_by']		= $this->auth->user_id();
-			$this->db->insert("ms_karyawan", $data);
+			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
+			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
+			$this->db->insert("employees", $data);
 		}
+
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
+			$return	= array(
+				'msg'		=> 'Failed save data Employee.  Please try again.',
 				'status'	=> 0
 			);
+			$keterangan     = "FAILD save data Employee " . $data['id'] . ", Employee name : " . $data['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
+			$return	= array(
+				'msg'		=> 'Success Save data Employee.',
 				'status'	=> 1
 			);
+			$keterangan     = "SUCCESS save data Employee " . $data['id'] . ", Employee name : " . $data['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
 		}
-
-		echo json_encode($status);
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
 	}
 }

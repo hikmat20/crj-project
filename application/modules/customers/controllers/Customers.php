@@ -135,21 +135,20 @@ class Customers extends Admin_Controller
 		$this->template->render('index');
 	}
 
-	public function addCustomer()
+	public function add()
 	{
 		$this->auth->restrict($this->viewPermission);
 		$countries = $this->Customer_model->get_data('countries');
-		$karyawan = $this->db->get_where('ms_karyawan', array('divisi' => 2, 'deleted' => 0))->result();
-
+		$marketing = $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$data = [
 			'countries' => $countries,
-			'karyawan' => $karyawan
+			'marketing' => $marketing
 		];
 		$this->template->set($data);
 		$this->template->render('form');
 	}
 
-	public function editCustomer($id)
+	public function edit($id)
 	{
 		$this->auth->restrict($this->viewPermission);
 		$customer 				= $this->db->get_where('customers', array('id_customer' => $id))->row();
@@ -157,7 +156,7 @@ class Customers extends Admin_Controller
 		$countries 				= $this->Customer_model->get_data('countries');
 		$states 				= $this->Customer_model->get_data('states', 'country_id', $customer->country_id);
 		$cities 				= $this->Customer_model->get_data('cities', 'state_id', $customer->state_id);
-		$karyawan 				= $this->db->get_where('ms_karyawan', array('deleted' => 0, '', 'divisi' => 2))->result();
+		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
 
@@ -167,7 +166,7 @@ class Customers extends Admin_Controller
 			'PIC' 						=> $pic,
 			'states' 					=> $states,
 			'cities' 					=> $cities,
-			'karyawan' 					=> $karyawan,
+			'marketing' 				=> $marketing,
 			'receive_invoice_day' 		=> $receive_invoice_day,
 			'invoicing_requirement' 	=> $invoicing_requirement
 		];
@@ -175,7 +174,7 @@ class Customers extends Admin_Controller
 		$this->template->render('form');
 	}
 
-	public function saveCustomer()
+	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
@@ -252,7 +251,7 @@ class Customers extends Admin_Controller
 				'msg'		=> 'Failed save data Customer.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "SUCCESS save data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
+			$keterangan     = "FAILED save data Customer " . $data['id_customer'] . ", Customer name : " . $data['customer_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id_customer'];
@@ -346,7 +345,7 @@ class Customers extends Admin_Controller
 		$category = $this->Customer_model->get_data('child_customer_category', 'activation', $aktif);
 		$prof = $this->Customer_model->get_data('provinsi');
 		$kota = $this->Customer_model->get_data('kota');
-		$karyawan = $this->db->get_where('ms_karyawan', array('deleted' => 0, '', 'divisi' => 2))->result();
+		$karyawan = $this->db->get_where('employees', array('deleted_at' => null, '', 'divisi' => 2))->result();
 
 		$data = [
 			'cus'	=> $cus,

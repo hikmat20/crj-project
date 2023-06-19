@@ -13,20 +13,20 @@ class Employees_model extends BF_Model
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'customer';
-    protected $key        = 'id_customer';
+    protected $table_name = 'employees';
+    protected $key        = 'id';
 
     /**
      * @var string Field name to use for the created time column in the DB table
      * if $set_created is enabled.
      */
-    protected $created_field = 'created_on';
+    protected $created_field = 'created_at';
 
     /**
      * @var string Field name to use for the modified time column in the DB
      * table if $set_modified is enabled.
      */
-    protected $modified_field = 'modified_on';
+    protected $modified_field = 'modified_at';
 
     /**
      * @var bool Set the created time automatically on a new record (if true)
@@ -63,34 +63,18 @@ class Employees_model extends BF_Model
     {
         parent::__construct();
     }
-    function provinsi($id_negara)
-    {
-        $this->db->where('id_negara', $id_negara);
-        $this->db->order_by('id_prov', 'ASC');
-        return $this->db->from('provinsi')
-            ->get()
-            ->result();
-    }
 
-    function kota($id_prov)
-    {
-        $this->db->where('id_prov', $id_prov);
-        $this->db->order_by('id_kota', 'ASC');
-        return $this->db->from('kota')
-            ->get()
-            ->result();
-    }
 
     function generate_id($kode = '')
     {
-        $query = $this->db->query("SELECT MAX(ms_karyawan) as max_id FROM id_karyawan");
-        $row = $query->row_array();
-        $thn = date('y');
-        $max_id = $row['max_id'];
-        $max_id1 = (int) substr($max_id, 3, 5);
-        $counter = $max_id1 + 1;
-        $idkar = "K" . $thn . str_pad($counter, 5, "0", STR_PAD_LEFT);
-        return $idkar;
+        $y = date('y');
+        $count = 1;
+        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('employees')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
+        if ($maxID || $maxID > 0) {
+            $count = $maxID + 1;
+        }
+        $newID = "EM$y" . "-" . str_pad($count, 5, "0", STR_PAD_LEFT);
+        return $newID;
     }
 
     public function get_data($table, $where_field = '', $where_value = '')
@@ -102,45 +86,5 @@ class Employees_model extends BF_Model
         }
 
         return $query->result();
-    }
-
-    function getById($id)
-    {
-        return $this->db->get_where('inven_lvl1', array('id_inventory1' => $id))->row_array();
-    }
-
-    function get_prov($id)
-    {
-        $query = $this->db->query("SELECT provinsi FROM customer WHERE id_customer='$id'");
-        $row = $query->row_array();
-        $provinsi     = $row['provinsi'];
-        return $provinsi;
-    }
-    function get_kota($provinsi)
-    {
-        $query = "SELECT
-                kota.id_kota,
-                kota.nama,
-				kota.id_prov
-                FROM kota where id_prov='$provinsi'";
-        return $this->db->query($query);
-    }
-    function getindex()
-    {
-        $search = "deleted='0'";
-        $this->db->select('a.*, b.cost_center as cost_center ');
-        $this->db->from('employees a');
-        $this->db->join('department_center b', 'b.id=a.divisi');
-        $this->db->where($search);
-        $query = $this->db->get();
-        return $query->result();
-    }
-    function pilih_kota($provinsi)
-    {
-        $query = "SELECT
-                kabupaten.id_kab,
-                kabupaten.nama
-                FROM kabupaten where id_prov='$provinsi'";
-        return $this->db->query($query);
     }
 }

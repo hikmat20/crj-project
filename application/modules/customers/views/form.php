@@ -66,9 +66,9 @@
 					<div id="slWrapperKaryawan" class="parsley-select">
 						<select id="sales_id" name="sales_id" class="form-control select not-search" value="<?= isset($customer) ? $customer->sales_id : ''; ?>" required data-parsley-inputs data-parsley-class-handler="#slWrapperKaryawan" data-parsley-errors-container="#slErrorContainerKaryawan">
 							<option value=""></option>
-							<?php foreach ($karyawan as $kar) { ?>
-								<option value="<?= $kar->id_karyawan ?>" <?= ($kar->id_karyawan == $customer->sales_id) ? 'selected' : ''; ?>>
-									<?= ucfirst(strtolower($kar->nama_karyawan)) ?></option>
+							<?php foreach ($marketing as $mkt) { ?>
+								<option value="<?= $mkt->id ?>" <?= ($mkt->id == $customer->sales_id) ? 'selected' : ''; ?>>
+									<?= ucfirst(strtolower($mkt->name)) ?></option>
 							<?php } ?>
 						</select>
 					</div>

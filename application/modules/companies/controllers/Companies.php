@@ -149,9 +149,9 @@ class Companies extends Admin_Controller
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
+		$this->auth->restrict($this->editPermission);
 		$company 				= $this->db->get_where('companies', array('id' => $id))->row();
-		$pic 					= $this->db->get_where('companies_pic', ['id' => $id, 'status' => '1'])->result();
+		$pic 					= $this->db->get_where('companies_pic', ['company_id' => $id, 'status' => '1'])->result();
 		$countries 				= $this->Companies_model->get_data('countries');
 		$states 				= $this->Companies_model->get_data('states', 'country_id', $company->country_id);
 		$cities 				= $this->Companies_model->get_data('cities', 'state_id', $company->state_id);
@@ -224,7 +224,7 @@ class Companies extends Admin_Controller
 			foreach ($dataPIC as $pic) {
 				$n++;
 				$dataPic =  array(
-					'id'	=> $data['id'],
+					'company_id'	=> $data['id'],
 					'name'			=> $pic['name'],
 					'phone_number'	=> $pic['phone_number'],
 					'email'			=> $pic['email'],

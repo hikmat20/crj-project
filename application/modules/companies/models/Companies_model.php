@@ -73,7 +73,7 @@ class Companies_model extends BF_Model
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;
         }
-        $newID = "CU$y" . "-" . str_pad($count, 5, "0", STR_PAD_LEFT);
+        $newID = "CO$y" . "-" . str_pad($count, 5, "0", STR_PAD_LEFT);
         return $newID;
     }
 

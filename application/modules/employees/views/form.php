@@ -38,16 +38,10 @@
                     <label for="division" class="tx-dark tx-bold">Division <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
-                    <?php
-                    echo '<pre>';
-                    print_r($divisions);
-                    echo '</pre>';
-                    exit;
-                    ?>
                     <select id="division" name="division" class="form-control select" required>
                         <option value=""></option>
                         <?php foreach ($divisions as $div) : ?>
-                            <option value="<?= $div->id ?>" <?= ($div->id == $employee->division) ? 'selected' : ''; ?>><?= $div->name ?></option>
+                            <option value="<?= $div->id ?>" <?= (isset($employee) && $div->id == $employee->division) ? 'selected' : ''; ?>><?= $div->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -59,8 +53,8 @@
                 <div class="col-md-7">
                     <select id="gender" name="gender" class="form-control select" required>
                         <option value=""></option>
-                        <option value="L" <?= ($employee->gender == 'L') ? 'selected' : ''; ?>>Laki-Laki</option>
-                        <option value="P" <?= ($employee->gender == 'P') ? 'selected' : ''; ?>>Perempuan</option>
+                        <option value="L" <?= (isset($employee) && $employee->gender == 'L') ? 'selected' : ''; ?>>Laki-Laki</option>
+                        <option value="P" <?= (isset($employee) && $employee->gender == 'P') ? 'selected' : ''; ?>>Perempuan</option>
                     </select>
                 </div>
             </div>
@@ -72,7 +66,7 @@
                     <select id="religion" name="religion" class="form-control select" required>
                         <option value=""></option>
                         <?php foreach ($religions as $religion) { ?>
-                            <option value="<?= $religion->id ?>" <?= ($religion->id == $employee->religion) ? 'selected' : ''; ?>><?= ucfirst(strtolower($religion->name_religion)) ?></option>
+                            <option value="<?= $religion->id ?>" <?= (isset($employee) && $religion->id == $employee->religion) ? 'selected' : ''; ?>><?= ucfirst(strtolower($religion->name_religion)) ?></option>
                         <?php } ?>
                     </select>
                 </div>

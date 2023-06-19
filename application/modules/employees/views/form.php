@@ -38,6 +38,12 @@
                     <label for="division" class="tx-dark tx-bold">Division <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
+                    <?php
+                    echo '<pre>';
+                    print_r($divisions);
+                    echo '</pre>';
+                    exit;
+                    ?>
                     <select id="division" name="division" class="form-control select" required>
                         <option value=""></option>
                         <?php foreach ($divisions as $div) : ?>

@@ -153,8 +153,8 @@ class Employees extends Admin_Controller
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$divisions = $this->Employees_model->get_data('divisions');
-		$religions = $this->Employees_model->get_data('religions');
+		$divisions = $this->db->get_where('divisions');
+		$religions = $this->db->get_where('religions');
 
 		$data = [
 			'divisions' => $divisions,

@@ -15,7 +15,7 @@ div.dataTables_paginate {
 }
 
 div.dataTables_filter input {
-    width: 25rem;
+    /* width: 25rem; */
     margin-left: 0 !important;
 }
 

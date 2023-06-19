@@ -25,7 +25,7 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
             <table id="dataTable" class="table table-bordered display table-striped" width="100%">
                 <thead>
                     <tr>
-                        <th width="10">#</th>
+                        <th width="10" class="desktop tablet mobile">#</th>
                         <th class="desktop tablet mobile" width="20%">Company Name</th>
                         <th class="desktop tablet mobile">Telephone</th>
                         <th class="desktop tablet">Email</th>

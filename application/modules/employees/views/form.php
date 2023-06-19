@@ -38,10 +38,16 @@
                     <label for="division" class="tx-dark tx-bold">Division <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
+                    <?php
+                    echo '<pre>';
+                    print_r($divisions);
+                    echo '</pre>';
+                    exit;
+                    ?>
                     <select id="division" name="division" class="form-control select" required>
                         <option value=""></option>
                         <?php foreach ($divisions as $div) : ?>
-                            <option value="<?= $div->id ?>" <?= ($div->id == $employee->division) ? 'selected' : ''; ?>><?= ucfirst(strtolower($div->name)) ?></option>
+                            <option value="<?= $div->id ?>" <?= ($div->id == $employee->division) ? 'selected' : ''; ?>><?= $div->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

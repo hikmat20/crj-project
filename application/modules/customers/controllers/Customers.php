@@ -129,7 +129,6 @@ class Customers extends Admin_Controller
 		echo json_encode($json_data);
 	}
 
-
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);

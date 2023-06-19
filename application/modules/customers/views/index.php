@@ -74,190 +74,190 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
 
 <!-- page script -->
 <script type="text/javascript">
-    $(document).ready(function() {
-        loadData()
-    })
+$(document).ready(function() {
+    loadData()
+})
 
-    $(document).on('click', '.add', function() {
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'addCustomer');
+$(document).on('click', '.add', function() {
+    $("#dialog-popup .modal-body").load(siteurl + thisController + 'addCustomer');
+    $("#dialog-popup .modal-title").html(
+        '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Add New Customer');
+    $("#dialog-popup .modal-dialog").css({
+        'max-width': '90%'
+    });
+    $("#dialog-popup").modal();
+});
+
+$(document).on('click', '.edit', function() {
+    let id = $(this).data('id');
+    if (id) {
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'editCustomer/' + id);
         $("#dialog-popup .modal-title").html(
-            '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Add New Customer');
+            '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Customer');
         $("#dialog-popup .modal-dialog").css({
             'max-width': '90%'
         });
-        $("#dialog-popup").modal();
-    });
+    } else {
+        $("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
+    }
+    $("#dialog-popup").modal();
+});
 
-    $(document).on('click', '.edit', function() {
-        let id = $(this).data('id');
-        if (id) {
-            $("#dialog-popup .modal-body").load(siteurl + thisController + 'editCustomer/' + id);
-            $("#dialog-popup .modal-title").html(
-                '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Customer');
-            $("#dialog-popup .modal-dialog").css({
-                'max-width': '90%'
-            });
-        } else {
-            $("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
-        }
-        $("#dialog-popup").modal();
-    });
-
-    $(document).on('click', '.delete', function() {
-        var swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-primary mg-r-10 wd-100',
-                cancelButton: 'btn btn-danger wd-100'
-            },
-            buttonsStyling: false
-        })
-
-        let id = $(this).data('id')
-        swalWithBootstrapButtons.fire({
-            title: "Confirm",
-            text: "Are you sure to Delete this data Customer?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "<i class='fa fa-check'></i> Yes",
-            cancelButtonText: "<i class='fa fa-ban'></i> No",
-            showLoaderOnConfirm: true,
-            preConfirm: (login) => {
-                return $.ajax({
-                    url: siteurl + thisController + 'deleteCustomer',
-                    type: "POST",
-                    dataType: 'JSON',
-                    data: {
-                        id
-                    },
-                    error: function() {
-                        Lobibox.notify('error', {
-                            icon: 'fa fa-times',
-                            position: 'top right',
-                            showClass: 'zoomIn',
-                            hideClass: 'zoomOut',
-                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: 'Internal server error. Server timeout'
-                        });
-                    }
-                });
-            },
-            allowOutsideClick: true
-        }).then((val) => {
-            if (val.isConfirmed) {
-                if (val.value.status == '1') {
-                    Lobibox.notify('success', {
-                        icon: 'fa fa-check',
-                        msg: val.value.msg,
-                        position: 'top right',
-                        showClass: 'zoomIn',
-                        hideClass: 'zoomOut',
-                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                    });
-                    $("#dialog-popup").modal('hide');
-                    loadData()
-                    $('.dataTables_length select').select2({
-                        minimumResultsForSearch: -1
-                    })
-                } else {
-                    Lobibox.notify('warning', {
-                        icon: 'fa fa-ban',
-                        msg: val.value.msg,
-                        position: 'top right',
-                        showClass: 'zoomIn',
-                        hideClass: 'zoomOut',
-                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                    });
-                };
-            }
-        });
-    });
-
-    $(document).on('submit', '#data-form', function(e) {
-        e.preventDefault()
-        var swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-primary mg-r-10 wd-100',
-                cancelButton: 'btn btn-danger wd-100'
-            },
-            buttonsStyling: false
-        })
-
-        var formData = new FormData($('#data-form')[0]);
-        swalWithBootstrapButtons.fire({
-            title: "Confirm",
-            text: "Are you sure to save this data Customer?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "<i class='fa fa-check'></i> Yes",
-            cancelButtonText: "<i class='fa fa-ban'></i> No",
-        }).then((val) => {
-            if (val.isConfirmed) {
-                $.ajax({
-                    url: siteurl + thisController + 'saveCustomer',
-                    type: "POST",
-                    data: formData,
-                    cache: false,
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    success: function(result) {
-                        if (result.status == '1') {
-                            Lobibox.notify('success', {
-                                icon: 'fa fa-check',
-                                msg: result.msg,
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            });
-                            $("#dialog-popup").modal('hide');
-                            loadData()
-                            $('.dataTables_length select').select2({
-                                // containerCssClass: 'select2-outline-success',
-                                // dropdownCssClass: 'select2-hidden-accessible hover-success',
-                                minimumResultsForSearch: -1
-                            })
-                        } else {
-                            Lobibox.notify('warning', {
-                                icon: 'fa fa-ban',
-                                msg: result.msg,
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            });
-                        };
-                    },
-                    error: function() {
-                        Lobibox.notify('error', {
-                            icon: 'fa fa-times',
-                            position: 'top right',
-                            showClass: 'zoomIn',
-                            hideClass: 'zoomOut',
-                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: 'Internal server error. Server timeout'
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-
-    /* PIC */
-
-    $(document).on('click', '.del-item', function() {
-        $(this).parents('tr').fadeOut('slow').css('background-color', '#d5d5d5')
-        setTimeout(() => {
-            $(this).parents('tr').remove()
-        }, 500);
+$(document).on('click', '.delete', function() {
+    var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-primary mg-r-10 wd-100',
+            cancelButton: 'btn btn-danger wd-100'
+        },
+        buttonsStyling: false
     })
 
-    $(document).on('click', '#add-pic', function() {
-        var n = 0;
-        var html = '';
-        n = $('table#list-pic tbody tr').length + 1;
-        html += `<tr id="tr_` + n + `" style="background-color:#fff5de">
+    let id = $(this).data('id')
+    swalWithBootstrapButtons.fire({
+        title: "Confirm",
+        text: "Are you sure to Delete this data Customer?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "<i class='fa fa-check'></i> Yes",
+        cancelButtonText: "<i class='fa fa-ban'></i> No",
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                url: siteurl + thisController + 'deleteCustomer',
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    id
+                },
+                error: function() {
+                    Lobibox.notify('error', {
+                        icon: 'fa fa-times',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: 'Internal server error. Server timeout'
+                    });
+                }
+            });
+        },
+        allowOutsideClick: true
+    }).then((val) => {
+        if (val.isConfirmed) {
+            if (val.value.status == '1') {
+                Lobibox.notify('success', {
+                    icon: 'fa fa-check',
+                    msg: val.value.msg,
+                    position: 'top right',
+                    showClass: 'zoomIn',
+                    hideClass: 'zoomOut',
+                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                });
+                $("#dialog-popup").modal('hide');
+                loadData()
+                $('.dataTables_length select').select2({
+                    minimumResultsForSearch: -1
+                })
+            } else {
+                Lobibox.notify('warning', {
+                    icon: 'fa fa-ban',
+                    msg: val.value.msg,
+                    position: 'top right',
+                    showClass: 'zoomIn',
+                    hideClass: 'zoomOut',
+                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                });
+            };
+        }
+    });
+});
+
+$(document).on('submit', '#data-form', function(e) {
+    e.preventDefault()
+    var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-primary mg-r-10 wd-100',
+            cancelButton: 'btn btn-danger wd-100'
+        },
+        buttonsStyling: false
+    })
+
+    var formData = new FormData($('#data-form')[0]);
+    swalWithBootstrapButtons.fire({
+        title: "Confirm",
+        text: "Are you sure to save this data Customer?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "<i class='fa fa-check'></i> Yes",
+        cancelButtonText: "<i class='fa fa-ban'></i> No",
+    }).then((val) => {
+        if (val.isConfirmed) {
+            $.ajax({
+                url: siteurl + thisController + 'saveCustomer',
+                type: "POST",
+                data: formData,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    if (result.status == '1') {
+                        Lobibox.notify('success', {
+                            icon: 'fa fa-check',
+                            msg: result.msg,
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        });
+                        $("#dialog-popup").modal('hide');
+                        loadData()
+                        $('.dataTables_length select').select2({
+                            // containerCssClass: 'select2-outline-success',
+                            // dropdownCssClass: 'select2-hidden-accessible hover-success',
+                            minimumResultsForSearch: -1
+                        })
+                    } else {
+                        Lobibox.notify('warning', {
+                            icon: 'fa fa-ban',
+                            msg: result.msg,
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        });
+                    };
+                },
+                error: function() {
+                    Lobibox.notify('error', {
+                        icon: 'fa fa-times',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: 'Internal server error. Server timeout'
+                    });
+                }
+            });
+        }
+    });
+});
+
+
+/* PIC */
+
+$(document).on('click', '.del-item', function() {
+    $(this).parents('tr').fadeOut('slow').css('background-color', '#000')
+    setTimeout(() => {
+        $(this).parents('tr').remove()
+    }, 500);
+})
+
+$(document).on('click', '#add-pic', function() {
+    var n = 0;
+    n = $('table#list-pic tbody tr').length + 1;
+    var html = '';
+    html += `<tr id="tr_` + n + `" style="background-color:#fff5de">
 						<td class="text-center"><i class="fa fa-plus tx-10" aria-hidden="true"></i>
 						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][name]" placeholder="PIC Name"></td> 
 						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][phone_number]" placeholder="Phone Number"></td> 
@@ -265,151 +265,187 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
 						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][position]" placeholder="Position"></td>
 						<td class="text-center"><button type="button" class="btn btn-sm btn-warning del-item" title="Hapus Data" data-role="qtip"><i class="fa fa-times"></i></button></td>
 					</tr>`;
-        $('table#list-pic tbody').append(html);
-    });
+    $('table#list-pic tbody').append(html);
+});
 
-    $(document).on('click', '.deletePic', function() {
-        var swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-primary mg-r-10 wd-100',
-                cancelButton: 'btn btn-danger wd-100'
-            },
-            buttonsStyling: false
-        })
-        const btn = $(this)
-        let id = $(this).data('id')
-        swalWithBootstrapButtons.fire({
-            title: "Confirm",
-            text: "Are you sure to Delete this data PIC Customer?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "<i class='fa fa-check'></i> Yes",
-            cancelButtonText: "<i class='fa fa-ban'></i> No",
-        }).then((val) => {
-            if (val.isConfirmed) {
-                $.ajax({
-                    url: siteurl + thisController + 'deletePic',
-                    type: "POST",
-                    dataType: 'JSON',
-                    data: {
-                        id
-                    },
-                    success: function(result) {
-                        if (result.status == '1') {
-                            Lobibox.notify('success', {
-                                icon: 'fa fa-check',
-                                msg: result.msg,
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            });
-                            btn.parents('tr').addClass('bg-danger').fadeOut('slow').css('background-color', '#d5d5d5')
-                        } else {
-                            Lobibox.notify('warning', {
-                                icon: 'fa fa-ban',
-                                msg: result.msg,
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            });
-                        };
-                    },
-                    error: function() {
-                        Lobibox.notify('error', {
-                            icon: 'fa fa-times',
+$(document).on('click', '.editPic', function() {
+    let n = 0
+    n = $('tr.rowEditPIC').length + 1
+    let id = $(this).data('id')
+    let row = $(this).parents('tr')
+    let editRow = $('<tr id="edit_' + n + '" class="rowEditPIC">')
+    let newRow = ''
+
+    let col1 = row.find('td:eq(1)').text()
+    let col2 = row.find('td:eq(2)').text()
+    let col3 = row.find('td:eq(3)').text()
+    let col4 = row.find('td:eq(4)').text()
+    newRow += `
+        <td class="text-center"><i class="fa fa-edit"></i>
+        <input type="hidden"class="form-control" readonly name="PIC[` + n + `][id]" value="` + id + `">
+        </td>
+        <td><input type="text" class="form-control input-sm" name="PIC[` + n + `][name]" placeholder="PIC Name" value="` + col1 + `"></td>
+        <td><input type="text" class="form-control input-sm" name="PIC[` + n + `][phone_number]" placeholder="Phone Number" value="` + col2 + `"></td>
+        <td><input type="text" class="form-control input-sm" name="PIC[` + n + `][email]" placeholder="Email" value="` + col3 + `"></td>
+        <td><input type="text" class="form-control input-sm" name="PIC[` + n + `][position]" placeholder="Position" value="` + col4 + `"></td>
+        <td class="text-center">
+        <button type="button" class="btn btn-sm btn-warning cancelEditPIC" title="Cancel Edit" data-toggle="tooltip"><i class="fa fa-times"></i></button>
+        </td>
+        `
+    // alert(col1)
+    editRow.append(newRow);
+    editRow.insertAfter(row.closest('tr'));
+    row.hide()
+})
+
+$(document).on('click', '.cancelEditPIC', function() {
+    let prevRow = $(this).parents('tr').prev()
+    $(this).parents('tr').remove()
+    prevRow.show()
+})
+
+$(document).on('click', '.deletePic', function() {
+    var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-primary mg-r-10 wd-100',
+            cancelButton: 'btn btn-danger wd-100'
+        },
+        buttonsStyling: false
+    })
+    const btn = $(this)
+    let id = $(this).data('id')
+    swalWithBootstrapButtons.fire({
+        title: "Confirm",
+        text: "Are you sure to Delete this data PIC Customer?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "<i class='fa fa-check'></i> Yes",
+        cancelButtonText: "<i class='fa fa-ban'></i> No",
+    }).then((val) => {
+        if (val.isConfirmed) {
+            $.ajax({
+                url: siteurl + thisController + 'deletePic',
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    id
+                },
+                success: function(result) {
+                    if (result.status == '1') {
+                        Lobibox.notify('success', {
+                            icon: 'fa fa-check',
+                            msg: result.msg,
                             position: 'top right',
                             showClass: 'zoomIn',
                             hideClass: 'zoomOut',
                             soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: 'Internal server error. Server timeout'
                         });
-                    }
-                });
-            }
-        });
+                        btn.parents('tr').addClass('bg-danger').fadeOut('slow').css('background-color', '#000')
+                    } else {
+                        Lobibox.notify('warning', {
+                            icon: 'fa fa-ban',
+                            msg: result.msg,
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        });
+                    };
+                },
+                error: function() {
+                    Lobibox.notify('error', {
+                        icon: 'fa fa-times',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: 'Internal server error. Server timeout'
+                    });
+                }
+            });
+        }
     });
+});
 
 
-    function loadData() {
-        var oTable = $('#dataTable').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "stateSave": true,
-            "bAutoWidth": true,
-            "destroy": true,
-            "responsive": true,
-            "language": {
-                "sSearch": "",
-                'searchPlaceholder': 'Search...',
-                'processing': `<div class="sk-wave">
+function loadData() {
+    var oTable = $('#dataTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "stateSave": true,
+        "bAutoWidth": true,
+        "destroy": true,
+        "responsive": true,
+        "language": {
+            "sSearch": "",
+            'searchPlaceholder': 'Search...',
+            'processing': `<div class="sk-wave">
                   <div class="sk-rect sk-rect1 bg-gray-800"></div>
                   <div class="sk-rect sk-rect2 bg-gray-800"></div>
                   <div class="sk-rect sk-rect3 bg-gray-800"></div>
                   <div class="sk-rect sk-rect4 bg-gray-800"></div>
                   <div class="sk-rect sk-rect5 bg-gray-800"></div>
                 </div>`,
-                "sLengthMenu": "Display _MENU_",
-                "sInfo": "Display <b>_START_</b> to <b>_END_</b> from <b>_TOTAL_</b> data",
-                "sInfoFiltered": "(filtered from _MAX_ total entries)",
-                "sZeroRecords": "<i>Data tidak tersedia</i>",
-                "sEmptyTable": "<i>Data tidak ditemukan</i>",
-                "oPaginate": {
-                    "sPrevious": "<i class='fa fa-arrow-left' aria-hidden='true'></i>",
-                    "sNext": "<i class='fa fa-arrow-right' aria-hidden='true'></i>"
-                }
-            },
-            "responsive": {
-                "breakpoints": [{
-                        "name": 'desktop',
-                        "width": Infinity
-                    },
-                    {
-                        "name": 'tablet',
-                        "width": 1148
-                    },
-                    {
-                        "name": 'mobile',
-                        "width": 680
-                    },
-                    {
-                        "name": 'mobile-p',
-                        "width": 320
-                    }
-                ],
-            },
-            "aaSorting": [
-                [1, "asc"]
-            ],
-            "columnDefs": [{
-                    "targets": 'no-sort',
-                    "orderable": false,
-                }, {
-                    "targets": 'text-center',
-                    "className": 'text-center',
-                }
-
-            ],
-            "sPaginationType": "simple_numbers",
-            "iDisplayLength": 10,
-            "aLengthMenu": [5, 10, 20, 50, 100, 150],
-            "ajax": {
-                url: siteurl + thisController + 'getData',
-                type: "post",
-                data: function(d) {
-                    d.status = '1'
-                },
-                cache: false,
-                error: function() {
-                    $(".my-grid-error").html("");
-                    $("#my-grid").append(
-                        '<tbody class="my-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>'
-                    );
-                    $("#my-grid_processing").css("display", "none");
-                }
+            "sLengthMenu": "Display _MENU_",
+            "sInfo": "Display <b>_START_</b> to <b>_END_</b> from <b>_TOTAL_</b> data",
+            "sInfoFiltered": "(filtered from _MAX_ total entries)",
+            "sZeroRecords": "<i>Data tidak tersedia</i>",
+            "sEmptyTable": "<i>Data tidak ditemukan</i>",
+            "oPaginate": {
+                "sPrevious": "<i class='fa fa-arrow-left' aria-hidden='true'></i>",
+                "sNext": "<i class='fa fa-arrow-right' aria-hidden='true'></i>"
             }
-        });
+        },
+        "responsive": {
+            "breakpoints": [{
+                    "name": 'desktop',
+                    "width": Infinity
+                },
+                {
+                    "name": 'tablet',
+                    "width": 1148
+                },
+                {
+                    "name": 'mobile',
+                    "width": 680
+                },
+                {
+                    "name": 'mobile-p',
+                    "width": 320
+                }
+            ],
+        },
+        "aaSorting": [
+            [1, "asc"]
+        ],
+        "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }, {
+                "targets": 'text-center',
+                "className": 'text-center',
+            }
 
-    }
+        ],
+        "sPaginationType": "simple_numbers",
+        "iDisplayLength": 10,
+        "aLengthMenu": [5, 10, 20, 50, 100, 150],
+        "ajax": {
+            url: siteurl + thisController + 'getData',
+            type: "post",
+            data: function(d) {
+                d.status = '1'
+            },
+            cache: false,
+            error: function() {
+                $(".my-grid-error").html("");
+                $("#my-grid").append(
+                    '<tbody class="my-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>'
+                );
+                $("#my-grid_processing").css("display", "none");
+            }
+        }
+    });
+
+}
 </script>

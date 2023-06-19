@@ -44,50 +44,50 @@
 <!-- <script src="<?= base_url(); ?>themes/bracket/assets/js/widgets.js"></script> -->
 
 <script>
-    $(document).ready(function() {
-        // Select2
-        $('.select').select2({
-            // minimumResultsForSearch: -1,
-            placeholder: 'Choose one',
-            dropdownParent: $('#data-form-customer'),
-            width: "100%",
-            allowClear: true
-        });
+$(document).ready(function() {
+    // Select2
+    $('.select').select2({
+        // minimumResultsForSearch: -1,
+        placeholder: 'Choose one',
+        dropdownParent: $('#data-form-customer'),
+        width: "100%",
+        allowClear: true
+    });
 
-        $('.dataTables_length select, #dataTables_length select').select2({
-            // containerCs  sClass: 'select2-outline-success',
-            // dropdownCssClass: 'select2-hidden-accessible hover-success',
-            minimumResultsForSearch: Infinity
-        })
-
-        Lobibox.notify.OPTIONS = {
-            'class': 'animated-fast animate__animated',
-            success: {
-                'class': 'lobibox-notify-success',
-                'title': 'Success',
-                'icon': 'fa fa-check',
-                sound: 'sound21'
-            },
-            error: {
-                'class': 'lobibox-notify-error',
-                'title': 'Error',
-                'icon': 'fa fa-check',
-                sound: 'sound9'
-            },
-            warning: {
-                'class': 'lobibox-notify-warning',
-                'title': 'Warning',
-                'icon': 'fa fa-check',
-                sound: 'sound14'
-            },
-            info: {
-                'class': 'lobibox-notify-info',
-                'title': 'info',
-                'icon': 'fa fa-check',
-                sound: 'sound7'
-            },
-        }
+    $('.dataTables_length select, #dataTables_length select').select2({
+        // containerCs  sClass: 'select2-outline-success',
+        // dropdownCssClass: 'select2-hidden-accessible hover-success',
+        minimumResultsForSearch: Infinity
     })
+
+})
+
+Lobibox.notify.OPTIONS = {
+    success: {
+        'class': 'lobibox-notify-success',
+        'title': 'Success',
+        'icon': 'fa fa-check',
+        sound: 'sound21',
+    },
+    error: {
+        'class': 'lobibox-notify-error',
+        'title': 'Error',
+        'icon': 'fa fa-check',
+        'sound': 'sound9',
+    },
+    warning: {
+        'class': 'lobibox-notify-warning',
+        'title': 'Warning',
+        'icon': 'fa fa-check',
+        sound: 'sound14'
+    },
+    info: {
+        'class': 'lobibox-notify-info',
+        'title': 'info',
+        'icon': 'fa fa-check',
+        sound: 'sound7'
+    },
+}
 </script>
 </body>
 

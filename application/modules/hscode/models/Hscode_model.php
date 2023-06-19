@@ -13,20 +13,20 @@ class Hscode_model extends BF_Model
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'customer';
-    protected $key        = 'id_customer';
+    protected $table_name = 'hscodes';
+    protected $key        = 'id';
 
     /**
      * @var string Field name to use for the created time column in the DB table
      * if $set_created is enabled.
      */
-    protected $created_field = 'created_on';
+    protected $created_field = 'created_at';
 
     /**
      * @var string Field name to use for the modified time column in the DB
      * table if $set_modified is enabled.
      */
-    protected $modified_field = 'modified_on';
+    protected $modified_field = 'modified_at';
 
     /**
      * @var bool Set the created time automatically on a new record (if true)
@@ -64,16 +64,16 @@ class Hscode_model extends BF_Model
         parent::__construct();
     }
 
-    function generate_id($kode = '')
+    function generate_id($code = '')
     {
-        $query = $this->db->query("SELECT MAX(id_customer) as max_id FROM customer");
-        $row = $query->row_array();
-        $thn = date('y');
-        $max_id = $row['max_id'];
-        $max_id1 = (int) substr($max_id, 3, 5);
-        $counter = $max_id1 + 1;
-        $idcust = "C" . $thn . str_pad($counter, 5, "0", STR_PAD_LEFT);
-        return $idcust;
+        $y = date('y');
+        $count = 1;
+        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('hscodes')->where(['SUBSTR(id,4,2)' => $y])->get()->row()->id;
+        if ($maxID) {
+            $count = $maxID + 1;
+        }
+        $newID = "HSC$y-" . str_pad($count, 5, "0", STR_PAD_LEFT);
+        return $newID;
     }
 
     function get_data($table)

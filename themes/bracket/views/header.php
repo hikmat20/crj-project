@@ -143,7 +143,6 @@
     </div><!-- br-sideleft -->
     <!-- ########## END: LEFT PANEL ########## -->
 
-
     <!-- ########## START: HEAD PANEL ########## -->
     <div class="br-header">
         <div class="br-header-left">
@@ -173,19 +172,20 @@
                 </div><!-- dropdown -->
                 <div class="dropdown">
                     <a href="#" class="nav-link nav-link-profile" data-toggle="dropdown">
-                        <span class="logged-name hidden-md-down">Katherine</span>
+                        <span class="logged-name hidden-md-down"><?= $this->session->app_session['full_name']; ?></span>
                         <img src="https://via.placeholder.com/500" class="wd-32 rounded-circle" alt="">
                         <span class="square-10 bg-success"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-header wd-250">
                         <div class="tx-center">
                             <a href="#"><img src="https://via.placeholder.com/500" class="wd-80 rounded-circle" alt=""></a>
-                            <h6 class="logged-fullname">Katherine P. Lumaad</h6>
-                            <p>youremail@domain.com</p>
+                            <h6 class="logged-fullname">
+                                <?= $this->session->app_session['full_name']; ?>
+                                <p><?= $this->session->app_session['email']; ?></p>
                         </div>
 
                         <ul class="list-unstyled user-profile-nav">
-                            <li><a href="#"><i class="icon ion-ios-person"></i> Edit Profile</a></li>
+                            <li><a href="<?= base_url('users/edit_profile/' . $this->session->app_session['id_user']); ?>"><i class="icon ion-ios-person"></i> Edit Profile</a></li>
                             <li><a href="<?= base_url('logout'); ?>"><i class="icon ion-power"></i> Sign Out</a></li>
                         </ul>
                     </div><!-- dropdown-menu -->

@@ -137,7 +137,7 @@ class Companies extends Admin_Controller
 	public function add()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$countries = $this->Customer_model->get_data('countries');
+		$countries = $this->Companies_model->get_data('countries');
 		$marketing = $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$data = [
 			'countries' => $countries,
@@ -152,9 +152,9 @@ class Companies extends Admin_Controller
 		$this->auth->restrict($this->viewPermission);
 		$customer 				= $this->db->get_where('customers', array('id_customer' => $id))->row();
 		$pic 					= $this->db->get_where('customer_pic', ['id_customer' => $id, 'status' => '1'])->result();
-		$countries 				= $this->Customer_model->get_data('countries');
-		$states 				= $this->Customer_model->get_data('states', 'country_id', $customer->country_id);
-		$cities 				= $this->Customer_model->get_data('cities', 'state_id', $customer->state_id);
+		$countries 				= $this->Companies_model->get_data('countries');
+		$states 				= $this->Companies_model->get_data('states', 'country_id', $customer->country_id);
+		$cities 				= $this->Companies_model->get_data('cities', 'state_id', $customer->state_id);
 		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
@@ -179,7 +179,7 @@ class Companies extends Admin_Controller
 		$post = $this->input->post();
 
 		$data = $post;
-		$data['id_customer'] 				= $post['id_customer'] ?: $this->Customer_model->generate_id();
+		$data['id_customer'] 				= $post['id_customer'] ?: $this->Companies_model->generate_id();
 		$data['receive_invoice_day'] 		= $post['receive_invoice_day'] ? json_encode($post['receive_invoice_day']) : NULL;
 		$data['invoicing_requirement'] 		= $post['invoicing_requirement'] ? json_encode($post['invoicing_requirement']) : NULL;
 		$data['down_payment_value'] 		= str_replace(",", "", $post['down_payment_value']);
@@ -341,9 +341,9 @@ class Companies extends Admin_Controller
 		$cus = $this->db->get_where('master_customers', array('id_customer' => $id))->result();
 		$pic = $this->db->get_where('child_customer_pic', array('id_customer' => $id))->result();
 		$cate = $this->db->get_where('child_category_customer', array('id_customer' => $id))->result();
-		$category = $this->Customer_model->get_data('child_customer_category', 'activation', $aktif);
-		$prof = $this->Customer_model->get_data('provinsi');
-		$kota = $this->Customer_model->get_data('kota');
+		$category = $this->Companies_model->get_data('child_customer_category', 'activation', $aktif);
+		$prof = $this->Companies_model->get_data('provinsi');
+		$kota = $this->Companies_model->get_data('kota');
 		$karyawan = $this->db->get_where('employees', array('deleted_at' => null, '', 'divisi' => 2))->result();
 
 		$data = [

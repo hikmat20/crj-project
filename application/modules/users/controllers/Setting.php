@@ -17,22 +17,22 @@ class Setting extends Admin_Controller
      */
 
     //Permissions
-    protected $viewPermission   = "Users.View";
-    protected $addPermission    = "Users.Add";
-    protected $managePermission = "Users.Manage";
-    protected $deletePermission = "Users.Delete";
+    protected $viewPermission   = "Setting.View";
+    protected $addPermission    = "Setting.Add";
+    protected $managePermission = "Setting.Manage";
+    protected $deletePermission = "Setting.Delete";
 
     public function __construct()
     {
         parent::__construct();
         $this->lang->load('users');
         $this->load->model(array(
-            'users/users_model',
-            'users/groups_model',
-            'users/user_groups_model',
-            'users/permissions_model',
-            'users/user_permissions_model',
-            'Cabang/Cabang_model',
+            'users/Users_model',
+            'users/Groups_model',
+            'users/User_groups_model',
+            'users/Permissions_model',
+            'users/User_permissions_model',
+            // 'Cabang/Cabang_model',
         ));
 
         $this->template->page_icon('fa fa-users');
@@ -75,7 +75,7 @@ class Setting extends Admin_Controller
             6 => 'status',
         );
 
-        $sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir ." ";
+        $sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
         $sql .= " LIMIT " . $start . " ," . $length . " ";
         $query  = $this->db->query($sql);
 
@@ -84,7 +84,7 @@ class Setting extends Admin_Controller
         $urut2  = 0;
 
         $status = [
-            '1' => '<span class="bg-primary tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
+            '1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
             '0' => '<span class="bg-danger tx-white pd-5 tx-11 tx-bold rounded-5">Inactive</span>',
         ];
 
@@ -102,17 +102,17 @@ class Setting extends Admin_Controller
                 $nomor = $urut1 + $start_dari;
             }
 
-            $info           = "<a href='" . base_url('users/setting/edit/' . $row['id_user']) . "" . $row['id_user'] . "' class='btn btn-outline-success view btn-sm' data-bs-toggle='tooltip' title='Edit Data'><i class='fa fa-edit' aria-hidden='true'></i></a>";
-            $edit           = "<a href='" . base_url('users/setting/permission/' . $row['id_user']) . "' data-id='" . $row['id_user'] . "' class='btn btn-outline-primary btn-sm' data-bs-toggle='tooltip' title='Edit Permission'><i class='fa fa-user-shield' aria-hidden='true'></i></a>";            
+            $edit           = "<a href='" . base_url('users/setting/edit/' . $row['id_user']) . "' class='btn btn-success view btn-sm' data-bs-toggle='tooltip' title='Edit Data'><i class='fa fa-edit' aria-hidden='true'></i></a>";
+            $permission     = "<a href='" . base_url('users/setting/permission/' . $row['id_user']) . "' data-id='" . $row['id_user'] . "' class='btn btn-indigo btn-sm' data-bs-toggle='tooltip' title='Edit Permission'><i class='fa fa-user-shield' aria-hidden='true'></i></a>";
             if ($row['status'] == '1') {
-                $buttons = $info;
-                if($row['id_user'] != 1){
-                    $buttons .= "&nbsp;". $edit;
+                $buttons = '-';
+                if ($row['id_user'] != 1) {
+                    $buttons = $edit . "&nbsp;" . $permission;
                 }
             } else if ($row['status'] == '0') {
-                $buttons = $info;
+                $buttons = $edit;
             } else {
-                $buttons = $info;
+                $buttons = $edit;
             }
 
             $nestedData   = array();
@@ -172,17 +172,12 @@ class Setting extends Admin_Controller
                     simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
                 }
 
-                if ($result)
-                {
-                    $this->template->set_message(count($sukses) .' '. lang('users_del_success') .'.', 'success');
-                }
-                else
-                {
+                if ($result) {
+                    $this->template->set_message(count($sukses) . ' ' . lang('users_del_success') . '.', 'success');
+                } else {
                     $this->template->set_message(lang('users_del_fail') . $this->users_model->error, 'danger');
                 }
-            }
-            else
-            {
+            } else {
                 $this->template->set_message(lang('danger'), 'danger');
             }
 
@@ -252,8 +247,8 @@ class Setting extends Admin_Controller
             }
         }
 
-        $cabang = $this->Cabang_model->find_all();
-        $this->template->set('cabang', $cabang);
+        // $cabang = $this->Cabang_model->find_all();
+        // $this->template->set('cabang', $cabang);
         $this->template->title(lang('users_new_title'));
         $this->template->page_icon('fa fa-user');
         $this->template->render('users_form');
@@ -263,8 +258,7 @@ class Setting extends Admin_Controller
     {
         $this->auth->restrict($this->managePermission);
 
-        if($id == 0 || is_numeric($id) == FALSE)
-        {
+        if ($id == 0 || is_numeric($id) == FALSE) {
             $this->template->set_message(lang('users_invalid_id'), 'danger');
             redirect('users/setting');
         }
@@ -276,12 +270,10 @@ class Setting extends Admin_Controller
             }
         }
 
-        $data = $this->users_model->find($id);
+        $data = $this->Users_model->find($id);
 
-        if($data)
-        {
-            if($data->deleted == 1)
-            {
+        if ($data) {
+            if ($data->deleted == 1) {
                 $this->template->set_message(lang('users_already_deleted'), 'danger');
                 redirect('users/setting');
             }
@@ -299,8 +291,7 @@ class Setting extends Admin_Controller
     {
         $this->auth->restrict($this->managePermission);
 
-        if($id == 0 || is_numeric($id) == FALSE || $id == 1)
-        {
+        if ($id == 0 || is_numeric($id) == FALSE || $id == 1) {
             $this->template->set_message(lang('users_invalid_id'), 'danger');
             redirect('users/setting');
         }
@@ -314,16 +305,14 @@ class Setting extends Admin_Controller
         //User data
         $data = $this->users_model->find($id);
 
-        if($data)
-        {
-            if($data->deleted == 1)
-            {
+        if ($data) {
+            if ($data->deleted == 1) {
                 $this->template->set_message(lang('users_already_deleted'), 'danger');
                 redirect('users/setting');
             }
         }
         //All Permission
-        $permissions = $this->permissions_model
+        $permissions = $this->Permissions_model
             ->order_by("nm_permission", "ASC")
             ->find_all();
 
@@ -365,8 +354,7 @@ class Setting extends Admin_Controller
 
     protected function save_permission($id_user = 0)
     {
-        if($id_user == 0 || $id_user == "")
-        {
+        if ($id_user == 0 || $id_user == "") {
             $this->template->set_message(lang('users_invalid_id'), 'danger');
             return FALSE;
         }
@@ -384,15 +372,14 @@ class Setting extends Admin_Controller
         }
 
         //Delete Fisrt All Previous user permission
-        $result = $this->user_permissions_model->delete_where(array('id_user' => $id_user));
+        $result = $this->User_permissions_model->delete_where(array('id_user' => $id_user));
 
         //Insert New one
         if ($insert_data) {
-            $result = $this->user_permissions_model->insert_batch($insert_data);
+            $result = $this->User_permissions_model->insert_batch($insert_data);
         }
 
-        if($result === FALSE)
-        {
+        if ($result === FALSE) {
             $this->template->set_message(lang('users_permission_edit_fail'), 'danger');
             return FALSE;
         }
@@ -455,7 +442,7 @@ class Setting extends Admin_Controller
             $this->form_validation->set_rules('password', 'Password', 'required');
             $this->form_validation->set_rules('re-password', 'Password', 'required|matches[password]');
         } else {
-            if (!empty($_POST['password'])) {
+            if (isset($_POST['password']) && $_POST['password']) {
                 $extra_rule = "|unique[users.username]";
                 $this->form_validation->set_rules('password', 'Password', 'required');
                 $this->form_validation->set_rules('re-password', 'Confirm Password', 'required|matches[password]');
@@ -469,9 +456,8 @@ class Setting extends Admin_Controller
         $this->form_validation->set_rules('phone', 'Phone Number', 'required');
         $this->form_validation->set_rules('status', 'Status', 'required');
 
-        if($this->form_validation->run($this) === FALSE)
-        {
-            $this->template->set_message(validation_errors(),'danger');
+        if ($this->form_validation->run($this) === FALSE) {
+            $this->template->set_message(validation_errors(), 'danger');
             return FALSE;
         }
 
@@ -513,7 +499,6 @@ class Setting extends Admin_Controller
         if ($type == 'insert') {
             $data_insert = array(
                 'username'      => $username,
-                'password'      => $password,
                 'email'         => $email,
                 'full_name'     => $full_name,
                 'address'       => $address,
@@ -523,12 +508,18 @@ class Setting extends Admin_Controller
                 'status'        => $status,
                 // 'kdcab'     => $kdcab
             );
-
-            $result = $this->users_model->insert($data_insert);
+            if (isset($_POST['password']) && $_POST['password']) {
+                $data_insert['password'] = $password;
+            }
+            echo '<pre>';
+            print_r($data_insert);
+            echo '</pre>';
+            exit;
+            $result = $this->Users_model->insert($data_insert);
 
             if ($result) {
                 //Get Default user group
-                $dt_group = $this->groups_model->find_by(array('st_default' => 1));
+                $dt_group = $this->Groups_model->find_by(array('st_default' => 1));
                 if ($dt_group) {
                     $id_group = $dt_group->id_group;
 
@@ -541,10 +532,8 @@ class Setting extends Admin_Controller
                 }
 
                 return TRUE;
-            }
-            else
-            {
-                $this->template->set_message(lang('users_create_fail').$this->users_model->error,'danger');
+            } else {
+                $this->template->set_message(lang('users_create_fail') . $this->users_model->error, 'danger');
                 return FALSE;
             }
         } else {
@@ -559,7 +548,8 @@ class Setting extends Admin_Controller
                 'status'    => $status,
                 // 'kdcab'     => $kdcab
             );
-            if (isset($_POST['password'])) {
+
+            if (isset($_POST['password']) && $_POST['password']) {
                 $data_insert['password'] = $password;
             }
 
@@ -567,10 +557,8 @@ class Setting extends Admin_Controller
 
             if ($result) {
                 return TRUE;
-            }
-            else
-            {
-                $this->template->set_message(lang('users_edit_fail').$this->users_model->error,'danger');
+            } else {
+                $this->template->set_message(lang('users_edit_fail') . $this->users_model->error, 'danger');
                 return FALSE;
             }
         }

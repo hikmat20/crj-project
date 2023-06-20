@@ -6,7 +6,8 @@
 	</div>
 </div>
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3 pd-t-30">
-	<form action="<?= base_url($this->uri->uri_string()) ?>" method="POST" id="frm_users" name="frm_users" data-parsley-validate>
+	<?= Template::message(); ?>
+	<form action="<?= base_url($this->uri->uri_string()) ?>" method="POST" id="frm_users" name="frm_users" data-parsley-validate="">
 		<div class="card mg-b-0">
 			<div class="card-body pd-30">
 				<h5>User Account</h5>
@@ -21,13 +22,13 @@
 						<div class="row mg-t-20">
 							<label for="password" class="col-md-3 control-label"><?= lang('users_password') ?> <span class="tx-danger">*</span></label>
 							<div class="col-sm-8 mg-t-10 mg-sm-t-0">
-								<input type="password" class="form-control" required id="password" placeholder="<?= lang('users_password') ?>" name="password" maxlength="100" value="<?= set_value('password') ?>" />
+								<input type="password" class="form-control" data-parsley-length="[4, 32]" id="password" placeholder="<?= lang('users_password') ?>" name="password" maxlength="100" value="<?= set_value('password') ?>" />
 							</div>
 						</div>
 						<div class="row mg-t-20">
 							<label for="re-password" class="col-sm-3 control-label">Confirm Password <span class="tx-danger">*</span></label>
 							<div class="col-sm-8 mg-t-10 mg-sm-t-0">
-								<input type="password" class="form-control" required placeholder="Confirm Password" id="re-password" name="re-password" maxlength="100" value="<?= set_value('re-password') ?>" />
+								<input type="password" class="form-control" data-parsley-length="[4, 32]" placeholder="Confirm Password" id="re-password" name="re-password" maxlength="100" value="<?= set_value('re-password') ?>" />
 							</div>
 						</div>
 					</div>

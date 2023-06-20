@@ -11,13 +11,13 @@ if (!defined('BASEPATH')) {
  * This is controller for Master Supplier
  */
 
-class Department extends Admin_Controller
+class Harbours extends Admin_Controller
 {
 	//Permission
-	protected $viewPermission 	= 'Department.View';
-	protected $addPermission  	= 'Department.Add';
-	protected $managePermission = 'Department.Manage';
-	protected $deletePermission = 'Department.Delete';
+	protected $viewPermission 	= 'Harbours.View';
+	protected $addPermission  	= 'Harbours.Add';
+	protected $managePermission = 'Harbours.Manage';
+	protected $deletePermission = 'Harbours.Delete';
 
 	public function __construct()
 	{
@@ -25,12 +25,11 @@ class Department extends Admin_Controller
 
 		$this->load->library(array('upload', 'Image_lib'));
 		$this->load->model(array(
-			'Department/Department_model',
-			'Crud/Crud_model',
+			'Harbours/Harbours_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Data Supplier');
-		$this->template->page_icon('fa fa-building-o');
+		$this->template->title('Manage Harbours');
+		$this->template->page_icon('fa fa-ship');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -38,12 +37,6 @@ class Department extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('icon ion-ios-people-outline');
-		$this->template->title('Departement');
-		$deleted = '0';
-		$data = $this->Department_model->get_data('department');
-		$this->template->set('results', $data);
 		$this->template->render('index');
 	}
 	public function edit($id)

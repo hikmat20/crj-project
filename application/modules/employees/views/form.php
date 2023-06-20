@@ -3,7 +3,15 @@
         <div class="col-md-6">
             <div class="form-group row">
                 <div class="col-md-4">
-                    <label for="nik" class="tx-dark tx-bold">ID Number <span class="tx-danger">*</span></label>
+                    <label for="id" class="tx-dark tx-bold">Employee ID <span class="tx-danger">*</span></label>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" readonly class="form-control" id="id" required name="id" value="<?= (isset($employee)) ? $employee->id : null; ?>" maxlength="16" placeholder="Auto">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="nik" class="tx-dark tx-bold">Personal ID Number <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
                     <input type="text" class="form-control" id="nik" required name="nik" value="<?= (isset($employee)) ? $employee->nik : null; ?>" maxlength="16" placeholder="NIK">
@@ -27,10 +35,10 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-4">
-                    <label for="birth_place" class="tx-dark tx-bold">Birth Date <span class="tx-danger">*</span></label>
+                    <label for="birth_date" class="tx-dark tx-bold">Birth Date <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
-                    <input type="date" class="form-control" id="birth_place" required name="birth_place" value="<?= (isset($employee) && $employee->birth_place) ? $employee->birth_place : null; ?>">
+                    <input type="date" class="form-control" id="birth_date" required name="birth_date" value="<?= (isset($employee) && $employee->birth_date) ? $employee->birth_date : null; ?>">
                 </div>
             </div>
             <div class="form-group row">
@@ -41,7 +49,7 @@
                     <select id="division" name="division" class="form-control select" required>
                         <option value=""></option>
                         <?php foreach ($divisions as $div) : ?>
-                            <option value="<?= $div->id ?>" <?= (isset($employee) && $div->id == $employee->division) ? 'selected' : ''; ?>><?= $div->name ?></option>
+                        <option value="<?= $div->id ?>" <?= (isset($employee) && $div->id == $employee->division) ? 'selected' : ''; ?>><?= $div->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -66,7 +74,7 @@
                     <select id="religion" name="religion" class="form-control select" required>
                         <option value=""></option>
                         <?php foreach ($religions as $religion) { ?>
-                            <option value="<?= $religion->id ?>" <?= (isset($employee) && $religion->id == $employee->religion) ? 'selected' : ''; ?>><?= ucfirst(strtolower($religion->name_religion)) ?></option>
+                        <option value="<?= $religion->id ?>" <?= (isset($employee) && $religion->id == $employee->religion) ? 'selected' : ''; ?>><?= ucfirst(strtolower($religion->name_religion)) ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -160,14 +168,14 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.select').select2({
-            placeholder: "Choose one",
-            allowClear: true,
-            width: "100%",
-            dropdownParent: $("#dialog-popup"),
-            minimumResultsForSearch: -1
-        });
-
+$(document).ready(function() {
+    $('.select').select2({
+        placeholder: "Choose one",
+        allowClear: true,
+        width: "100%",
+        dropdownParent: $("#dialog-popup"),
+        minimumResultsForSearch: -1
     });
+
+});
 </script>

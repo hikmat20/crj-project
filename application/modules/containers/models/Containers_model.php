@@ -7,26 +7,26 @@
  * This is model class for table "Customer"
  */
 
-class Department_model extends BF_Model
+class Containers_model extends BF_Model
 {
 
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'ms_inventory_type';
+    protected $table_name = 'containers';
     protected $key        = 'id';
 
     /**
      * @var string Field name to use for the created time column in the DB table
      * if $set_created is enabled.
      */
-    protected $created_field = 'created_on';
+    protected $created_field = 'created_at';
 
     /**
      * @var string Field name to use for the modified time column in the DB
      * table if $set_modified is enabled.
      */
-    protected $modified_field = 'modified_on';
+    protected $modified_field = 'modified_at';
 
     /**
      * @var bool Set the created time automatically on a new record (if true)
@@ -63,34 +63,33 @@ class Department_model extends BF_Model
     {
         parent::__construct();
     }
-	
-	
-    function generate_id($kode='') {
-      $query = $this->db->query("SELECT MAX(id_type) as max_id FROM ms_inventory_type");
-      $row = $query->row_array();
-      $thn = date('y');
-      $max_id = $row['max_id'];
-      $max_id1 =(int) substr($max_id,3,5);
-      $counter = $max_id1 +1;
-      $idcust = "I".$thn.str_pad($counter, 5, "0", STR_PAD_LEFT);
-      return $idcust;
-	}
 
- 	public function get_data($table,$where_field='',$where_value=''){
-		if($where_field !='' && $where_value!=''){
-			$query = $this->db->get_where($table, array($where_field=>$where_value));
-		}else{
-			$query = $this->db->get($table);
-		}
-		
-		return $query->result();
-	}
-	
-    function getById($id)
+
+    function generate_id($kode = '')
     {
-       return $this->db->get_where('ms_inventory_type',array('id_type' => $id))->row_array();
+        $query = $this->db->query("SELECT MAX(id_type) as max_id FROM ms_inventory_type");
+        $row = $query->row_array();
+        $thn = date('y');
+        $max_id = $row['max_id'];
+        $max_id1 = (int) substr($max_id, 3, 5);
+        $counter = $max_id1 + 1;
+        $idcust = "I" . $thn . str_pad($counter, 5, "0", STR_PAD_LEFT);
+        return $idcust;
     }
 
-   
+    public function get_data($table, $where_field = '', $where_value = '')
+    {
+        if ($where_field != '' && $where_value != '') {
+            $query = $this->db->get_where($table, array($where_field => $where_value));
+        } else {
+            $query = $this->db->get($table);
+        }
 
+        return $query->result();
+    }
+
+    function getById($id)
+    {
+        return $this->db->get_where('ms_inventory_type', array('id_type' => $id))->row_array();
+    }
 }

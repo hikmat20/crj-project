@@ -25,13 +25,110 @@ class Suppliers extends Admin_Controller
 
 		$this->load->library(array('upload', 'Image_lib'));
 		$this->load->model(array(
-			'Suppliers/Supliers_model',
+			'Suppliers/Suppliers_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Data Suppliers');
-		$this->template->page_icon('fa fa-building-o');
+		$this->template->title('Manage Suppliers');
+		$this->template->page_icon('fas fa-truck');
 
 		date_default_timezone_set('Asia/Bangkok');
+	}
+
+	public function getData()
+	{
+		$requestData = $_REQUEST;
+		$status = $requestData['status'];
+		$search = $requestData['search']['value'];
+		$column = $requestData['order'][0]['column'];
+		$dir = $requestData['order'][0]['dir'];
+		$start = $requestData['start'];
+		$length = $requestData['length'];
+
+		$where = '';
+		$where = " AND `status` = '$status'";
+
+		$string = $this->db->escape_like_str($search);
+
+		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
+        FROM view_suppliers, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (supplier_name LIKE '%$string%'
+        OR telephone LIKE '%$string%'
+        OR `country_code` LIKE '%$string%'
+        OR `email` LIKE '%$string%'
+        OR `address` LIKE '%$string%'
+        OR `status` LIKE '%$string%'
+            )";
+
+		$totalData = $this->db->query($sql)->num_rows();
+		$totalFiltered = $this->db->query($sql)->num_rows();
+
+		$columns_order_by = [
+			0 => 'num',
+			1 => 'supplier_name',
+			2 => 'telephone',
+			3 => 'country_code',
+			4 => 'email',
+			5 => 'address',
+			6 => 'status',
+		];
+
+		$sql .= ' ORDER BY ' . $columns_order_by[$column] . ' ' . $dir . ' ';
+		$sql .= ' LIMIT ' . $start . ' ,' . $length . ' ';
+		$query = $this->db->query($sql);
+
+		$data = [];
+		$urut1 = 1;
+		$urut2 = 0;
+
+		$status = [
+			'0' => '<span class="bg-danger tx-white pd-5 tx-11 tx-bold rounded-5">Inactive</span>',
+			'1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
+		];
+
+		/* Button */
+		foreach ($query->result_array() as $row) {
+			$buttons = '';
+			$total_data = $totalData;
+			$start_dari = $start;
+			$asc_desc = $dir;
+			if (
+				$asc_desc == 'asc'
+			) {
+				$nomor = $urut1 + $start_dari;
+			}
+			if (
+				$asc_desc == 'desc'
+			) {
+				$nomor = ($total_data - $start_dari) - $urut2;
+			}
+
+			$view = '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
+			$edit = '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
+			$delete = '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
+			$buttons = $view . '&nbsp;' . $edit . '&nbsp;' . $delete;
+
+			$nestedData = [];
+			$nestedData[] = $nomor;
+			$nestedData[] = $row['supplier_name'];
+			$nestedData[] = $row['telephone'];
+			$nestedData[] = $row['country_code'] . ' - ' . $row['country_name'];
+			$nestedData[] = $row['email'];
+			$nestedData[] = $row['address'];
+			$nestedData[] = $status[$row['status']];
+			$nestedData[] = $buttons;
+			$data[] = $nestedData;
+			++$urut1;
+			++$urut2;
+		}
+
+		$json_data = [
+			'draw' => intval($requestData['draw']),
+			'recordsTotal' => intval($totalData),
+			'recordsFiltered' => intval($totalFiltered),
+			'data' => $data,
+		];
+
+		echo json_encode($json_data);
 	}
 
 	public function index()
@@ -39,751 +136,214 @@ class Suppliers extends Admin_Controller
 		$this->auth->restrict($this->viewPermission);
 		$this->template->render('index');
 	}
-	public function EditLokal($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$deleted = 'active';
-		$sup = $this->db->get_where('master_supplier', array('id_suplier' => $id))->result();
-		$category = $this->Suplier_model->get_data('child_supplier_category', 'activation', $deleted);
-		$pic = $this->db->get_where('child_supplier_pic', array('id_suplier' => $id))->result();
-		$prof = $this->Suplier_model->get_data('provinsi');
-		$kota = $this->Suplier_model->get_data('kota');
-		$data = [
-			'sup' => $sup,
-			'category' => $category,
-			'prof' => $prof,
-			'kota' => $kota,
-			'pic' => $pic
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Edit Suplier');
-		$this->template->render('edit_lokal');
-	}
-	public function viewLokal($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$deleted = 'active';
-		$sup = $this->db->get_where('master_supplier', array('id_suplier' => $id))->result();
-		$category = $this->Suplier_model->get_data('child_supplier_category', 'activation', $deleted);
-		$pic = $this->db->get_where('child_supplier_pic', array('id_suplier' => $id))->result();
-		$prof = $this->Suplier_model->get_data('provinsi');
-		$kota = $this->Suplier_model->get_data('kota');
-		$data = [
-			'sup' => $sup,
-			'category' => $category,
-			'prof' => $prof,
-			'kota' => $kota,
-			'pic' => $pic
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Edit Suplier');
-		$this->template->render('view_local');
-	}
-	public function EditInternasional($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$deleted = 'active';
-		$sup = $this->db->get_where('master_supplier', array('id_suplier' => $id))->result();
-		$category = $this->Suplier_model->get_data('child_supplier_category', 'activation', $deleted);
-		$pic = $this->db->get_where('child_supplier_pic', array('id_suplier' => $id))->result();
-		$negara = $this->Suplier_model->get_data('negara');
-		$data = [
-			'sup' => $sup,
-			'category' => $category,
-			'negara' => $negara,
-			'pic' => $pic
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Edit Suplier');
-		$this->template->render('edit_international');
-	}
-	public function ViewInternasional($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$deleted = 'active';
-		$sup = $this->db->get_where('master_supplier', array('id_suplier' => $id))->result();
-		$category = $this->Suplier_model->get_data('child_supplier_category', 'activation', $deleted);
-		$pic = $this->db->get_where('child_supplier_pic', array('id_suplier' => $id))->result();
-		$negara = $this->Suplier_model->get_data('negara');
-		$data = [
-			'sup' => $sup,
-			'category' => $category,
-			'negara' => $negara,
-			'pic' => $pic
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Edit Suplier');
-		$this->template->render('view_international');
-	}
-	public function EditCategory($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$category = $this->db->get_where('child_supplier_category', array('id_category_supplier' => $id))->result();
-		$data = [
-			'category' => $category,
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Edit Suplier');
-		$this->template->render('edit_category');
-	}
-	public function ViewCategory($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$category = $this->db->get_where('child_supplier_category', array('id_category_supplier' => $id))->result();
-		$data = [
-			'category' => $category,
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Edit Suplier');
-		$this->template->render('view_category');
-	}
-	public function viewInventory()
-	{
-		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$inven = $this->db->get_where('ms_inventory_category1', array('id_category1' => $id))->result();
-		$deleted = '0';
-		$komposisi = $this->db->get_where('ms_compotition', array('id_category1' => $id, 'deleted' => $deleted))->result();
-		$lvl1 = $this->Inventory_2_model->get_data('ms_inventory_type');
-		$data = [
-			'inven' => $inven,
-			'komposisi' => $komposisi,
-			'lvl1' => $lvl1
-		];
-		$this->template->set('results', $data);
-		$this->template->render('view_inventory');
-	}
-	public function addLocal()
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-pencil');
-		$deleted = 'active';
-		$category = $this->Suplier_model->get_data('child_supplier_category', 'activation', $deleted);
-		$prof = $this->Suplier_model->get_data('provinsi');
-		$data = [
-			'category' => $category,
-			'prof' => $prof
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Add Suplier Local');
-		$this->template->render('add_local');
-	}
-	public function addInternational()
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$deleted = 'active';
-		$category = $this->Suplier_model->get_data('child_supplier_category', 'activation', $deleted);
-		$negara = $this->Suplier_model->get_data('negara');
-		$data = [
-			'category' => $category,
-			'negara' => $negara
-		];
-		$this->template->set('results', $data);
-		$this->template->title('Add Suplier Local');
-		$this->template->render('add_international');
-	}
-	public function addCategory()
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-pencil');
-		$this->template->title('Add Suplier Local');
-		$this->template->render('add_category');
-	}
 
-	public function delDetail()
-	{
-		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		// print_r($id);
-		// exit();
-		$data = [
-			'deleted' 		=> '1',
-			'deleted_by' 	=> $this->auth->user_id()
-		];
-
-		$this->db->trans_begin();
-		$this->db->where('id_compotition', $id)->update("ms_compotition", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-
-	public function deleteCategory()
-	{
-		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		// print_r($id);
-		// exit();
-		$data = [
-			'activation' 		=> 'inactive',
-			'deleted_by' 	=> $this->auth->user_id()
-		];
-		$this->db->trans_begin();
-		$this->db->where('id_category_supplier', $id)->update("child_supplier_category", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function deletelokal()
-	{
-		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		// print_r($id);
-		// exit();
-		$data = [
-			'deleted' 		=> '1',
-			'deleted_by' 	=> $this->auth->user_id()
-		];
-		$this->db->trans_begin();
-		$this->db->where('id_suplier', $id)->update("master_supplier", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function deleteinternational()
-	{
-		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		// print_r($id);
-		// exit();
-		$data = [
-			'deleted' 		=> '1',
-			'deleted_by' 	=> $this->auth->user_id()
-		];
-		$this->db->trans_begin();
-		$this->db->where('id_suplier', $id)->update("master_supplier", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function saveNewCategory()
+	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$code = $this->Suplier_model->generate_Category();
-		$this->db->trans_begin();
+		$countries = $this->db->get('countries')->result();
+		$marketing = $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
+
 		$data = [
-			'id_category_supplier'		=> $code,
-			'name_category_supplier'	=> $post['name_category_supplier'],
-			'supplier_code'				=> $post['supplier_code'],
-			'activation'				=> 'active',
-			'created_on'				=> date('Y-m-d H:i:s'),
-			'created_by'				=> $this->auth->user_id()
+			'countries' => $countries,
+			'marketing' => $marketing,
 		];
-
-		$insert = $this->db->insert("child_supplier_category", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
+		$this->template->set($data);
+		$this->template->render('form');
 	}
-	public function saveNewLocal()
+
+	public function edit($id)
 	{
+		$this->auth->restrict($this->managePermission);
+		$supplier 				= $this->db->get_where('suppliers', array('id' => $id))->row();
+		$pic 					= $this->db->get_where('supplier_pic', ['supplier_id' => $id, 'status' => '1'])->result();
+		$countries 				= $this->db->get_where('countries')->result();
+		$states 				= $this->db->get_where('states', ['country_id' => $supplier->country_id])->result();
+		$cities 				= $this->db->get_where('cities', ['state_id' => $supplier->state_id])->result();
 
-
-		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$session = $this->session->userdata('app_session');
-		$code = $this->Suplier_model->generate_id();
-		$this->db->trans_begin();
-		$header1 =  array(
-			'id_suplier'	 		=> $code,
-			'id_category_supplier'	=> $post['id_category_supplier'],
-			'suplier_location'		=> 'local',
-			'moq'		    => $post['moq'],
-			'name_suplier'		    => $post['name_suplier'],
-			'telephone'		    	=> $post['telephone'],
-			'telephone_2'		    => $post['telephone_2'],
-			'fax'		    		=> $post['fax'],
-			'email'			    	=> $post['email'],
-			'start_date'		    => $post['start_date'],
-			'id_prov'		    	=> $post['id_prov'],
-			'id_kota'		    	=> $post['id_kota'],
-			'address_office'		=> $post['address_office'],
-			'zip_code'		    	=> $post['zip_code'],
-			'longitude'		    	=> $post['longitude'],
-			'latitude'		    	=> $post['latitude'],
-			'activation'		    => $post['activation'],
-			'name_bank'		    	=> $post['name_bank'],
-			'no_rekening'		    => $post['no_rekening'],
-			'nama_rekening'		    => $post['nama_rekening'],
-			'alamat_bank'		    => $post['alamat_bank'],
-			'swift_code'		    => $post['swift_code'],
-			'npwp'		   			=> $post['npwp'],
-			'npwp_name'		    	=> $post['npwp_name'],
-			'npwp_address'		    => $post['npwp_address'],
-			'payment_term'		    => $post['payment_term'],
-			'deleted'				=> '0',
-			'created_on'			=> date('Y-m-d H:i:s'),
-			'created_by'			=> $this->auth->user_id()
-		);
-		//Add Data
-		$this->db->insert('master_supplier', $header1);
-		$numb2 = 0;
-		foreach ($_POST['data1'] as $d1) {
-			$numb2++;
-			$data =  array(
-				'id_suplier'	=> $code,
-				'name_pic'		=> $d1[name_pic],
-				'phone_pic'		=> $d1[phone_pic],
-				'email_pic'		=> $d1[email_pic],
-				'position_pic'	=> $d1[position_pic]
-			);
-			//Add Data
-			$this->db->insert('child_supplier_pic', $data);
-		}
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. invenThanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function saveNewInternational()
-	{
-
-
-		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$session = $this->session->userdata('app_session');
-		$code = $this->Suplier_model->generate_idint();
-		$this->db->trans_begin();
-		$header1 =  array(
-			'id_suplier'	 		=> $code,
-			'id_category_supplier'	=> $post['id_category_supplier'],
-			'suplier_location'		=> 'international',
-			'name_suplier'		    => $post['name_suplier'],
-			'telephone'		    	=> $post['telephone'],
-			'telephone_2'		    => $post['telephone_2'],
-			'fax'		    		=> $post['fax'],
-			'email'			    	=> $post['email'],
-			'start_date'		    => $post['start_date'],
-			'id_negara'		    	=> $post['id_negara'],
-			'international_prov'	=> $post['international_prov'],
-			'international_kota'	=> $post['international_kota'],
-			'address_office'		=> $post['address_office'],
-			'zip_code'		    	=> $post['zip_code'],
-			'longitude'		    	=> $post['longitude'],
-			'latitude'		    	=> $post['latitude'],
-			'activation'		    => $post['activation'],
-			'name_bank'		    	=> $post['name_bank'],
-			'no_rekening'		    => $post['no_rekening'],
-			'nama_rekening'		    => $post['nama_rekening'],
-			'alamat_bank'		    => $post['alamat_bank'],
-			'swift_code'		    => $post['swift_code'],
-			'moq'		    => $post['moq'],
-			'payment_term'		    => $post['payment_term'],
-			'deleted'				=> '0',
-			'created_on'			=> date('Y-m-d H:i:s'),
-			'created_by'			=> $this->auth->user_id()
-		);
-		//Add Data
-		$this->db->insert('master_supplier', $header1);
-		$numb2 = 0;
-		foreach ($_POST['data1'] as $d1) {
-			$numb2++;
-			$data =  array(
-				'id_suplier'	=> $code,
-				'name_pic'		=> $d1[name_pic],
-				'phone_pic'		=> $d1[phone_pic],
-				'email_pic'		=> $d1[email_pic],
-				'position_pic'	=> $d1[position_pic]
-			);
-			//Add Data
-			$this->db->insert('child_supplier_pic', $data);
-		}
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. invenThanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function saveEditLocal()
-	{
-
-
-		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$session = $this->session->userdata('app_session');
-		$this->db->trans_begin();
-		$header1 =  array(
-			'id_category_supplier'	=> $post['id_category_supplier'],
-			'suplier_location'		=> 'local',
-			'name_suplier'		    => $post['name_suplier'],
-			'telephone'		    	=> $post['telephone'],
-			'telephone_2'		    => $post['telephone_2'],
-			'fax'		    		=> $post['fax'],
-			'moq'		    => $post['moq'],
-			'email'			    	=> $post['email'],
-			'start_date'		    => $post['start_date'],
-			'id_prov'		    	=> $post['id_prov'],
-			'id_kota'		    	=> $post['id_kota'],
-			'address_office'		=> $post['address_office'],
-			'zip_code'		    	=> $post['zip_code'],
-			'longitude'		    	=> $post['longitude'],
-			'latitude'		    	=> $post['latitude'],
-			'activation'		    => $post['activation'],
-			'name_bank'		    	=> $post['name_bank'],
-			'no_rekening'		    => $post['no_rekening'],
-			'nama_rekening'		    => $post['nama_rekening'],
-			'alamat_bank'		    => $post['alamat_bank'],
-			'swift_code'		    => $post['swift_code'],
-			'npwp'		   			=> $post['npwp'],
-			'npwp_name'		    	=> $post['npwp_name'],
-			'npwp_address'		    => $post['npwp_address'],
-			'payment_term'		    => $post['payment_term'],
-			'deleted'				=> '0',
-			'created_on'			=> date('Y-m-d H:i:s'),
-			'created_by'			=> $this->auth->user_id()
-		);
-		//Add Data
-		$this->db->where('id_suplier', $post['id_suplier'])->update("master_supplier", $header1);
-		$this->db->delete('child_supplier_pic', array('id_suplier' => $post['id_suplier']));
-		$numb2 = 0;
-		foreach ($_POST['data1'] as $d1) {
-			$numb2++;
-			$code = $post['id_suplier'];
-			$data =  array(
-				'id_suplier'	=> $code,
-				'name_pic'		=> $d1[name_pic],
-				'phone_pic'		=> $d1[phone_pic],
-				'email_pic'		=> $d1[email_pic],
-				'position_pic'	=> $d1[position_pic]
-			);
-			//Add Data
-			$this->db->insert('child_supplier_pic', $data);
-		}
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. invenThanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function saveEditInternational()
-	{
-
-
-		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$session = $this->session->userdata('app_session');
-		$this->db->trans_begin();
-		$header1 =  array(
-			'id_category_supplier'	=> $post['id_category_supplier'],
-			'suplier_location'		=> 'international',
-			'name_suplier'		    => $post['name_suplier'],
-			'telephone'		    	=> $post['telephone'],
-			'moq'		    => $post['moq'],
-			'telephone_2'		    => $post['telephone_2'],
-			'fax'		    		=> $post['fax'],
-			'email'			    	=> $post['email'],
-			'start_date'		    => $post['start_date'],
-			'id_negara'		    	=> $post['id_negara'],
-			'international_prov'	=> $post['international_prov'],
-			'international_kota'	=> $post['international_kota'],
-			'address_office'		=> $post['address_office'],
-			'zip_code'		    	=> $post['zip_code'],
-			'longitude'		    	=> $post['longitude'],
-			'latitude'		    	=> $post['latitude'],
-			'activation'		    => $post['activation'],
-			'name_bank'		    	=> $post['name_bank'],
-			'no_rekening'		    => $post['no_rekening'],
-			'nama_rekening'		    => $post['nama_rekening'],
-			'alamat_bank'		    => $post['alamat_bank'],
-			'swift_code'		    => $post['swift_code'],
-			'payment_term'		    => $post['payment_term'],
-			'deleted'				=> '0',
-			'created_on'			=> date('Y-m-d H:i:s'),
-			'created_by'			=> $this->auth->user_id()
-		);
-		//Add Data
-		$this->db->where('id_suplier', $post['id_suplier'])->update("master_supplier", $header1);
-		$this->db->delete('child_supplier_pic', array('id_suplier' => $post['id_suplier']));
-		$code = $post['id_suplier'];
-		$numb2 = 0;
-		foreach ($_POST['data1'] as $d1) {
-			$numb2++;
-			$data =  array(
-				'id_suplier'	=> $code,
-				'name_pic'		=> $d1[name_pic],
-				'phone_pic'		=> $d1[phone_pic],
-				'email_pic'		=> $d1[email_pic],
-				'position_pic'	=> $d1[position_pic]
-			);
-			//Add Data
-			$this->db->insert('child_supplier_pic', $data);
-		}
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. invenThanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
-	}
-	public function saveEditCategory()
-	{
-		$this->auth->restrict($this->editPermission);
-		$post = $this->input->post();
-		$this->db->trans_begin();
 		$data = [
-			'name_category_supplier'	=> $post['name_category_supplier'],
-			'supplier_code'				=> $post['supplier_code'],
-			'modified_on'		=> date('Y-m-d H:i:s'),
-			'modified_by'		=> $this->auth->user_id()
+			'supplier'					=> $supplier,
+			'countries' 				=> $countries,
+			'PIC' 						=> $pic,
+			'states' 					=> $states,
+			'cities' 					=> $cities,
 		];
-
-		$this->db->where('id_category_supplier', $post['id_category_supplier'])->update("child_supplier_category", $data);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
-				'status'	=> 0
-			);
-		} else {
-			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
-				'status'	=> 1
-			);
-		}
-
-		echo json_encode($status);
+		$this->template->set($data);
+		$this->template->render('form');
 	}
-	public function saveEditinventory()
+
+	public function save()
 	{
-		$this->auth->restrict($this->addPermission);
-		$session = $this->session->userdata('app_session');
+		$this->auth->restrict($this->managePermission);
+		$post = $this->input->post();
+
+		$data = $post;
+		$data['id'] 				= $post['id'] ?: $this->Suppliers_model->generate_id();
+
+		$dataPIC = isset($post['PIC']) ? $post['PIC'] : [];
+		unset($data['PIC']);
+
 		$this->db->trans_begin();
-
-		$numb1 = 0;
-		foreach ($_POST['hd1'] as $h1) {
-			$numb1++;
-			$produk = $_POST['hd1']['1']['id_inventory'];
-			$header1 =  array(
-				'id_type'		    => $h1[inventory_1],
-				'nama'		        => $h1[nm_inventory],
-				'modified_on'		=> date('Y-m-d H:i:s'),
-				'modified_by'		=> $this->auth->user_id(),
-				'deleted'			=> '0'
-			);
-			//Add Data
-			$this->db->where('id_category1', $produk)->update("ms_inventory_category1", $header1);
-		}
-		if (empty($_POST['data1'])) {
+		if (isset($post['id']) && $post['id'] == '') {
+			$data['created_at'] 			= date('Y-m-d H:i:s');
+			$data['created_by'] 			= $this->auth->user_id();
+			$this->db->insert('suppliers', $data);
 		} else {
-			$numb2 = 0;
-			foreach ($_POST['data1'] as $d1) {
-				$numb2++;
+			$data['modified_at'] 			= date('Y-m-d H:i:s');
+			$data['modified_by'] 			= $this->auth->user_id();
+			$this->db->update('suppliers', $data, ['id' => $data['id']]);
+		}
 
-				$code = $_POST['hd1']['1']['id_inventory'];
-				$data1 =  array(
-					'id_category1' => $code,
-					'name_compotition' => $d1[name_compotition],
-					'deleted' => '0',
-					'created_on' => date('Y-m-d H:i:s'),
-					'created_by' => $session['id_user'],
+		$n = 0;
+		if ($dataPIC) {
+			foreach ($dataPIC as $pic) {
+				$n++;
+				$dataPic =  array(
+					'supplier_id'	=> $data['id'],
+					'name'			=> $pic['name'],
+					'phone_number'	=> $pic['phone_number'],
+					'email'			=> $pic['email'],
+					'position'		=> $pic['position']
 				);
-				//Add Data
-				$this->db->insert('ms_compotition', $data1);
+
+				if (isset($pic['id']) && $pic['id']) {
+					$check = $this->db->get_where('supplier_pic', ['id' => $pic['id']])->num_rows();
+					if (
+						$check > 0
+					) {
+						$this->db->update('supplier_pic', $pic, ['id' => $pic['id']]);
+					}
+				} else {
+					$this->db->insert('supplier_pic', $dataPic);
+				}
 			}
 		}
-		$numb3 = 0;
-		foreach ($_POST['data2'] as $d2) {
-			$numb3++;
-
-			$info = $d2['id_compotition'];
-			$data2 =  array(
-				'name_compotition' => $d2[name_compotition],
-				'deleted' => '0',
-				'modified_on' => date('Y-m-d H:i:s'),
-				'modified_by' => $session['id_user'],
-			);
-			//Add Data
-			$this->db->where('id_compotition', $info)->update("ms_compotition", $data2);
-		}
-
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
+			$errMsg = $this->db->error()['message'];
+			$return	= array(
+				'msg'		=> 'Failed save data Supplier.  Please try again. ' . $errMsg,
 				'status'	=> 0
 			);
+			$keterangan     = "FAILED save data Supplier " . $data['id'] . ", Supplier name : " . $data['supplier_name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->managePermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. invenThanks ...',
+			$return	= array(
+				'msg'		=> 'Success Save data Supplier.',
 				'status'	=> 1
 			);
+			$keterangan     = "SUCCESS save data Supplier " . $data['id'] . ", Supplier name : " . $data['supplier_name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->managePermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
 		}
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
+	}
 
-		echo json_encode($status);
-	}
-	function getkota()
+	function delete()
 	{
-		$id_prov = $_GET['id_prov'];
-		$data = $this->Suplier_model->carikota($id_prov);
-		echo "<select id='id_kota' name='id_kota' class='form-control input-sm select2'>";
-		echo "<option value=''>--Pilih--</option>";
-		foreach ($data as $key => $st) :
-			echo "<option value='$st->id_prov' set_select('id_kota', $st->id_prov, isset($data->id_prov) && $data->id_prov == $st->id_prov)>$st->nama_kota
-                    </option>";
-		endforeach;
-		echo "</select>";
-	}
-	public function saveNewinventoryold()
-	{
-		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$code = $this->Suplier_model->generate_id();
+		$id = $this->input->post('id');
+		$data = $this->db->get_where('suppliers', ['id' => $id])->row_array();
+
 		$this->db->trans_begin();
-		$data = [
-			'id_category1'	 	=> $code,
-			'id_type'		    => $post['inventory_1'],
-			'nama'		        => $post['nm_inventory'],
-			'aktif'				=> 'aktif',
-			'created_on'		=> date('Y-m-d H:i:s'),
-			'created_by'		=> $this->auth->user_id(),
-			'deleted'			=> '0'
-		];
-
-		$insert = $this->db->insert("ms_inventory_category1", $data);
-
+		$sql = $this->db->update('suppliers', ['status' => '0', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
+		$errMsg = $this->db->error()['message'];
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
+			$keterangan     = "FAILD " . $errMsg;
+			$status         = 0;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+			$return	= array(
+				'msg'		=> "Failed delete data Supplier. Please try again. " . $errMsg,
 				'status'	=> 0
 			);
 		} else {
 			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. invenThanks ...',
+			$return	= array(
+				'msg'		=> 'Delete data Supplier.',
 				'status'	=> 1
 			);
+			$keterangan     = "Delete data Supplier " . $data['id'] . ", Supplier name : " . $data['supplier_name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		}
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
+	}
+
+	function getProvince()
+	{
+		$country_id = $_GET['country_id'];
+		$search 	= isset($_GET['q']) ? $_GET['q'] : '';
+		$states 	= [];
+		if (isset($country_id) && $country_id) {
+			$states = $this->db->like(['name' => $search])->where(['country_id' => $country_id])->get('states')->result_array();
+		}
+		echo json_encode($states);
+	}
+
+	function getCities()
+	{
+		$state_id 	= $_GET['state_id'];
+		$search 	= ($_GET['q']) ? $_GET['q'] : '';
+		$cities 	= [];
+		if (isset($state_id) && $state_id) {
+			$cities = $this->db->like(['name' => $search])->where(['state_id' => $state_id])->get('cities')->result_array();
 		}
 
-		echo json_encode($status);
+		echo json_encode($cities);
+	}
+
+	/* PIC */
+
+	function deletePic()
+	{
+		$id = $this->input->post('id');
+		$data = $this->db->get_where('customer_pic', ['id' => $id])->row_array();
+
+		$this->db->trans_begin();
+		$sql = $this->db->update('customer_pic', ['status' => '2', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
+		$errMsg = $this->db->error()['message'];
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$keterangan     = "FAILD " . $errMsg;
+			$status         = 0;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+			$return	= array(
+				'msg'		=> "Failed delete data PIC Customer. Please try again. " . $errMsg,
+				'status'	=> 0
+			);
+		} else {
+			$this->db->trans_commit();
+			$return	= array(
+				'msg'		=> 'Delete data PIC Customer.',
+				'status'	=> 1
+			);
+			$keterangan     = "Delete data PCI Customer " . $data['id'] . ", PIC name : " . $data['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->addPermission;
+			$kode_universal = $data['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		}
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
 	}
 }

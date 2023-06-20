@@ -219,7 +219,6 @@
 	<div class="tab-content br-profile-body">
 		<div class="tab-pane fade active show" id="PIC">
 			<div class="card-body">
-
 				<table id="list-pic" class="table table-sm table-bordered border">
 					<thead class="bg-gray-200">
 						<tr>

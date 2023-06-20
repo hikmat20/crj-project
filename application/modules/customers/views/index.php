@@ -123,7 +123,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
             showLoaderOnConfirm: true,
             preConfirm: (login) => {
                 return $.ajax({
-                    url: siteurl + thisController + 'deleteCustomer',
+                    url: siteurl + thisController + 'delete',
                     type: "POST",
                     dataType: 'JSON',
                     data: {

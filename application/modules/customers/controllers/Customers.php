@@ -202,7 +202,7 @@ class Customers extends Admin_Controller
 		$data['bank_account_address'] 		= ($post['bank_account_address']) ?: null;
 		$data['swift_code'] 				= ($post['swift_code']) ?: null;
 
-		$dataPIC = $post['PIC'];
+		$dataPIC = isset($post['PIC']) ? $post['PIC'] : [];
 		unset($data['PIC']);
 		unset($data['nominal_dp']);
 		unset($data['sisa_pembayaran']);
@@ -270,7 +270,7 @@ class Customers extends Admin_Controller
 		echo json_encode($return);
 	}
 
-	function deleteCustomer()
+	function delete()
 	{
 		$id = $this->input->post('id');
 		$data = $this->db->get_where('customers', ['id_customer' => $id])->row_array();
@@ -329,7 +329,7 @@ class Customers extends Admin_Controller
 		echo json_encode($cities);
 	}
 
-	public function viewCustomer($id)
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
 		$session = $this->session->userdata('app_session');

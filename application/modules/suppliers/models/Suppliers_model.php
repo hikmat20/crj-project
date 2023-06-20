@@ -1,19 +1,19 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
- * @author Yunas Handra
- * @copyright Copyright (c) 2018, Yunas Handra
+ * @author Hikmat Aolia
+ * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is model class for table "Customer"
+ * This is model class for table "Supliers_model"
  */
 
-class Hscode_model extends BF_Model
+class Suppliers_model extends BF_Model
 {
 
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'hscodes';
+    protected $table_name = 'suppliers';
     protected $key        = 'id';
 
     /**
@@ -68,21 +68,11 @@ class Hscode_model extends BF_Model
     {
         $y = date('y');
         $count = 1;
-        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('hscodes')->where(['SUBSTR(id,4,2)' => $y])->get()->row()->id;
+        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('suppliers')->where(['SUBSTR(id,4,2)' => $y])->get()->row()->id;
         if ($maxID) {
             $count = $maxID + 1;
         }
-        $newID = "HSC$y-" . str_pad($count, 5, "0", STR_PAD_LEFT);
+        $newID = "SUP$y-" . str_pad($count, 5, "0", STR_PAD_LEFT);
         return $newID;
-    }
-
-    function get_data($table)
-    {
-        return $this->db->get($table)->result();
-    }
-
-    function getById($id)
-    {
-        return $this->db->get_where('customer', array('id_customer' => $id))->row_array();
     }
 }

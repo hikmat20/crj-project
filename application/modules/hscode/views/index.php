@@ -310,16 +310,15 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
             let col1 = row.find('td:eq(1)').text()
             let col2 = row.find('td:eq(2)').text()
             newRow += `
-        <td class="text-center"><i class="fa fa-edit"></i>
-        <input type="hidden"class="form-control" readonly name="requirement[` + type + `_` + n + `][id]" value="` + id + `">
-        <input type="hidden"class="form-control" readonly name="requirement[` + type + `_` + n + `][type]" value="` + type + `">
-        </td>
-        <td><input type="text" class="form-control" name="requirement[` + type + `_` + n + `][name]" placeholder="Requirement Name" value="` + col1 + `"></td>
-        <td><textarea type="text" class="form-control"  name="requirement[` + type + `_` + n + `][description]" placeholder="Description">` + col2 + `</textarea></td>
-        <td class="text-center">
-        <button type="button" class="btn btn-sm btn-warning cancelEditRQ" title="Cancel Edit" data-toggle="tooltip"><i class="fa fa-times"></i></button>
-        </td>
-        `
+            <td class="text-center"><i class="fa fa-edit"></i>
+            <input type="hidden"class="form-control" readonly name="requirement[` + type + `_` + n + `][id]" value="` + id + `">
+            <input type="hidden"class="form-control" readonly name="requirement[` + type + `_` + n + `][type]" value="` + type + `">
+            </td>
+            <td><input type="text" class="form-control" name="requirement[` + type + `_` + n + `][name]" placeholder="Requirement Name" value="` + col1 + `"></td>
+            <td><textarea type="text" class="form-control"  name="requirement[` + type + `_` + n + `][description]" placeholder="Description">` + col2 + `</textarea></td>
+            <td class="text-center">
+            <button type="button" class="btn btn-sm btn-warning cancelEditRQ" title="Cancel Edit" data-toggle="tooltip"><i class="fa fa-times"></i></button>
+            </td>`;
             // alert(col1)
             editRow.append(newRow);
             editRow.insertAfter(row.closest('tr'));

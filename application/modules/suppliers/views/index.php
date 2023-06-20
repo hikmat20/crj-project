@@ -5,585 +5,527 @@ $ENABLE_VIEW    = has_permission('Suppliers.View');
 $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 
 ?>
-<style type="text/css">
-	thead input {
-		width: 100%;
-	}
-</style>
-<div id='alert_edit' class="alert alert-success alert-dismissable" style="padding: 15px; display: none;"></div>
-<link rel="stylesheet" href="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.css') ?>">
 
+<div class="br-pagetitle">
+	<i class="tx-primary fa-4x <?php echo $template['page_icon']; ?>"></i>
+	<div>
+		<h4><?php echo $template['title']; ?></h4>
+		<p class="mg-b-0">Lorem ipsum dolor sit amet.</p>
+	</div>
+</div><!-- d-flex -->
 
-<div class="nav-tabs-supplier">
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#Local" data-toggle="tab" aria-expanded="true">Local Supplier</a></li>
-		<li><a href="#International" data-toggle="tab" aria-expanded="true">International Supplier</a></li>
-		<li class=""><a href="#Supplier_category" data-toggle="tab" aria-expanded="false">Master Supplier Category</a></li>
-	</ul>
+<div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
+	<?php echo Template::message(); ?>
+	<div class="btn-group hidden-sm-down">
+		<button class="btn btn-primary btn-oblong add" type="button" data-toggle="tooltip" data-placement="top" title="Add New Supplier"><i class="fa fa-plus">&nbsp;</i>Add New Supplier</button>
+	</div><!-- btn-group -->
+</div>
 
-	<div class="tab-content">
-		<div class="tab-pane active" id="Local">
-			<div class="box box-primary">
-				<div class="box-header">
-					<?php if ($ENABLE_VIEW) : ?>
-						<a class="btn btn-success btn-sm add_local" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Tambah Data</a>
-					<?php endif; ?>
-					<span class="pull-right"></span>
-				</div>
-				<div class="box-body">
-					<table id="example1" class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th width="5">#</th>
-								<th width="13%" hidden>Id Suplier</th>
-								<th>Kategori Supplier</th>
-								<th>Nama Suplier</th>
-								<th>Status</th>
-								<?php if ($ENABLE_MANAGE) : ?>
-									<th width="13%">Action</th>
-								<?php endif; ?>
-							</tr>
-						</thead>
-
-						<tbody>
-							<?php if (empty($results['lokal'])) {
-							} else {
-
-								$numb = 0;
-								foreach ($results['lokal'] as $lokal) {
-									$numb++; ?>
-									<tr>
-										<td><?= $numb; ?></td>
-										<td hidden><?= $lokal->id_suplier ?></td>
-										<td><?= $lokal->name_category_supplier ?></td>
-										<td><?= $lokal->name_suplier ?></td>
-
-										<td>
-											<?php if ($lokal->activation == 'aktif') { ?>
-												<label class="label label-success">Aktif</label>
-											<?php } else { ?>
-												<label class="label label-danger">Non Aktif</label>
-											<?php } ?>
-										</td>
-										<td style="padding-left:20px">
-											<?php if ($ENABLE_VIEW) : ?>
-												<a class="btn btn-primary btn-sm view_local" href="javascript:void(0)" title="View" data-id_suplier="<?= $lokal->id_suplier ?>"><i class="fa fa-eye"></i>
-												</a>
-											<?php endif; ?>
-
-											<?php if ($ENABLE_MANAGE) : ?>
-												<a class="btn btn-success btn-sm edit_local" href="javascript:void(0)" title="Edit" data-id_suplier="<?= $lokal->id_suplier ?>"><i class="fa fa-edit"></i>
-												</a>
-											<?php endif; ?>
-
-											<?php if ($ENABLE_DELETE) : ?>
-												<a class="btn btn-danger btn-sm delete_local" href="javascript:void(0)" title="Delete" data-id_suplier="<?= $lokal->id_suplier ?>"><i class="fa fa-trash"></i>
-												</a>
-											<?php endif; ?>
-										</td>
-									</tr>
-							<?php }
-							}  ?>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-
-		<div class="tab-pane " id="International">
-			<div class="box box-primary">
-				<div class="box-header">
-					<?php if ($ENABLE_VIEW) : ?>
-						<a class="btn btn-success btn-sm add_international" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Tambah Data</a>
-					<?php endif; ?>
-					<span class="pull-right"></span>
-				</div>
-				<div class="box-body">
-					<table id="example1" class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th width="5">#</th>
-								<th width="13%" hidden>Id Suplier</th>
-								<th>Kategori Supplier</th>
-								<th>Nama Supplier</th>
-								<th>Negara</th>
-								<th>Status</th>
-								<?php if ($ENABLE_MANAGE) : ?>
-									<th width="13%">Action</th>
-								<?php endif; ?>
-							</tr>
-						</thead>
-
-						<tbody>
-							<?php if (empty($results['international'])) {
-							} else {
-
-								$numb = 0;
-								foreach ($results['international'] as $international) {
-									$numb++; ?>
-									<tr>
-										<td><?= $numb; ?></td>
-										<td hidden><?= $international->id_suplier ?></td>
-										<td><?= $international->name_category_supplier ?></td>
-										<td><?= $international->name_suplier ?></td>
-										<td><?= $international->nm_negara ?></td>
-
-										<td>
-											<?php if ($international->activation == 'aktif') { ?>
-												<label class="label label-success">Aktif</label>
-											<?php } else { ?>
-												<label class="label label-danger">Non Aktif</label>
-											<?php } ?>
-										</td>
-										<td style="padding-left:20px">
-											<?php if ($ENABLE_VIEW) : ?>
-												<a class="btn btn-primary btn-sm view_international" href="javascript:void(0)" title="View" data-id_suplier="<?= $international->id_suplier ?>"><i class="fa fa-eye"></i>
-												</a>
-											<?php endif; ?>
-
-											<?php if ($ENABLE_MANAGE) : ?>
-												<a class="btn btn-success btn-sm edit_international" href="javascript:void(0)" title="Edit" data-id_suplier="<?= $international->id_suplier ?>"><i class="fa fa-edit"></i>
-												</a>
-											<?php endif; ?>
-
-											<?php if ($ENABLE_DELETE) : ?>
-												<a class="btn btn-danger btn-sm delete_international" href="javascript:void(0)" title="Delete" data-id_suplier="<?= $international->id_suplier ?>"><i class="fa fa-trash"></i>
-												</a>
-											<?php endif; ?>
-										</td>
-									</tr>
-							<?php }
-							}  ?>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-
-		<div class="tab-pane" id="Supplier_category">
-			<div class="box box-primary">
-				<div class="box-header">
-					<?php if ($ENABLE_VIEW) : ?>
-						<a class="btn btn-success btn-sm add_category" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add</a>
-					<?php endif; ?>
-					<span class="pull-right"></span>
-				</div>
-				<div class="box-body">
-					<table id="example1" class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th width="5">#</th>
-								<th width="13%" hidden>Id Category</th>
-								<th hidden>Kode Kategori</th>
-								<th>Nama Kategori</th>
-								<th>Status</th>
-								<?php if ($ENABLE_MANAGE) : ?>
-									<th width="13%">Aksi</th>
-								<?php endif; ?>
-							</tr>
-						</thead>
-
-						<tbody>
-							<?php if (empty($results['category'])) {
-							} else {
-
-								$numb3 = 0;
-								foreach ($results['category'] as $category) {
-									$numb3++; ?>
-									<tr>
-										<td><?= $numb3; ?></td>
-										<td hidden><?= $category->id_category_supplier ?></td>
-										<td hidden><?= $category->supplier_code ?></td>
-										<td><?= $category->name_category_supplier ?></td>
-
-										<td>
-											<?php if ($category->activation == 'active') { ?>
-												<label class="label label-success">Aktif</label>
-											<?php } else { ?>
-												<label class="label label-danger">Non Aktif</label>
-											<?php } ?>
-										</td>
-										<td style="padding-left:20px">
-											<?php if ($ENABLE_VIEW) : ?>
-												<a class="btn btn-primary btn-sm view_category" href="javascript:void(0)" title="View" data-id_category_supplier="<?= $category->id_category_supplier ?>"><i class="fa fa-eye"></i>
-												</a>
-											<?php endif; ?>
-
-											<?php if ($ENABLE_MANAGE) : ?>
-												<a class="btn btn-success btn-sm edit_category" href="javascript:void(0)" title="Edit" data-id_category_supplier="<?= $category->id_category_supplier ?>"><i class="fa fa-edit"></i>
-												</a>
-											<?php endif; ?>
-
-											<?php if ($ENABLE_DELETE) : ?>
-												<a class="btn btn-danger btn-sm delete_category" href="javascript:void(0)" title="Delete" data-id_category_supplier="<?= $category->id_category_supplier ?>"><i class="fa fa-trash"></i>
-												</a>
-											<?php endif; ?>
-										</td>
-									</tr>
-
-							<?php }
-							}  ?>
-						</tbody>
-					</table>
-				</div>
-			</div>
+<div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
+	<div class="card bd-gray-400">
+		<div class="table-wrapper">
+			<table id="dataTable" class="table table-bordered table-sm display table-striped" width="100%">
+				<thead>
+					<tr>
+						<th class="text-center desktop tablet mobile" width="50">No</th>
+						<th class="desktop tablet mobile tx-dark tx-bold">Supplier Name</th>
+						<th class="desktop tablet mobile">Telephone</th>
+						<th class="desktop tablet">Country</th>
+						<th class="desktop tablet" width="20%">email</th>
+						<th class="desktop">Address</th>
+						<th class="desktop text-center no-sort">Status</th>
+						<th width="100" class="desktop text-center no-sort">Action</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+				<tfoot>
+					<tr>
+						<th>No</th>
+						<th>Supplier Name</th>
+						<th>Telephone</th>
+						<th>Country</th>
+						<th>Email</th>
+						<th>Location</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</tfoot>
+			</table>
 		</div>
 	</div>
 </div>
-<!-- awal untuk modal dialog -->
-<!-- Modal -->
-<div class="modal modal-primary" id="dialog-rekap" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title" id="myModalLabel"><span class="fa fa-file-pdf-o"></span>&nbsp;Rekap Data Customer</h4>
+		<form id="data-form" method="post" data-parsley-validate>
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title tx-dark" id="myModalLabel"><span class="<?php echo $template['page_icon']; ?>"></span></h4>
+					<button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="submit" class="btn wd-100 btn-primary" id="save"><i class="fa fa-save mg-r-3"></i>
+						Save</button>
+					<button type="button" class="btn btn-danger wd-100" data-dismiss="modal">
+						<span class="fa fa-times"></span> Close</button>
+				</div>
 			</div>
-			<div class="modal-body" id="MyModalBody">
-				...
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">
-					<span class="glyphicon glyphicon-remove"></span> Close</button>
-			</div>
-		</div>
+		</form>
 	</div>
 </div>
 
-<div class="modal modal-default fade" id="dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title" id="myModalLabel"><span class="fa fa-users"></span>&nbsp;Data Supplier</h4>
-			</div>
-			<div class="modal-body" id="ModalView">
-				...
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-dismiss="modal">
-					<span class="glyphicon glyphicon-remove"></span> Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-</div>
-<!-- DataTables -->
-<script src="<?= base_url('assets/plugins/datatables/jquery.dataTables.min.js') ?>"></script>
-<script src="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.min.js') ?>"></script>
-<!-- End Modal Bidus-->
-<style>
-	.box-primary {
-
-		border: 1px solid #ddd;
-	}
-</style>
 <!-- page script -->
 <script type="text/javascript">
-	$(document).on('click', '.edit_category', function(e) {
-		var id = $(this).data('id_category_supplier');
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/EditCategory/' + id,
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
+	$(document).ready(function() {
+		loadData()
 
-			}
-		})
-	});
-
-	$(document).on('click', '.view_category', function() {
-		var id = $(this).data('id_category_supplier');
-		// alert(id);
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Detail Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/viewCategory/' + id,
-			data: {
-				'id': id
-			},
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-	$(document).on('click', '.edit_international', function(e) {
-		var id = $(this).data('id_suplier');
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/EditInternasional/' + id,
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-
-	$(document).on('click', '.view_international', function(e) {
-		var id = $(this).data('id_suplier');
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/ViewInternasional/' + id,
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-	$(document).on('click', '.edit_local', function(e) {
-		var id = $(this).data('id_suplier');
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/EditLokal/' + id,
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-
-	$(document).on('click', '.view_local', function(e) {
-		var id = $(this).data('id_suplier');
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/viewLokal/' + id,
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-	$(document).on('click', '.add_local', function() {
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Tambah Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/addLocal',
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-	$(document).on('click', '.add_international', function() {
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Tambah Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/addInternational',
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-	$(document).on('click', '.add_category', function() {
-		$("#head_title").html("<i class='fa fa-list-alt'></i><b>Tambah Data</b>");
-		$.ajax({
-			type: 'POST',
-			url: siteurl + 'master_suplier/addCategory',
-			success: function(data) {
-				$("#dialog-popup").modal();
-				$("#ModalView").html(data);
-
-			}
-		})
-	});
-
-
-	// DELETE DATA
-	$(document).on('click', '.delete_category', function(e) {
-		e.preventDefault()
-		var id = $(this).data('id_category_supplier');
-		// alert(id);
-		swal({
-				title: "Anda Yakin?",
-				text: "Data akan di hapus.",
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonClass: "btn-info",
-				confirmButtonText: "Ya, Hapus!",
-				cancelButtonText: "Batal",
-				closeOnConfirm: false
-			},
-			function() {
-				$.ajax({
-					type: 'POST',
-					url: siteurl + 'master_suplier/deleteCategory',
-					dataType: "json",
-					data: {
-						'id': id
-					},
-					success: function(result) {
-						if (result.status == '1') {
-							swal({
-									title: "Sukses",
-									text: "Data berhasil dihapus.",
-									type: "success"
-								},
-								function() {
-									window.location.reload(true);
-								})
-						} else {
-							swal({
-								title: "Error",
-								text: "Data error. Gagal hapus data",
-								type: "error"
-							})
-
-						}
-					},
-					error: function() {
-						swal({
-							title: "Error",
-							text: "Data error. Gagal request Ajax",
-							type: "error"
-						})
-					}
-				})
+		$(document).on('click', '.add', function() {
+			$("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
+			$("#dialog-popup .modal-title").html(
+				'<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> Add New Supplier');
+			$("#dialog-popup .modal-dialog").css({
+				'max-width': '90%'
 			});
+			$("#dialog-popup").modal();
+		});
 
-	});
-	// DELETE DATA
-	$(document).on('click', '.delete_local', function(e) {
-		e.preventDefault()
-		var id = $(this).data('id_suplier');
-		// alert(id);
-		swal({
-				title: "Anda Yakin?",
-				text: "Data akan di hapus.",
-				type: "warning",
+		$(document).on('click', '.edit', function() {
+			let id = $(this).data('id');
+			if (id) {
+				$("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+				$("#dialog-popup .modal-title").html(
+					'<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Customer');
+				$("#dialog-popup .modal-dialog").css({
+					'max-width': '90%'
+				});
+			} else {
+				$("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
+			}
+			$("#dialog-popup").modal();
+		});
+
+		$(document).on('click', '.delete', function() {
+			var swalWithBootstrapButtons = Swal.mixin({
+				customClass: {
+					confirmButton: 'btn btn-primary mg-r-10 wd-100',
+					cancelButton: 'btn btn-danger wd-100'
+				},
+				buttonsStyling: false
+			})
+
+			let id = $(this).data('id')
+			swalWithBootstrapButtons.fire({
+				title: "Confirm",
+				text: "Are you sure to Delete this data Customer?",
+				icon: "question",
 				showCancelButton: true,
-				confirmButtonClass: "btn-info",
-				confirmButtonText: "Ya, Hapus!",
-				cancelButtonText: "Batal",
-				closeOnConfirm: false
-			},
-			function() {
-				$.ajax({
-					type: 'POST',
-					url: siteurl + 'master_suplier/deletelokal',
-					dataType: "json",
-					data: {
-						'id': id
-					},
-					success: function(result) {
-						if (result.status == '1') {
-							swal({
-									title: "Sukses",
-									text: "Data berhasil dihapus.",
-									type: "success"
-								},
-								function() {
-									window.location.reload(true);
-								})
-						} else {
-							swal({
-								title: "Error",
-								text: "Data error. Gagal hapus data",
-								type: "error"
-							})
-
+				confirmButtonText: "<i class='fa fa-check'></i> Yes",
+				cancelButtonText: "<i class='fa fa-ban'></i> No",
+				showLoaderOnConfirm: true,
+				preConfirm: (login) => {
+					return $.ajax({
+						url: siteurl + thisController + 'delete',
+						type: "POST",
+						dataType: 'JSON',
+						data: {
+							id
+						},
+						error: function() {
+							Lobibox.notify('error', {
+								icon: 'fa fa-times',
+								position: 'top right',
+								showClass: 'zoomIn',
+								hideClass: 'zoomOut',
+								soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+								msg: 'Internal server error. Server timeout'
+							});
 						}
-					},
-					error: function() {
-						swal({
-							title: "Error",
-							text: "Data error. Gagal request Ajax",
-							type: "error"
+					});
+				},
+				allowOutsideClick: true
+			}).then((val) => {
+				if (val.isConfirmed) {
+					if (val.value.status == '1') {
+						Lobibox.notify('success', {
+							icon: 'fa fa-check',
+							msg: val.value.msg,
+							position: 'top right',
+							showClass: 'zoomIn',
+							hideClass: 'zoomOut',
+							soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+						});
+						$("#dialog-popup").modal('hide');
+						loadData()
+						$('.dataTables_length select').select2({
+							minimumResultsForSearch: -1
 						})
-					}
-				})
+					} else {
+						Lobibox.notify('warning', {
+							icon: 'fa fa-ban',
+							msg: val.value.msg,
+							position: 'top right',
+							showClass: 'zoomIn',
+							hideClass: 'zoomOut',
+							soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+						});
+					};
+				}
 			});
+		});
 
-	});
-	// DELETE DATA
-	$(document).on('click', '.delete_international', function(e) {
-		e.preventDefault()
-		var id = $(this).data('id_suplier');
-		// alert(id);
-		swal({
-				title: "Anda Yakin?",
-				text: "Data akan di hapus.",
-				type: "warning",
+		/* PIC */
+
+		$(document).on('click', '.del-item', function() {
+			$(this).parents('tr').fadeOut('slow').css('background-color', '#000')
+			setTimeout(() => {
+				$(this).parents('tr').remove()
+			}, 500);
+		})
+
+		$(document).on('click', '#add-pic', function() {
+			var n = 0;
+			n = $('table#list-pic tbody tr').length + 1;
+			var html = '';
+			html += `<tr id="tr_` + n + `" style="background-color:#fff5de">
+						<td class="text-center"><i class="fa fa-plus tx-10" aria-hidden="true"></i>
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][name]" placeholder="PIC Name"></td> 
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][phone_number]" placeholder="Phone Number"></td> 
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][email]" placeholder="Email"></td> 
+						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][position]" placeholder="Position"></td>
+						<td class="text-center"><button type="button" class="btn btn-sm btn-warning del-item" title="Hapus Data" data-role="qtip"><i class="fa fa-times"></i></button></td>
+					</tr>`;
+			$('table#list-pic tbody').append(html);
+		});
+
+		$(document).on('click', '.editPic', function() {
+			let n = 0
+			n = $('tr.rowEditPIC').length + 1
+			let id = $(this).data('id')
+			let row = $(this).parents('tr')
+			let editRow = $('<tr id="edit_' + n + '" class="rowEditPIC">')
+			let newRow = ''
+
+			let col1 = row.find('td:eq(1)').text()
+			let col2 = row.find('td:eq(2)').text()
+			let col3 = row.find('td:eq(3)').text()
+			let col4 = row.find('td:eq(4)').text()
+			newRow += `
+			<td class="text-center"><i class="fa fa-edit"></i>
+			<input type="hidden"class="form-control" readonly name="PIC[` + n + `][id]" value="` + id + `">
+			</td>
+			<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][name]" placeholder="PIC Name" value="` + col1 + `"></td>
+			<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][phone_number]" placeholder="Phone Number" value="` + col2 + `"></td>
+			<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][email]" placeholder="Email" value="` + col3 + `"></td>
+			<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][position]" placeholder="Position" value="` + col4 + `"></td>
+			<td class="text-center">
+			<button type="button" class="btn btn-sm btn-warning cancelEditPIC" title="Cancel Edit" data-toggle="tooltip"><i class="fa fa-times"></i></button>
+			</td>`
+			// alert(col1)
+			editRow.append(newRow);
+			editRow.insertAfter(row.closest('tr'));
+			row.hide()
+		})
+
+		$(document).on('click', '.cancelEditPIC', function() {
+			let prevRow = $(this).parents('tr').prev()
+			$(this).parents('tr').remove()
+			prevRow.show()
+		})
+
+		$(document).on('click', '.deletePic', function() {
+			var swalWithBootstrapButtons = Swal.mixin({
+				customClass: {
+					confirmButton: 'btn btn-primary mg-r-10 wd-100',
+					cancelButton: 'btn btn-danger wd-100'
+				},
+				buttonsStyling: false
+			})
+			const btn = $(this)
+			let id = $(this).data('id')
+			swalWithBootstrapButtons.fire({
+				title: "Confirm",
+				text: "Are you sure to Delete this data PIC Customer?",
+				icon: "question",
 				showCancelButton: true,
-				confirmButtonClass: "btn-info",
-				confirmButtonText: "Ya, Hapus!",
-				cancelButtonText: "Batal",
-				closeOnConfirm: false
-			},
-			function() {
-				$.ajax({
-					type: 'POST',
-					url: siteurl + 'master_suplier/deleteinternational',
-					dataType: "json",
-					data: {
-						'id': id
-					},
-					success: function(result) {
-						if (result.status == '1') {
-							swal({
-									title: "Sukses",
-									text: "Data berhasil dihapus.",
-									type: "success"
-								},
-								function() {
-									window.location.reload(true);
-								})
-						} else {
-							swal({
-								title: "Error",
-								text: "Data error. Gagal hapus data",
-								type: "error"
-							})
-
+				confirmButtonText: "<i class='fa fa-check'></i> Yes",
+				cancelButtonText: "<i class='fa fa-ban'></i> No",
+			}).then((val) => {
+				if (val.isConfirmed) {
+					$.ajax({
+						url: siteurl + thisController + 'deletePic',
+						type: "POST",
+						dataType: 'JSON',
+						data: {
+							id
+						},
+						success: function(result) {
+							if (result.status == '1') {
+								Lobibox.notify('success', {
+									icon: 'fa fa-check',
+									msg: result.msg,
+									position: 'top right',
+									showClass: 'zoomIn',
+									hideClass: 'zoomOut',
+									soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+								});
+								btn.parents('tr').addClass('bg-danger').fadeOut('slow').css('background-color', '#000')
+							} else {
+								Lobibox.notify('warning', {
+									icon: 'fa fa-ban',
+									msg: result.msg,
+									position: 'top right',
+									showClass: 'zoomIn',
+									hideClass: 'zoomOut',
+									soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+								});
+							};
+						},
+						error: function() {
+							Lobibox.notify('error', {
+								icon: 'fa fa-times',
+								position: 'top right',
+								showClass: 'zoomIn',
+								hideClass: 'zoomOut',
+								soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+								msg: 'Internal server error. Server timeout'
+							});
 						}
-					},
-					error: function() {
-						swal({
-							title: "Error",
-							text: "Data error. Gagal request Ajax",
-							type: "error"
-						})
-					}
-				})
+					});
+				}
 			});
+		});
 
-	});
+		$(document).on('submit', '#data-form', function(e) {
+			e.preventDefault()
+			var swalWithBootstrapButtons = Swal.mixin({
+				customClass: {
+					confirmButton: 'btn btn-primary mg-r-10 wd-100',
+					cancelButton: 'btn btn-danger wd-100'
+				},
+				buttonsStyling: false
+			})
 
-	$(function() {
+			let formData = new FormData($('#data-form')[0]);
+			swalWithBootstrapButtons.fire({
+				title: "Confirm",
+				text: "Are you sure to save this data Customer?",
+				icon: "question",
+				showCancelButton: true,
+				confirmButtonText: "<i class='fa fa-check'></i> Yes",
+				cancelButtonText: "<i class='fa fa-ban'></i> No",
+				showLoaderOnConfirm: true,
+				preConfirm: () => {
+					return $.ajax({
+						url: siteurl + thisController + 'save',
+						type: "POST",
+						data: formData,
+						cache: false,
+						dataType: 'json',
+						processData: false,
+						contentType: false,
+						error: function() {
+							Lobibox.notify('error', {
+								icon: 'fa fa-times',
+								position: 'top right',
+								showClass: 'zoomIn',
+								hideClass: 'zoomOut',
+								soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+								msg: 'Internal server error. Server timeout'
+							});
+						}
+					});
+				},
+				allowOutsideClick: true
+			}).then((val) => {
+				if (val.isConfirmed) {
+					if (val.value.status == '1') {
+						Lobibox.notify('success', {
+							icon: 'fa fa-check',
+							msg: val.value.msg,
+							position: 'top right',
+							showClass: 'zoomIn',
+							hideClass: 'zoomOut',
+							soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+						});
+						$("#dialog-popup").modal('hide');
+						loadData()
+						$('.dataTables_length select').select2({
+							minimumResultsForSearch: -1
+						})
+					} else {
+						Lobibox.notify('warning', {
+							icon: 'fa fa-ban',
+							msg: val.value.msg,
+							position: 'top right',
+							showClass: 'zoomIn',
+							hideClass: 'zoomOut',
+							soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+						});
+					};
+				}
+			});
+		});
 
-		// var table = $('#example1').DataTable( {
-		// orderCellsTop: true,
-		// fixedHeader: true
-		// } );
-		$("#form-area").hide();
-	});
+		$(document).on('change', '#country_id', function() {
+			let country_id = $('#country_id').val();
+			$('#state_id').val('null').trigger('change')
+			$('#city_id').val('null').trigger('change')
+			$('#state_id').select2({
+				ajax: {
+					url: siteurl + thisController + 'getProvince',
+					dataType: 'JSON',
+					type: 'GET',
+					delay: 100,
+					data: function(params) {
+						return {
+							country_id: country_id, // search term
+							q: params.term || '', // search term
+						};
+					},
+					processResults: function(res) {
+						return {
+							results: $.map(res, function(item) {
+								return {
+									id: item.id,
+									text: item.name
+								}
+							})
+						};
+					}
+				},
+				cache: true,
+				placeholder: 'Choose one',
+				dropdownParent: $('#data-form-supplier'),
+				width: "100%",
+				allowClear: true
+			})
+		})
 
+		$(document).on('change.select2', '#state_id', function() {
+			let state_id = $('#state_id').val();
+			$('#city_id').val('null').trigger('change')
+			$('#city_id').select2({
+				ajax: {
+					url: siteurl + thisController + 'getCities',
+					dataType: 'JSON',
+					type: 'GET',
+					delay: 100,
+					data: function(params) {
+						return {
+							state_id: state_id, // search term
+							q: (params.term) || '', // search term
+						};
+					},
+					processResults: function(res) {
+						return {
+							results: $.map(res, function(item) {
+								return {
+									id: item.id,
+									text: item.name
+								}
+							})
+						};
+					}
+				},
+				cache: true,
+				placeholder: 'Choose one',
+				dropdownParent: $('#data-form-supplier'),
+				width: "100%",
+				allowClear: true
+			})
+		})
 
-	//Delete
+		window.Parsley.on('form:validated', function() {
+			$('select').on('select2:select', function(evt) {
+				$("#country_id").parsley().validate();
+				$("#state_id").parsley().validate();
+				$("#city_id").parsley().validate();
+			});
+		});
+	})
 
-	function PreviewPdf(id) {
-		param = id;
-		tujuan = 'customer/print_request/' + param;
+	function loadData() {
+		var oTable = $('#dataTable').DataTable({
+			"processing": true,
+			"serverSide": true,
+			"stateSave": true,
+			"bAutoWidth": true,
+			"destroy": true,
+			"responsive": true,
+			"language": {
+				"sSearch": "",
+				'searchPlaceholder': 'Search...',
+				'processing': `<div class="sk-wave">
+                  <div class="sk-rect sk-rect1 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect2 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect3 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect4 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect5 bg-gray-800"></div>
+                </div>`,
+				"sLengthMenu": "Display _MENU_",
+				"sInfo": "Display <b>_START_</b> to <b>_END_</b> from <b>_TOTAL_</b> data",
+				"sInfoFiltered": "(filtered from _MAX_ total entries)",
+				"sZeroRecords": "<i>Data tidak tersedia</i>",
+				"sEmptyTable": "<i>Data tidak ditemukan</i>",
+				"oPaginate": {
+					"sPrevious": "<i class='fa fa-arrow-left' aria-hidden='true'></i>",
+					"sNext": "<i class='fa fa-arrow-right' aria-hidden='true'></i>"
+				}
+			},
+			"responsive": {
+				"breakpoints": [{
+						"name": 'desktop',
+						"width": Infinity
+					},
+					{
+						"name": 'tablet',
+						"width": 1148
+					},
+					{
+						"name": 'mobile',
+						"width": 680
+					},
+					{
+						"name": 'mobile-p',
+						"width": 320
+					}
+				],
+			},
+			"aaSorting": [
+				[1, "asc"]
+			],
+			"columnDefs": [{
+					"targets": 'no-sort',
+					"orderable": false,
+				}, {
+					"targets": 'text-center',
+					"className": 'text-center',
+				}, {
+					"targets": 'tx-dark tx-bold',
+					"className": 'tx-dark tx-bold',
+				}
 
-		$(".modal-body").html('<iframe src="' + tujuan + '" frameborder="no" width="570" height="400"></iframe>');
-	}
+			],
+			"sPaginationType": "simple_numbers",
+			"iDisplayLength": 10,
+			"aLengthMenu": [5, 10, 20, 50, 100, 150],
+			"ajax": {
+				url: siteurl + thisController + 'getData',
+				type: "post",
+				data: function(d) {
+					d.status = '1'
+				},
+				cache: false,
+				error: function() {
+					$(".my-grid-error").html("");
+					$("#my-grid").append(
+						'<tbody class="my-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>'
+					);
+					$("#my-grid_processing").css("display", "none");
+				}
+			}
+		});
 
-	function PreviewRekap() {
-		tujuan = 'customer/rekap_pdf';
-		$(".modal-body").html('<iframe src="' + tujuan + '" frameborder="no" width="100%" height="400"></iframe>');
 	}
 </script>

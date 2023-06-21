@@ -13,7 +13,7 @@ class Harbours_model extends BF_Model
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'sarbours';
+    protected $table_name = 'harbours';
     protected $key        = 'id';
 
     /**
@@ -67,14 +67,14 @@ class Harbours_model extends BF_Model
 
     function generate_id($kode = '')
     {
-        $query = $this->db->query("SELECT MAX(id_type) as max_id FROM ms_inventory_type");
-        $row = $query->row_array();
-        $thn = date('y');
-        $max_id = $row['max_id'];
-        $max_id1 = (int) substr($max_id, 3, 5);
-        $counter = $max_id1 + 1;
-        $idcust = "I" . $thn . str_pad($counter, 5, "0", STR_PAD_LEFT);
-        return $idcust;
+        $y = date('y');
+        $count = 1;
+        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('harbours')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
+        if ($maxID || $maxID > 0) {
+            $count = $maxID + 1;
+        }
+        $newID = "HB$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+        return $newID;
     }
 
     public function get_data($table, $where_field = '', $where_value = '')
@@ -86,10 +86,5 @@ class Harbours_model extends BF_Model
         }
 
         return $query->result();
-    }
-
-    function getById($id)
-    {
-        return $this->db->get_where('ms_inventory_type', array('id_type' => $id))->row_array();
     }
 }

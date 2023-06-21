@@ -81,6 +81,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
         </form>
     </div>
 </div>
+
 <!-- page script -->
 <script type="text/javascript">
     $(document).ready(function() {

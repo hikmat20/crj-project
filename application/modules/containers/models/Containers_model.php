@@ -64,17 +64,16 @@ class Containers_model extends BF_Model
         parent::__construct();
     }
 
-
     function generate_id($kode = '')
     {
-        $query = $this->db->query("SELECT MAX(id_type) as max_id FROM ms_inventory_type");
-        $row = $query->row_array();
-        $thn = date('y');
-        $max_id = $row['max_id'];
-        $max_id1 = (int) substr($max_id, 3, 5);
-        $counter = $max_id1 + 1;
-        $idcust = "I" . $thn . str_pad($counter, 5, "0", STR_PAD_LEFT);
-        return $idcust;
+        $y = date('y');
+        $count = 1;
+        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('containers')->where(['SUBSTR(id,4,2)' => date('y')])->get()->row()->id;
+        if ($maxID || $maxID > 0) {
+            $count = $maxID + 1;
+        }
+        $newID = "CNT$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+        return $newID;
     }
 
     public function get_data($table, $where_field = '', $where_value = '')

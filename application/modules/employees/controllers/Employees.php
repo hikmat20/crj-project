@@ -29,7 +29,7 @@ class Employees extends Admin_Controller
 			'Aktifitas/aktifitas_model',
 		));
 		$this->template->title('Employees Manager');
-		$this->template->page_icon('tx-primary fa-4x ');
+		$this->template->page_icon('tx-primary fa-4x fas fa-user-tie');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -150,6 +150,7 @@ class Employees extends Admin_Controller
 		$this->template->title('Employees');
 		$this->template->render('index');
 	}
+
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
@@ -221,7 +222,8 @@ class Employees extends Admin_Controller
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
 	}
-	public function viewKaryawan($id)
+
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
 		$this->template->page_icon('fa fa-edit');
@@ -254,7 +256,6 @@ class Employees extends Admin_Controller
 		$this->template->render('view_karyawan');
 	}
 
-
 	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
@@ -272,7 +273,6 @@ class Employees extends Admin_Controller
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
 			$this->db->insert("employees", $data);
 		}
-
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

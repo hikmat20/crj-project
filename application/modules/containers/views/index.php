@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Harbours.Add');
-$ENABLE_MANAGE  = has_permission('Harbours.Manage');
-$ENABLE_VIEW    = has_permission('Harbours.View');
-$ENABLE_DELETE  = has_permission('Harbours.Delete');
+$ENABLE_ADD     = has_permission('Containers.Add');
+$ENABLE_MANAGE  = has_permission('Containers.Manage');
+$ENABLE_VIEW    = has_permission('Containers.View');
+$ENABLE_DELETE  = has_permission('Containers.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -13,202 +13,357 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
     </div>
 </div>
 
-<div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3 pd-t-20">
-    <?php if ($ENABLE_VIEW) : ?>
-        <!-- <a class="btn btn-success btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus mg-r-5"></i>Add New Harbour</a> -->
+<div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
+    <?php echo Template::message(); ?>
+    <?php if ($ENABLE_ADD) : ?>
+        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Container</button>
     <?php endif; ?>
-    <div class="text-center">
-        <h1 class="tx-dark tx-bold tx-spacing-4" style="font-family: monospace;"><?= strtoupper('Under Construction...!!!'); ?></h1>
-        <img src="<?= base_url('assets/programmer.gif'); ?>" width="30%" alt="Programmer" class="rounded-10 shadow-sm">
-    </div>
 </div>
-<!-- awal untuk modal dialog -->
-<!-- Modal -->
-<div class="modal modal-primary fade effect-scale" id="dialog-rekap" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel"><span class="fa fa-file-pdf-o"></span>&nbsp;Rekap Data Customer</h4>
-            </div>
-            <div class="modal-body" id="MyModalBody">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    <span class="glyphicon glyphicon-remove"></span> Close</button>
-            </div>
+
+<div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
+    <div class="card bd-gray-400">
+        <div class="table-wrapper">
+            <table id="dataTable" width="100%" class="table display table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center desktop mobile tablet" width="30">No</th>
+                        <th class="desktop tablet tx-bold tx-dark">Name</th>
+                        <th class="desktop tablet text-center">Size</th>
+                        <th class="desktop tablet no-sort">Description</th>
+                        <th class="desktop text-center no-sort" width="100">Status</th>
+                        <?php if ($ENABLE_MANAGE) : ?>
+                            <th class="desktop text-center no-sort" width="100">Opsi</th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <th>No</th>
+                        <th>Name</th>
+                        <th>Size</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <?php if ($ENABLE_MANAGE) : ?>
+                            <th>Opsi</th>
+                        <?php endif; ?>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
 </div>
 
-<form id="data_form">
-    <div class="modal fade effect-scale" id="dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+<!-- Modal -->
+<div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form id="data-form" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="d-flex justify-content-between">
-                        <h4 class="modal-title" id="myModalLabel"><span class="fa fa-users"></span>&nbsp;Departement</h4>
-                    </div>
-                    <button type="button" class="btn close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
+                    <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 </div>
-                <div class="modal-body" id="ModalView"></div>
+                <div class="modal-body"></div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" name="save" id="save"><i class="fa fa-save"></i> Save</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">
-                        <span class="glyphicon glyphicon-remove"></span> Close</button>
+                    <button type="submit" class="btn wd-100 btn btn-primary" name="save" id="save"><i class="fa fa-save"></i>
+                        Save</button>
+                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
+                        <span class="fa fa-times"></span> Close</button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-</form>
+</div>
+
 
 <!-- page script -->
 <script type="text/javascript">
+    $(document).ready(function() {
+        loadData();
+    })
+
+
+    $(document).on('click', '.add', function() {
+        $.ajax({
+            type: 'POST',
+            url: siteurl + thisController + 'add',
+            success: function(data) {
+                $('#dialog-popup .modal-title').text("Add New Employee")
+                $('#dialog-popup .modal-dialog').css({
+                    'max-width': '70%'
+                })
+                $("#dialog-popup").modal();
+                $("#dialog-popup .modal-body").html(data);
+                $("#save").removeClass('d-none');
+            }
+        })
+    });
+
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
+        $.ajax({
+            type: 'POST',
+            url: siteurl + thisController + 'edit/' + id,
+            success: function(data) {
+                $('#dialog-popup .modal-title').text("Edit Employee")
+                $('#dialog-popup .modal-dialog').css({
+                    'max-width': '70%'
+                })
+                $("#dialog-popup").modal();
+                $("#dialog-popup .modal-body").html(data);
+                $("#save").removeClass('d-none');
+            }
+        })
+    });
+
+    $(document).on('click', '.view', function(e) {
+        var id = $(this).data('id_karyawan');
         $("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Inventory</b>");
         $.ajax({
             type: 'POST',
-            url: siteurl + thisController + '/edit/' + id,
+            url: siteurl + thisController + 'viewKaryawan/' + id,
             success: function(data) {
+                $('#dialog-popup .modal-title').text("Detail Karyawan")
+                $('#dialog-popup .modal-dialog').css({
+                    'max-width': '70%'
+                })
                 $("#dialog-popup").modal();
-                $("#ModalView").html(data);
-
+                $("#dialog-popup .modal-body").html(data);
+                $("#save").addClass('d-none');
             }
         })
     });
 
-    $(document).on('click', '.view', function() {
-        var id = $(this).data('id_inventory1');
-        // alert(id);
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Detail Inventory</b>");
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + '/view/' + id,
-            data: {
-                'id': id
-            },
-            success: function(data) {
-                $("#dialog-popup").modal();
-                $("#ModalView").html(data);
-
-            }
-        })
-    });
-    $(document).on('click', '.add', function() {
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Tambah Inventory</b>");
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + '/add',
-            success: function(data) {
-                $("#dialog-popup").modal();
-                $("#ModalView").html(data);
-
-            }
-        })
-    });
-
-
-    // DELETE DATA
     $(document).on('click', '.delete', function(e) {
         e.preventDefault()
-        var id = $(this).data('id');
-        // alert(id);
-        swal({
-                title: "Anda Yakin?",
-                text: "Data Inventory akan di hapus.",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-info",
-                confirmButtonText: "Ya, Hapus!",
-                cancelButtonText: "Batal",
-                closeOnConfirm: false
+        var swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                cancelButton: 'btn btn-danger wd-100'
             },
-            function() {
-                $.ajax({
+            buttonsStyling: false
+        })
+        let id = $(this).data('id');
+        swalWithBootstrapButtons.fire({
+            title: "Confirm!",
+            text: "Are you sure to delete this data?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "<i class='fa fa-check'></i> Yes",
+            cancelButtonText: "<i class='fa fa-ban'></i> No",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
                     type: 'POST',
-                    url: siteurl + thisController + '/delete',
-                    dataType: "json",
+                    url: siteurl + thisController + 'delete',
+                    dataType: "JSON",
                     data: {
                         'id': id
                     },
-                    success: function(result) {
-                        if (result.status == '1') {
-                            swal({
-                                    title: "Sukses",
-                                    text: "Data Inventory berhasil dihapus.",
-                                    type: "success"
-                                },
-                                function() {
-                                    window.location.reload(true);
-                                })
-                        } else {
-                            swal({
-                                title: "Error",
-                                text: "Data error. Gagal hapus data",
-                                type: "error"
-                            })
-
-                        }
-                    },
                     error: function() {
-                        swal({
-                            title: "Error",
-                            text: "Data error. Gagal request Ajax",
-                            type: "error"
-                        })
+                        Lobibox.notify('error', {
+                            title: 'Error!!!',
+                            icon: 'fa fa-times',
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            msg: 'Internal server error. Ajax process failed.'
+                        });
                     }
                 })
-            });
+            },
+            allowOutsideClick: true
+        }).then((val) => {
+            if (val.isConfirmed) {
+                if (val.value.status == '1') {
+                    Lobibox.notify('success', {
+                        title: 'Success',
+                        icon: 'fa fa-check',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: val.value.msg
+                    });
+                    $('#dialog-popup').modal('hide')
+                    loadData()
+
+                } else {
+                    Lobibox.notify('warning', {
+                        title: 'Warning',
+                        icon: 'fa fa-ban',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: val.value.msg
+                    });
+                };
+            }
+        })
 
     })
 
-    $(function() {
-        // $('#example1 thead tr').clone(true).appendTo( '#example1 thead' );
-        // $('#example1 thead tr:eq(1) th').each( function (i) {
-        // var title = $(this).text();
-        //alert(title);
-        // if (title == "#" || title =="Action" ) {
-        // $(this).html( '' );
-        // }else{
-        // $(this).html( '<input type="text" />' );
-        // }
+    $(document).on('submit', '#data-form', function(e) {
+        e.preventDefault()
+        var swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                cancelButton: 'btn btn-danger wd-100'
+            },
+            buttonsStyling: false
+        })
 
-        // $( 'input', this ).on( 'keyup change', function () {
-        // if ( table.column(i).search() !== this.value ) {
-        // table
-        // .column(i)
-        // .search( this.value )
-        // .draw();
-        // }else{
-        // table
-        // .column(i)
-        // .search( this.value )
-        // .draw();
-        // }
-        // } );
-        // } );
+        let formData = new FormData($('#data-form')[0]);
+        swalWithBootstrapButtons.fire({
+            title: "Anda Yakin?",
+            text: "Are you sure to save this data.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "<i class='fa fa-check'></i> Yes",
+            cancelButtonText: "<i class='fa fa-ban'></i> No",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                    type: 'POST',
+                    url: siteurl + thisController + 'save',
+                    dataType: "JSON",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    error: function() {
+                        Lobibox.notify('error', {
+                            title: 'Error!!!',
+                            icon: 'fa fa-times',
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            msg: 'Internal server error. Ajax process failed.'
+                        });
+                    }
+                })
+            },
+            allowOutsideClick: true
+        }).then((val) => {
+            console.log(val);
+            if (val.isConfirmed) {
+                if (val.value.status == '1') {
+                    Lobibox.notify('success', {
+                        icon: 'fa fa-check',
+                        msg: val.value.msg,
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                    });
+                    $("#dialog-popup").modal('hide');
+                    loadData()
+                    $('.dataTables_length select').select2({
+                        minimumResultsForSearch: -1
+                    })
+                } else {
+                    Lobibox.notify('warning', {
+                        icon: 'fa fa-ban',
+                        msg: val.value.msg,
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                    });
+                };
+            }
+        })
 
-        // var table = $('#example1').DataTable( {
-        // orderCellsTop: true,
-        // fixedHeader: true
-        // } );
-        $("#form-area").hide();
-    });
+    })
 
+    function loadData() {
 
-    //Delete
+        var oTable = $('#dataTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "stateSave": true,
+            "bAutoWidth": true,
+            "destroy": true,
+            "responsive": true,
+            "language": {
+                "sSearch": "",
+                'searchPlaceholder': 'Search...',
+                'processing': `<div class="sk-wave">
+                  <div class="sk-rect sk-rect1 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect2 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect3 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect4 bg-gray-800"></div>
+                  <div class="sk-rect sk-rect5 bg-gray-800"></div>
+                </div>`,
+                "sLengthMenu": "Display _MENU_",
+                "sInfo": "Display <b>_START_</b> to <b>_END_</b> from <b>_TOTAL_</b> data",
+                "sInfoFiltered": "(filtered from _MAX_ total entries)",
+                // "sZeroRecords": "<i>Data tidak tersedia</i>",
+                // "sEmptyTable": "<i>Data tidak ditemukan</i>",
+                "oPaginate": {
+                    "sPrevious": "<i class='fa fa-arrow-left' aria-hidden='true'></i>",
+                    "sNext": "<i class='fa fa-arrow-right' aria-hidden='true'></i>"
+                }
+            },
+            "responsive": {
+                "breakpoints": [{
+                        "name": 'desktop',
+                        "width": Infinity
+                    },
+                    {
+                        "name": 'tablet',
+                        "width": 1148
+                    },
+                    {
+                        "name": 'mobile',
+                        "width": 680
+                    },
+                    {
+                        "name": 'mobile-p',
+                        "width": 320
+                    }
+                ],
+            },
+            "aaSorting": [
+                [1, "asc"]
+            ],
+            "columnDefs": [{
+                    "targets": 'no-sort',
+                    "orderable": false,
+                }, {
+                    "targets": 'text-center',
+                    "className": 'text-center',
+                }, {
+                    "targets": 'tx-bold tx-dark',
+                    "className": 'tx-bold tx-dark',
+                }, {
+                    "targets": 'text-right',
+                    "className": 'text-right',
+                }
 
-    function PreviewPdf(id) {
-        param = id;
-        tujuan = 'customer/print_request/' + param;
+            ],
+            "sPaginationType": "simple_numbers",
+            "iDisplayLength": 10,
+            "aLengthMenu": [5, 10, 20, 50, 100, 150],
+            "ajax": {
+                url: siteurl + thisController + 'getData',
+                type: "post",
+                data: function(d) {
+                    d.status = '1'
+                },
+                cache: false,
+                error: function() {
+                    $(".my-grid-error").html("");
+                    $("#my-grid").append(
+                        '<tbody class="my-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>'
+                    );
+                    $("#my-grid_processing").css("display", "none");
+                },
 
-        $(".modal-body").html('<iframe src="' + tujuan + '" frameborder="no" width="570" height="400"></iframe>');
-    }
-
-    function PreviewRekap() {
-        tujuan = 'customer/rekap_pdf';
-        $(".modal-body").html('<iframe src="' + tujuan + '" frameborder="no" width="100%" height="400"></iframe>');
+            }
+        });
     }
 </script>

@@ -17,10 +17,19 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="size" class="tx-dark tx-bold">Container Size <span class="tx-danger">*</span></label>
+			<label for="volume" class="tx-dark tx-bold">Capacity <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
-			<input type="number" class="form-control text-right" id="size" required name="size" value="<?= (isset($countainer)) ? $countainer->size : null; ?>" min="0" placeholder="0">
+			<div class="input-group">
+				<input type="number" class="form-control text-right" id="volume" required name="volume" value="<?= (isset($countainer)) ? $countainer->volume : null; ?>" min="0" placeholder="0">
+				<div class="input-group-append">
+					<span class="input-group-text">CBM</span>
+				</div>
+				<input type="number" class="form-control text-right" id="weight" required name="weight" value="<?= (isset($countainer)) ? $countainer->weight : null; ?>" min="0" placeholder="0">
+				<div class="input-group-append">
+					<span class="input-group-text">TON</span>
+				</div>
+			</div>
 		</div>
 	</div>
 

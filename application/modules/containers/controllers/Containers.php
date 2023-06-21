@@ -51,7 +51,8 @@ class Containers extends Admin_Controller
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM containers, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`name` LIKE '%$string%'
-        OR size LIKE '%$string%'
+        OR `volume` LIKE '%$string%'
+        OR `weight` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -62,9 +63,10 @@ class Containers extends Admin_Controller
 		$columns_order_by = array(
 			0 => 'num',
 			1 => 'name',
-			2 => 'size',
-			3 => 'description',
-			4 => 'status',
+			2 => 'volume',
+			3 => 'weight',
+			4 => 'description',
+			5 => 'status',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -106,7 +108,8 @@ class Containers extends Admin_Controller
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['name'];
-			$nestedData[]  = $row['size'];
+			$nestedData[]  = $row['volume'];
+			$nestedData[]  = $row['weight'];
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -162,7 +165,7 @@ class Containers extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
-		$data['id'] = isset($post['id']) && $post['id'] ?: $this->Containers_model->generate_id();
+		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Containers_model->generate_id();
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
@@ -208,23 +211,41 @@ class Containers extends Admin_Controller
 	{
 		$this->auth->restrict($this->deletePermission);
 		$id = $this->input->post('id');
+		$container = $this->db->get_where('containers')->row_array();
+		$data = [
+			'status' => 0,
+			'deleted_by' => $this->auth->user_id(),
+			'deleted_at' => date('Y-m-d H:i:s'),
+		];
 		$this->db->trans_begin();
-		$this->db->delete('department', array('id' => $id));
+		$this->db->update('containers', $data, ['id' => $id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
-			$status	= array(
-				'pesan'		=> 'Gagal Save Item. Thanks ...',
+			$return	= array(
+				'msg'		=> 'Failed delete data Container.  Please try again.',
 				'status'	=> 0
 			);
+			$keterangan     = "FAILD delete data Container " . $container['id'] . ", Container name : " . $container['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $container['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
-			$status	= array(
-				'pesan'		=> 'Success Save Item. Thanks ...',
+			$return	= array(
+				'msg'		=> 'Success delete data Container.',
 				'status'	=> 1
 			);
+			$keterangan     = "SUCCESS delete data Container " . $container['id'] . ", Container name : " . $container['name'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $container['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
 		}
-
-		echo json_encode($status);
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
 	}
 }

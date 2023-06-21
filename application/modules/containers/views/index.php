@@ -28,7 +28,8 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop tablet tx-bold tx-dark">Name</th>
-                        <th class="desktop tablet text-center">Size</th>
+                        <th class="desktop tablet text-center">Volume</th>
+                        <th class="desktop tablet text-center">Weight</th>
                         <th class="desktop tablet no-sort">Description</th>
                         <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>

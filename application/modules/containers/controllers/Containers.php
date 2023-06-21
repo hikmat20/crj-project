@@ -5,10 +5,10 @@ if (!defined('BASEPATH')) {
 }
 
 /*
- * @author Ichsan
- * @copyright Copyright (c) 2019, Ichsan
+ * @author Hikmat Aolia
+ * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is controller for Master Supplier
+ * This is controller for Master Container
  */
 
 class Containers extends Admin_Controller
@@ -28,8 +28,8 @@ class Containers extends Admin_Controller
 			'Containers/Containers_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->page_icon('fas fa-truck-moving');
-		$this->template->title('Manage Truck');
+		$this->template->title('Manage Containers');
+		$this->template->page_icon('tx-primary fa-4x fas fa-truck-moving');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}

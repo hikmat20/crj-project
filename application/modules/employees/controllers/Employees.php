@@ -5,10 +5,10 @@ if (!defined('BASEPATH')) {
 }
 
 /*
- * @author Ichsan
- * @copyright Copyright (c) 2019, Ichsan
+ * @author Hikmat Aolia
+ * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is controller for Master Supplier
+ * This is controller for Master Employee
  */
 
 class Employees extends Admin_Controller
@@ -29,7 +29,7 @@ class Employees extends Admin_Controller
 			'Aktifitas/aktifitas_model',
 		));
 		$this->template->title('Employees Manager');
-		$this->template->page_icon('fa fa-building-o');
+		$this->template->page_icon('tx-primary fa-4x ');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}

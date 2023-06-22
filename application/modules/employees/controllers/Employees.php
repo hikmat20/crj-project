@@ -45,12 +45,13 @@ class Employees extends Admin_Controller
 		$length         = $requestData['length'];
 
 		$where = "";
-		$where = " AND `status` = '$status'";
+		$where = " AND `status` <> '$status'";
 
 		$string = $this->db->escape_like_str($search);
-		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
+		$sql = "SELECT employees.*,(@row_number:=@row_number + 1) AS num
         FROM employees, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`name` LIKE '%$string%'
+        OR employee_code LIKE '%$string%'
         OR phone_number LIKE '%$string%'
         OR email LIKE '%$string%'
         OR `address` LIKE '%$string%'
@@ -62,15 +63,12 @@ class Employees extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'name',
-			2 => 'phone_number',
-			3 => 'email',
-			4 => 'address',
-			5 => 'status',
+			1 => 'employee_code',
+			2 => 'name',
+			3 => 'phone_number',
+			4 => 'email',
+			5 => 'address',
 			6 => 'status',
-			7 => 'status',
-			8 => 'status',
-			// 6 => '',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -97,7 +95,6 @@ class Employees extends Admin_Controller
 			'P' => 'Perempuan',
 		];
 
-		/* Button */
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
 			$total_data     = $totalData;
@@ -121,12 +118,11 @@ class Employees extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
+			$nestedData[]  = $row['employee_code'];
 			$nestedData[]  = $row['name'];
 			$nestedData[]  = $row['phone_number'];
 			$nestedData[]  = $row['email'];
 			$nestedData[]  = $row['address'];
-			$nestedData[]  = $gender[$row['gender']];
-			$nestedData[]  = $empType[$row['employee_type']];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;

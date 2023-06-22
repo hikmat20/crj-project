@@ -22,7 +22,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
     <div class="card bd-gray-400">
         <div class="table-wrapper">
-            <table id="dataTable" class="table table-bordered display table-striped" width="100%">
+            <table id="dataTable" class="table table-bordered display table-striped border-right-0 border-left-0" width="100%">
                 <thead>
                     <tr>
                         <th width="10">#</th>
@@ -434,7 +434,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
                 url: siteurl + thisController + 'getData',
                 type: "post",
                 data: function(d) {
-                    d.status = '1'
+                    d.status = 'D'
                 },
                 cache: false,
                 error: function() {

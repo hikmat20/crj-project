@@ -8,7 +8,7 @@ if (!defined('BASEPATH')) {
  * @author Hikmat Aolia
  * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is controller for Master Harbour Port
+ * This is controller for Master Fee Value Port
  */
 
 class Fee_values extends Admin_Controller
@@ -49,10 +49,9 @@ class Fee_values extends Admin_Controller
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM view_harbours, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`country_name` LIKE '%$string%'
-        OR `country_code` LIKE '%$string%'
-        OR `city_name` LIKE '%$string%'
+        FROM fee_values, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (`minimum_value` LIKE '%$string%'
+        OR `fee` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -62,8 +61,8 @@ class Fee_values extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'country_code',
-			2 => 'city_name',
+			1 => 'minimum_value',
+			2 => 'fee',
 			3 => 'description',
 			4 => 'status',
 		);
@@ -106,10 +105,10 @@ class Fee_values extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
-			$nestedData[]  = $row['city_name'];
+			$nestedData[]  = "Rp. " . number_format($row['minimum_value']);
+			$nestedData[]  = $row['fee'];
 			$nestedData[]  = $row['description'];
-			$nestedData[]  = $status[$row['status']];
+			// $nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;
@@ -129,8 +128,8 @@ class Fee_values extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$this->template->render('under-construction');
-		// $this->template->render('index');
+		// $this->template->render('under-construction');
+		$this->template->render('index');
 	}
 
 	public function add()
@@ -144,11 +143,9 @@ class Fee_values extends Admin_Controller
 	public function edit($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$port = $this->db->get_where('harbours', array('id' => $id))->row();
-		$countries = $this->db->get('countries')->result();
+		$fee = $this->db->get_where('fee_values', array('id' => $id))->row();
 		$data = [
-			'port' 		=> $port,
-			'countries'	 	=> $countries,
+			'fee' 		=> $fee,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
@@ -166,28 +163,32 @@ class Fee_values extends Admin_Controller
 	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$data = $post;
+		$post 		= $this->input->post();
+		$data 		= $post;
+		echo '<pre>';
+		print_r($data);
+		echo '</pre>';
+		exit;
 		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_values_model->generate_id();
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("harbours", $data);
+			$this->db->where('id', $post['id'])->update("fee_values", $data);
 		} else {
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("harbours", $data);
+			$this->db->insert("fee_values", $data);
 		}
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed save data Harbour.  Please try again.',
+				'msg'		=> 'Failed save data Fee Value.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "FAILD save data Fee Value " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -196,10 +197,10 @@ class Fee_values extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success Save data Harbour.',
+				'msg'		=> 'Success Save data Fee Value.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "SUCCESS save data Fee Value " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -213,38 +214,38 @@ class Fee_values extends Admin_Controller
 	public function delete()
 	{
 		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		$container = $this->db->get_where('harbours')->row_array();
-		$data = [
+		$id 	= $this->input->post('id');
+		$fee 	= $this->db->get_where('fee_values')->row_array();
+		$data 	= [
 			'status' => 0,
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];
 		$this->db->trans_begin();
-		$this->db->update('harbours', $data, ['id' => $id]);
+		$this->db->update('fee_values', $data, ['id' => $id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed delete data Harbour.  Please try again.',
+				'msg'		=> 'Failed delete data Fee Value.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "FAILD delete data Fee Value " . $fee['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $fee['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success delete data Harbour.',
+				'msg'		=> 'Success delete data Fee Value.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "SUCCESS delete data Fee Value " . $fee['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $fee['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}

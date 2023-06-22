@@ -11,13 +11,13 @@ if (!defined('BASEPATH')) {
  * This is controller for Master Harbour Port
  */
 
-class Fee_values extends Admin_Controller
+class Shipping_lines extends Admin_Controller
 {
 	//Permission
-	protected $viewPermission 	= 'Fee_values.View';
-	protected $addPermission  	= 'Fee_values.Add';
-	protected $managePermission = 'Fee_values.Manage';
-	protected $deletePermission = 'Fee_values.Delete';
+	protected $viewPermission 	= 'Shipping_lines.View';
+	protected $addPermission  	= 'Shipping_lines.Add';
+	protected $managePermission = 'Shipping_lines.Manage';
+	protected $deletePermission = 'Shipping_lines.Delete';
 
 	public function __construct()
 	{
@@ -25,7 +25,7 @@ class Fee_values extends Admin_Controller
 
 		$this->load->library(array('upload', 'Image_lib'));
 		$this->load->model(array(
-			'Fee_values/Fee_values_model',
+			'Shipping_lines/Shipping_lines_model',
 			'Aktifitas/aktifitas_model',
 		));
 		$this->template->title('Manage Fee Values');
@@ -168,7 +168,7 @@ class Fee_values extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
-		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_values_model->generate_id();
+		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Shipping_lines_model->generate_id();
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {

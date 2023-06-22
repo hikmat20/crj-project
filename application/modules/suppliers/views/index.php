@@ -33,8 +33,11 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 						<th class="desktop tablet">Country</th>
 						<th class="desktop tablet" width="20%">email</th>
 						<th class="desktop">Address</th>
-						<th class="desktop text-center no-sort">Status</th>
-						<th width="100" class="desktop text-center no-sort">Action</th>
+						<th class="desktop text-center">Supplier Type</th>
+						<th class="desktop text-center">Status</th>
+						<?php if ($ENABLE_MANAGE) : ?>
+							<th width="110" class="desktop text-center no-sort">Action</th>
+						<?php endif; ?>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -46,8 +49,11 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 						<th>Country</th>
 						<th>Email</th>
 						<th>Location</th>
+						<th>Supplier Type</th>
 						<th>Status</th>
-						<th>Action</th>
+						<?php if ($ENABLE_MANAGE) : ?>
+							<th>Action</th>
+						<?php endif; ?>
 					</tr>
 				</tfoot>
 			</table>
@@ -514,7 +520,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 				url: siteurl + thisController + 'getData',
 				type: "post",
 				data: function(d) {
-					d.status = '1'
+					d.status = 'D'
 				},
 				cache: false,
 				error: function() {

@@ -45,7 +45,7 @@ class Suppliers extends Admin_Controller
 		$length = $requestData['length'];
 
 		$where = '';
-		$where = " AND `status` = '$status'";
+		$where = " AND `status` <> '$status'";
 
 		$string = $this->db->escape_like_str($search);
 
@@ -56,6 +56,7 @@ class Suppliers extends Admin_Controller
         OR `country_code` LIKE '%$string%'
         OR `email` LIKE '%$string%'
         OR `address` LIKE '%$string%'
+        OR `supplier_type_name` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
 
@@ -69,7 +70,8 @@ class Suppliers extends Admin_Controller
 			3 => 'country_code',
 			4 => 'email',
 			5 => 'address',
-			6 => 'status',
+			6 => 'supplier_type_name',
+			7 => 'status',
 		];
 
 		$sql .= ' ORDER BY ' . $columns_order_by[$column] . ' ' . $dir . ' ';
@@ -114,6 +116,7 @@ class Suppliers extends Admin_Controller
 			$nestedData[] = $row['country_code'] . ' - ' . $row['country_name'];
 			$nestedData[] = $row['email'];
 			$nestedData[] = $row['address'];
+			$nestedData[] = $row['supplier_type_name'];
 			$nestedData[] = $status[$row['status']];
 			$nestedData[] = $buttons;
 			$data[] = $nestedData;
@@ -141,11 +144,11 @@ class Suppliers extends Admin_Controller
 	{
 		$this->auth->restrict($this->addPermission);
 		$countries = $this->db->get('countries')->result();
-		$marketing = $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
+		$supplier_types = $this->db->get('supplier_types')->result();
 
 		$data = [
 			'countries' => $countries,
-			'marketing' => $marketing,
+			'supplier_types' => $supplier_types,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
@@ -159,13 +162,14 @@ class Suppliers extends Admin_Controller
 		$countries 				= $this->db->get_where('countries')->result();
 		$states 				= $this->db->get_where('states', ['country_id' => $supplier->country_id])->result();
 		$cities 				= $this->db->get_where('cities', ['state_id' => $supplier->state_id])->result();
-
+		$supplier_types = $this->db->get('supplier_types')->result();
 		$data = [
 			'supplier'					=> $supplier,
 			'countries' 				=> $countries,
 			'PIC' 						=> $pic,
 			'states' 					=> $states,
 			'cities' 					=> $cities,
+			'supplier_types' 			=> $supplier_types,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
@@ -254,7 +258,7 @@ class Suppliers extends Admin_Controller
 		$data = $this->db->get_where('suppliers', ['id' => $id])->row_array();
 
 		$this->db->trans_begin();
-		$sql = $this->db->update('suppliers', ['status' => '0', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
+		$sql = $this->db->update('suppliers', ['status' => 'D', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id' => $id]);
 		$errMsg = $this->db->error()['message'];
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

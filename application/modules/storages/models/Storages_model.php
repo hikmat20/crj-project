@@ -7,13 +7,13 @@
  * This is model class for table "Customer"
  */
 
-class Fee_values_model extends BF_Model
+class Storages_model extends BF_Model
 {
 
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'fee_values';
+    protected $table_name = 'storages';
     protected $key        = 'id';
 
     /**

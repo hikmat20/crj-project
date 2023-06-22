@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Harbours.Add');
-$ENABLE_MANAGE  = has_permission('Harbours.Manage');
-$ENABLE_VIEW    = has_permission('Harbours.View');
-$ENABLE_DELETE  = has_permission('Harbours.Delete');
+$ENABLE_ADD     = has_permission('Fee_values.Add');
+$ENABLE_MANAGE  = has_permission('Fee_values.Manage');
+$ENABLE_VIEW    = has_permission('Fee_values.View');
+$ENABLE_DELETE  = has_permission('Fee_values.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -16,7 +16,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
 <div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php echo Template::message(); ?>
     <?php if ($ENABLE_ADD) : ?>
-        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Port</button>
+        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Fee</button>
     <?php endif; ?>
 </div>
 
@@ -27,10 +27,10 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Country</th>
-                        <th class="desktop tablet text-center">City</th>
+                        <th class="desktop tablet tx-bold tx-dark -center">Minimum Value</th>
+                        <th class="desktop tablet text-center">Fee (%)</th>
                         <th class="desktop tablet no-sort">Description</th>
-                        <th class="desktop text-center no-sort" width="100">Status</th>
+                        <!-- <th class="desktop text-center no-sort" width="100">Status</th> -->
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
                         <?php endif; ?>
@@ -40,10 +40,10 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Country</th>
-                        <th>City</th>
+                        <th>Minimum Value</th>
+                        <th>Fee (%)</th>
                         <th>Description</th>
-                        <th>Status</th>
+                        <!-- <th>Status</th> -->
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>
@@ -80,6 +80,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
 <script type="text/javascript">
     $(document).ready(function() {
         loadData();
+
     })
 
 
@@ -88,7 +89,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
             type: 'POST',
             url: siteurl + thisController + 'add',
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Add New Employee")
+                $('#dialog-popup .modal-title').text("Add New Fee")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '70%'
                 })
@@ -105,7 +106,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
             type: 'POST',
             url: siteurl + thisController + 'edit/' + id,
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Edit Employee")
+                $('#dialog-popup .modal-title').text("Edit Fee")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '70%'
                 })
@@ -340,8 +341,8 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                     "targets": 'tx-bold tx-dark',
                     "className": 'tx-bold tx-dark',
                 }, {
-                    "targets": 'text-right',
-                    "className": 'text-right',
+                    "targets": 'tx-right',
+                    "className": 'tx-right',
                 }
 
             ],

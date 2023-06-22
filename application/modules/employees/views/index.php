@@ -24,32 +24,30 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
     <div class="card bd-gray-400">
         <div class="table-wrapper">
-            <table id="dataTable" width="100%" class="table display table-bordered table-hover table-striped">
+            <table id="dataTable" width="100%" class="table display table-bordered table-hover table-striped border-left-0 border-right-0">
                 <thead>
                     <tr>
-                        <th width="5">#</th>
-                        <th class="desktop tablet tx-bold tx-dark" width="13%">NIK</th>
-                        <th class="desktop tablet ">Employee Name</th>
-                        <th class="desktop tablet">Departement</th>
-                        <th class="desktop tex-center">Birth Place And Date</th>
-                        <th class="desktop tex-center">Gender</th>
-                        <th class="desktop tex-center">Employee Status</th>
-                        <th class="desktop tex-center">Status</th>
+                        <th width="15" class="text-center">No</th>
+                        <th class="desktop tablet tx-bold tx-dark" width="120">Employee Code</th>
+                        <th class="desktop tablet tx-bold tx-dark" width="150">Employee Name</th>
+                        <th class="desktop">Phone Number</th>
+                        <th class="desktop">Email</th>
+                        <th class="desktop">Address</th>
+                        <th class="desktop text-center">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center" width="100">Opsi</th>
+                            <th class="desktop text-center no-sort" width="120">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody></tbody>
                 <tfoot>
                     <tr>
-                        <th>#</th>
-                        <th>NIK</th>
+                        <th>No</th>
+                        <th>Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Birth Place And Date</th>
-                        <th>Gender</th>
-                        <th>Employee Status</th>
-                        <th>Departement</th>
+                        <th>Phone Number</th>
+                        <th>Email</th>
+                        <th>Address</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
@@ -64,10 +62,10 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
 
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form id="data-form">
+        <form id="data-form" method="post" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
+                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"></h4>
                     <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 </div>
                 <div class="modal-body"></div>
@@ -93,7 +91,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
             type: 'POST',
             url: siteurl + thisController + 'add',
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Add New Employee")
+                $('#dialog-popup .modal-title').html("<span class='fas fa-user-tie'></span>&nbsp;Add New Employee")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '90%'
                 })
@@ -110,7 +108,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
             type: 'POST',
             url: siteurl + thisController + 'edit/' + id,
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Edit Employee")
+                $('#dialog-popup .modal-title').html("<span class='fas fa-user-tie'></span>&nbsp;Edit Employee")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '90%'
                 })
@@ -354,7 +352,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
                 url: siteurl + thisController + 'getData',
                 type: "post",
                 data: function(d) {
-                    d.status = '1'
+                    d.status = 'D'
                 },
                 cache: false,
                 error: function() {

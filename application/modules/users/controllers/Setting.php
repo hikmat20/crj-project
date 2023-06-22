@@ -511,10 +511,7 @@ class Setting extends Admin_Controller
             if (isset($_POST['password']) && $_POST['password']) {
                 $data_insert['password'] = $password;
             }
-            echo '<pre>';
-            print_r($data_insert);
-            echo '</pre>';
-            exit;
+
             $result = $this->Users_model->insert($data_insert);
 
             if ($result) {

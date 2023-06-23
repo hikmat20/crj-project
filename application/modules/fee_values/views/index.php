@@ -168,7 +168,9 @@ $ENABLE_DELETE  = has_permission('Fee_values.Delete');
                     });
                     $('#dialog-popup').modal('hide')
                     loadData()
-
+                    $('.dataTables_length select').select2({
+                        minimumResultsForSearch: -1
+                    })
                 } else {
                     Lobibox.notify('warning', {
                         title: 'Warning',

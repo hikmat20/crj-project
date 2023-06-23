@@ -16,7 +16,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
 <div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php echo Template::message(); ?>
     <?php if ($ENABLE_ADD) : ?>
-        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Port</button>
+        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Fee</button>
     <?php endif; ?>
 </div>
 
@@ -27,10 +27,10 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Country</th>
-                        <th class="desktop tablet text-center">City</th>
-                        <th class="desktop tablet no-sort">Description</th>
-                        <th class="desktop text-center no-sort" width="100">Status</th>
+                        <th class="desktop tablet tx-bold tx-dark">Customer Name</th>
+                        <th class="desktop tablet text-center">Marketing</th>
+                        <th class="desktop tablet text-center" width="150">Fee SJT</th>
+                        <th class="desktop text-center no-sort">Description</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
                         <?php endif; ?>
@@ -40,10 +40,10 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Country</th>
-                        <th>City</th>
+                        <th>Customer Name</th>
+                        <th>Marketing</th>
+                        <th>Fee SJT</th>
                         <th>Description</th>
-                        <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>
@@ -82,56 +82,36 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
         loadData();
     })
 
-
     $(document).on('click', '.add', function() {
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'add',
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Add New Employee")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
+        $('#dialog-popup .modal-title').text("Add New Fee Customer")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '70%'
         })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'edit/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Edit Employee")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
+        $('#dialog-popup .modal-title').text("Edit Fee Customer")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '70%'
         })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.view', function(e) {
-        var id = $(this).data('id_karyawan');
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Inventory</b>");
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'viewKaryawan/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Detail Karyawan")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").addClass('d-none');
-            }
+        var id = $(this).data('id');
+        $('#dialog-popup .modal-title').text("View Fee Customer")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '50%'
         })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
+        $("#save").addClass('d-none');
     });
 
     $(document).on('click', '.delete', function(e) {

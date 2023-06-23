@@ -69,11 +69,11 @@ class Fee_customers_model extends BF_Model
     {
         $y = date('y');
         $count = 1;
-        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('harbours')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
+        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('fee_customers')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;
         }
-        $newID = "HB$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+        $newID = "FC$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
         return $newID;
     }
 

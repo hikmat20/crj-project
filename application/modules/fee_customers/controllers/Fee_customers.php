@@ -28,8 +28,8 @@ class Fee_customers extends Admin_Controller
 			'Fee_customers/Fee_customers_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Fee Values');
-		$this->template->page_icon('fas fa-hand-holding-usd tx-primary fa-4x');
+		$this->template->title('Manage Fee Customers');
+		$this->template->page_icon('fas fa-hand-holding-usd');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -48,13 +48,12 @@ class Fee_customers extends Admin_Controller
 		$where = " AND `status` = '$status'";
 
 		$string = $this->db->escape_like_str($search);
-		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM view_harbours, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`country_name` LIKE '%$string%'
-        OR `country_code` LIKE '%$string%'
-        OR `city_name` LIKE '%$string%'
+		$sql = "SELECT view_fee_customers.*,(@row_number:=@row_number + 1) AS num
+        FROM view_fee_customers, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (`customer_name` LIKE '%$string%'
+        OR `employee_name` LIKE '%$string%'
+        OR `fee_value` LIKE '%$string%'
         OR `description` LIKE '%$string%'
-        OR `status` LIKE '%$string%'
             )";
 
 		$totalData = $this->db->query($sql)->num_rows();
@@ -62,10 +61,10 @@ class Fee_customers extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'country_code',
-			2 => 'city_name',
-			3 => 'description',
-			4 => 'status',
+			1 => 'customer_name',
+			2 => 'employee_name',
+			3 => 'fee_value',
+			4 => 'description',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -106,10 +105,10 @@ class Fee_customers extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
-			$nestedData[]  = $row['city_name'];
+			$nestedData[]  = $row['customer_name'];
+			$nestedData[]  = $row['employee_name'];
+			$nestedData[]  = 'Rp. ' . number_format($row['fee_value']);
 			$nestedData[]  = $row['description'];
-			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;
@@ -129,37 +128,42 @@ class Fee_customers extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$this->template->render('under-construction');
-		// $this->template->render('index');
+		$this->template->render('index');
 	}
 
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$countries = $this->db->get('countries')->result();
-		$this->template->set('countries', $countries);
+		$customers = $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result();
+		$this->template->set('customers', $customers);
 		$this->template->render('form');
 	}
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
-		$port = $this->db->get_where('harbours', array('id' => $id))->row();
-		$countries = $this->db->get('countries')->result();
+		$this->auth->restrict($this->managePermission);
+		$fee = $this->db->get_where('fee_customers', array('id' => $id))->row();
+		$customers = $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result();
 		$data = [
-			'port' 		=> $port,
-			'countries'	 	=> $countries,
+			'fee' 			=> $fee,
+			'customers'	 	=> $customers,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
 	}
 
-	public function view()
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$cust 	= $this->Inventory_1_model->getById($id);
-		$this->template->set('result', $cust);
+		$fee = $this->db->get_where('fee_customers', array('id' => $id))->row();
+		$customers = $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result_array();
+		$ArrCustomers = array_column($customers, 'customer_name', 'id_customer');
+
+		$data = [
+			'fee' 			=> $fee,
+			'ArrCustomers'	 	=> $ArrCustomers,
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
 
@@ -169,25 +173,26 @@ class Fee_customers extends Admin_Controller
 		$post = $this->input->post();
 		$data = $post;
 		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_customers_model->generate_id();
+		$data['fee_value'] = str_replace(",", "", $post['fee_value']);
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("harbours", $data);
+			$this->db->where('id', $post['id'])->update("fee_customers", $data);
 		} else {
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("harbours", $data);
+			$this->db->insert("fee_customers", $data);
 		}
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed save data Harbour.  Please try again.',
+				'msg'		=> 'Failed save data Fee Customer.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "FAILD save data Fee Customer " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -196,10 +201,10 @@ class Fee_customers extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success Save data Harbour.',
+				'msg'		=> 'Success Save data Fee Customer.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "SUCCESS save data Fee Customer " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -214,37 +219,37 @@ class Fee_customers extends Admin_Controller
 	{
 		$this->auth->restrict($this->deletePermission);
 		$id = $this->input->post('id');
-		$container = $this->db->get_where('harbours')->row_array();
+		$fee = $this->db->get_where('fee_customers')->row_array();
 		$data = [
 			'status' => 0,
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];
 		$this->db->trans_begin();
-		$this->db->update('harbours', $data, ['id' => $id]);
+		$this->db->update('fee_customers', $data, ['id' => $id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed delete data Harbour.  Please try again.',
+				'msg'		=> 'Failed delete data Fee Customer.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "FAILD delete data Fee Customer " . $fee['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $fee['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success delete data Harbour.',
+				'msg'		=> 'Success delete data Fee Customer.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "SUCCESS delete data Fee Customer " . $fee['id'] . ", Fee Customer name : " . $fee['city_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $fee['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}

@@ -28,7 +28,7 @@ $ENABLE_DELETE  = has_permission('Fee_values.Delete');
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop tablet tx-bold tx-dark -center">Minimum Value</th>
-                        <th class="desktop tablet text-center">Fee (%)</th>
+                        <th class="desktop tablet text-center" width="110">Fee (%)</th>
                         <th class="desktop tablet no-sort">Description</th>
                         <!-- <th class="desktop text-center no-sort" width="100">Status</th> -->
                         <?php if ($ENABLE_MANAGE) : ?>
@@ -80,59 +80,38 @@ $ENABLE_DELETE  = has_permission('Fee_values.Delete');
 <script type="text/javascript">
     $(document).ready(function() {
         loadData();
-
     })
 
-
     $(document).on('click', '.add', function() {
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'add',
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Add New Fee")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add New Fee")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '70%'
         })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'edit/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Edit Fee")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Fee")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '70%'
         })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.view', function(e) {
-        var id = $(this).data('id_karyawan');
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Inventory</b>");
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'viewKaryawan/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Detail Karyawan")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").addClass('d-none');
-            }
+        var id = $(this).data('id');
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Fee")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '70%'
         })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
+        $("#save").addClass('d-none');
     });
 
     $(document).on('click', '.delete', function(e) {

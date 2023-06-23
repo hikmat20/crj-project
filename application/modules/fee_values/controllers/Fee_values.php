@@ -8,7 +8,7 @@ if (!defined('BASEPATH')) {
  * @author Hikmat Aolia
  * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is controller for Master Fee Value Port
+ * This is controller for Master Fee Value
  */
 
 class Fee_values extends Admin_Controller
@@ -29,7 +29,7 @@ class Fee_values extends Admin_Controller
 			'Aktifitas/aktifitas_model',
 		));
 		$this->template->title('Manage Fee Values');
-		$this->template->page_icon('fas fa-hand-holding-usd tx-primary fa-4x');
+		$this->template->page_icon('fas fa-hand-holding-usd');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -106,7 +106,7 @@ class Fee_values extends Admin_Controller
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = "Rp. " . number_format($row['minimum_value']);
-			$nestedData[]  = $row['fee'];
+			$nestedData[]  = $row['fee'] . "%";
 			$nestedData[]  = $row['description'];
 			// $nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -142,7 +142,7 @@ class Fee_values extends Admin_Controller
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
+		$this->auth->restrict($this->managePermission);
 		$fee = $this->db->get_where('fee_values', array('id' => $id))->row();
 		$data = [
 			'fee' 		=> $fee,
@@ -151,25 +151,24 @@ class Fee_values extends Admin_Controller
 		$this->template->render('form');
 	}
 
-	public function view()
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$cust 	= $this->Inventory_1_model->getById($id);
-		$this->template->set('result', $cust);
+		$fee = $this->db->get_where('fee_values', array('id' => $id))->row();
+		$data = [
+			'fee' 		=> $fee,
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
 
 	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
-		$post 		= $this->input->post();
-		$data 		= $post;
-		echo '<pre>';
-		print_r($data);
-		echo '</pre>';
-		exit;
-		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_values_model->generate_id();
+		$post 					= $this->input->post();
+		$data 					= $post;
+		$data['id'] 			= isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_values_model->generate_id();
+		$data['minimum_value'] 	= str_replace(",", "", $post['minimum_value']);
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {

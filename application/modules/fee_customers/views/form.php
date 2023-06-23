@@ -32,8 +32,9 @@
 				<div class="input-group-prepend">
 					<span class="input-group-text" id="input1">Rp.</span>
 				</div>
-				<input type="text" required class="form-control text-right" id="fee_value" name="fee_value" value="<?= (isset($fee)) ? $fee->fee_value : null; ?>" placeholder="0">
+				<input type="text" required class="form-control text-right" id="fee_value" data-parsley-errors-container="#error-fee" name="fee_value" value="<?= (isset($fee)) ? $fee->fee_value : null; ?>" placeholder="0">
 			</div>
+			<div id="error-fee"></div>
 		</div>
 	</div>
 	<div class="form-group row">
@@ -54,11 +55,8 @@
 			width: "100%",
 			allowClear: true
 		});
-
-		$(document).ready(function() {
-			$('#fee_value').mask('#,##0', {
-				reverse: true
-			});
+		$('#fee_value').mask('#,##0', {
+			reverse: true
 		});
 	});
 </script>

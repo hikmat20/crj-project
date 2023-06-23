@@ -28,7 +28,7 @@ class Harbours extends Admin_Controller
 			'Harbours/Harbours_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Shimpent Port');
+		$this->template->title('Manage Shipment Ports');
 		$this->template->page_icon('fa fa-ship');
 
 		date_default_timezone_set('Asia/Bangkok');

@@ -226,7 +226,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" name="bmad" id="bmad" class="form-control text-right" placeholder="0" value="<?= isset($hs) ? $hs->mbad : ''; ?>">
+                        <input type="text" name="bmad" id="bmad" class="form-control text-right" placeholder="0" value="<?= isset($hs) ? $hs->mbad : '0'; ?>">
                         <div class="input-group-append"><span class="input-group-text">%</span></div>
                     </div>
                 </div>

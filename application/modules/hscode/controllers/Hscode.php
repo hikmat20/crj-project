@@ -156,7 +156,7 @@ class Hscode extends Admin_Controller
 
     public function edit($id)
     {
-        $this->auth->restrict($this->editPermission);
+        $this->auth->restrict($this->managePermission);
         $hs = $this->db->get_where('hscodes', ['id' => $id])->row();
         $countries = $this->Hscode_model->get_data('countries');
         $def_ppn = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
@@ -178,6 +178,29 @@ class Hscode extends Admin_Controller
         ]);
         $this->template->render('form');
     }
+
+    public function view($id)
+    {
+        $this->auth->restrict($this->viewPermission);
+        $hs             = $this->db->get_where('hscodes', ['id' => $id])->row();
+        $countries      = $this->db->get('countries')->result_array();
+        $def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
+        $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+        $ArrRQ          = [];
+        foreach ($requirements as $rq) {
+            $ArrRQ[$rq['type']][] = $rq;
+        }
+
+        $ArrCountries = array_column($countries, 'name', 'id');
+        $this->template->set([
+            'hs' => $hs,
+            'def_ppn' => $def_ppn,
+            'ArrCountries' => $ArrCountries,
+            'ArrRQ' => $ArrRQ,
+        ]);
+        $this->template->render('view');
+    }
+
 
     public function delete()
     {

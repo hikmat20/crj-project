@@ -107,12 +107,12 @@ class Customers extends Admin_Controller
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
 			$nestedData   = array();
-			$nestedData[]  = "<div class='text-center'>" . $nomor . "</div>";
-			$nestedData[]  = "<div class='tx-bold text-dark'>" . $row['customer_name'] . "</div>";
-			$nestedData[]  = "<div class=''>" . $row['telephone'] . "</div>";
-			$nestedData[]  = "<div class=''>" . $row['email'] . "</div>";
-			$nestedData[]  = "<div class=''>" . ($row['address']) . "</div>";
-			$nestedData[]  = "<div class=''>" . $status[$row['status']] . "</div>";
+			$nestedData[]  = $nomor;
+			$nestedData[]  = $row['customer_name'];
+			$nestedData[]  = $row['telephone'];
+			$nestedData[]  = $row['email'];
+			$nestedData[]  = $row['address'];
+			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;
@@ -150,7 +150,7 @@ class Customers extends Admin_Controller
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
+		$this->auth->restrict($this->managePermission);
 		$customer 				= $this->db->get_where('customers', array('id_customer' => $id))->row();
 		$pic 					= $this->db->get_where('customer_pic', ['id_customer' => $id, 'status' => '1'])->result();
 		$countries 				= $this->Customer_model->get_data('countries');
@@ -173,6 +173,37 @@ class Customers extends Admin_Controller
 		$this->template->set($data);
 		$this->template->render('form');
 	}
+
+	public function view($id)
+	{
+		$this->auth->restrict($this->viewPermission);
+		$customer 				= $this->db->get_where('customers', array('id_customer' => $id))->row();
+		$pic 					= $this->db->get_where('customer_pic', ['id_customer' => $id, 'status' => '1'])->result();
+		$countries 				= $this->db->get_where('countries')->result_array();
+		$states 				= $this->db->get_where('states', ['country_id' => $customer->country_id])->result_array();
+		$cities 				= $this->db->get_where('cities', ['state_id' => $customer->state_id])->result_array();
+		$marketing 				= $this->db->get_where('employees', array('status' => 1))->result_array();
+		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
+		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
+		$ArrCountries = (array_combine(array_column($countries, 'id'), array_column($countries, 'name'))) ?: [];
+		$ArrStates = (array_combine(array_column($states, 'id'), array_column($states, 'name'))) ?: [];
+		$ArrCities	 = (array_combine(array_column($cities, 'id'), array_column($cities, 'name'))) ?: [];
+		$ArrMkt	 = (array_combine(array_column($marketing, 'id'), array_column($marketing, 'name'))) ?: [];
+
+		$data = [
+			'customer'					=> $customer,
+			'ArrCountries' 				=> $ArrCountries,
+			'PIC' 						=> $pic,
+			'ArrStates' 				=> $ArrStates,
+			'ArrCities' 				=> $ArrCities,
+			'ArrMkt' 					=> $ArrMkt,
+			'receive_invoice_day' 		=> $receive_invoice_day,
+			'invoicing_requirement' 	=> $invoicing_requirement
+		];
+		$this->template->set($data);
+		$this->template->render('view');
+	}
+
 
 	public function save()
 	{
@@ -327,34 +358,6 @@ class Customers extends Admin_Controller
 			$cities = $this->db->like(['name' => $search])->where(['state_id' => $state_id])->get('cities')->result_array();
 		}
 		echo json_encode($cities);
-	}
-
-	public function view($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$session = $this->session->userdata('app_session');
-		$this->template->page_icon('fa fa-edit');
-		$aktif = 'active';
-		$cus = $this->db->get_where('master_customers', array('id_customer' => $id))->result();
-		$pic = $this->db->get_where('child_customer_pic', array('id_customer' => $id))->result();
-		$cate = $this->db->get_where('child_category_customer', array('id_customer' => $id))->result();
-		$category = $this->Customer_model->get_data('child_customer_category', 'activation', $aktif);
-		$prof = $this->Customer_model->get_data('provinsi');
-		$kota = $this->Customer_model->get_data('kota');
-		$karyawan = $this->db->get_where('employees', array('deleted_at' => null, '', 'divisi' => 2))->result();
-
-		$data = [
-			'cus'	=> $cus,
-			'category' => $category,
-			'cate' => $cate,
-			'kota' => $kota,
-			'prof' => $prof,
-			'pic' => $pic,
-			'karyawan' => $karyawan
-		];
-		$this->template->set('results', $data);
-		$this->template->title('View Customer');
-		$this->template->render('view_customer');
 	}
 
 

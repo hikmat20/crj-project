@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="id_customer">ID Customer </label>
                 </div>
                 <div class="col-md-8">:
@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="customer_name">Customer Name</label>
                 </div>
                 <div class="col-md-8">:
@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="telephone">Phone Number</label>
                 </div>
                 <div class="col-md-8">:
@@ -26,15 +26,15 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
-                    <label for="telephone_alt"></label>
+                <div class="col-md-4 tx-dark tx-bold">
+                    <label for="telephone_alt">&nbsp;</label>
                 </div>
                 <div class="col-md-8">:
                     <?= isset($customer) ? $customer->telephone_alt : ''; ?>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="fax">Fax</label>
                 </div>
                 <div class="col-md-8">:
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="email">Email</label>
                 </div>
                 <div class="col-md-8">:
@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="sales_id">Marketing</label>
                 </div>
                 <div class="col-md-8">:
@@ -60,7 +60,7 @@
         </div>
         <div class="col-sm-6">
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="country_id">Country </label>
                 </div>
                 <div class="col-md-8">:
@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="state_id">Province</label>
                 </div>
                 <div class="col-md-8">:
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="city_id">City</label>
                 </div>
                 <div class="col-md-8">:
@@ -84,7 +84,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="address">Address</label>
                 </div>
                 <div class="col-md-8">:
@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="zip_code">Zip Code</label>
                 </div>
                 <div class="col-md-8">:
@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="longitude">Longtitude</label>
                 </div>
                 <div class="col-md-8">:
@@ -108,7 +108,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="latitude">Latitude</label>
                 </div>
                 <div class="col-md-8">:
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 tx-dark tx-bold">
+                <div class="col-md-4 tx-dark tx-bold">
                     <label for="statusActive">Status</label>
                 </div>
                 <div class="col-md-8">:
@@ -157,13 +157,13 @@
                         <?php $n = 0;
                         if (isset($PIC) && $PIC)
                             foreach ($PIC as $pic) : $n++; ?>
-                        <tr>
-                            <td><?= $n; ?></td>
-                            <td><?= $pic->name; ?></td>
-                            <td><?= $pic->phone_number; ?></td>
-                            <td><?= $pic->email; ?></td>
-                            <td><?= $pic->position; ?></td>
-                        </tr>
+                            <tr>
+                                <td><?= $n; ?></td>
+                                <td><?= $pic->name; ?></td>
+                                <td><?= $pic->phone_number; ?></td>
+                                <td><?= $pic->email; ?></td>
+                                <td><?= $pic->position; ?></td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -175,7 +175,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row form-group">
-                            <div class="col-md-3 tx-dark tx-bold">
+                            <div class="col-md-4 tx-dark tx-bold">
                                 <label for="day1">Receive Invoice Day</label>
                             </div>
                             <div class="col-md-9">
@@ -216,7 +216,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-3 tx-dark tx-bold">
+                            <div class="col-md-4 tx-dark tx-bold">
                                 <label for="start_receive_time_invoice">Receive Invoice Time</label>
                             </div>
                             <div class="col-lg-9">
@@ -233,7 +233,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-3 tx-dark tx-bold">
+                            <div class="col-md-4 tx-dark tx-bold">
                                 <label for="address_invoice">Invoice Address</label>
                             </div>
                             <div class="col-md-9">

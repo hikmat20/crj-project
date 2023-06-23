@@ -1,7 +1,7 @@
 <div class="card-body">
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="id" class="tx-dark tx-bold">ID Number<span class="tx-danger">*</span></label>
+			<label for="id" class="tx-dark tx-bold">ID Number <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<input type="text" readonly class="form-control" id="id" name="id" value="<?= (isset($port)) ? $port->id : null; ?>" maxlength="16" placeholder="Auto">
@@ -25,7 +25,7 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="city_name" class="tx-dark tx-bold">City<span class="tx-danger">*</span></label>
+			<label for="city_name" class="tx-dark tx-bold">City <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<input type="text" required class="form-control" id="city_name" name="city_name" value="<?= (isset($port)) ? $port->city_name : null; ?>" placeholder="Exp: Jakarta">

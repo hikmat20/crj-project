@@ -1,199 +1,137 @@
- <div class="row">
-     <div class="col-md-6">
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Id Number</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->nik ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Employee Name</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->nama_karyawan ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Birth Place</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->tempat_lahir_karyawan ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Birth Date</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->tanggal_lahir_karyawan ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Division</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $divisi[$karyawan->divisi] ; ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Gender</label>
-             </div>
-             <div class="col-md-6">:
-                 <?php if ($karyawan->jenis_kelamin == 'L'){?>
-                 Laki-Laki
-                 <?php } else { ?>
-                 Perempuan
-                 <?php } ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Agama</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $agama[$karyawan->agama] ; ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Education</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $pendidikan[$karyawan->levelpendidikan] ; ?>
-             </div>
-         </div>
-     </div>
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Employee ID</span>
+                </div>
+                <div class="col-md-7 tx-bold tx-dark">:
+                    <?= (isset($employee)) ? $employee->employee_code : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Employee Name</span>
+                </div>
+                <div class="col-md-7 tx-bold tx-dark">:
+                    <?= (isset($employee) && $employee->name) ? $employee->name : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Personal ID Number</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee)) ? $employee->nik : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Birth Place</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->birth_place) ? $employee->birth_place : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Birth Date</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->birth_date) ? $employee->birth_date : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Division</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= $ArrDiv[$employee->division] ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Gender</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->gender == 'L') ? 'Laki-laki' : 'Perempuan'; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Religion</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= $ArrRel[$employee->religion] ?>
+                </div>
+            </div>
+        </div>
 
-     <div class="col-md-6">
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Address</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->alamataktif ?>
-             </div>
-         </div>
-
-
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">No. Hp</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->nohp ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Email</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->email ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">NPWP</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->npwp ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Join Date</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->tgl_join ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for=""></label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->tgl_end ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Employee Status</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->sts_karyawan ; ?>
-             </div>
-         </div>
-         <div class="form-group row">
-             <div class="col-md-3">
-                 <label for="">Rekening</label>
-             </div>
-             <div class="col-md-6">:
-                 <?= $karyawan->norekening ?>
-             </div>
-         </div>
-
-     </div>
- </div>
- <script type="text/javascript">
-$(document).ready(function() {
-    $('.select2').select2();
-    $(document).on('submit', '#data_form', function(e) {
-        e.preventDefault()
-        var data = $('#data_form').serialize();
-        // alert(data);
-
-        swal({
-                title: "Anda Yakin?",
-                text: "Data Supplier akan di simpan.",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-info",
-                confirmButtonText: "Ya, Simpan!",
-                cancelButtonText: "Batal",
-                closeOnConfirm: false
-            },
-            function() {
-                $.ajax({
-                    type: 'POST',
-                    url: siteurl + 'master_karyawan/saveEditKaryawan',
-                    dataType: "json",
-                    data: data,
-                    success: function(result) {
-                        if (result.status == '1') {
-                            swal({
-                                    title: "Sukses",
-                                    text: "Data Inventory berhasil disimpan.",
-                                    type: "success"
-                                },
-                                function() {
-                                    window.location.reload(true);
-                                })
-                        } else {
-                            swal({
-                                title: "Error",
-                                text: "Data error. Gagal insert data",
-                                type: "error"
-                            })
-
-                        }
-                    },
-                    error: function() {
-                        swal({
-                            title: "Error",
-                            text: "Data error. Gagal request Ajax",
-                            type: "error"
-                        })
-                    }
-                })
-            });
-
-    })
-
-});
- </script>
+        <div class="col-md-6">
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Phone Number</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->phone_number) ? $employee->phone_number : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Email</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->email) ? $employee->email : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Address</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->address) ? $employee->address : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">NPWP</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->npwp_number) ? $employee->npwp_number : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Join Date</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->joint_date) ? $employee->joint_date : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Employee Type</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= isset($employee) && $employee->employee_type == 'Kontrak' ? 'Kontrak' : 'Tetap'; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <span class="tx-dark tx-bold">Job Desc.</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($employee) && $employee->job_description) ? $employee->job_description : null; ?>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4 tx-dark tx-bold">
+                    <span>Status</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= isset($employee) && $employee->status == '1' ? 'Active' : 'Inactive'; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

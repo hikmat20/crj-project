@@ -102,8 +102,8 @@
 						<div id="states_select">
 							<select id="state_id" name="state_id" class="form-control select" data-parsley-inputs data-parsley-class-handler="#slWrapperProv" data-parsley-errors-container="#slErrorContainerProv">
 								<option value=""></option>
-								<?php if (isset($supplier) && $supplier->state_id) foreach ($states as $state) : ?>
-									<option value="<?= $supplier->state_id; ?>" <?= (isset($supplier) && $supplier->state_id == $state->id) ? 'selected' : ''; ?>><?= $state->name; ?></option>
+								<?php foreach ($states as $state) : ?>
+									<option value="<?= $state->id; ?>" <?= (isset($supplier) && $supplier->state_id == $state->id) ? 'selected' : ''; ?>><?= $state->name; ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>

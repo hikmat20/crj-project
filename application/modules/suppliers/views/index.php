@@ -36,7 +36,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 						<th class="desktop text-center">Supplier Type</th>
 						<th class="desktop text-center">Status</th>
 						<?php if ($ENABLE_MANAGE) : ?>
-							<th width="110" class="desktop text-center no-sort">Action</th>
+							<th width="110" class="desktop text-center no-sort">Opsi</th>
 						<?php endif; ?>
 					</tr>
 				</thead>
@@ -52,7 +52,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 						<th>Supplier Type</th>
 						<th>Status</th>
 						<?php if ($ENABLE_MANAGE) : ?>
-							<th>Action</th>
+							<th>Opsi</th>
 						<?php endif; ?>
 					</tr>
 				</tfoot>
@@ -61,13 +61,13 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 	</div>
 </div>
 
-<div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog modal-lg">
 		<form id="data-form" method="post" data-parsley-validate>
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title tx-dark" id="myModalLabel"><span class="<?php echo $template['page_icon']; ?>"></span></h4>
-					<button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="btn btn-default close" data-dismiss="modal"><span>&times;</span></button>
 				</div>
 				<div class="modal-body"></div>
 				<div class="modal-footer">
@@ -89,7 +89,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 		$(document).on('click', '.add', function() {
 			$("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
 			$("#dialog-popup .modal-title").html(
-				'<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> Add New Supplier');
+				'<i class="<?php echo $template['page_icon']; ?>"></i> Add New Supplier');
 			$("#dialog-popup .modal-dialog").css({
 				'max-width': '90%'
 			});
@@ -101,7 +101,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 			if (id) {
 				$("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
 				$("#dialog-popup .modal-title").html(
-					'<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Customer');
+					'<i class="<?= $template['page_icon']; ?>"></i> Edit Supplier');
 				$("#dialog-popup .modal-dialog").css({
 					'max-width': '90%'
 				});
@@ -110,6 +110,22 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 			}
 			$("#dialog-popup").modal();
 		});
+
+		$(document).on('click', '.view', function() {
+			let id = $(this).data('id');
+			if (id) {
+				$("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
+				$("#dialog-popup .modal-title").html(
+					'<i class="<?= $template['page_icon']; ?>"></i> View Supplier');
+				$("#dialog-popup .modal-dialog").css({
+					'max-width': '70%'
+				});
+			} else {
+				$("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
+			}
+			$("#dialog-popup").modal();
+		});
+
 
 		$(document).on('click', '.delete', function() {
 			var swalWithBootstrapButtons = Swal.mixin({
@@ -194,7 +210,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 			n = $('table#list-pic tbody tr').length + 1;
 			var html = '';
 			html += `<tr id="tr_` + n + `" style="background-color:#fff5de">
-						<td class="text-center"><i class="fa fa-plus tx-10" aria-hidden="true"></i>
+						<td class="text-center"><i class="fa fa-plus tx-10"></i>
 						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][name]" placeholder="PIC Name"></td> 
 						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][phone_number]" placeholder="Phone Number"></td> 
 						<td><input type="text" class="form-control input-sm" name="PIC[` + n + `][email]" placeholder="Email"></td> 

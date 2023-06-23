@@ -6,7 +6,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
 ?>
 
 <div class="br-pagetitle">
-    <i class="<?= $template['page_icon']; ?>"></i>
+    <i class="tx-primary fa-4x <?= $template['page_icon']; ?>"></i>
     <div>
         <h4>Employe Manager</h4>
         <p class="mg-b-0">Lorem ipsum dolor sit amet.</p>
@@ -91,7 +91,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
             type: 'POST',
             url: siteurl + thisController + 'add',
             success: function(data) {
-                $('#dialog-popup .modal-title').html("<span class='fas fa-user-tie'></span>&nbsp;Add New Employee")
+                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span>&nbsp;Add New Employee")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '90%'
                 })
@@ -105,10 +105,10 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: siteurl + thisController + 'edit/' + id,
             success: function(data) {
-                $('#dialog-popup .modal-title').html("<span class='fas fa-user-tie'></span>&nbsp;Edit Employee")
+                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span>&nbsp;Edit Employee")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '90%'
                 })
@@ -120,15 +120,14 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
     });
 
     $(document).on('click', '.view', function(e) {
-        var id = $(this).data('id_karyawan');
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Inventory</b>");
+        var id = $(this).data('id');
         $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'viewKaryawan/' + id,
+            type: 'GET',
+            url: siteurl + thisController + 'view/' + id,
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Detail Karyawan")
+                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span>&nbsp;Edit Employee")
                 $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
+                    'max-width': '75%'
                 })
                 $("#dialog-popup").modal();
                 $("#dialog-popup .modal-body").html(data);

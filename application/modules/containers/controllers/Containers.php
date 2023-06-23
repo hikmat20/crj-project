@@ -29,7 +29,7 @@ class Containers extends Admin_Controller
 			'Aktifitas/aktifitas_model',
 		));
 		$this->template->title('Manage Containers');
-		$this->template->page_icon('tx-primary fa-4x fas fa-truck-moving');
+		$this->template->page_icon('fas fa-truck-moving');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}

@@ -6,7 +6,7 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
 ?>
 
 <div class="br-pagetitle">
-    <i class="<?= $template['page_icon']; ?>"></i>
+    <i class="tx-primary fa-4x <?= $template['page_icon']; ?>"></i>
     <div>
         <h4><?= $template['title']; ?></h4>
         <p class="mg-b-0">Lorem ipsum dolor sit.</p>
@@ -27,7 +27,7 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Name</th>
+                        <th class="desktop tablet tx-bold tx-dark">Size Container</th>
                         <th class="desktop tablet text-center">Volume</th>
                         <th class="desktop tablet text-center">Weight</th>
                         <th class="desktop tablet no-sort">Description</th>
@@ -41,8 +41,9 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Name</th>
-                        <th>Size</th>
+                        <th>Size Container</th>
+                        <th>Volume</th>
+                        <th>Weight</th>
                         <th>Description</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
@@ -89,7 +90,7 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
             type: 'POST',
             url: siteurl + thisController + 'add',
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Add New Employee")
+                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Add New Container")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '70%'
                 })
@@ -106,7 +107,7 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
             type: 'POST',
             url: siteurl + thisController + 'edit/' + id,
             success: function(data) {
-                $('#dialog-popup .modal-title').text("Edit Employee")
+                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Edit Container")
                 $('#dialog-popup .modal-dialog').css({
                     'max-width': '70%'
                 })

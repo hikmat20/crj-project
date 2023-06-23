@@ -162,7 +162,8 @@ class Suppliers extends Admin_Controller
 		$countries 				= $this->db->get_where('countries')->result();
 		$states 				= $this->db->get_where('states', ['country_id' => $supplier->country_id])->result();
 		$cities 				= $this->db->get_where('cities', ['state_id' => $supplier->state_id])->result();
-		$supplier_types = $this->db->get('supplier_types')->result();
+		$supplier_types 		= $this->db->get('supplier_types')->result();
+
 		$data = [
 			'supplier'					=> $supplier,
 			'countries' 				=> $countries,
@@ -173,6 +174,33 @@ class Suppliers extends Admin_Controller
 		];
 		$this->template->set($data);
 		$this->template->render('form');
+	}
+
+	public function view($id)
+	{
+		$this->auth->restrict($this->managePermission);
+		$supplier 			= $this->db->get_where('suppliers', array('id' => $id))->row();
+		$pic 				= $this->db->get_where('supplier_pic', ['supplier_id' => $id, 'status' => '1'])->result();
+		$countries 			= $this->db->get_where('countries')->result_array();
+		$states 			= $this->db->get_where('states', ['country_id' => $supplier->country_id])->result_array();
+		$cities 			= $this->db->get_where('cities', ['state_id' => $supplier->state_id])->result_array();
+		$supplier_types 	= $this->db->get('supplier_types')->result_array();
+
+		$ArrCountries 		= array_column($countries, 'name', 'id');
+		$ArrStates 			= array_column($states, 'name', 'id');
+		$ArrCities 			= array_column($cities, 'name', 'id');
+		$ArrSTypes 			= array_column($supplier_types, 'name', 'id');
+
+		$data = [
+			'supplier'		=> $supplier,
+			'ArrCountries' 	=> $ArrCountries,
+			'PIC' 			=> $pic,
+			'ArrStates' 	=> $ArrStates,
+			'ArrCities' 	=> $ArrCities,
+			'ArrSTypes' 	=> $ArrSTypes,
+		];
+		$this->template->set($data);
+		$this->template->render('view');
 	}
 
 	public function save()

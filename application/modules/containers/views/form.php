@@ -1,7 +1,7 @@
 <div class="card-body">
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="id" class="tx-dark tx-bold">ID Number<span class="tx-danger">*</span></label>
+			<label for="id" class="tx-dark tx-bold">ID Number <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<input type="text" readonly class="form-control" id="id" name="id" value="<?= (isset($countainer)) ? $countainer->id : null; ?>" maxlength="16" placeholder="Auto">
@@ -9,7 +9,7 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="name" class="tx-dark tx-bold">Name <span class="tx-danger">*</span></label>
+			<label for="name" class="tx-dark tx-bold">Size Container <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<input type="text" class="form-control" id="name" required name="name" value="<?= (isset($countainer) && $countainer->name) ? $countainer->name : null; ?>" placeholder="Name">

@@ -29,7 +29,7 @@ class Employees extends Admin_Controller
 			'Aktifitas/aktifitas_model',
 		));
 		$this->template->title('Employees Manager');
-		$this->template->page_icon('tx-primary fa-4x fas fa-user-tie');
+		$this->template->page_icon('fas fa-user-tie');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -176,6 +176,24 @@ class Employees extends Admin_Controller
 		$this->template->render('form');
 	}
 
+	public function view($id)
+	{
+		$this->auth->restrict($this->viewPermission);
+		$employee = $this->db->get_where('employees', array('id' => $id))->row();
+		$divisions = $this->db->get('divisions')->result_array();
+		$religions = $this->db->get('religions')->result_array();
+
+		$ArrDiv = array_column($divisions, 'name', 'id');
+		$ArrRel = array_column($religions, 'name_religion', 'id');
+
+		$this->template->set([
+			'employee' 	=> $employee,
+			'ArrDiv' 	=> $ArrDiv,
+			'ArrRel' 	=> $ArrRel
+		]);
+		$this->template->render('view');
+	}
+
 	public function delete()
 	{
 		$this->auth->restrict($this->deletePermission);
@@ -219,38 +237,7 @@ class Employees extends Admin_Controller
 		echo json_encode($return);
 	}
 
-	public function view($id)
-	{
-		$this->auth->restrict($this->viewPermission);
-		$this->template->page_icon('fa fa-edit');
-		$karyawan = $this->db->get_where('employees', array('id_karyawan' => $id))->row();
-		$divisi = $this->db->get_where('department_center')->result_array();
-		$agama = $this->db->get_where('religion')->result_array();
 
-		$div = array_column($divisi, 'nm_dept', 'id_dept');
-		$agm = array_column($divisi, 'nm_dept', 'id_dept');
-
-		$pendidikan = [
-			"SD" => "SD",
-			"SMP" => "SMP",
-			"SMA" => "SMA",
-			"DIPLOMA" => "DIPLOMA",
-			"SARJANA" => "SARJANA",
-			"MASTER" => "MASTER",
-			"DOKTORAL" => "DOKTORAL",
-			"PROFESOR" => "PROFESOR",
-			"LAIN-LAIN" => "LAIN-LAIN",
-		];
-
-		$this->template->set([
-			'karyawan' => $karyawan,
-			'divisi' => $div,
-			'agama' => $agm,
-			'pendidikan' => $pendidikan,
-		]);
-		$this->template->title('Karyawan');
-		$this->template->render('view_karyawan');
-	}
 
 	public function save()
 	{

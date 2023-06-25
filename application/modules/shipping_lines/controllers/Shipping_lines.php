@@ -28,8 +28,8 @@ class Shipping_lines extends Admin_Controller
 			'Shipping_lines/Shipping_lines_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Fee Values');
-		$this->template->page_icon('fas fa-hand-holding-usd tx-primary fa-4x');
+		$this->template->title('Manage Shipping Line Cost');
+		$this->template->page_icon('fas fa-hand-holding-usd');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -49,10 +49,9 @@ class Shipping_lines extends Admin_Controller
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM view_harbours, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`country_name` LIKE '%$string%'
-        OR `country_code` LIKE '%$string%'
-        OR `city_name` LIKE '%$string%'
+        FROM view_shipping_line_cost, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (`container_size` LIKE '%$string%'
+        OR `cost_value` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -62,8 +61,8 @@ class Shipping_lines extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'country_code',
-			2 => 'city_name',
+			1 => 'container_size',
+			2 => 'cost_value',
 			3 => 'description',
 			4 => 'status',
 		);
@@ -106,8 +105,8 @@ class Shipping_lines extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
-			$nestedData[]  = $row['city_name'];
+			$nestedData[]  = $row['container_size'];
+			$nestedData[]  = $row['cost_value'];
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -129,37 +128,41 @@ class Shipping_lines extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$this->template->render('under-construction');
-		// $this->template->render('index');
+		// $this->template->render('under-construction');
+		$this->template->render('index');
 	}
 
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$countries = $this->db->get('countries')->result();
-		$this->template->set('countries', $countries);
+		$containers = $this->db->get_where('containers', ['status' => 1])->result();
+		$this->template->set('containers', $containers);
 		$this->template->render('form');
 	}
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
-		$port = $this->db->get_where('harbours', array('id' => $id))->row();
-		$countries = $this->db->get('countries')->result();
+		$this->auth->restrict($this->managePermission);
+		$shipping = $this->db->get_where('shipping_line_cost', array('id' => $id))->row();
+		$containers = $this->db->get_where('containers', ['status' => 1])->result();
 		$data = [
-			'port' 		=> $port,
-			'countries'	 	=> $countries,
+			'shipping' 		=> $shipping,
+			'containers'	=> $containers,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
 	}
 
-	public function view()
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$cust 	= $this->Inventory_1_model->getById($id);
-		$this->template->set('result', $cust);
+		$shipping = $this->db->get_where('shipping_line_cost', array('id' => $id))->row();
+		$containers = $this->db->get_where('containers', ['status' => 1])->result();
+		$ArrConte = array_column($containers, 'name', 'id');
+		$this->template->set([
+			'shipping' => $shipping,
+			'ArrConte' => $ArrConte,
+		]);
 		$this->template->render('view');
 	}
 
@@ -169,25 +172,25 @@ class Shipping_lines extends Admin_Controller
 		$post = $this->input->post();
 		$data = $post;
 		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Shipping_lines_model->generate_id();
-
+		$data['cost_value'] = str_replace(",", "", $post['cost_value']);
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("harbours", $data);
+			$this->db->where('id', $post['id'])->update("shipping_line_cost", $data);
 		} else {
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("harbours", $data);
+			$this->db->insert("shipping_line_cost", $data);
 		}
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed save data Harbour.  Please try again.',
+				'msg'		=> 'Failed save data Shipping Line Cost.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "FAILD save data Shipping Line Cost " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -196,10 +199,10 @@ class Shipping_lines extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success Save data Harbour.',
+				'msg'		=> 'Success Save data Shipping Line Cost.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "SUCCESS save data Shipping Line Cost " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -214,37 +217,37 @@ class Shipping_lines extends Admin_Controller
 	{
 		$this->auth->restrict($this->deletePermission);
 		$id = $this->input->post('id');
-		$container = $this->db->get_where('harbours')->row_array();
+		$dt = $this->db->get_where('shipping_line_cost')->row_array();
 		$data = [
 			'status' => 0,
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];
 		$this->db->trans_begin();
-		$this->db->update('harbours', $data, ['id' => $id]);
+		$this->db->update('shipping_line_cost', $data, ['id' => $id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed delete data Harbour.  Please try again.',
+				'msg'		=> 'Failed delete data Shipping Line Cost.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "FAILD delete data Shipping Line Cost " . $dt['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $dt['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success delete data Harbour.',
+				'msg'		=> 'Success delete data Shipping Line Cost.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "SUCCESS delete data Shipping Line Cost " . $dt['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $dt['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}

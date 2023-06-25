@@ -1,14 +1,34 @@
-<div class="br-pagetitle">
-    <i class="tx-primary fa-4x <?= $template['page_icon']; ?>"></i>
-    <div>
-        <h4><?= $template['title']; ?></h4>
-        <p class="mg-b-0">Lorem ipsum dolor sit.</p>
+<div class="card-body" id="dataForm">
+    <div class="form-group row">
+        <div class="col-md-4">
+            <label for="id" class="tx-dark tx-bold">ID Number</label>
+        </div>
+        <div class="col-md-7">:
+            <?= (isset($shipping)) ? $shipping->id : null; ?>
+        </div>
     </div>
-</div>
-
-<div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3 pd-t-20">
-    <div class="text-center">
-        <h1 class="tx-dark tx-bold tx-spacing-4" style="font-family: monospace;"><?= strtoupper('Under Construction...!!!'); ?></h1>
-        <img src="<?= base_url('assets/programmer.gif'); ?>" width="30%" alt="Programmer" class="rounded-10 shadow-sm">
+    <div class="form-group row">
+        <div class="col-md-4 tx-dark tx-bold">
+            <label for="container_id">Conatainer Size </label>
+        </div>
+        <div class="col-md-7">:
+            <?= $ArrConte[$container->id]; ?>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-4">
+            <label for="cost_value" class="tx-dark tx-bold">Cost Value </label>
+        </div>
+        <div class="col-md-7">:
+            <?= (isset($shipping) && $shipping->cost_value) ? number_format($shipping->cost_value) : null; ?>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-4">
+            <label for="description" class="tx-dark tx-bold">Description</label>
+        </div>
+        <div class="col-md-7">:
+            <?= (isset($shipping) && $shipping->description) ? $shipping->description : null; ?>
+        </div>
     </div>
 </div>

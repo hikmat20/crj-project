@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Harbours.Add');
-$ENABLE_MANAGE  = has_permission('Harbours.Manage');
-$ENABLE_VIEW    = has_permission('Harbours.View');
-$ENABLE_DELETE  = has_permission('Harbours.Delete');
+$ENABLE_ADD     = has_permission('Custom_clearance.Add');
+$ENABLE_MANAGE  = has_permission('Custom_clearance.Manage');
+$ENABLE_VIEW    = has_permission('Custom_clearance.View');
+$ENABLE_DELETE  = has_permission('Custom_clearance.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -16,7 +16,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
 <div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php echo Template::message(); ?>
     <?php if ($ENABLE_ADD) : ?>
-        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Port</button>
+        <button class="btn btn-primary btn-oblong add" title="Add" data-toggle="tooltip"><i class="fa fa-plus">&nbsp;</i>Add New Cost</button>
     <?php endif; ?>
 </div>
 
@@ -27,10 +27,10 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Country</th>
-                        <th class="desktop tablet text-center">City</th>
+                        <th class="desktop tablet mobile tablet tx-bold tx-dark">Container Size</th>
+                        <th class="desktop tablet mobile tablet text-center">Cost Value</th>
                         <th class="desktop tablet no-sort">Description</th>
-                        <th class="desktop text-center no-sort" width="100">Status</th>
+                        <th class="desktop tablet text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
                         <?php endif; ?>
@@ -40,8 +40,8 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Country</th>
-                        <th>City</th>
+                        <th>Container Size</th>
+                        <th>Cost Value</th>
                         <th>Description</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
@@ -82,56 +82,27 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
         loadData();
     })
 
-
     $(document).on('click', '.add', function() {
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'add',
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Add New Employee")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
-        })
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add New Custom Clearance")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'edit/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Edit Employee")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
-        })
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Custom Clearance")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.view', function(e) {
-        var id = $(this).data('id_karyawan');
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Inventory</b>");
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'viewKaryawan/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Detail Karyawan")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").addClass('d-none');
-            }
-        })
+        var id = $(this).data('id');
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Custom Clearance")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
+        $("#save").addClass('d-none');
     });
 
     $(document).on('click', '.delete', function(e) {

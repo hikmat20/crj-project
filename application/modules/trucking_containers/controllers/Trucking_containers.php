@@ -28,9 +28,8 @@ class Trucking_containers extends Admin_Controller
 			'Trucking_containers/Trucking_containers_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Fee Values');
-		$this->template->page_icon('fas fa-hand-holding-usd tx-primary fa-4x');
-
+		$this->template->title('Manage Trucking Containers');
+		$this->template->page_icon('fas fa-truck-moving');
 		date_default_timezone_set('Asia/Bangkok');
 	}
 
@@ -54,8 +53,7 @@ class Trucking_containers extends Admin_Controller
         OR `country_code` LIKE '%$string%'
         OR `city_name` LIKE '%$string%'
         OR `description` LIKE '%$string%'
-        OR `status` LIKE '%$string%'
-            )";
+        OR `status` LIKE '%$string%')";
 
 		$totalData = $this->db->query($sql)->num_rows();
 		$totalFiltered = $this->db->query($sql)->num_rows();
@@ -106,7 +104,7 @@ class Trucking_containers extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
+			$nestedData[]  = $row['country_code'];
 			$nestedData[]  = $row['city_name'];
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
@@ -129,15 +127,25 @@ class Trucking_containers extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$this->template->render('under-construction');
-		// $this->template->render('index');
+		// $this->template->render('under-construction');
+		$this->template->render('index');
 	}
 
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$countries = $this->db->get('countries')->result();
-		$this->template->set('countries', $countries);
+		$states = $this->db->order_by('name', 'ASC')->get_where('states', ['country_id' => '102'])->result_array();
+		$cities = $this->db->order_by('name', 'ASC')->get_where('cities', ['country_id' => '102'])->result_array();
+		$ArrStates = array_column($states, 'name', 'id');
+		$ArrCities = [];
+		foreach ($cities as $city) {
+			$ArrCities[$city['state_id']][] = $city;
+		}
+
+		$this->template->set([
+			'ArrStates' => $ArrStates,
+			'ArrCities' => $ArrCities,
+		]);
 		$this->template->render('form');
 	}
 

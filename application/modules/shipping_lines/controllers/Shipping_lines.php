@@ -8,7 +8,7 @@ if (!defined('BASEPATH')) {
  * @author Hikmat Aolia
  * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is controller for Master Harbour Port
+ * This is controller for Master Shipping line Cost
  */
 
 class Shipping_lines extends Admin_Controller
@@ -106,7 +106,7 @@ class Shipping_lines extends Admin_Controller
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['container_size'];
-			$nestedData[]  = $row['cost_value'];
+			$nestedData[]  = 'Rp. ' . number_format($row['cost_value']);
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -135,7 +135,7 @@ class Shipping_lines extends Admin_Controller
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$containers = $this->db->get_where('containers', ['status' => 1])->result();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
 		$this->template->set('containers', $containers);
 		$this->template->render('form');
 	}
@@ -144,7 +144,7 @@ class Shipping_lines extends Admin_Controller
 	{
 		$this->auth->restrict($this->managePermission);
 		$shipping = $this->db->get_where('shipping_line_cost', array('id' => $id))->row();
-		$containers = $this->db->get_where('containers', ['status' => 1])->result();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
 		$data = [
 			'shipping' 		=> $shipping,
 			'containers'	=> $containers,
@@ -157,7 +157,7 @@ class Shipping_lines extends Admin_Controller
 	{
 		$this->auth->restrict($this->viewPermission);
 		$shipping = $this->db->get_where('shipping_line_cost', array('id' => $id))->row();
-		$containers = $this->db->get_where('containers', ['status' => 1])->result();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result_array();
 		$ArrConte = array_column($containers, 'name', 'id');
 		$this->template->set([
 			'shipping' => $shipping,
@@ -219,7 +219,7 @@ class Shipping_lines extends Admin_Controller
 		$id = $this->input->post('id');
 		$dt = $this->db->get_where('shipping_line_cost')->row_array();
 		$data = [
-			'status' => 0,
+			'status' => '0',
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];

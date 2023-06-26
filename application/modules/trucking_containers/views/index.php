@@ -16,7 +16,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
 <div class="d-flex align-items-center justify-content-between pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php echo Template::message(); ?>
     <?php if ($ENABLE_ADD) : ?>
-        <button class="btn btn-primary btn-oblong add" href="javascript:void(0)" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Port</button>
+        <button class="btn btn-primary btn-oblong add" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Add New Trucking</button>
     <?php endif; ?>
 </div>
 
@@ -27,8 +27,8 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Country</th>
-                        <th class="desktop tablet text-center">City</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark">Country</th>
+                        <th class="desktop tablet mobile text-center">City</th>
                         <th class="desktop tablet no-sort">Description</th>
                         <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>

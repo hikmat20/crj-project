@@ -58,7 +58,7 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
 
 <!-- Modal -->
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog mx-wd-lg-50p-force mx-wd-md-50p-force">
         <form id="data-form" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -67,10 +67,8 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn wd-100 btn btn-primary" name="save" id="save"><i class="fa fa-save"></i>
-                        Save</button>
-                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
-                        <span class="fa fa-times"></span> Close</button>
+                    <button type="submit" class="btn wd-100 btn btn-primary" name="save" id="save"><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal"><span class="fa fa-times"></span> Close</button>
                 </div>
             </div>
         </form>
@@ -91,9 +89,7 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
             url: siteurl + thisController + 'add',
             success: function(data) {
                 $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Add New Container")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
+                // $('#dialog-popup .modal-dialog')
                 $("#dialog-popup").modal();
                 $("#dialog-popup .modal-body").html(data);
                 $("#save").removeClass('d-none');
@@ -108,9 +104,9 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
             url: siteurl + thisController + 'edit/' + id,
             success: function(data) {
                 $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Edit Container")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
+                // $('#dialog-popup .modal-dialog').css({
+                //     'max-width': '70%'
+                // })
                 $("#dialog-popup").modal();
                 $("#dialog-popup .modal-body").html(data);
                 $("#save").removeClass('d-none');

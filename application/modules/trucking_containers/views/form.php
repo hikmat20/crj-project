@@ -1,7 +1,7 @@
 <div class="card-body">
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="id" class="tx-dark tx-bold">ID Number<span class="tx-danger">*</span></label>
+			<label for="id" class="tx-dark tx-bold">ID Number <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<input type="text" readonly class="form-control" id="id" name="id" value="<?= (isset($port)) ? $port->id : null; ?>" maxlength="16" placeholder="Auto">
@@ -9,14 +9,18 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4 tx-dark tx-bold">
-			<label for="country_id">Country <span class="tx-danger">*</span></label>
+			<label for="state_id">Region <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<div id="slWrapperCountry" class="parsley-select">
-				<select id="country_id" name="country_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#slErrorContainerCountry">
+				<select id="state_id" name="state_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#slErrorContainerCountry">
 					<option value=""></option>
-					<?php if ($countries) foreach ($countries as $country) : ?>
-						<option value="<?= $country->id; ?>" <?= (isset($port->country_id) && $port->country_id == $country->id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
+					<?php foreach ($ArrStates as $k => $state) : ?>
+						<optgroup label="<?= $state; ?>">
+							<?php foreach ($ArrCities[$k] as $city) : ?>
+								<option value="<?= $city['id']; ?>" <?= (isset($port->state_id) && $port->state_id == $city['id']) ? 'selected' : ''; ?>><?= $state . " - <span class='tx-dark'>" . $city['name']; ?></span></option>
+							<?php endforeach; ?>
+						</optgroup>
 					<?php endforeach; ?>
 				</select>
 			</div>
@@ -25,7 +29,7 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="city_name" class="tx-dark tx-bold">City<span class="tx-danger">*</span></label>
+			<label for="city_name" class="tx-dark tx-bold">City <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<input type="text" required class="form-control" id="city_name" name="city_name" value="<?= (isset($port)) ? $port->city_name : null; ?>" placeholder="Exp: Jakarta">
@@ -55,8 +59,25 @@
 			placeholder: 'Choose one',
 			dropdownParent: $('#dialog-popup'),
 			width: "100%",
-			allowClear: true
+			allowClear: true,
+			templateResult: function(data) {
+				// We only really care if there is an element to pull classes from
+				// console.log(data);
+				if (!data.element) {
+					return data.text;
+				}
+
+				var $element = $(data.element);
+
+				var $wrapper = $('<div></div>');
+				$wrapper.addClass($element[0].className);
+
+				$wrapper.text(data.text);
+
+				return $wrapper;
+			}
 		});
+
 
 		$(document).on('change', '#country_id', function() {
 			let country_id = $('#country_id').val();

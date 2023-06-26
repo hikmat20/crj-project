@@ -1,31 +1,31 @@
 <div class="card-body" id="dataForm">
     <div class="form-group row">
-        <div class="col-md-4">
-            <label for="id" class="tx-dark tx-bold">ID Number</label>
+        <div class="col-md-3">
+            <span class="tx-dark tx-bold">ID Number</span>
         </div>
         <div class="col-md-7">:
             <?= (isset($shipping)) ? $shipping->id : null; ?>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-md-4 tx-dark tx-bold">
-            <label for="container_id">Conatainer Size </label>
+        <div class="col-md-3">
+            <span class="tx-dark tx-bold">Conatainer Size </span>
         </div>
         <div class="col-md-7">:
-            <?= $ArrConte[$container->id]; ?>
+            <?= $ArrConte[$shipping->container_id]; ?>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-md-4">
-            <label for="cost_value" class="tx-dark tx-bold">Cost Value </label>
+        <div class="col-md-3">
+            <span class="tx-dark tx-bold">Cost Value </span>
         </div>
         <div class="col-md-7">:
-            <?= (isset($shipping) && $shipping->cost_value) ? number_format($shipping->cost_value) : null; ?>
+            Rp. <?= (isset($shipping) && $shipping->cost_value) ? number_format($shipping->cost_value) : 0; ?>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-md-4">
-            <label for="description" class="tx-dark tx-bold">Description</label>
+        <div class="col-md-3">
+            <span class="tx-dark tx-bold">Description</span>
         </div>
         <div class="col-md-7">:
             <?= (isset($shipping) && $shipping->description) ? $shipping->description : null; ?>

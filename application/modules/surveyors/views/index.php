@@ -87,9 +87,16 @@ $ENABLE_DELETE  = has_permission('Surveyors.Delete');
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
         $("#save").removeClass('d-none');
+        let empty = $('table#dataTable tbody tr td.dataTables_empty').length
         let countRow = $('table#dataTable tbody tr').length + 1
+        let min
+        if (empty == 1) {
+            min = empty
+        } else {
+            min = countRow
+        }
         setTimeout(() => {
-            $('input#qty_container').prop('min', countRow)
+            $('input#qty_container').prop('min', min)
         }, 300)
     });
 

@@ -128,8 +128,8 @@ class Storages extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		// $this->template->render('under-construction');
-		$this->template->render('index');
+		$this->template->render('under-construction');
+		// $this->template->render('index');
 	}
 
 	public function add()

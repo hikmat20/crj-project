@@ -156,7 +156,7 @@ class Customers extends Admin_Controller
 		$countries 				= $this->Customer_model->get_data('countries');
 		$states 				= $this->Customer_model->get_data('states', 'country_id', $customer->country_id);
 		$cities 				= $this->Customer_model->get_data('cities', 'state_id', $customer->state_id);
-		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
+		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => '1'))->result();
 		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
 

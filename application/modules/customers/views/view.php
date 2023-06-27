@@ -54,7 +54,7 @@
                     <label for="sales_id">Marketing</label>
                 </div>
                 <div class="col-md-8">:
-                    <?= ($ArrMkt[$mkt->id]) ?: '-' ?>
+                    <?= isset($customer->sales_id) ? $ArrMkt[$customer->sales_id] : '-' ?>
                 </div>
             </div>
         </div>

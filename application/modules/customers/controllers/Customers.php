@@ -182,13 +182,13 @@ class Customers extends Admin_Controller
 		$countries 				= $this->db->get_where('countries')->result_array();
 		$states 				= $this->db->get_where('states', ['country_id' => $customer->country_id])->result_array();
 		$cities 				= $this->db->get_where('cities', ['state_id' => $customer->state_id])->result_array();
-		$marketing 				= $this->db->get_where('employees', array('status' => 1))->result_array();
+		$marketing 				= $this->db->get_where('employees', array('status' => '1'))->result_array();
 		$receive_invoice_day 	= json_decode($customer->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($customer->invoicing_requirement);
-		$ArrCountries = (array_combine(array_column($countries, 'id'), array_column($countries, 'name'))) ?: [];
-		$ArrStates = (array_combine(array_column($states, 'id'), array_column($states, 'name'))) ?: [];
-		$ArrCities	 = (array_combine(array_column($cities, 'id'), array_column($cities, 'name'))) ?: [];
-		$ArrMkt	 = (array_combine(array_column($marketing, 'id'), array_column($marketing, 'name'))) ?: [];
+		$ArrCountries 			= array_column($countries, 'name', 'id');
+		$ArrStates 				= array_column($states, 'name', 'id');
+		$ArrCities	 			= array_column($cities, 'name', 'id');
+		$ArrMkt	 				= array_column($marketing, 'name', 'id');
 
 		$data = [
 			'customer'					=> $customer,

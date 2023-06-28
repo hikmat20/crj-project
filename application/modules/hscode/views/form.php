@@ -41,8 +41,8 @@
                             <option value=""></option>
                             <?php if ($countries) {
                                 foreach ($countries as $country) { ?>
-                            <option value="<?= $country->id; ?>" <?= ($country->id == $hs->country_id) ? 'selected' : ''; ?>>
-                                <?= $country->country_code . ' - ' . $country->name; ?></option>
+                                    <option value="<?= $country->id; ?>" <?= ($country->id == $hs->country_id) ? 'selected' : ''; ?>>
+                                        <?= $country->country_code . ' - ' . $country->name; ?></option>
                             <?php }
                             } ?>
                         </select>
@@ -118,7 +118,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" class="form-control text-right" id="bm_mfn" name="bm_mfn" required value="<?= isset($hs) ? $hs->bm_mfn : 0; ?>" placeholder="0" data-parsley-inputs data-parsley-errors-container="#error-bm_mfn">
+                        <input type="text" class="form-control text-right" id="bm_mfn" name="bm_mfn" required value="<?= isset($hs) ? $hs->bm_mfn : 5; ?>" placeholder="0" data-parsley-inputs data-parsley-errors-container="#error-bm_mfn">
                         <div class="input-group-append">
                             <span class="input-group-text">%</span>
                         </div>
@@ -333,18 +333,18 @@
                         if (isset($ArrRQ['RQ1']) && $ArrRQ['RQ1']) {
                             foreach ($ArrRQ['RQ1'] as $r1) {
                                 ++$n; ?>
-                        <tr>
-                            <td class="text-center">
-                                <?= $n; ?>
-                                <input type="hidden" class="id_rq" value="<?= $r1['id']; ?>">
-                            </td>
-                            <td><?= $r1['name']; ?></td>
-                            <td><?= $r1['description']; ?></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-success editRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="btn btn-sm btn-danger deleteRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <?= $n; ?>
+                                        <input type="hidden" class="id_rq" value="<?= $r1['id']; ?>">
+                                    </td>
+                                    <td><?= $r1['name']; ?></td>
+                                    <td><?= $r1['description']; ?></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-success editRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-edit"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger deleteRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
                         <?php }
                         } ?>
                     </tbody>
@@ -369,15 +369,15 @@
                         if (isset($ArrRQ['RQ2']) && $ArrRQ['RQ2']) {
                             foreach ($ArrRQ['RQ2'] as $r1) {
                                 ++$n; ?>
-                        <tr>
-                            <td class="text-center"><?= $n; ?></td>
-                            <td><?= $r1['name']; ?></td>
-                            <td><?= $r1['description']; ?></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-success editRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="btn btn-sm btn-danger deleteRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td class="text-center"><?= $n; ?></td>
+                                    <td><?= $r1['name']; ?></td>
+                                    <td><?= $r1['description']; ?></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-success editRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-edit"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger deleteRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
                         <?php }
                         } ?>
                     </tbody>
@@ -403,15 +403,15 @@
                         if (isset($ArrRQ['RQ3']) && $ArrRQ['RQ3']) {
                             foreach ($ArrRQ['RQ3'] as $r1) {
                                 ++$n; ?>
-                        <tr>
-                            <td class="text-center"><?= $n; ?></td>
-                            <td><?= $r1['name']; ?></td>
-                            <td><?= $r1['description']; ?></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-success editRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="btn btn-sm btn-danger deleteRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td class="text-center"><?= $n; ?></td>
+                                    <td><?= $r1['name']; ?></td>
+                                    <td><?= $r1['description']; ?></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-success editRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-edit"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger deleteRQ" data-type="<?= $r1['type']; ?>" data-id="<?= $r1['id']; ?>"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
                         <?php }
                         } ?>
                     </tbody>
@@ -424,26 +424,26 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('.select').select2({
-        placeholder: 'Choose one',
-        dropdownParent: $('#data-form-customer'),
-        width: "100%",
-        allowClear: true
-    });
-
-    $('.select.not-search').select2({
-        minimumResultsForSearch: -1,
-        placeholder: 'Choose one',
-        dropdownParent: $('#data-form-customer'),
-        width: "100%",
-        allowClear: true
-    });
-
-    window.Parsley.on('form:validated', function() {
-        $('select').on('select2:select', function(evt) {
-            $("#country_id").parsley().validate();
+    $(document).ready(function() {
+        $('.select').select2({
+            placeholder: 'Choose one',
+            dropdownParent: $('#data-form-customer'),
+            width: "100%",
+            allowClear: true
         });
-    });
-})
+
+        $('.select.not-search').select2({
+            minimumResultsForSearch: -1,
+            placeholder: 'Choose one',
+            dropdownParent: $('#data-form-customer'),
+            width: "100%",
+            allowClear: true
+        });
+
+        window.Parsley.on('form:validated', function() {
+            $('select').on('select2:select', function(evt) {
+                $("#country_id").parsley().validate();
+            });
+        });
+    })
 </script>

@@ -242,7 +242,7 @@ class Ocean_freights extends Admin_Controller
 				'msg'		=> 'Failed delete data Ocean Freight.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Ocean Freight " . $freight['id'] . ", Ocean Freight name : " . $freight['city_name'];
+			$keterangan     = "FAILD delete data Ocean Freight " . $freight['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
 			$kode_universal = $freight['id'];
@@ -254,7 +254,7 @@ class Ocean_freights extends Admin_Controller
 				'msg'		=> 'Success delete data Ocean Freight.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Ocean Freight " . $freight['id'] . ", Ocean Freight name : " . $freight['city_name'];
+			$keterangan     = "SUCCESS delete data Ocean Freight " . $freight['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
 			$kode_universal = $freight['id'];

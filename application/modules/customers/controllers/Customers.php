@@ -139,7 +139,7 @@ class Customers extends Admin_Controller
 	{
 		$this->auth->restrict($this->viewPermission);
 		$countries = $this->Customer_model->get_data('countries');
-		$marketing = $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
+		$marketing = $this->db->get_where('employees', array('division' => 'DIV002', 'status' => '1'))->result();
 		$data = [
 			'countries' => $countries,
 			'marketing' => $marketing

@@ -49,9 +49,8 @@ class Storages extends Admin_Controller
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM view_storages, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`days` LIKE '%$string%'
-        OR `container_size` LIKE '%$string%'
+        FROM storages, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (`days_stacking` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -61,10 +60,7 @@ class Storages extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'days',
-			2 => 'container_size',
-			3 => 'description',
-			4 => 'status',
+			1 => 'days_stacking',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -105,8 +101,8 @@ class Storages extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['container_size'];
-			$nestedData[]  = 'Rp. ' . number_format($row['cost_value']);
+			$nestedData[]  = $row['days_stacking'];
+			$nestedData[]  = $row['days_stacking'];
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -128,8 +124,8 @@ class Storages extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$this->template->render('under-construction');
-		// $this->template->render('index');
+		// $this->template->render('under-construction');
+		$this->template->render('index');
 	}
 
 	public function add()

@@ -17,7 +17,7 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
-			<span class="tx-dark tx-bold">City</span>
+			<span class="tx-dark tx-bold">Port</span>
 		</div>
 		<div class="col-md-7">:
 			<?= (isset($port)) ? $port->city_name : null; ?>

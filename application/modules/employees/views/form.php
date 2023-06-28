@@ -99,10 +99,10 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-4">
-                    <label for="email" class="tx-dark tx-bold">Email <span class="tx-danger">*</span></label>
+                    <label for="email" class="tx-dark tx-bold">Email</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="email" class="form-control" id="email" required name="email" value="<?= (isset($employee) && $employee->email) ? $employee->email : null; ?>" placeholder="email@domain.com">
+                    <input type="email" class="form-control" id="email" name="email" value="<?= (isset($employee) && $employee->email) ? $employee->email : null; ?>" placeholder="email@domain.com">
                 </div>
             </div>
             <div class="form-group row">

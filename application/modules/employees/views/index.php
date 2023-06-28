@@ -30,7 +30,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
                         <th width="15" class="text-center">No</th>
                         <th class="desktop tablet mobile tx-bold tx-dark" width="">Employee Code</th>
                         <th class="desktop tablet mobile tx-bold tx-dark" width="150">Employee Name</th>
-                        <th class="desktop tablet mobile">Email</th>
+                        <th class="desktop tablet mobile">Division</th>
                         <th class="desktop tablet no-sort">Address</th>
                         <th class="desktop no-sort">Job Desc.</th>
                         <th class="desktop text-center">Status</th>
@@ -45,7 +45,7 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
                         <th>No</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Email</th>
+                        <th>Division</th>
                         <th>Address</th>
                         <th>Job Desc.</th>
                         <th>Status</th>

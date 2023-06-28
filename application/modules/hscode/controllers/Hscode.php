@@ -55,6 +55,7 @@ class Hscode extends Admin_Controller
         AND (local_code LIKE '%$string%'
         OR origin_code LIKE '%$string%'
         OR `country_code` LIKE '%$string%'
+        OR `country_name` LIKE '%$string%'
         OR `brand` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
@@ -186,6 +187,12 @@ class Hscode extends Admin_Controller
         $countries      = $this->db->get('countries')->result_array();
         $def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
         $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+        $unit = [
+            'rp'        => '(Rp)',
+            'm'         => 'Meter',
+            'percent'   => '%',
+            'kg'        => 'Kg',
+        ];
         $ArrRQ          = [];
         foreach ($requirements as $rq) {
             $ArrRQ[$rq['type']][] = $rq;
@@ -197,6 +204,7 @@ class Hscode extends Admin_Controller
             'def_ppn' => $def_ppn,
             'ArrCountries' => $ArrCountries,
             'ArrRQ' => $ArrRQ,
+            'unit' => $unit,
         ]);
         $this->template->render('view');
     }

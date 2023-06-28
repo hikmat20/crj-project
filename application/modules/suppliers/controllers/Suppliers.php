@@ -53,8 +53,6 @@ class Suppliers extends Admin_Controller
         FROM view_suppliers, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (supplier_name LIKE '%$string%'
         OR telephone LIKE '%$string%'
-        OR `country_code` LIKE '%$string%'
-        OR `email` LIKE '%$string%'
         OR `address` LIKE '%$string%'
         OR `supplier_type_name` LIKE '%$string%'
         OR `status` LIKE '%$string%'
@@ -113,8 +111,6 @@ class Suppliers extends Admin_Controller
 			$nestedData[] = $nomor;
 			$nestedData[] = $row['supplier_name'];
 			$nestedData[] = $row['telephone'];
-			$nestedData[] = $row['country_code'] . ' - ' . $row['country_name'];
-			$nestedData[] = $row['email'];
 			$nestedData[] = $row['address'];
 			$nestedData[] = $row['supplier_type_name'];
 			$nestedData[] = $status[$row['status']];

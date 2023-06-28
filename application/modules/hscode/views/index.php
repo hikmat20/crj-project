@@ -25,15 +25,15 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
             <table id="dataTable" class="table table-bordered table-sm display table-striped" width="100%">
                 <thead>
                     <tr>
-                        <th class="text-center desktop tablet mobile" width="50">No</th>
+                        <th class="text-center desktop tablet mobile" width="30">No</th>
                         <th class="desktop tablet mobile tx-dark tx-bold">Local Code</th>
                         <th class="desktop tablet mobile">Origin Code</th>
                         <th class="desktop tablet">Origin Name</th>
                         <th class="desktop tablet" width="20%">Description</th>
-                        <th class="desktop">Brand</th>
-                        <th class="desktop text-center no-sort">Status</th>
+                        <th class="desktop">Type</th>
+                        <th class="desktop text-center">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th width="110" class="desktop text-center no-sort">Action</th>
+                            <th width="110" class="desktop text-center no-sort">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -45,10 +45,10 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                         <th>Origin Code</th>
                         <th>Origin Name</th>
                         <th>Description</th>
-                        <th>Brand</th>
+                        <th>Type</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th>Action</th>
+                            <th>Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </tfoot>
@@ -58,7 +58,7 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
 </div>
 
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg mx-wd-lg-90p-force">
         <form id="data-form" method="post" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -77,20 +77,14 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
     </div>
 </div>
 
-
 <script type="text/javascript">
     $(document).ready(function() {
         loadData()
 
         /* ========= */
-
         $(document).on('click', '.add', function() {
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
-            $("#dialog-popup .modal-title").html(
-                '<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> Add New HS Code');
-            $("#dialog-popup .modal-dialog").css({
-                'max-width': '90%'
-            });
+            $("#dialog-popup .modal-title").html('<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> Add New HS Code');
             $("#dialog-popup").modal();
             $('#save').removeClass('d-none')
         });
@@ -100,9 +94,6 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
             if (id) {
                 $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
                 $("#dialog-popup .modal-title").html('<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> Edit HS Code');
-                $("#dialog-popup .modal-dialog").css({
-                    'max-width': '90%'
-                });
             } else {
                 $("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
             }
@@ -115,16 +106,12 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
             if (id) {
                 $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
                 $("#dialog-popup .modal-title").html('<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> View HS Code');
-                $("#dialog-popup .modal-dialog").css({
-                    'max-width': '70%'
-                });
             } else {
                 $("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
             }
             $("#dialog-popup").modal();
             $('#save').addClass('d-none')
         });
-
 
         $(document).on('click', '.delete', function() {
             var swalWithBootstrapButtons = Swal.mixin({

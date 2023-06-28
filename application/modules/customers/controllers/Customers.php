@@ -52,7 +52,6 @@ class Customers extends Admin_Controller
         FROM customers, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (customer_name LIKE '%$string%'
         OR telephone LIKE '%$string%'
-        OR email LIKE '%$string%'
         OR `address` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -64,9 +63,9 @@ class Customers extends Admin_Controller
 			0 => 'num',
 			1 => 'customer_name',
 			2 => 'telephone',
-			3 => 'email',
-			4 => 'address',
-			5 => 'status',
+			// 3 => 'email',
+			3 => 'address',
+			4 => 'status',
 			// 6 => '',
 		);
 
@@ -110,7 +109,7 @@ class Customers extends Admin_Controller
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['customer_name'];
 			$nestedData[]  = $row['telephone'];
-			$nestedData[]  = $row['email'];
+			// $nestedData[]  = $row['email'];
 			$nestedData[]  = $row['address'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;

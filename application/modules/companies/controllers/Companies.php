@@ -51,7 +51,6 @@ class Companies extends Admin_Controller
         FROM companies, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (company_name LIKE '%$string%'
         OR telephone LIKE '%$string%'
-        OR email LIKE '%$string%'
         OR `address` LIKE '%$string%'
         OR `api_type` LIKE '%$string%'
         OR `status` LIKE '%$string%'
@@ -64,11 +63,9 @@ class Companies extends Admin_Controller
 			0 => 'num',
 			1 => 'company_name',
 			2 => 'telephone',
-			3 => 'email',
-			4 => 'address',
-			5 => 'api_type',
-			6 => 'status',
-			// 6 => '',
+			3 => 'address',
+			4 => 'api_type',
+			5 => 'status',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -111,7 +108,6 @@ class Companies extends Admin_Controller
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['company_name'];
 			$nestedData[]  = $row['telephone'];
-			$nestedData[]  = $row['email'];
 			$nestedData[]  = $row['address'];
 			$nestedData[]  = $row['api_type'];
 			$nestedData[]  = $status[$row['status']];

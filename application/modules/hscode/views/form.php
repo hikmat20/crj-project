@@ -52,10 +52,10 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="brand">Brand</label>
+                    <label for="brand">Type</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" id="brand" value="<?= isset($hs) ? $hs->brand : ''; ?>" name="brand" placeholder="Brand Name">
+                    <input type="text" class="form-control" id="brand" value="<?= isset($hs) ? $hs->brand : ''; ?>" name="brand" placeholder="Type">
                 </div>
             </div>
         </div>
@@ -69,7 +69,6 @@
                     <textarea class="form-control" required id="description" name="description" placeholder="Description"><?= isset($hs) ? $hs->description : ''; ?></textarea>
                 </div>
             </div>
-
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <label for="lartas_act">Lartas <span class="tx-danger">*</span></label>
@@ -185,11 +184,11 @@
 
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="pph_api">PPH API <span class="tx-danger">*</span></label>
+                    <label for="pph_api">PPH API</label>
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" class="form-control text-right" id="pph_api" value="<?= isset($hs) ? $hs->pph_api : (isset($def_pph_api) && $def_pph_api ? $def_pph_api : 0); ?>" required name="pph_api" data-parsley-inputs data-parsley-errors-container="#error-pph_api" placeholder="0">
+                        <input type="text" class="form-control text-right" id="pph_api" value="<?= isset($hs) ? $hs->pph_api : (isset($def_pph_api) && $def_pph_api ? $def_pph_api : 0); ?>" name="pph_api" data-parsley-inputs data-parsley-errors-container="#error-pph_api" placeholder="0">
                         <div class="input-group-append"><span class="input-group-text">%</span></div>
                     </div>
                     <div id="error-pph_api"></div>
@@ -213,7 +212,15 @@
                 <div class="col-md-8">
                     <div class="input-group">
                         <input type="text" class="form-control text-right" id="cukai" value="<?= isset($hs) ? $hs->cukai : ''; ?>" name="cukai" placeholder="0">
-                        <div class="input-group-append"><span class="input-group-text">%</span></div>
+                        <div class="input-group-append wd-80">
+                            <select class="custom-select select-not-search" name="unit_cukai">
+                                <option value=""></option>
+                                <option value="kg" <?= isset($hs->unit_cukai) && $hs->unit_cukai == 'kg' ? 'selected' : ''; ?>>Kg</option>
+                                <option value="m" <?= isset($hs->unit_cukai) && $hs->unit_cukai == 'm' ? 'selected' : ''; ?>>Meter</option>
+                                <option value="rp" <?= isset($hs->unit_cukai) && $hs->unit_cukai == 'rp' ? 'selected' : ''; ?>>Rp</option>
+                                <option value="percent" <?= isset($hs->unit_cukai) && $hs->unit_cukai == 'percent' ? 'selected' : ''; ?>>%</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -227,7 +234,15 @@
                 <div class="col-md-8">
                     <div class="input-group">
                         <input type="text" name="bmad" id="bmad" class="form-control text-right" placeholder="0" value="<?= isset($hs) ? $hs->mbad : '0'; ?>">
-                        <div class="input-group-append"><span class="input-group-text">%</span></div>
+                        <div class="input-group-append wd-80">
+                            <select class="custom-select select-not-search" name="unit_bmad">
+                                <option value=""></option>
+                                <option value="kg" <?= isset($hs->unit_bmad) && $hs->unit_bmad == 'kg' ? 'selected' : ''; ?>>Kg</option>
+                                <option value="m" <?= isset($hs->unit_bmad) && $hs->unit_bmad == 'm' ? 'selected' : ''; ?>>Meter</option>
+                                <option value="rp" <?= isset($hs->unit_bmad) && $hs->unit_bmad == 'rp' ? 'selected' : ''; ?>>Rp</option>
+                                <option value="percent" <?= isset($hs->unit_bmad) && $hs->unit_bmad == 'percent' ? 'selected' : ''; ?>>%</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -238,7 +253,15 @@
                 <div class="col-md-8">
                     <div class="input-group">
                         <input type="text" class="form-control text-right" id="bmtp" value="<?= isset($hs) ? $hs->bmtp : ''; ?>" name="bmtp" placeholder="0">
-                        <div class="input-group-append"><span class="input-group-text">%</span></div>
+                        <div class="input-group-append wd-80">
+                            <select class="custom-select select-not-search" name="unit_bmtp">
+                                <option value=""></option>
+                                <option value="kg" <?= isset($hs->bmtp) && $hs->unit_bmtp == 'kg' ? 'selected' : ''; ?>>Kg</option>
+                                <option value="m" <?= isset($hs->bmtp) && $hs->unit_bmtp == 'm' ? 'selected' : ''; ?>>Meter</option>
+                                <option value="rp" <?= isset($hs->bmtp) && $hs->unit_bmtp == 'rp' ? 'selected' : ''; ?>>Rp</option>
+                                <option value="percent" <?= isset($hs->bmtp) && $hs->unit_bmtp == 'percent' ? 'selected' : ''; ?>>%</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -432,8 +455,8 @@
             allowClear: true
         });
 
-        $('.select.not-search').select2({
-            minimumResultsForSearch: -1,
+        $('.select-not-search').select2({
+            minimumResultsForSearch: Infinity,
             placeholder: 'Choose one',
             dropdownParent: $('#data-form-customer'),
             width: "100%",

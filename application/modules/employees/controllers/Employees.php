@@ -48,11 +48,11 @@ class Employees extends Admin_Controller
 		$where = " AND `status` <> '$status'";
 
 		$string = $this->db->escape_like_str($search);
-		$sql = "SELECT employees.*,(@row_number:=@row_number + 1) AS num
-        FROM employees, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+		$sql = "SELECT view_employees.*,(@row_number:=@row_number + 1) AS num
+        FROM view_employees, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`name` LIKE '%$string%'
         OR employee_code LIKE '%$string%'
-        OR email LIKE '%$string%'
+        OR division_name LIKE '%$string%'
         OR `address` LIKE '%$string%'
         OR job_description LIKE '%$string%'
         OR `status` LIKE '%$string%'
@@ -65,7 +65,7 @@ class Employees extends Admin_Controller
 			0 => 'num',
 			1 => 'employee_code',
 			2 => 'name',
-			3 => 'email',
+			3 => 'division_name',
 			4 => 'address',
 			5 => 'job_description',
 			6 => 'status',
@@ -120,7 +120,7 @@ class Employees extends Admin_Controller
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['employee_code'];
 			$nestedData[]  = $row['name'];
-			$nestedData[]  = $row['email'];
+			$nestedData[]  = $row['division_name'];
 			$nestedData[]  = $row['address'];
 			$nestedData[]  = $row['job_description'];
 			$nestedData[]  = $status[$row['status']];

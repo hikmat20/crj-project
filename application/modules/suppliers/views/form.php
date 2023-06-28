@@ -44,10 +44,10 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-md-3 tx-dark tx-bold">
-					<label for="email">Email <span class="tx-danger">*</span></label>
+					<label for="email">Email</label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" id="email" value="<?= isset($supplier) ? $supplier->email : ''; ?>" required data-parsley-type="email" name="email" placeholder="email@domain.adress">
+					<input type="text" class="form-control" id="email" value="<?= isset($supplier) ? $supplier->email : ''; ?>" data-parsley-type="email" name="email" placeholder="email@domain.adress">
 				</div>
 			</div>
 			<div class="form-group row">

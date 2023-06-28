@@ -30,8 +30,6 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 						<th class="text-center desktop tablet mobile" width="30">No</th>
 						<th class="desktop tablet mobile tx-dark tx-bold">Supplier Name</th>
 						<th class="desktop tablet mobile">Telephone</th>
-						<th class="desktop tablet mobile">Country</th>
-						<th class="desktop tablet">Email</th>
 						<th class="desktop no-sort">Address</th>
 						<th class="desktop text-center no-sort">Supplier Type</th>
 						<th class="desktop text-center">Status</th>
@@ -46,8 +44,6 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 						<th>No</th>
 						<th>Supplier Name</th>
 						<th>Telephone</th>
-						<th>Country</th>
-						<th>Email</th>
 						<th>Location</th>
 						<th>Supplier Type</th>
 						<th>Status</th>
@@ -62,7 +58,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 </div>
 
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg mx-wd-lg-90p-force">
 		<form id="data-form" method="post" data-parsley-validate>
 			<div class="modal-content">
 				<div class="modal-header">
@@ -86,11 +82,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 
 		$(document).on('click', '.add', function() {
 			$("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
-			$("#dialog-popup .modal-title").html(
-				'<i class="<?php echo $template['page_icon']; ?>"></i> Add New Supplier');
-			$("#dialog-popup .modal-dialog").css({
-				'max-width': '90%'
-			});
+			$("#dialog-popup .modal-title").html('<i class="<?php echo $template['page_icon']; ?>"></i> Add New Supplier');
 			$("#dialog-popup").modal();
 		});
 
@@ -98,11 +90,7 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 			let id = $(this).data('id');
 			if (id) {
 				$("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
-				$("#dialog-popup .modal-title").html(
-					'<i class="<?= $template['page_icon']; ?>"></i> Edit Supplier');
-				$("#dialog-popup .modal-dialog").css({
-					'max-width': '90%'
-				});
+				$("#dialog-popup .modal-title").html('<i class="<?= $template['page_icon']; ?>"></i> Edit Supplier');
 			} else {
 				$("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
 			}
@@ -113,17 +101,12 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 			let id = $(this).data('id');
 			if (id) {
 				$("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
-				$("#dialog-popup .modal-title").html(
-					'<i class="<?= $template['page_icon']; ?>"></i> View Supplier');
-				$("#dialog-popup .modal-dialog").css({
-					'max-width': '70%'
-				});
+				$("#dialog-popup .modal-title").html('<i class="<?= $template['page_icon']; ?>"></i> View Supplier');
 			} else {
 				$("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
 			}
 			$("#dialog-popup").modal();
 		});
-
 
 		$(document).on('click', '.delete', function() {
 			var swalWithBootstrapButtons = Swal.mixin({

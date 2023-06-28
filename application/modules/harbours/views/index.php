@@ -27,8 +27,8 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Country</th>
-                        <th class="desktop tablet text-center">City</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark">Country</th>
+                        <th class="desktop tablet mobile text-center">Port</th>
                         <th class="desktop tablet no-sort">Description</th>
                         <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
@@ -41,7 +41,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                     <tr>
                         <th>No</th>
                         <th>Country</th>
-                        <th>City</th>
+                        <th>Port</th>
                         <th>Description</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>

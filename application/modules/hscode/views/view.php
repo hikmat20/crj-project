@@ -139,7 +139,7 @@
                     <span>Cukai</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->cukai ? $hs->cukai : '0'; ?>%
+                    <?= isset($hs) && $hs->cukai ? $hs->cukai : '0' . " " . (isset($hs->unit_cukai) ? $unit[$hs->unit_cukai] : ''); ?>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
                     <span>BMAD</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->mbad ? $hs->mbad : '0'; ?>%
+                    <?= isset($hs) && $hs->bmad ? $hs->bmad : '0' . " " . (isset($hs->unit_bmad) ? $unit[$hs->unit_bmad] : ''); ?>
                 </div>
             </div>
             <div class="row">
@@ -158,7 +158,7 @@
                     <span>BMTP</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->bmtp ? $hs->bmtp : '0'; ?>%
+                    <?= isset($hs) && $hs->bmtp ? $hs->bmtp : '0' . " " . (isset($hs->unit_bmtp) ? $unit[$hs->unit_bmtp] : ''); ?>
                 </div>
             </div>
             <div class="row">
@@ -229,19 +229,18 @@
                         if (isset($ArrRQ['RQ1']) && $ArrRQ['RQ1']) {
                             foreach ($ArrRQ['RQ1'] as $r1) {
                                 ++$n; ?>
-                        <tr>
-                            <td class="text-center">
-                                <?= $n; ?>
-                                <input type="hidden" class="id_rq" value="<?= $r1['id']; ?>">
-                            </td>
-                            <td><?= $r1['name']; ?></td>
-                            <td><?= $r1['description']; ?></td>
-                        </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <?= $n; ?>
+                                        <input type="hidden" class="id_rq" value="<?= $r1['id']; ?>">
+                                    </td>
+                                    <td><?= $r1['name']; ?></td>
+                                    <td><?= $r1['description']; ?></td>
+                                </tr>
                         <?php }
                         } ?>
                     </tbody>
                 </table>
-                <button type="button" id="add-req1" class="btn btn-success wd-100 btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
             </div>
         </div>
 
@@ -260,17 +259,15 @@
                         if (isset($ArrRQ['RQ2']) && $ArrRQ['RQ2']) {
                             foreach ($ArrRQ['RQ2'] as $r1) {
                                 ++$n; ?>
-                        <tr>
-                            <td class="text-center"><?= $n; ?></td>
-                            <td><?= $r1['name']; ?></td>
-                            <td><?= $r1['description']; ?></td>
-                        </tr>
+                                <tr>
+                                    <td class="text-center"><?= $n; ?></td>
+                                    <td><?= $r1['name']; ?></td>
+                                    <td><?= $r1['description']; ?></td>
+                                </tr>
                         <?php }
                         } ?>
                     </tbody>
                 </table>
-                <button type="button" id="add-req2" class="btn btn-success wd-100 btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
-
             </div>
         </div>
 
@@ -289,11 +286,11 @@
                         if (isset($ArrRQ['RQ3']) && $ArrRQ['RQ3']) {
                             foreach ($ArrRQ['RQ3'] as $r1) {
                                 ++$n; ?>
-                        <tr>
-                            <td class="text-center"><?= $n; ?></td>
-                            <td><?= $r1['name']; ?></td>
-                            <td><?= $r1['description']; ?></td>
-                        </tr>
+                                <tr>
+                                    <td class="text-center"><?= $n; ?></td>
+                                    <td><?= $r1['name']; ?></td>
+                                    <td><?= $r1['description']; ?></td>
+                                </tr>
                         <?php }
                         } ?>
                     </tbody>

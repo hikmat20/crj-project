@@ -44,10 +44,10 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="email">Email <span class="tx-danger">*</span></label>
+                    <label for="email">Email</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" id="email" value="<?= isset($customer) ? $customer->email : ''; ?>" required data-parsley-type="email" name="email" placeholder="email@domain.adress">
+                    <input type="text" class="form-control" id="email" value="<?= isset($customer) ? $customer->email : ''; ?>" data-parsley-type="email" name="email" placeholder="email@domain.adress">
                 </div>
             </div>
             <div class="form-group row">
@@ -59,8 +59,8 @@
                         <select id="sales_id" name="sales_id" class="form-control select not-search" required data-parsley-inputs data-parsley-class-handler="#slWrapperKaryawan" data-parsley-errors-container="#slErrorContainerKaryawan">
                             <option value=""></option>
                             <?php foreach ($marketing as $mkt) { ?>
-                            <option value="<?= $mkt->id ?>" <?= ($mkt->id == $customer->sales_id) ? 'selected' : ''; ?>>
-                                <?= ucfirst(strtolower($mkt->name)) ?></option>
+                                <option value="<?= $mkt->id ?>" <?= ($mkt->id == $customer->sales_id) ? 'selected' : ''; ?>>
+                                    <?= ucfirst(strtolower($mkt->name)) ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -78,7 +78,7 @@
                         <select id="country_id" name="country_id" class="form-control select" data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#slErrorContainerCountry">
                             <option value=""></option>
                             <?php if ($countries) foreach ($countries as $country) : ?>
-                            <option value="<?= $country->id; ?>" <?= ($country->id == $customer->country_id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
+                                <option value="<?= $country->id; ?>" <?= ($country->id == $customer->country_id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -96,7 +96,7 @@
                             <select id="state_id" name="state_id" class="form-control select" data-parsley-inputs data-parsley-class-handler="#slWrapperProv" data-parsley-errors-container="#slErrorContainerProv">
                                 <option value=""></option>
                                 <?php if (isset($customer) && $customer->state_id) foreach ($states as $state) : ?>
-                                <option value="<?= $customer->state_id; ?>" <?= (isset($customer) && $customer->state_id == $state->id) ? 'selected' : ''; ?>><?= $state->name; ?></option>
+                                    <option value="<?= $customer->state_id; ?>" <?= (isset($customer) && $customer->state_id == $state->id) ? 'selected' : ''; ?>><?= $state->name; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -114,7 +114,7 @@
                         <select id="city_id" name="city_id" class="form-control select" data-parsley-inputs data-parsley-class-handler="#slWrapperCity" data-parsley-errors-container="#slErrorContainerCity">
                             <option value=""></option>
                             <?php if (isset($customer) && $customer->city_id) foreach ($cities as $city) : ?>
-                            <option value="<?= $customer->city_id; ?>" <?= (isset($customer) && $customer->city_id == $city->id) ? 'selected' : ''; ?>><?= $city->name; ?></option>
+                                <option value="<?= $customer->city_id; ?>" <?= (isset($customer) && $customer->city_id == $city->id) ? 'selected' : ''; ?>><?= $city->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -206,19 +206,19 @@
                     </thead>
                     <tbody>
                         <?php $n = 0;
-						if (isset($PIC) && $PIC)
-							foreach ($PIC as $pic) : $n++; ?>
-                        <tr>
-                            <td><?= $n; ?></td>
-                            <td><?= $pic->name; ?></td>
-                            <td><?= $pic->phone_number; ?></td>
-                            <td><?= $pic->email; ?></td>
-                            <td><?= $pic->position; ?></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-success editPic" data-id="<?= $pic->id; ?>"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="btn btn-sm btn-danger deletePic" data-id="<?= $pic->id; ?>"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
+                        if (isset($PIC) && $PIC)
+                            foreach ($PIC as $pic) : $n++; ?>
+                            <tr>
+                                <td><?= $n; ?></td>
+                                <td><?= $pic->name; ?></td>
+                                <td><?= $pic->phone_number; ?></td>
+                                <td><?= $pic->email; ?></td>
+                                <td><?= $pic->position; ?></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-success editPic" data-id="<?= $pic->id; ?>"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger deletePic" data-id="<?= $pic->id; ?>"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -429,93 +429,93 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
+    $(document).ready(function() {
 
-    $('.select').select2({
-        // minimumResultsForSearch: -1,
-        placeholder: 'Choose one',
-        dropdownParent: $('#dialog-popup'),
-        width: "100%",
-        allowClear: true
-    });
-
-    $('.select.not-search').select2({
-        minimumResultsForSearch: -1,
-        placeholder: 'Choose one',
-        dropdownParent: $('#dialog-popup'),
-        width: "100%",
-        allowClear: true
-    });
-
-    $(document).on('change', '#country_id', function() {
-        let country_id = $('#country_id').val();
-        $('#state_id').val('null').trigger('change')
-        $('#city_id').val('null').trigger('change')
-        $('#state_id').select2({
-            ajax: {
-                url: siteurl + thisController + 'getProvince',
-                dataType: 'JSON',
-                type: 'GET',
-                delay: 100,
-                data: function(params) {
-                    return {
-                        q: params.term, // search term
-                        country_id: country_id, // search term
-                    };
-                },
-                processResults: function(res) {
-                    return {
-                        results: $.map(res, function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name
-                            }
-                        })
-                    };
-                }
-            },
-            cache: true,
+        $('.select').select2({
+            // minimumResultsForSearch: -1,
             placeholder: 'Choose one',
             dropdownParent: $('#dialog-popup'),
             width: "100%",
             allowClear: true
-        })
-    })
+        });
 
-    $(document).on('change.select2', '#state_id', function() {
-        let state_id = $('#state_id').val();
-        $('#city_id').val('null').trigger('change')
-        $('#city_id').select2({
-            ajax: {
-                url: siteurl + thisController + 'getCities',
-                dataType: 'JSON',
-                type: 'GET',
-                delay: 100,
-                data: function(params) {
-                    return {
-                        q: params.term, // search term
-                        state_id: state_id, // search term
-                    };
-                },
-                processResults: function(res) {
-                    return {
-                        results: $.map(res, function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name
-                            }
-                        })
-                    };
-                }
-            },
-            cache: true,
+        $('.select.not-search').select2({
+            minimumResultsForSearch: -1,
             placeholder: 'Choose one',
             dropdownParent: $('#dialog-popup'),
             width: "100%",
             allowClear: true
+        });
+
+        $(document).on('change', '#country_id', function() {
+            let country_id = $('#country_id').val();
+            $('#state_id').val('null').trigger('change')
+            $('#city_id').val('null').trigger('change')
+            $('#state_id').select2({
+                ajax: {
+                    url: siteurl + thisController + 'getProvince',
+                    dataType: 'JSON',
+                    type: 'GET',
+                    delay: 100,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            country_id: country_id, // search term
+                        };
+                    },
+                    processResults: function(res) {
+                        return {
+                            results: $.map(res, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                }
+                            })
+                        };
+                    }
+                },
+                cache: true,
+                placeholder: 'Choose one',
+                dropdownParent: $('#dialog-popup'),
+                width: "100%",
+                allowClear: true
+            })
         })
 
+        $(document).on('change.select2', '#state_id', function() {
+            let state_id = $('#state_id').val();
+            $('#city_id').val('null').trigger('change')
+            $('#city_id').select2({
+                ajax: {
+                    url: siteurl + thisController + 'getCities',
+                    dataType: 'JSON',
+                    type: 'GET',
+                    delay: 100,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            state_id: state_id, // search term
+                        };
+                    },
+                    processResults: function(res) {
+                        return {
+                            results: $.map(res, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                }
+                            })
+                        };
+                    }
+                },
+                cache: true,
+                placeholder: 'Choose one',
+                dropdownParent: $('#dialog-popup'),
+                width: "100%",
+                allowClear: true
+            })
 
+
+        })
     })
-})
 </script>

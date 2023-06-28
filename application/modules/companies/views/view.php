@@ -1,7 +1,7 @@
 <div class="card-body" id="data-form-customer">
     <div class="row">
         <div class="col-sm-6">
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Company ID </span>
                 </div>
@@ -9,7 +9,7 @@
                     <?= isset($company) ? $company->id : null; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Company Name</span>
                 </div>
@@ -17,7 +17,7 @@
                     <strong class="tx-dark"><?= isset($company) ? $company->company_name : null; ?></strong>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Phone Number</span>
                 </div>
@@ -25,7 +25,7 @@
                     <?= isset($company) ? $company->telephone : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span></span>
                 </div>
@@ -33,7 +33,7 @@
                     <?= isset($company) ? $company->telephone_alt : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Fax</span>
                 </div>
@@ -41,7 +41,7 @@
                     <?= isset($company) ? $company->fax : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Email</span>
                 </div>
@@ -49,7 +49,7 @@
                     <?= isset($company) ? $company->email : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Start Date</span>
                 </div>
@@ -57,7 +57,7 @@
                     <?= isset($company) ? $company->start_date : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>API Type</span>
                 </div>
@@ -68,7 +68,7 @@
         </div>
 
         <div class="col-sm-6">
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Country</span>
                 </div>
@@ -76,7 +76,7 @@
                     <?= $ArrCountry[$company->country_id]; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Province</span>
                 </div>
@@ -84,7 +84,7 @@
                     <?= $ArrStates[$company->state_id]; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>City</span>
                 </div>
@@ -92,7 +92,7 @@
                     <?= $ArrCity[$company->city_id]; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Address</span>
                 </div>
@@ -100,7 +100,7 @@
                     <?= isset($company) ? $company->address : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Zip Code</span>
                 </div>
@@ -108,7 +108,7 @@
                     <?= isset($company) ? $company->zip_code : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Longtitude</span>
                 </div>
@@ -116,7 +116,7 @@
                     <?= isset($company) ? $company->longitude : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Latitude</span>
                 </div>
@@ -124,7 +124,7 @@
                     <?= isset($company) ? $company->latitude : ''; ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="mg-b-8 row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <span>Status</span>
                 </div>

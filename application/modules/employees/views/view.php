@@ -62,7 +62,7 @@
                     <span class="tx-dark tx-bold">Religion</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= $ArrRel[$employee->religion] ?>
+                    <?= isset($employee->religion) ? $ArrRel[$employee->religion] : '-' ?>
                 </div>
             </div>
         </div>

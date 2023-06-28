@@ -52,9 +52,9 @@ class Employees extends Admin_Controller
         FROM employees, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`name` LIKE '%$string%'
         OR employee_code LIKE '%$string%'
-        OR phone_number LIKE '%$string%'
         OR email LIKE '%$string%'
         OR `address` LIKE '%$string%'
+        OR job_description LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
 
@@ -65,9 +65,9 @@ class Employees extends Admin_Controller
 			0 => 'num',
 			1 => 'employee_code',
 			2 => 'name',
-			3 => 'phone_number',
-			4 => 'email',
-			5 => 'address',
+			3 => 'email',
+			4 => 'address',
+			5 => 'job_description',
 			6 => 'status',
 		);
 
@@ -120,9 +120,9 @@ class Employees extends Admin_Controller
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['employee_code'];
 			$nestedData[]  = $row['name'];
-			$nestedData[]  = $row['phone_number'];
 			$nestedData[]  = $row['email'];
 			$nestedData[]  = $row['address'];
+			$nestedData[]  = $row['job_description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
@@ -244,7 +244,7 @@ class Employees extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
-		$data['id'] = isset($post['id']) && $post['id'] ?: $this->Employees_model->generate_id();
+		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Employees_model->generate_id();
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {

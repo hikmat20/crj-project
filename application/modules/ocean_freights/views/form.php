@@ -1,34 +1,55 @@
-<div class="card-body">
+<div class="card-body" id="dataForm">
 	<div class="form-group row">
 		<div class="col-md-4">
 			<label for="id" class="tx-dark tx-bold">ID Number<span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
-			<input type="text" readonly class="form-control" id="id" name="id" value="<?= (isset($port)) ? $port->id : null; ?>" maxlength="16" placeholder="Auto">
+			<input type="text" readonly class="form-control" id="id" name="id" value="<?= (isset($freight)) ? $freight->id : null; ?>" maxlength="16" placeholder="Auto">
 		</div>
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4 tx-dark tx-bold">
-			<label for="country_id">Country <span class="tx-danger">*</span></label>
+			<label for="port_id">Shipment Port <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
-			<div id="slWrapperCountry" class="parsley-select">
-				<select id="country_id" name="country_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#slErrorContainerCountry">
+			<div id="slWrapperPort" class="parsley-select">
+				<select id="port_id" name="port_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperPort" data-parsley-errors-container="#errorPort">
 					<option value=""></option>
-					<?php if ($countries) foreach ($countries as $country) : ?>
-						<option value="<?= $country->id; ?>" <?= (isset($port->country_id) && $port->country_id == $country->id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
+					<?php foreach ($harbours as $port) : ?>
+						<option value="<?= $port->id; ?>" <?= isset($freight) && $freight->port_id == $port->id ? 'selected' : ''; ?>><?= $port->country_code . " - " . $port->city_name; ?></option>
 					<?php endforeach; ?>
 				</select>
 			</div>
-			<div id="slErrorContainerCountry"></div>
+			<div id="errorPort"></div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-md-4 tx-dark tx-bold">
+			<label for="container_id">Container Size <span class="tx-danger">*</span></label>
+		</div>
+		<div class="col-md-7">
+			<div id="slWrapperContainer" class="parsley-select">
+				<select id="container_id" name="container_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperContainer" data-parsley-errors-container="#errorContainer">
+					<option value=""></option>
+					<?php foreach ($containers as $container) : ?>
+						<option value="<?= $container->id; ?>" <?= isset($freight) && $freight->container_id == $container->id ? 'selected' : ''; ?>><?= $container->name; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div id="errorContainer"></div>
 		</div>
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
-			<label for="city_name" class="tx-dark tx-bold">City<span class="tx-danger">*</span></label>
+			<label for="cost_value" class="tx-dark tx-bold">Cost Value <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
-			<input type="text" required class="form-control" id="city_name" name="city_name" value="<?= (isset($port)) ? $port->city_name : null; ?>" placeholder="Exp: Jakarta">
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<span class="input-group-text" id="input1">Rp.</span>
+				</div>
+				<input type="text" required class="form-control text-right" id="cost_value" name="cost_value" value="<?= (isset($freight)) ? number_format($freight->cost_value) : null; ?>" placeholder="0">
+			</div>
 		</div>
 	</div>
 	<div class="form-group row">
@@ -36,7 +57,7 @@
 			<label for="description" class="tx-dark tx-bold">Description</label>
 		</div>
 		<div class="col-md-7">
-			<textarea type="text" class="form-control" id="description" name="description" placeholder="Description"><?= (isset($port) && $port->description) ? $port->description : null; ?></textarea>
+			<textarea type="text" class="form-control" id="description" name="description" placeholder="Description"><?= (isset($freight) && $freight->description) ? $freight->description : null; ?></textarea>
 		</div>
 	</div>
 </div>
@@ -45,7 +66,7 @@
 	$(document).ready(function() {
 		$('.select').select2({
 			placeholder: 'Choose one',
-			dropdownParent: $('#dialog-popup'),
+			dropdownParent: $('#dataForm'),
 			width: "100%",
 			allowClear: true
 		});
@@ -53,43 +74,13 @@
 		$('.select.not-search').select2({
 			minimumResultsForSearch: -1,
 			placeholder: 'Choose one',
-			dropdownParent: $('#dialog-popup'),
+			dropdownParent: $('#dataForm'),
 			width: "100%",
 			allowClear: true
 		});
 
-		$(document).on('change', '#country_id', function() {
-			let country_id = $('#country_id').val();
-			$('#city_id').val('null').trigger('change')
-			$('#city_id').select2({
-				ajax: {
-					url: siteurl + thisController + 'getCities',
-					dataType: 'JSON',
-					type: 'GET',
-					delay: 100,
-					data: function(params) {
-						return {
-							q: params.term, // search term
-							country_id: country_id, // search term
-						};
-					},
-					processResults: function(res) {
-						return {
-							results: $.map(res, function(item) {
-								return {
-									id: item.id,
-									text: item.name
-								}
-							})
-						};
-					}
-				},
-				cache: true,
-				placeholder: 'Choose one',
-				dropdownParent: $('#dialog-popup'),
-				width: "100%",
-				allowClear: true
-			})
+		$('#cost_value').mask('#,##0', {
+			reverse: true
 		})
 	});
 </script>

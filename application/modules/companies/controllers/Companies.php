@@ -53,6 +53,7 @@ class Companies extends Admin_Controller
         OR telephone LIKE '%$string%'
         OR email LIKE '%$string%'
         OR `address` LIKE '%$string%'
+        OR `api_type` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
 
@@ -65,7 +66,8 @@ class Companies extends Admin_Controller
 			2 => 'telephone',
 			3 => 'email',
 			4 => 'address',
-			5 => 'status',
+			5 => 'api_type',
+			6 => 'status',
 			// 6 => '',
 		);
 
@@ -106,12 +108,13 @@ class Companies extends Admin_Controller
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
 			$nestedData   = array();
-			$nestedData[]  = "<div class='text-center'>" . $nomor . "</div>";
-			$nestedData[]  = "<div class='tx-bold text-dark'>" . $row['company_name'] . "</div>";
-			$nestedData[]  = "<div class=''>" . $row['telephone'] . "</div>";
-			$nestedData[]  = "<div class=''>" . $row['email'] . "</div>";
-			$nestedData[]  = "<div class=''>" . ($row['address']) . "</div>";
-			$nestedData[]  = "<div class=''>" . $status[$row['status']] . "</div>";
+			$nestedData[]  = $nomor;
+			$nestedData[]  = $row['company_name'];
+			$nestedData[]  = $row['telephone'];
+			$nestedData[]  = $row['email'];
+			$nestedData[]  = $row['address'];
+			$nestedData[]  = $row['api_type'];
+			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;
@@ -171,6 +174,36 @@ class Companies extends Admin_Controller
 		];
 		$this->template->set($data);
 		$this->template->render('form');
+	}
+
+
+	public function view($id)
+	{
+		$this->auth->restrict($this->viewPermission);
+		$company 				= $this->db->get_where('companies', array('id' => $id))->row();
+		$pic 					= $this->db->get_where('companies_pic', ['company_id' => $id, 'status' => '1'])->result();
+		$countries 				= $this->db->get_where('countries')->result_array();
+		$states 				= $this->db->get_where('states', ['country_id' => $company->country_id])->result_array();
+		$cities 				= $this->db->get_where('cities', ['state_id' => $company->state_id])->result_array();
+		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
+		$receive_invoice_day 	= json_decode($company->receive_invoice_day);
+		$invoicing_requirement 	= json_decode($company->invoicing_requirement);
+
+		$ArrCountry = array_column($countries, 'name', 'id');
+		$ArrStates = array_column($states, 'name', 'id');
+		$ArrCity = array_column($cities, 'name', 'id');
+
+		$data = [
+			'company'					=> $company,
+			'PIC' 						=> $pic,
+			'ArrCountry' 				=> $ArrCountry,
+			'ArrStates' 				=> $ArrStates,
+			'ArrCity' 					=> $ArrCity,
+			'receive_invoice_day' 		=> $receive_invoice_day,
+			'invoicing_requirement' 	=> $invoicing_requirement
+		];
+		$this->template->set($data);
+		$this->template->render('view');
 	}
 
 	public function save()

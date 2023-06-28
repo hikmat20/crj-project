@@ -26,11 +26,12 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
                 <thead>
                     <tr>
                         <th width="10" class="desktop tablet mobile">#</th>
-                        <th class="desktop tablet mobile" width="20%">Company Name</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark">Company Name</th>
                         <th class="desktop tablet mobile">Telephone</th>
                         <th class="desktop tablet">Email</th>
                         <th class="desktop">Address</th>
-                        <th class="text-center desktop">Status</th>
+                        <th class="desktop">API Type</th>
+                        <th class="text-center desktop" width="5%">Status</th>
                         <th width="100" class="text-center desktop">Action</th>
                     </tr>
                 </thead>
@@ -42,6 +43,7 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
                         <th>Telephone</th>
                         <th>Email</th>
                         <th>Address</th>
+                        <th>API Type</th>
                         <th class="text-center">Status</th>
                         <th width="100" class="text-center">Action</th>
                     </tr>
@@ -52,7 +54,7 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
 </div>
 
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg mx-wd-lg-90p-force mx-wd-md-90p-force">
         <form id="data-form" method="post" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -80,27 +82,25 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
 
     $(document).on('click', '.add', function() {
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
-        $("#dialog-popup .modal-title").html(
-            '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Add New Company');
-        $("#dialog-popup .modal-dialog").css({
-            'max-width': '90%'
-        });
+        $("#dialog-popup .modal-title").html('<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Add New Company');
         $("#dialog-popup").modal();
+        $('#save').removeClass('d-none')
     });
 
     $(document).on('click', '.edit', function() {
         let id = $(this).data('id');
-        if (id) {
-            $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
-            $("#dialog-popup .modal-title").html(
-                '<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Company');
-            $("#dialog-popup .modal-dialog").css({
-                'max-width': '90%'
-            });
-        } else {
-            $("#dialog-popup .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
-        }
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#dialog-popup .modal-title").html('<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> Edit Company');
         $("#dialog-popup").modal();
+        $('#save').removeClass('d-none')
+    });
+
+    $(document).on('click', '.view', function() {
+        let id = $(this).data('id');
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
+        $("#dialog-popup .modal-title").html('<i class="<?= $template['page_icon']; ?>" aria-hidden="true"></i> View Company');
+        $("#dialog-popup").modal();
+        $('#save').addClass('d-none')
     });
 
     $(document).on('click', '.delete', function() {
@@ -424,6 +424,9 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
                 }, {
                     "targets": 'text-center',
                     "className": 'text-center',
+                }, {
+                    "targets": 'tx-bold tx-dark',
+                    "className": 'tx-bold tx-dark',
                 }
 
             ],

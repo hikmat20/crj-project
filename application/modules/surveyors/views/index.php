@@ -83,7 +83,7 @@ $ENABLE_DELETE  = has_permission('Surveyors.Delete');
     })
 
     $(document).on('click', '.add', function() {
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add New Shipping Line Cost")
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add New Surveyor")
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
         $("#save").removeClass('d-none');
@@ -102,7 +102,7 @@ $ENABLE_DELETE  = has_permission('Surveyors.Delete');
 
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Shipping Line Cost")
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Surveyor")
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
         $("#save").removeClass('d-none');
@@ -110,7 +110,7 @@ $ENABLE_DELETE  = has_permission('Surveyors.Delete');
 
     $(document).on('click', '.view', function(e) {
         var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Shipping Line Cost")
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Surveyor")
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
         $("#save").addClass('d-none');

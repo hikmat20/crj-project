@@ -84,52 +84,26 @@ $ENABLE_DELETE  = has_permission('Containers.Delete');
 
 
     $(document).on('click', '.add', function() {
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'add',
-            success: function(data) {
-                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Add New Container")
-                // $('#dialog-popup .modal-dialog')
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
-        })
+        $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Add New Container")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'edit/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Edit Container")
-                // $('#dialog-popup .modal-dialog').css({
-                //     'max-width': '70%'
-                // })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").removeClass('d-none');
-            }
-        })
+        $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> Edit Container")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.view', function(e) {
-        var id = $(this).data('id_karyawan');
-        $("#head_title").html("<i class='fa fa-list-alt'></i><b>Edit Inventory</b>");
-        $.ajax({
-            type: 'POST',
-            url: siteurl + thisController + 'viewKaryawan/' + id,
-            success: function(data) {
-                $('#dialog-popup .modal-title').text("Detail Karyawan")
-                $('#dialog-popup .modal-dialog').css({
-                    'max-width': '70%'
-                })
-                $("#dialog-popup").modal();
-                $("#dialog-popup .modal-body").html(data);
-                $("#save").addClass('d-none');
-            }
-        })
+        var id = $(this).data('id');
+        $('#dialog-popup .modal-title').html("<span class='<?= $template['page_icon']; ?>'></span> View Container")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
+        $("#save").addClass('d-none');
     });
 
     $(document).on('click', '.delete', function(e) {

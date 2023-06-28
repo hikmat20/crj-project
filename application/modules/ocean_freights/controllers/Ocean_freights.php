@@ -11,13 +11,13 @@ if (!defined('BASEPATH')) {
  * This is controller for Master Harbour Port
  */
 
-class Fee_values extends Admin_Controller
+class Ocean_freights extends Admin_Controller
 {
 	//Permission
-	protected $viewPermission 	= 'Fee_values.View';
-	protected $addPermission  	= 'Fee_values.Add';
-	protected $managePermission = 'Fee_values.Manage';
-	protected $deletePermission = 'Fee_values.Delete';
+	protected $viewPermission 	= 'Ocean_freights.View';
+	protected $addPermission  	= 'Ocean_freights.Add';
+	protected $managePermission = 'Ocean_freights.Manage';
+	protected $deletePermission = 'Ocean_freights.Delete';
 
 	public function __construct()
 	{
@@ -25,11 +25,11 @@ class Fee_values extends Admin_Controller
 
 		$this->load->library(array('upload', 'Image_lib'));
 		$this->load->model(array(
-			'Fee_values/Fee_values_model',
+			'Ocean_freights/Ocean_freights_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Fee Values');
-		$this->template->page_icon('fas fa-hand-holding-usd tx-primary fa-4x');
+		$this->template->title('Manage Ocean Freights');
+		$this->template->page_icon('fas fa-hand-holding-usd');
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -49,10 +49,10 @@ class Fee_values extends Admin_Controller
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM view_harbours, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`country_name` LIKE '%$string%'
-        OR `country_code` LIKE '%$string%'
-        OR `city_name` LIKE '%$string%'
+        FROM view_ocean_freights, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (`city_name` LIKE '%$string%'
+        OR `container_size` LIKE '%$string%'
+        OR `cost_value` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -62,10 +62,11 @@ class Fee_values extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'country_code',
-			2 => 'city_name',
-			3 => 'description',
-			4 => 'status',
+			1 => 'city_name',
+			2 => 'container_size',
+			3 => 'cost_value',
+			4 => 'description',
+			5 => 'status',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -106,8 +107,9 @@ class Fee_values extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
-			$nestedData[]  = $row['city_name'];
+			$nestedData[]  = $row['country_code'] . " - " . $row['city_name'];
+			$nestedData[]  = $row['container_size'];
+			$nestedData[]  = "Rp. " . number_format($row['cost_value']);
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -129,37 +131,48 @@ class Fee_values extends Admin_Controller
 	public function index()
 	{
 		$this->auth->restrict($this->viewPermission);
-		$this->template->render('under-construction');
-		// $this->template->render('index');
+		// $this->template->render('under-construction');
+		$this->template->render('index');
 	}
 
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$countries = $this->db->get('countries')->result();
-		$this->template->set('countries', $countries);
+		$harbours = $this->db->get_where('view_harbours', ['status' => '1'])->result();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
+		$this->template->set([
+			'harbours' => $harbours,
+			'containers' => $containers
+		]);
 		$this->template->render('form');
 	}
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
-		$port = $this->db->get_where('harbours', array('id' => $id))->row();
-		$countries = $this->db->get('countries')->result();
+		$this->auth->restrict($this->managePermission);
+		$freight = $this->db->get_where('ocean_freights', array('id' => $id))->row();
+		$harbours = $this->db->get_where('view_harbours', ['status' => '1'])->result();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
 		$data = [
-			'port' 		=> $port,
-			'countries'	 	=> $countries,
+			'freight' 		=> $freight,
+			'harbours'	 	=> $harbours,
+			'containers'	=> $containers,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
 	}
 
-	public function view()
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$cust 	= $this->Inventory_1_model->getById($id);
-		$this->template->set('result', $cust);
+		$freight = $this->db->get_where('ocean_freights', array('id' => $id))->row();
+		$harbours = $this->db->get_where('view_harbours', array('status' => '1'))->result_array();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result_array();
+		$data = [
+			'freight' 		=> $freight,
+			'harbours'	 	=> $harbours,
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
 
@@ -168,26 +181,26 @@ class Fee_values extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
-		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_values_model->generate_id();
-
+		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Ocean_freights_model->generate_id();
+		$data['cost_value'] = str_replace(",", "", $post['cost_value']);
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("harbours", $data);
+			$this->db->where('id', $post['id'])->update("ocean_freights", $data);
 		} else {
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("harbours", $data);
+			$this->db->insert("ocean_freights", $data);
 		}
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed save data Harbour.  Please try again.',
+				'msg'		=> 'Failed save data Ocean Freight.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "FAILD save data Ocean Freight " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -196,10 +209,10 @@ class Fee_values extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success Save data Harbour.',
+				'msg'		=> 'Success Save data Ocean Freight.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Harbour " . $data['id'] . ", Harbour name : " . $data['city_name'];
+			$keterangan     = "SUCCESS save data Ocean Freight " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -214,37 +227,37 @@ class Fee_values extends Admin_Controller
 	{
 		$this->auth->restrict($this->deletePermission);
 		$id = $this->input->post('id');
-		$container = $this->db->get_where('harbours')->row_array();
+		$freight = $this->db->get_where('ocean_freights')->row_array();
 		$data = [
-			'status' => 0,
+			'status' => '0',
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];
 		$this->db->trans_begin();
-		$this->db->update('harbours', $data, ['id' => $id]);
+		$this->db->update('ocean_freights', $data, ['id' => $id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed delete data Harbour.  Please try again.',
+				'msg'		=> 'Failed delete data Ocean Freight.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "FAILD delete data Ocean Freight " . $freight['id'] . ", Ocean Freight name : " . $freight['city_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $freight['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success delete data Harbour.',
+				'msg'		=> 'Success delete data Ocean Freight.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Harbour " . $container['id'] . ", Harbour name : " . $container['city_name'];
+			$keterangan     = "SUCCESS delete data Ocean Freight " . $freight['id'] . ", Ocean Freight name : " . $freight['city_name'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $container['id'];
+			$kode_universal = $freight['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}

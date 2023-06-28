@@ -1,4 +1,4 @@
-<div class="card-body">
+<div class="card-body" id="dataForm">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group row">
@@ -6,7 +6,7 @@
                     <label for="employee_code" class="tx-dark tx-bold">Employee ID <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
-                    <input type="hidden" class="form-control" id="id" required name="id" value="<?= (isset($employee)) ? $employee->id : null; ?>">
+                    <input type="hidden" class="form-control" id="id" name="id" value="<?= (isset($employee) && $employee->id) ? $employee->id : null; ?>">
                     <input type="text" class="form-control" id="employee_code" required name="employee_code" value="<?= (isset($employee)) ? $employee->employee_code : null; ?>" maxlength="10" placeholder="Employee ID">
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     <label for="division" class="tx-dark tx-bold">Division <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-7">
-                    <div id="slWrapperDivision" class=" parsley-select">
+                    <div id="slWrapperDivision" class="parsley-select">
                         <select id="division" name="division" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperDivision" data-parsley-errors-container="#slErrorContainerDivision">
                             <option value=""></option>
                             <?php foreach ($divisions as $div) : ?>
@@ -174,16 +174,14 @@
     </div>
 </div>
 
-
 <script type="text/javascript">
     $(document).ready(function() {
         $('.select').select2({
             placeholder: "Choose one",
             allowClear: true,
             width: "100%",
-            dropdownParent: $("#dialog-popup"),
+            dropdownParent: $("#dataForm"),
             minimumResultsForSearch: -1
         });
-
     });
 </script>

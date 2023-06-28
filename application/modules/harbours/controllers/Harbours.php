@@ -143,7 +143,7 @@ class Harbours extends Admin_Controller
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
+		$this->auth->restrict($this->managePermission);
 		$port = $this->db->get_where('harbours', array('id' => $id))->row();
 		$countries = $this->db->get('countries')->result();
 		$data = [
@@ -154,12 +154,17 @@ class Harbours extends Admin_Controller
 		$this->template->render('form');
 	}
 
-	public function view()
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$cust 	= $this->Inventory_1_model->getById($id);
-		$this->template->set('result', $cust);
+		$port = $this->db->get_where('harbours', array('id' => $id))->row();
+		$countries = $this->db->get('countries')->result_array();
+		$ArrCountry = array_column($countries, 'name', 'id');
+		$data = [
+			'port' 			=> $port,
+			'ArrCountry'	=> $ArrCountry,
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
 

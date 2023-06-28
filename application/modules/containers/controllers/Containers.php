@@ -142,7 +142,7 @@ class Containers extends Admin_Controller
 
 	public function edit($id)
 	{
-		$this->auth->restrict($this->viewPermission);
+		$this->auth->restrict($this->managePermission);
 		$countainer = $this->db->get_where('containers', array('id' => $id))->row();
 		$data = [
 			'countainer' => $countainer
@@ -151,14 +151,17 @@ class Containers extends Admin_Controller
 		$this->template->render('form');
 	}
 
-	public function view()
+	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$id 	= $this->input->post('id');
-		$cust 	= $this->Inventory_1_model->getById($id);
-		$this->template->set('result', $cust);
+		$countainer = $this->db->get_where('containers', array('id' => $id))->row();
+		$data = [
+			'countainer' => $countainer
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
+
 
 	public function save()
 	{

@@ -7,13 +7,13 @@
  * This is model class for table "Customer"
  */
 
-class Fee_values_model extends BF_Model
+class Ocean_freights_model extends BF_Model
 {
 
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'fee_values';
+    protected $table_name = 'ocean_freights';
     protected $key        = 'id';
 
     /**
@@ -69,11 +69,11 @@ class Fee_values_model extends BF_Model
     {
         $y = date('y');
         $count = 1;
-        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('harbours')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
+        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('ocean_freights')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;
         }
-        $newID = "HB$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+        $newID = "OF$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
         return $newID;
     }
 

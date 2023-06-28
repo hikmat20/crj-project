@@ -28,14 +28,14 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
                 <thead>
                     <tr>
                         <th width="15" class="text-center">No</th>
-                        <th class="desktop tablet tx-bold tx-dark" width="120">Employee Code</th>
-                        <th class="desktop tablet tx-bold tx-dark" width="150">Employee Name</th>
-                        <th class="desktop">Phone Number</th>
-                        <th class="desktop">Email</th>
-                        <th class="desktop">Address</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark" width="">Employee Code</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark" width="150">Employee Name</th>
+                        <th class="desktop tablet mobile">Email</th>
+                        <th class="desktop tablet no-sort">Address</th>
+                        <th class="desktop no-sort">Job Desc.</th>
                         <th class="desktop text-center">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="120">Opsi</th>
+                            <th class="desktop text-center no-sort" width="110">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -45,9 +45,9 @@ $ENABLE_DELETE  = has_permission('Employees.Delete');
                         <th>No</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Phone Number</th>
                         <th>Email</th>
                         <th>Address</th>
+                        <th>Job Desc.</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>

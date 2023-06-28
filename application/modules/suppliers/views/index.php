@@ -27,13 +27,13 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 			<table id="dataTable" class="table table-bordered table-sm display table-striped" width="100%">
 				<thead>
 					<tr>
-						<th class="text-center desktop tablet mobile" width="50">No</th>
+						<th class="text-center desktop tablet mobile" width="30">No</th>
 						<th class="desktop tablet mobile tx-dark tx-bold">Supplier Name</th>
 						<th class="desktop tablet mobile">Telephone</th>
-						<th class="desktop tablet">Country</th>
-						<th class="desktop tablet" width="20%">email</th>
-						<th class="desktop">Address</th>
-						<th class="desktop text-center">Supplier Type</th>
+						<th class="desktop tablet mobile">Country</th>
+						<th class="desktop tablet">Email</th>
+						<th class="desktop no-sort">Address</th>
+						<th class="desktop text-center no-sort">Supplier Type</th>
 						<th class="desktop text-center">Status</th>
 						<?php if ($ENABLE_MANAGE) : ?>
 							<th width="110" class="desktop text-center no-sort">Opsi</th>
@@ -71,10 +71,8 @@ $ENABLE_DELETE  = has_permission('Suppliers.Delete');
 				</div>
 				<div class="modal-body"></div>
 				<div class="modal-footer">
-					<button type="submit" class="btn wd-100 btn-primary" id="save"><i class="fa fa-save mg-r-3"></i>
-						Save</button>
-					<button type="button" class="btn btn-danger wd-100" data-dismiss="modal">
-						<span class="fa fa-times"></span> Close</button>
+					<button type="submit" class="btn wd-100 btn-primary" id="save"><i class="fa fa-save mg-r-3"></i>Save</button>
+					<button type="button" class="btn btn-danger wd-100" data-dismiss="modal"><span class="fa fa-times"></span> Close</button>
 				</div>
 			</div>
 		</form>

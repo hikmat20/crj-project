@@ -9,10 +9,10 @@
     </div>
     <div class="row">
         <div class="col-md-4 tx-dark tx-bold">
-            <label for="minimum_value">Minimum Value (Rp.)</label>
+            <label for="max_value">Maximum Value (Rp.)</label>
         </div>
         <div class="col-md-4">:
-            <?= "<strong>≥</strong>" . (isset($fee)) ? number_format($fee->minimum_value) : null; ?>
+            <?= "<strong>≥</strong>" . (isset($fee)) ? number_format($fee->max_value) : null; ?>
         </div>
     </div>
     <div class="row">
@@ -32,11 +32,3 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#minimum_value').mask('#,##0', {
-            reverse: true
-        });
-    });
-</script>

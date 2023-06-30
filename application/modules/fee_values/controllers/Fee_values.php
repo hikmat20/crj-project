@@ -50,7 +50,7 @@ class Fee_values extends Admin_Controller
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM fee_values, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`minimum_value` LIKE '%$string%'
+        AND (`max_value` LIKE '%$string%'
         OR `fee` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
@@ -61,7 +61,7 @@ class Fee_values extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'minimum_value',
+			1 => 'max_value',
 			2 => 'fee',
 			3 => 'description',
 			4 => 'status',
@@ -105,7 +105,7 @@ class Fee_values extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = "Rp. " . number_format($row['minimum_value']);
+			$nestedData[]  = "Rp. " . number_format($row['max_value']);
 			$nestedData[]  = $row['fee'] . "%";
 			$nestedData[]  = $row['description'];
 			// $nestedData[]  = $status[$row['status']];
@@ -168,7 +168,7 @@ class Fee_values extends Admin_Controller
 		$post 					= $this->input->post();
 		$data 					= $post;
 		$data['id'] 			= isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_values_model->generate_id();
-		$data['minimum_value'] 	= str_replace(",", "", $post['minimum_value']);
+		$data['max_value'] 	= str_replace(",", "", $post['max_value']);
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {

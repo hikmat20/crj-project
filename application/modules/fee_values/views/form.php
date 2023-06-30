@@ -9,14 +9,14 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4 tx-dark tx-bold">
-			<label for="minimum_value">Minimum Value (Rp.) <span class="tx-danger">*</span></label>
+			<label for="max_value">Maximum Value (Rp.) <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-4">
 			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text" id="input1"><strong>≥</strong></span>
 				</div>
-				<input type="text" class="form-control text-right" id="minimum_value" name="minimum_value" required data-parsley-errors-container="#error-value" value="<?= (isset($fee)) ? number_format($fee->minimum_value) : null; ?>" placeholder="0">
+				<input type="text" class="form-control text-right" id="max_value" name="max_value" required data-parsley-errors-container="#error-value" value="<?= (isset($fee)) ? number_format($fee->max_value) : null; ?>" placeholder="0">
 			</div>
 			<div id="error-value"></div>
 		</div>
@@ -47,7 +47,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#minimum_value').mask('#,##0', {
+		$('#max_value').mask('#,##0', {
 			reverse: true
 		});
 	});

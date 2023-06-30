@@ -27,7 +27,7 @@ $ENABLE_DELETE  = has_permission('Fee_values.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark -center">Minimum Value</th>
+                        <th class="desktop tablet tx-bold tx-dark -center">Maximum Value</th>
                         <th class="desktop tablet text-center" width="110">Fee (%)</th>
                         <th class="desktop tablet no-sort">Description</th>
                         <!-- <th class="desktop text-center no-sort" width="100">Status</th> -->
@@ -40,7 +40,7 @@ $ENABLE_DELETE  = has_permission('Fee_values.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Minimum Value</th>
+                        <th>Maximum Value</th>
                         <th>Fee (%)</th>
                         <th>Description</th>
                         <!-- <th>Status</th> -->

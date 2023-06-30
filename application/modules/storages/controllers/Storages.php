@@ -52,8 +52,7 @@ class Storages extends Admin_Controller
         FROM storages, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`day_stacking` LIKE '%$string%'
         OR `description` LIKE '%$string%'
-        OR `status` LIKE '%$string%'
-            )";
+        OR `status` LIKE '%$string%')";
 
 		$totalData = $this->db->query($sql)->num_rows();
 		$totalFiltered = $this->db->query($sql)->num_rows();

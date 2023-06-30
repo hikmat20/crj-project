@@ -28,8 +28,8 @@ $ENABLE_DELETE  = has_permission('Storages.Delete');
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop tablet mobile tx-bold tx-dark tx-center" width="200">Day Stacking</th>
-                        <th class="desktop tablet mobile no-sort">Description</th>
-                        <th class="desktop text-center no-sort" width="100">Status</th>
+                        <th class="desktop tablet no-sort">Description</th>
+                        <th class="desktop tablet mobile">Cost Value</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
                         <?php endif; ?>
@@ -41,7 +41,7 @@ $ENABLE_DELETE  = has_permission('Storages.Delete');
                         <th>No</th>
                         <th>Day Stacking</th>
                         <th>Description</th>
-                        <th>Status</th>
+                        <th>Cost Value</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>

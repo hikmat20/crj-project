@@ -80,6 +80,7 @@ class Storages extends Admin_Controller
 		];
 
 		/* Button */
+		$html = '';
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
 			$total_data     = $totalData;
@@ -101,11 +102,16 @@ class Storages extends Admin_Controller
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
+			$details = $this->db->get_where('view_storage_details', ['storage_id' => $row['id']])->result();
+			foreach ($details as $dtl) {
+				$html .= "<li>" . $dtl->container_name . " - Rp. " . $dtl->cost_value . "</li>";
+			}
+
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['day_stacking'];
 			$nestedData[]  = $row['description'];
-			$nestedData[]  = $status[$row['status']];
+			$nestedData[]  = "<ul class='pd-l-10 mg-b-0'>" . $html . "</ul>";
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;

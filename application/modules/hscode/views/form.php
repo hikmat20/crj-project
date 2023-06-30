@@ -171,11 +171,11 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="ppn_bm">PPn BM <span class="tx-danger">*</span></label>
+                    <label for="ppn_bm">PPn BM</label>
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" class="form-control text-right" id="ppn_bm" value="<?= isset($hs) ? $hs->ppn_bm : 0; ?>" required name="ppn_bm" data-parsley-inputs data-parsley-errors-container="#error-ppn_bm" placeholder="0">
+                        <input type="text" class="form-control text-right" id="ppn_bm" value="<?= isset($hs) ? $hs->ppn_bm : 0; ?>" name="ppn_bm" data-parsley-inputs data-parsley-errors-container="#error-ppn_bm" placeholder="0">
                         <div class="input-group-append"><span class="input-group-text">%</span></div>
                     </div>
                     <div id="error-ppn_bm"></div>
@@ -184,11 +184,11 @@
 
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="pph_api">PPH API</label>
+                    <label for="pph_api">PPH API <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" class="form-control text-right" id="pph_api" value="<?= isset($hs) ? $hs->pph_api : (isset($def_pph_api) && $def_pph_api ? $def_pph_api : 0); ?>" name="pph_api" data-parsley-inputs data-parsley-errors-container="#error-pph_api" placeholder="0">
+                        <input type="text" class="form-control text-right" id="pph_api" value="<?= isset($hs) ? $hs->pph_api : (isset($def_pph_api) && $def_pph_api ? $def_pph_api : 0); ?>" name="pph_api" required data-parsley-inputs data-parsley-errors-container="#error-pph_api" placeholder="0">
                         <div class="input-group-append"><span class="input-group-text">%</span></div>
                     </div>
                     <div id="error-pph_api"></div>

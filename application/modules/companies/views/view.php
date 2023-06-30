@@ -65,6 +65,14 @@
                     <?= isset($company) ? $company->api_type : ''; ?>
                 </div>
             </div>
+            <div class="mg-b-8 row">
+                <div class="col-md-3 tx-dark tx-bold">
+                    <span>Documents (Lartas)</span>
+                </div>
+                <div class="col-md-8">:
+                    <?= isset($company) ? implode(", ", json_decode($company->documents)) : ''; ?>
+                </div>
+            </div>
         </div>
 
         <div class="col-sm-6">

@@ -67,14 +67,19 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-md-3 tx-dark tx-bold">
-					<label for="sales_id">Document (Lartas)</label>
+					<label for="sales_id">Documents (Lartas)</label>
 				</div>
 				<div class="col-md-8">
 					<select name="documents[]" id="documents" class="form-control select-tags" multiple>
 						<option value=""></option>
-						<?php foreach (json_decode($company->documents) as $doc) : ?>
-							<option value="<?= $doc; ?>" selected><?= $doc; ?></option>
-						<?php endforeach; ?>
+						<?php if (isset($company->documents)) : foreach (json_decode($company->documents) as $doc) : ?>
+								<option value="<?= $doc; ?>" selected><?= $doc; ?></option>
+							<?php endforeach;
+						else : ?>
+							<option value="PI Besi Baja">PI Besi Baja</option>
+							<option value="PI Kehutanan">PI Kehutanan</option>
+						<?php endif; ?>
+
 					</select>
 				</div>
 			</div>

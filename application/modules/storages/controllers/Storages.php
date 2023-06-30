@@ -88,6 +88,7 @@ class Storages extends Admin_Controller
 
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
+			$html = '';
 			$total_data     = $totalData;
 			$start_dari     = $start;
 			$asc_desc       = $dir;

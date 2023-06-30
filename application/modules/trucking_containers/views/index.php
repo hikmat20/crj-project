@@ -28,7 +28,8 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop tablet mobile tx-bold tx-dark">City Name</th>
-                        <th class="desktop tablet mobile no-sort">Area</th>
+                        <th class="desktop tablet mobile">Area</th>
+                        <th class="desktop tablet mobile no-sort">Detail</th>
                         <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
@@ -41,6 +42,7 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
                         <th>No</th>
                         <th>City Name</th>
                         <th>Area</th>
+                        <th>Detail</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>

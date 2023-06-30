@@ -78,6 +78,7 @@ class Trucking_containers extends Admin_Controller
 		];
 
 		/* Button */
+		$html = "";
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
 			$total_data     = $totalData;
@@ -98,11 +99,16 @@ class Trucking_containers extends Admin_Controller
 			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
-
+			$details 	= $this->db->get_where('view_trucking_details', ['trucking_id' => $row['id']])->result();
+			foreach ($details as $dtl) {
+				$html .= "<li>" . html_escape($dtl->container_name) . " - Rp. " . number_format($dtl->cost_value) . "</li>";
+			}
+			// " - Rp. " . ($dtl->cost_value) ? (number_format($dtl->cost_value)) : '' .
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['city_name'];
 			$nestedData[]  = $row['area'];
+			$nestedData[]  = "<ul class='pd-l-10 mg-b-0'>" . $html . "</ul>";
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;

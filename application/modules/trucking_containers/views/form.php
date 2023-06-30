@@ -51,15 +51,15 @@
             if ($containers) foreach ($containers as $cnt) : $n++; ?>
                 <tr>
                     <td>
-                        <?php if (isset($ArrDtl[$trucking->id][$cnt->id]->id) && ($ArrDtl[$trucking->id][$cnt->id]->id)) : ?>
+                        <?php if (isset($trucking) && isset($ArrDtl[$trucking->id][$cnt->id]->id) && ($ArrDtl[$trucking->id][$cnt->id]->id)) : ?>
                             <input type="hidden" name="detail[<?= $n; ?>][id]" value="<?= $ArrDtl[$trucking->id][$cnt->id]->id; ?>">
                         <?php endif; ?>
                         <input type="hidden" name="detail[<?= $n; ?>][container_id]" value="<?= $cnt->id; ?>">
                         <strong class="tx-dark"><?= $cnt->name; ?></strong>
                     </td>
                     <td width="50">: Rp.</td>
-                    <td><input type="text" name="detail[<?= $n; ?>][cost_value]" class="form-control border border-top-0 border-left-0 border-right-0 rounded-0 text-right cost_value" placeholder="0" value="<?= isset($ArrDtl[$trucking->id][$cnt->id]->cost_value) ? number_format($ArrDtl[$trucking->id][$cnt->id]->cost_value) : ''; ?>"></td>
-                    <td><input type="text" name="detail[<?= $n; ?>][description]" class="form-control border border-top-0 border-left-0 border-right-0 rounded-0 " placeholder="Description" value="<?= isset($ArrDtl[$trucking->id][$cnt->id]->description) ? $ArrDtl[$trucking->id][$cnt->id]->description : ''; ?>"></td>
+                    <td><input type="text" name="detail[<?= $n; ?>][cost_value]" class="form-control border border-top-0 border-left-0 border-right-0 rounded-0 text-right cost_value" placeholder="0" value="<?= isset($trucking) && isset($ArrDtl[$trucking->id][$cnt->id]->cost_value) ? number_format($ArrDtl[$trucking->id][$cnt->id]->cost_value) : ''; ?>"></td>
+                    <td><input type="text" name="detail[<?= $n; ?>][description]" class="form-control border border-top-0 border-left-0 border-right-0 rounded-0 " placeholder="Description" value="<?= isset($trucking) && isset($ArrDtl[$trucking->id][$cnt->id]->description) ? $ArrDtl[$trucking->id][$cnt->id]->description : ''; ?>"></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

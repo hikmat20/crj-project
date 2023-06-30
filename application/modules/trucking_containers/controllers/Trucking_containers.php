@@ -78,8 +78,8 @@ class Trucking_containers extends Admin_Controller
 		];
 
 		/* Button */
-		$html = "";
 		foreach ($query->result_array() as $row) {
+			$html = "";
 			$buttons = '';
 			$total_data     = $totalData;
 			$start_dari     = $start;

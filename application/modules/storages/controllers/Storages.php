@@ -50,7 +50,7 @@ class Storages extends Admin_Controller
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM storages, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`days_stacking` LIKE '%$string%'
+        AND (`day_stacking` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
             )";
@@ -60,7 +60,9 @@ class Storages extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'days_stacking',
+			1 => 'day_stacking',
+			2 => 'description',
+			3 => 'status',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -101,8 +103,7 @@ class Storages extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['days_stacking'];
-			$nestedData[]  = $row['days_stacking'];
+			$nestedData[]  = $row['day_stacking'];
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -139,11 +140,18 @@ class Storages extends Admin_Controller
 	public function edit($id)
 	{
 		$this->auth->restrict($this->managePermission);
-		$shipping = $this->db->get_where('shipping_line_cost', array('id' => $id))->row();
-		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
+		$storage 			= $this->db->get_where('storages', array('id' => $id))->row();
+		$storage_details 	= $this->db->get_where('storage_details', array('storage_id' => $storage->id))->result();
+		$containers 		= $this->db->get_where('containers', ['status' => '1'])->result();
+		$ArrDtl = [];
+		foreach ($storage_details as $str) {
+			$ArrDtl[$str->container_id] = $str;
+		}
+
 		$data = [
-			'shipping' 		=> $shipping,
+			'storage' 		=> $storage,
 			'containers'	=> $containers,
+			'ArrDtl'		=> $ArrDtl,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
@@ -152,41 +160,60 @@ class Storages extends Admin_Controller
 	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$shipping = $this->db->get_where('shipping_line_cost', array('id' => $id))->row();
-		$containers = $this->db->get_where('containers', ['status' => '1'])->result_array();
-		$ArrConte = array_column($containers, 'name', 'id');
-		$this->template->set([
-			'shipping' => $shipping,
-			'ArrConte' => $ArrConte,
-		]);
+		$storage 			= $this->db->get_where('storages', array('id' => $id))->row();
+		$storage_details 	= $this->db->get_where('storage_details', array('storage_id' => $storage->id))->result();
+		$containers 		= $this->db->get_where('containers', ['status' => '1'])->result();
+		$ArrDtl = [];
+		foreach ($storage_details as $str) {
+			$ArrDtl[$str->container_id] = $str;
+		}
+
+		$data = [
+			'storage' 		=> $storage,
+			'containers'	=> $containers,
+			'ArrDtl'		=> $ArrDtl,
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
 
 	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
-		$post = $this->input->post();
-		$data = $post;
+		$post 		= $this->input->post();
+		$data 		= $post;
 		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Storages_model->generate_id();
-		$data['cost_value'] = str_replace(",", "", $post['cost_value']);
+		$detail 	= $post['detail'];
+		unset($data['detail']);
+
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("shipping_line_cost", $data);
+			$this->db->where('id', $post['id'])->update("storages", $data);
 		} else {
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("shipping_line_cost", $data);
+			$this->db->insert("storages", $data);
+		}
+
+		if ($detail) foreach ($detail as $dtl) {
+			$dtl['cost_value'] = str_replace(",", "", $dtl['cost_value']);
+			$dtl['storage_id'] = $data['id'];
+			if (isset($dtl['id']) && $dtl['id']) {
+				$this->db->update('storage_details', $dtl, ['id' => $dtl['id']]);
+			} else {
+				$this->db->insert('storage_details', $dtl);
+			}
 		}
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed save data Shipping Line Cost.  Please try again.',
+				'msg'		=> 'Failed save data Storage.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD save data Shipping Line Cost " . $data['id'];
+			$keterangan     = "FAILD save data Storage " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -195,10 +222,10 @@ class Storages extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success Save data Shipping Line Cost.',
+				'msg'		=> 'Success Save data Storage.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Shipping Line Cost " . $data['id'];
+			$keterangan     = "SUCCESS save data Storage " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -213,22 +240,22 @@ class Storages extends Admin_Controller
 	{
 		$this->auth->restrict($this->deletePermission);
 		$id = $this->input->post('id');
-		$dt = $this->db->get_where('shipping_line_cost')->row_array();
+		$dt = $this->db->get_where('storages')->row_array();
 		$data = [
-			'status' => 0,
+			'status' => '0',
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];
 		$this->db->trans_begin();
-		$this->db->update('shipping_line_cost', $data, ['id' => $id]);
+		$this->db->update('storages', $data, ['id' => $id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed delete data Shipping Line Cost.  Please try again.',
+				'msg'		=> 'Failed delete data Storage.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Shipping Line Cost " . $dt['id'];
+			$keterangan     = "FAILD delete data Storage " . $dt['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
 			$kode_universal = $dt['id'];
@@ -237,10 +264,10 @@ class Storages extends Admin_Controller
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success delete data Shipping Line Cost.',
+				'msg'		=> 'Success delete data Storage.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Shipping Line Cost " . $dt['id'];
+			$keterangan     = "SUCCESS delete data Storage " . $dt['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
 			$kode_universal = $dt['id'];

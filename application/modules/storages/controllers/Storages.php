@@ -80,6 +80,12 @@ class Storages extends Admin_Controller
 
 		/* Button */
 		$html = '';
+		$ArrDtl = [];
+		$details = $this->db->get_where('view_storage_details')->result();
+		foreach ($details as $dtl) {
+			$ArrDtl[$dtl->storage_id][] = $dtl;
+		}
+
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
 			$total_data     = $totalData;
@@ -101,9 +107,8 @@ class Storages extends Admin_Controller
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
-			$details = $this->db->get_where('view_storage_details', ['storage_id' => $row['id']])->result();
-			foreach ($details as $dtl) {
-				$html .= "<li>" . $dtl->container_name . " - Rp. " . $dtl->cost_value . "</li>";
+			if (isset($ArrDtl[$row['id']])) foreach ($ArrDtl[$row['id']] as $rowDtl) {
+				$html .= "<li>" . $rowDtl->container_name . " - Rp. " . number_format($rowDtl->cost_value) . "</li>";
 			}
 
 			$nestedData   = array();

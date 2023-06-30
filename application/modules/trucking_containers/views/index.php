@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Harbours.Add');
-$ENABLE_MANAGE  = has_permission('Harbours.Manage');
-$ENABLE_VIEW    = has_permission('Harbours.View');
-$ENABLE_DELETE  = has_permission('Harbours.Delete');
+$ENABLE_ADD     = has_permission('Trucking_containers.Add');
+$ENABLE_MANAGE  = has_permission('Trucking_containers.Manage');
+$ENABLE_VIEW    = has_permission('Trucking_containers.View');
+$ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -27,9 +27,8 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet mobile tx-bold tx-dark">Country</th>
-                        <th class="desktop tablet mobile text-center">City</th>
-                        <th class="desktop tablet no-sort">Description</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark">City Name</th>
+                        <th class="desktop tablet mobile no-sort">Area</th>
                         <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
@@ -40,9 +39,8 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Country</th>
-                        <th>City</th>
-                        <th>Description</th>
+                        <th>City Name</th>
+                        <th>Area</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
@@ -101,7 +99,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
         var id = $(this).data('id');
         $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Trucking Container")
         $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
         $("#save").addClass('d-none');
     });
 

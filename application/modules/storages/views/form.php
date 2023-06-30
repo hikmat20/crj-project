@@ -27,21 +27,21 @@
             </thead>
             <tbody>
                 <?php if ($containers) foreach ($containers as $cnt) : ?>
-                <tr>
-                    <td>
-                        <input type="hidden" name="stDtl[1][container_id]" value="<?= $cnt->id; ?>">
-                        <span class="tx-dark"><?= $cnt->name; ?></span>
-                    </td>
-                    <td>
-                        <div class="input-group input-group-sm border-0 bg-transparent">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="input1">Rp.</span>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="stDtl[1][container_id]" value="<?= $cnt->id; ?>">
+                            <span class="tx-dark"><?= $cnt->name; ?></span>
+                        </td>
+                        <td>
+                            <div class="input-group input-group-sm border-0 bg-transparent">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="input1">Rp.</span>
+                                </div>
+                                <input type="text" name="stDtl[1][cost_value]" class="form-control text-right border-0" value="" placeholder="0">
                             </div>
-                            <input type="text" name="stDtl[1][cost_value]" class="form-control text-right border-0" value="" placeholder="0">
-                        </div>
-                    </td>
-                    <td><input type="text" name="stDtl[1][container_id]" class="form-control form-control-sm border-0" value="" placeholder="Description"></td>
-                </tr>
+                        </td>
+                        <td><input type="text" name="stDtl[1][container_id]" class="form-control form-control-sm border-0" value="" placeholder="Description"></td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
@@ -53,19 +53,19 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('.select').select2({
-        placeholder: 'Choose one',
-        dropdownParent: $('#dataForm'),
-        width: "100%",
-        allowClear: true,
-        minimumResultsForSearch: -1,
-    });
-
     $(document).ready(function() {
-        $('#cost_value').mask('#,##0', {
-            reverse: true
+        $('.select').select2({
+            placeholder: 'Choose one',
+            dropdownParent: $('#dataForm'),
+            width: "100%",
+            allowClear: true,
+            minimumResultsForSearch: -1,
+        });
+
+        $(document).ready(function() {
+            $('#cost_value').mask('#,##0', {
+                reverse: true
+            });
         });
     });
-});
 </script>

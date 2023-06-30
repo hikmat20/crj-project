@@ -65,6 +65,19 @@
 					<input type="text" name="api_type" id="api_type" value="<?= isset($company) ? $company->api_type : ''; ?>" class="form-control" placeholder="API Type">
 				</div>
 			</div>
+			<div class="form-group row">
+				<div class="col-md-3 tx-dark tx-bold">
+					<label for="sales_id">Document (Lartas)</label>
+				</div>
+				<div class="col-md-8">
+					<select name="documents[]" id="documents" class="form-control select-tags" multiple>
+						<option value=""></option>
+						<?php foreach (json_decode($company->documents) as $doc) : ?>
+							<option value="<?= $doc; ?>" selected><?= $doc; ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
 		</div>
 
 		<div class="col-sm-6">
@@ -426,6 +439,15 @@
 
 		$('.select').select2({
 			// minimumResultsForSearch: -1,
+			placeholder: 'Choose one',
+			dropdownParent: $('#data-form-customer'),
+			width: "100%",
+			allowClear: true
+		});
+
+		$('.select-tags').select2({
+			// minimumResultsForSearch: -1,
+			tags: true,
 			placeholder: 'Choose one',
 			dropdownParent: $('#data-form-customer'),
 			width: "100%",

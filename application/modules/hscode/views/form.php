@@ -127,7 +127,7 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="bm_e">BM with form E <span class="tx-danger">*</span></label>
+                    <label for="bm_e">BM with SKA <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">

@@ -30,6 +30,7 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
                         <th class="desktop tablet mobile">Telephone</th>
                         <th class="desktop">Address</th>
                         <th class="desktop">API Type</th>
+                        <th class="desktop">Documents (Lartas)</th>
                         <th class="text-center desktop" width="5%">Status</th>
                         <th width="100" class="text-center desktop">Action</th>
                     </tr>
@@ -42,6 +43,7 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
                         <th>Telephone</th>
                         <th>Address</th>
                         <th>API Type</th>
+                        <th>Documents (Lartas)</th>
                         <th class="text-center">Status</th>
                         <th width="100" class="text-center">Action</th>
                     </tr>

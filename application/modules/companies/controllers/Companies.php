@@ -104,12 +104,16 @@ class Companies extends Admin_Controller
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
+			$documents = isset($row['documents']) ? implode(", ", json_decode($row['documents'])) : '-';
+
+
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['company_name'];
 			$nestedData[]  = $row['telephone'];
 			$nestedData[]  = $row['address'];
 			$nestedData[]  = $row['api_type'];
+			$nestedData[]  = $documents;
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
@@ -157,7 +161,6 @@ class Companies extends Admin_Controller
 		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$receive_invoice_day 	= json_decode($company->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($company->invoicing_requirement);
-
 		$data = [
 			'company'					=> $company,
 			'countries' 				=> $countries,
@@ -181,7 +184,6 @@ class Companies extends Admin_Controller
 		$countries 				= $this->db->get_where('countries')->result_array();
 		$states 				= $this->db->get_where('states', ['country_id' => $company->country_id])->result_array();
 		$cities 				= $this->db->get_where('cities', ['state_id' => $company->state_id])->result_array();
-		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$receive_invoice_day 	= json_decode($company->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($company->invoicing_requirement);
 
@@ -231,6 +233,7 @@ class Companies extends Admin_Controller
 		$data['bank_account_name'] 			= ($post['bank_account_name']) ?: null;
 		$data['bank_account_address'] 		= ($post['bank_account_address']) ?: null;
 		$data['swift_code'] 				= ($post['swift_code']) ?: null;
+		$data['documents'] 					= ($post['documents']) ? json_encode($post['documents']) : null;
 
 		$dataPIC = $post['PIC'];
 		unset($data['PIC']);

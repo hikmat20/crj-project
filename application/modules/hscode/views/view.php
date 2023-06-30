@@ -91,7 +91,7 @@
             </div>
             <div class="row">
                 <div class="col-md-5 tx-dark tx-bold">
-                    <span>BM with form E</span>
+                    <span>BM with SKA</span>
                 </div>
                 <div class="col-md-7">:
                     <?= isset($hs) && $hs->bm_e ? $hs->bm_e : 0; ?>%

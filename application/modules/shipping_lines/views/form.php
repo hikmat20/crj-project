@@ -9,7 +9,7 @@
     </div>
     <div class="form-group row">
         <div class="col-md-4 tx-dark tx-bold">
-            <label for="container_id">Conatainer Size <span class="tx-danger">*</span></label>
+            <label for="container_id">Container Size <span class="tx-danger">*</span></label>
         </div>
         <div class="col-md-7">
             <div id="slWrapperContainer" class="parsley-select">

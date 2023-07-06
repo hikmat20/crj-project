@@ -9,7 +9,7 @@
     </div>
     <div class="form-group row">
         <div class="col-md-3">
-            <span class="tx-dark tx-bold">Conatainer Size </span>
+            <span class="tx-dark tx-bold">Container Size </span>
         </div>
         <div class="col-md-7">:
             <strong class="tx-dark"><?= $ArrConte[$shipping->container_id]; ?></strong>

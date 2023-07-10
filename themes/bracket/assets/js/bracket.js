@@ -183,7 +183,9 @@
   // });
 
   // jquery ui datepicker
-  $('.datepicker').datepicker();
+   $('.datepicker').datepicker({
+    dateFormat:'dd/mm/yy'
+  });
 
   // switch button
   $('.br-switchbutton').on('click', function(){
@@ -224,22 +226,26 @@
 
   // Select2 Initialize
   // Select2 without the search
-  if($().select2) {
-    $('.select2').select2({
-      minimumResultsForSearch: Infinity,
-      placeholder: 'Choose one'
-    });
+  // if($().select2) {
+    // $('.select2').select2({
+    //   minimumResultsForSearch: Infinity,
+    //   placeholder: 'Choose one'
+    // });
 
     // Select2 by showing the search
-    $('.select2-show-search').select2({
-      minimumResultsForSearch: ''
-    });
+    // $('.select2-show-search').select2({
+    //   // minimumResultsForSearch: ''
+    //   placeholder: 'Choose one',
+    //   // dropdownParent: $('#dataForm'),
+    //   width: "100%",
+    //   allowClear: true
+    // });
 
     // Select2 with tagging support
     $('.select2-tag').select2({
       tags: true,
       tokenSeparators: [',', ' ']
     });
-  }
+  // }
 
 });

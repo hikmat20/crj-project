@@ -41,7 +41,7 @@
             </div>
             <div class="row">
                 <div class="col-md-5 tx-dark tx-bold">
-                    <span>Brand</span>
+                    <span>Type</span>
                 </div>
                 <div class="col-md-7">:
                     <?= isset($hs) && $hs->brand ? $hs->brand : ''; ?>

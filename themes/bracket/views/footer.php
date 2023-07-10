@@ -15,20 +15,19 @@
 </div>
 </div><!-- br-mainpanel -->
 <!-- ########## END: MAIN PANEL ########## -->
-
+<!-- <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery/jquery.min.js"></script> -->
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-ui/ui/widgets/datepicker.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/moment/min/moment.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/peity/jquery.peity.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/highlightjs/highlight.pack.min.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-steps/build/jquery.steps.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
-<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js">
-</script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/select2/js/select2.min.js"></script>
-<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js">
-</script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/parsleyjs/parsley.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-sparkline/jquery.sparkline.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/rickshaw/vendor/d3.min.js"></script>
@@ -38,10 +37,10 @@
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/sweetalert2/sweetalert2.all.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery.maskedinput/jquery.mask.js"></script>
 
-<script src=" <?= base_url(); ?>themes/bracket/assets/js/bracket.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/ResizeSensor.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/tooltip-colored.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/popover-colored.js"></script>
+<script src=" <?= base_url(); ?>themes/bracket/assets/js/bracket.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -49,7 +48,7 @@
         $('.select').select2({
             // minimumResultsForSearch: -1,
             placeholder: 'Choose one',
-            dropdownParent: $('#data-form-customer'),
+            // dropdownParent: $('#data-form-customer'),
             width: "100%",
             allowClear: true
         });

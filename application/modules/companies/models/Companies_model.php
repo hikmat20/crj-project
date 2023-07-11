@@ -69,7 +69,7 @@ class Companies_model extends BF_Model
     {
         $y = date('y');
         $count = 1;
-        $maxID = $this->db->select("MAX(RIGHT(id_customer,5)) as id")->from('customers')->where(['SUBSTR(id_customer,3,2)' => date('y')])->get()->row()->id;
+        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('companies')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;
         }

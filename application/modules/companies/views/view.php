@@ -70,7 +70,7 @@
                     <span>Documents (Lartas)</span>
                 </div>
                 <div class="col-md-8">:
-                    <?= isset($company) ? implode(", ", json_decode($company->documents)) : ''; ?>
+                    <?= isset($company) && $company->documents ? implode(", ", json_decode($company->documents)) : '-'; ?>
                 </div>
             </div>
         </div>

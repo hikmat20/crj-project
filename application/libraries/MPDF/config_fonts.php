@@ -97,113 +97,120 @@ $this->fontdata = array(
 		'B' => "DejaVuSansCondensed-Bold.ttf",
 		'I' => "DejaVuSansCondensed-Oblique.ttf",
 		'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
-		),
+	),
 	"dejavusans" => array(
 		'R' => "DejaVuSans.ttf",
 		'B' => "DejaVuSans-Bold.ttf",
 		'I' => "DejaVuSans-Oblique.ttf",
 		'BI' => "DejaVuSans-BoldOblique.ttf",
-		),
+	),
 	"dejavuserif" => array(
 		'R' => "DejaVuSerif.ttf",
 		'B' => "DejaVuSerif-Bold.ttf",
 		'I' => "DejaVuSerif-Italic.ttf",
 		'BI' => "DejaVuSerif-BoldItalic.ttf",
-		),
+	),
 	"dejavuserifcondensed" => array(
 		'R' => "DejaVuSerifCondensed.ttf",
 		'B' => "DejaVuSerifCondensed-Bold.ttf",
 		'I' => "DejaVuSerifCondensed-Italic.ttf",
 		'BI' => "DejaVuSerifCondensed-BoldItalic.ttf",
-		),
+	),
 	"dejavusansmono" => array(
 		'R' => "DejaVuSansMono.ttf",
 		'B' => "DejaVuSansMono-Bold.ttf",
 		'I' => "DejaVuSansMono-Oblique.ttf",
 		'BI' => "DejaVuSansMono-BoldOblique.ttf",
-		),
+	),
 
 
-/* OCR-B font for Barcodes */
+	/* OCR-B font for Barcodes */
 	"ocrb" => array(
 		'R' => "ocrb10.ttf",
-		),
+	),
 
-/* Thai fonts */
+	/* Thai fonts */
 	"garuda" => array(
 		'R' => "Garuda.ttf",
 		'B' => "Garuda-Bold.ttf",
 		'I' => "Garuda-Oblique.ttf",
 		'BI' => "Garuda-BoldOblique.ttf",
-		),
+	),
 	"norasi" => array(
 		'R' => "Norasi.ttf",
 		'B' => "Norasi-Bold.ttf",
 		'I' => "Norasi-Oblique.ttf",
 		'BI' => "Norasi-BoldOblique.ttf",
-		),
+	),
 
 
-/* Indic fonts */
+	/* Indic fonts */
 	"ind_bn_1_001" => array(
 		'R' => "ind_bn_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_hi_1_001" => array(
 		'R' => "ind_hi_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_ml_1_001" => array(
 		'R' => "ind_ml_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_kn_1_001" => array(
 		'R' => "ind_kn_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_gu_1_001" => array(
 		'R' => "ind_gu_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_or_1_001" => array(
 		'R' => "ind_or_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_ta_1_001" => array(
 		'R' => "ind_ta_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_te_1_001" => array(
 		'R' => "ind_te_1_001.ttf",
 		'indic' => true,
-		),
+	),
 	"ind_pa_1_001" => array(
 		'R' => "ind_pa_1_001.ttf",
 		'indic' => true,
-		),
+	),
 
 
-/* XW Zar Arabic fonts */
+	/* XW Zar Arabic fonts */
 	"xbriyaz" => array(
 		'R' => "XB Riyaz.ttf",
 		'B' => "XB RiyazBd.ttf",
 		'I' => "XB RiyazIt.ttf",
 		'BI' => "XB RiyazBdIt.ttf",
 		'unAGlyphs' => true,
-		),
+	),
 	"xbzar" => array(
 		'R' => "XB Zar.ttf",
 		'B' => "XB Zar Bd.ttf",
 		'I' => "XB Zar It.ttf",
 		'BI' => "XB Zar BdIt.ttf",
 		'unAGlyphs' => true,
-		),
+	),
+	"sun-exta" => array(
+		'R' => "Sun-ExtA.ttf",
+		'sip-ext' => 'sun-extb',
+	),
+	"sun-extb" => array(
+		'R' => "Sun-ExtB.ttf",
+	),
 
 
 
 
-/* Examples of some CJK fonts */
-/*
+	/* Examples of some CJK fonts */
+	/*
 	"unbatang_0613" => array(
 		'R' => "UnBatang_0613.ttf",
 		),
@@ -275,7 +282,7 @@ $this->BMPonly = array(
 	"dejavuserifcondensed",
 	"dejavuserif",
 	"dejavusansmono",
-	);
+);
 
 // These next 3 arrays do two things:
 // 1. If a font referred to in HTML/CSS is not available to mPDF, these arrays will determine whether
@@ -284,21 +291,22 @@ $this->BMPonly = array(
 //     (Otherwise the order is irrelevant)
 // Use the mPDF font-family names i.e. lowercase and no spaces (after any translations in $fonttrans)
 // Always include "sans-serif", "serif" and "monospace" etc.
-$this->sans_fonts = array('dejavusanscondensed','dejavusans','freesans','liberationsans','sans','sans-serif','cursive','fantasy', 
-				'arial','helvetica','verdana','geneva','lucida','arialnarrow','arialblack','arialunicodems',
-				'franklin','franklingothicbook','tahoma','garuda','calibri','trebuchet','lucidagrande','microsoftsansserif',
-				'trebuchetms','lucidasansunicode','franklingothicmedium','albertusmedium','xbriyaz','albasuper','quillscript'
+$this->sans_fonts = array(
+	'dejavusanscondensed', 'dejavusans', 'freesans', 'liberationsans', 'sans', 'sans-serif', 'cursive', 'fantasy',
+	'arial', 'helvetica', 'verdana', 'geneva', 'lucida', 'arialnarrow', 'arialblack', 'arialunicodems',
+	'franklin', 'franklingothicbook', 'tahoma', 'garuda', 'calibri', 'trebuchet', 'lucidagrande', 'microsoftsansserif',
+	'trebuchetms', 'lucidasansunicode', 'franklingothicmedium', 'albertusmedium', 'xbriyaz', 'albasuper', 'quillscript', 'sun-exta', 'sun-extb'
 
 );
 
-$this->serif_fonts = array('dejavuserifcondensed','dejavuserif','freeserif','liberationserif','serif',
-				'timesnewroman','times','centuryschoolbookl','palatinolinotype','centurygothic',
-				'bookmanoldstyle','bookantiqua','cyberbit','cambria',
-				'norasi','charis','palatino','constantia','georgia','albertus','xbzar','algerian','garamond',
+$this->serif_fonts = array(
+	'dejavuserifcondensed', 'dejavuserif', 'freeserif', 'liberationserif', 'serif',
+	'timesnewroman', 'times', 'centuryschoolbookl', 'palatinolinotype', 'centurygothic',
+	'bookmanoldstyle', 'bookantiqua', 'cyberbit', 'cambria',
+	'norasi', 'charis', 'palatino', 'constantia', 'georgia', 'albertus', 'xbzar', 'algerian', 'garamond', 'sun-extb'
 );
 
-$this->mono_fonts = array('dejavusansmono','freemono','liberationmono','courier', 'mono','monospace','ocrb','ocr-b','lucidaconsole',
-				'couriernew','monotypecorsiva'
+$this->mono_fonts = array(
+	'dejavusansmono', 'freemono', 'liberationmono', 'courier', 'mono', 'monospace', 'ocrb', 'ocr-b', 'lucidaconsole',
+	'couriernew', 'monotypecorsiva'
 );
-
-?>

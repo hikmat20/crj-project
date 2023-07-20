@@ -69,18 +69,30 @@ class Requests_model extends BF_Model
     {
         $y = date('y');
         $count = 1;
-        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('requests')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
+        $maxID = $this->db->select("MAX(RIGHT(id,5)) as id")->from('check_hscodes')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;
         }
-        $newID = "RQ$y" . "-" . str_pad($count, 5, "0", STR_PAD_LEFT);
+        $newID = "CH$y" . "-" . str_pad($count, 5, "0", STR_PAD_LEFT);
+        return $newID;
+    }
+    function generate_number($kode = '')
+    {
+        $y = date('y');
+        $count = 1;
+        $maxID = $this->db->select("MAX(LEFT(number,5)) as number")->from('check_hscodes')->where(['RIGHT(number,2)' => date('y')])->get()->row()->number;
+        if ($maxID || $maxID > 0) {
+            $count = $maxID + 1;
+        }
+        $m = date('m');
+        $newID = sprintf("%05d", $count) . "/CHS/$m/$y";
         return $newID;
     }
 
-    function getDetailId($requestId)
+    function getDetailId($checkID)
     {
-        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('request_detail')->where(['request_id' => $requestId])->get()->row()->id;
-        $newId =  ($maxID) ?: 1;
+        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('check_hscode_detail')->where(['check_hscode_id' => $checkID])->get()->row()->id;
+        $newId =  ($maxID) ?: 0;
         return $newId;
     }
 

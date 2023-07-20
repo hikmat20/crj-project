@@ -23,7 +23,7 @@
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
 	<div class="card bd-gray-400">
 		<div class="card-header bg-white">
-			<span class="card-title tx-primary h4"><i class="fas fa-edit"></i> Create New Request</span>
+			<span class="card-title tx-primary h4"><i class="fas fa-edit"></i> <?= $subtitle; ?></span>
 		</div>
 		<div class="card-body" id="dataForm">
 			<form id="formRequest">
@@ -34,10 +34,16 @@
 							<div class="col-md-6">
 								<div class="form-group row">
 									<div class="col-md-4">
-										<label for="id" class="tx-dark tx-bold">Request Number <span class="">*</span></label>
+										<label for="id" class="tx-dark tx-bold">Number <span class="">*</span></label>
 									</div>
 									<div class="col-md-7">
-										<input type="text" readonly class="form-control" id="id" name="id" value="<?= (isset($surveyor)) ? $surveyor->id : null; ?>" maxlength="10" placeholder="Auto">
+										<input type="text" readonly class="form-control" id="number" name="number" value="<?= (isset($request)) ? $request->number : null; ?>" placeholder="Auto">
+										<?php if (isset($flag_revision)) : ?>
+											<input type="hidden" readonly class="form-control" id="id" name="id">
+											<input type="hidden" name="old_id" value="<?= $request->id; ?>">
+										<?php else : ?>
+											<input type="hidden" readonly class="form-control" id="id" name="id" value="<?= (isset($request)) ? $request->id : null; ?>" placeholder="Auto">
+										<?php endif; ?>
 									</div>
 								</div>
 								<div class="form-group row" id="input-customer">
@@ -49,7 +55,7 @@
 											<select id="customer_id" name="customer_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapper" data-parsley-errors-container="#errCustomer">
 												<option value=""></option>
 												<?php foreach ($customers as $cust) : ?>
-													<option value="<?= $cust->id_customer; ?>"><?= $cust->customer_name; ?></option>
+													<option value="<?= $cust->id_customer; ?>" <?= (isset($request->customer_id) && $request->customer_id == $cust->id_customer) ? 'selected' : ''; ?>><?= $cust->customer_name; ?></option>
 												<?php endforeach; ?>
 											</select>
 										</div>
@@ -61,7 +67,7 @@
 										<label for="project_name" class="tx-dark tx-bold">Project Name <span class="tx-danger">*</span></label>
 									</div>
 									<div class="col-md-7">
-										<input type="text" required data-parsley-number class="form-control" id="project_name" name="project_name" value="<?= (isset($surveyor) && $surveyor->project_name) ? $surveyor->project_name : ''; ?>" placeholder="Project Name">
+										<input type="text" required data-parsley-number class="form-control" id="project_name" name="project_name" value="<?= (isset($request) && $request->project_name) ? $request->project_name : ''; ?>" placeholder="Project Name">
 									</div>
 								</div>
 							</div>
@@ -71,8 +77,8 @@
 										<label for="marketing_name" class="tx-dark tx-bold">Marketing <span class="tx-danger">*</span></label>
 									</div>
 									<div class="col-md-7">
-										<input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($surveyor) && $surveyor->cost_value) ? number_format($surveyor->cost_value) : ''; ?>" placeholder="-">
-										<input type="hidden" required name="marketing_id" id="marketing_id" readonly>
+										<input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" placeholder="-">
+										<input type="hidden" required name="marketing_id" id="marketing_id" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" readonly>
 									</div>
 								</div>
 								<div class="form-group row">
@@ -80,7 +86,7 @@
 										<label for="date" class="tx-dark tx-bold">Date Request</label>
 									</div>
 									<div class="col-md-7">
-										<input type="text" required class="form-control datepicker bg-light" name="date" id="date" value="<?= (isset($surveyor) && $surveyor->cost_value) ? number_format($surveyor->cost_value) : date('d/m/Y'); ?>">
+										<input type="text" required class="form-control datepicker bg-light" name="date" id="date" value="<?= (isset($request) && $request->date) ? date('d/m/Y', strtotime($request->date)) : date('d/m/Y'); ?>">
 									</div>
 								</div>
 								<div class="form-group row">
@@ -88,7 +94,7 @@
 										<label for="description" class="tx-dark tx-bold">Description</label>
 									</div>
 									<div class="col-md-7">
-										<textarea type="text" class="form-control" id="description" name="description" placeholder="Description"><?= (isset($surveyor) && $surveyor->description) ? $surveyor->description : null; ?></textarea>
+										<textarea type="text" class="form-control" id="description" name="description" placeholder="Description"><?= (isset($request) && $request->description) ? $request->description : null; ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -98,15 +104,15 @@
 							<div class="col-md-6">
 								<div class="form-group row">
 									<div class="col-md-4">
-										<label for="country_id" class="tx-dark tx-bold">Origin <span class="tx-danger">*</span></label>
+										<label for="origin_country_id" class="tx-dark tx-bold">Origin <span class="tx-danger">*</span></label>
 									</div>
 									<div class="col-md-7">
 										<div id="slWrapperCountry" class="parsley-select">
 											<?php $default = '45'; ?>
-											<select id="country_id" name="country_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#errCountry">
+											<select id="country_id" name="origin_country_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCountry" data-parsley-errors-container="#errCountry">
 												<option value=""></option>
 												<?php foreach ($countries as $country) : ?>
-													<option value="<?= $country->id; ?>" <?= ($default == $country->id) ? 'selected' : ''; ?>><?= $country->country_code . " - " . $country->name; ?></option>
+													<option value="<?= $country->id; ?>" <?= (isset($request) && $request->origin_country_id == $country->id) ? 'selected' : (($default == $country->id) ? 'selected' : ''); ?>><?= $country->country_code . " - " . $country->name; ?></option>
 												<?php endforeach; ?>
 											</select>
 										</div>
@@ -118,6 +124,10 @@
 					</section>
 					<h3><span class="mg-l-10">Product Details</span></h3>
 					<section>
+						<div class="d-none">
+							<input type="radio" name="replace" id="add-list" checked value="0">
+							<input type="radio" name="replace" id="replace-list" value="1">
+						</div>
 						<div class="d-flex justify-content-between mg-b-10">
 							<h4 class="">List HS Code</h4>
 							<div class="">
@@ -137,9 +147,29 @@
 								</tr>
 							</thead>
 							<tbody>
+								<?php $n = 0;
+								if (isset($dtlRequest)) foreach ($dtlRequest as $dtl) : $n++;
+									$image = $dtl->image ? base_url('/assets/uploads/' . $dtl->check_hscode_id . "/") . $dtl->image : base_url('assets/no-image.jpg');
+									$img = ($dtl->image) ? $dtl->image : ''; ?>
+									<tr data-row="<?= $n; ?>">
+										<td class="rowIdx text-center"><?= $n; ?>
+											<input type="hidden" class="form-control border-0" name="detail[<?= $n; ?>][id]" value="<?= isset($dtl->id) && $dtl->id ? $dtl->id : ''; ?>">
+										</td>
+										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][product_name]" value="<?= $dtl->product_name; ?>"></td>
+										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][specification]" value="<?= $dtl->specification; ?>"></td>
+										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>"></td>
+										<td class="text-center"><img src="<?= $image; ?>" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
+											<input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
+										</td>
+										<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode" data-row="<?= $n; ?>"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+									</tr>
+								<?php endforeach; ?>
 							</tbody>
 						</table>
-						<button class="btn btn-teal btn-sm" id="addItem"><i class="fa fa-plus" aria-hidden="true"></i> Add HS Code</button>
+						<div class="d-flex justify-content-between">
+							<button type="button" class="btn btn-teal btn-sm" id="addItem" title="Add HS Code" data-toggle="tooltip"><i class="fa fa-plus" aria-hidden="true"></i> Add HS Code</button>
+							<button type="button" class="btn btn-sm" id="removeAll" title="Remove All" data-toggle="tooltip"><i class="fa fa-trash" aria-hidden="true"></i></button>
+						</div>
 					</section>
 				</div>
 			</form>
@@ -159,8 +189,8 @@
 				<div class="container-fluid">
 					<div class="card bg-light mg-b-20">
 						<div class="card-body">
-							Gunakan template untuk mengupload data hascode.
-							<a href="#" title="Download Template">Template.xlsx</a>
+							Gunakan template untuk mengupload data HS Code.
+							<a href="<?= base_url('assets/documents/template/template.xlsx'); ?>" title="Download Template">Template.xlsx</a>
 						</div>
 					</div>
 
@@ -188,15 +218,6 @@
 		</div>
 	</div>
 </div>
-
-<script>
-	$('#exampleModal').on('show.bs.modal', event => {
-		var button = $(event.relatedTarget);
-		var modal = $(this);
-		// Use above variables to manipulate the DOM
-
-	});
-</script>
 <script type="text/javascript">
 	$(document).on('change', '#customer_id', function() {
 		let customer_id = $(this).val();
@@ -215,6 +236,16 @@
 			}
 		})
 	})
+
+	// $(document).on('click', '#replace', function() {
+	// 	$('#add-list').attr('checked', false)
+	// 	$('#replace-list').attr('checked', true)
+	// })
+
+	// $(document).on('click', '#add', function() {
+	// 	$('#replace-list').attr('checked', false)
+	// 	$('#add-list').attr('checked', true)
+	// })
 
 	$(document).on('click', '#file', function() {
 		$('#logs').html('')
@@ -253,18 +284,22 @@
 					if (result.data.length > 0) {
 						if (replace == true) {
 							$('table#listHscode tbody').html('');
+							$('#replace-list').attr('checked', true)
 						}
 						let n = $('table#listHscode tbody tr').length;
+						let image, img
 						$.each(result.data, function(i, vl) {
 							n++;
+							image = vl.image ? '<?= base_url('/assets/temp/') ?>' + vl.image : '<?= base_url('assets/no-image.jpg'); ?>'
+							img = (vl.image) ? vl.image : ''
 							$('table#listHscode tbody').append(`
-							<tr>
-								<td class="text-center">` + n + `</td>
+							<tr class="row-data" data-row="` + n + `">
+								<td class="text-center rowIdx">` + n + `</td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control" value="` + vl.product_name + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
-								<td class="text-center"><img src="<?= base_url('assets/no-image.jpg'); ?>" data-row="` + n + `" width="80" class="img-fluid rounded" alt=""></td>
-								<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+								<td class="text-center"><img src="` + image + `" data-row="` + n + `" width="80" class="img-fluid rounded" alt=""><input type="hidden" name="detail[` + n + `][image]" value="` + img + `"></td>
+								<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode" data-row="` + n + `"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 							</tr>`);
 						})
 						$('#import').prop('disabled', true)
@@ -285,6 +320,31 @@
 				<td class="text-center"><img src="<?= base_url('assets/no-image.jpg'); ?>" data-row="` + n + `" width="80" class="img-fluid rounded" alt=""></td>
 				<td class="text-center"><button type="button" data-row="` + n + `" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 			</tr>`)
+	})
+
+	$(document).on('click', '#removeAll', function() {
+		var swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-primary mg-r-10 wd-100',
+				cancelButton: 'btn btn-danger wd-100'
+			},
+			buttonsStyling: false
+		})
+
+		swalWithBootstrapButtons.fire({
+			title: "Confirm!",
+			text: "Are you sure to remove all this data?",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonText: "<i class='fa fa-check'></i> Yes",
+			cancelButtonText: "<i class='fa fa-ban'></i> No",
+			showLoaderOnConfirm: true,
+		}).then((val) => {
+			if (val.isConfirmed) {
+				$('table#listHscode tbody').html('')
+				$('#replace-list').attr('checked', true)
+			}
+		})
 	})
 
 	$(document).on('click', '.delHscode', function() {

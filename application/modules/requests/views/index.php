@@ -12,11 +12,22 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         <p class="mg-b-0">Lorem ipsum dolor sit.</p>
     </div>
 </div>
-
-<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
-    <?php echo Template::message(); ?>
+<?php if (Template::message()) : ?>
+    <div class="pd-x-20 pd-t-10 mg-b-10">
+        <?php echo Template::message(); ?>
+    </div>
+<?php endif; ?>
+<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-between align-items-center">
     <?php if ($ENABLE_ADD) : ?>
         <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a>
+        <div class="right">
+            <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all"><i class="fa fa-check-circle" aria-hidden="true"></i> All</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CHK" title="Checked">Checked</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button>
+        </div>
     <?php endif; ?>
 </div>
 
@@ -27,12 +38,14 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop mobile tablet text-center tx-bold tx-dark tx-center">QTY Container</th>
-                        <th class="desktop mobile tablet text-center">Cost Value</th>
-                        <th class="desktop tablet no-sort">Description</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark tx-center">Project Name</th>
+                        <th class="desktop mobile tablet text-center" width="110">Date Request</th>
+                        <th class="desktop tablet text-center">Origin</th>
+                        <th class="desktop text-center" width="150">Marketing</th>
                         <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="100">Opsi</th>
+                            <th class="desktop text-center no-sort" width="120">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -40,9 +53,11 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>QTY Container</th>
-                        <th>Cost Value</th>
-                        <th>Description</th>
+                        <th>Customer Name</th>
+                        <th>Project Name</th>
+                        <th>Date Request</th>
+                        <th>Origin</th>
+                        <th>Marketing</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
@@ -56,7 +71,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 
 <!-- Modal -->
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg mx-wd-95p-force">
         <form id="data-form" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -79,7 +94,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 <!-- page script -->
 <script type="text/javascript">
     $(document).ready(function() {
-        loadData();
+        loadData('');
         <?php if ($this->session->flashdata('msg')) : ?>
             Lobibox.notify('success', {
                 icon: 'fa fa-check',
@@ -92,35 +107,9 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         <?php endif; ?>
     })
 
-    $(document).on('click', '.add', function() {
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add New Surveyor")
-        $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
-        $("#save").removeClass('d-none');
-        let empty = $('table#dataTable tbody tr td.dataTables_empty').length
-        let countRow = $('table#dataTable tbody tr').length + 1
-        let min
-        if (empty == 1) {
-            min = empty
-        } else {
-            min = countRow
-        }
-        setTimeout(() => {
-            $('input#qty_container').prop('min', min)
-        }, 300)
-    });
-
-    $(document).on('click', '.edit', function(e) {
-        var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Surveyor")
-        $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
-        $("#save").removeClass('d-none');
-    });
-
     $(document).on('click', '.view', function(e) {
         var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Surveyor")
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Request Check HS Code")
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
         $("#save").addClass('d-none');
@@ -179,10 +168,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         msg: val.value.msg
                     });
                     $('#dialog-popup').modal('hide')
-                    loadData()
-                    $('.dataTables_length select').select2({
-                        minimumResultsForSearch: -1
-                    })
+                    loadData('')
                 } else {
                     Lobibox.notify('warning', {
                         title: 'Warning',
@@ -254,10 +240,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
                     });
                     $("#dialog-popup").modal('hide');
-                    loadData()
-                    $('.dataTables_length select').select2({
-                        minimumResultsForSearch: -1
-                    })
+                    loadData('')
                 } else {
                     Lobibox.notify('warning', {
                         icon: 'fa fa-ban',
@@ -270,12 +253,41 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 };
             }
         })
-
     })
 
-    function loadData() {
+    $(document).on('click', '#all', function() {
+        $('button.active').each(function() {
+            $(this).removeClass('active').children('i').remove()
+        })
+        $(this).addClass('active').prepend('<i class="fa fa-check-circle" aria-hidden="true"></i>')
+        loadData('');
+    })
 
-        var oTable = $('#dataTable').DataTable({
+    $(document).on('click', '.btn-filter', function() {
+        let filter = "";
+        $('button#all').removeClass('active').find('i').remove()
+
+        if (!$(this).hasClass('active')) {
+            $(this).addClass('active').prepend('<i class="fa fa-check-circle" aria-hidden="true"></i> ')
+        } else {
+            $(this).removeClass('active').find('i').remove()
+            if ($('button.active').length == 0) {
+                $('#all').addClass('active').prepend('<i class="fa fa-check-circle" aria-hidden="true"></i> ')
+            }
+        }
+
+        $('.btn-filter.active').each(function() {
+            filter += "'" + $(this).data('sts') + "',";
+        })
+        filter = filter.substring(',', filter.length - 1);
+        loadData(filter);
+        $('.dataTables_length select').select2({
+            minimumResultsForSearch: -1
+        })
+    })
+
+    function loadData(filter = null) {
+        $('#dataTable').DataTable({
             "processing": true,
             "serverSide": true,
             "stateSave": true,
@@ -349,7 +361,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 url: siteurl + thisController + 'getData',
                 type: "post",
                 data: function(d) {
-                    d.status = '1'
+                    d.status = filter
                 },
                 cache: false,
                 error: function() {
@@ -362,5 +374,9 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 
             }
         });
+
+        $('.dataTables_length select').select2({
+            minimumResultsForSearch: -1
+        })
     }
 </script>

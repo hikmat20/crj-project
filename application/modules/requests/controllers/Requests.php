@@ -45,40 +45,49 @@ class Requests extends Admin_Controller
 		$length         = $requestData['length'];
 
 		$where = "";
-		$where = " AND `status` = '$status'";
+		if ($status) {
+			$where = " AND `status` IN($status)";
+		} else {
+			$where = " AND `status` NOT IN('QTT','HIS')";
+		}
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM requests, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`qty_container` LIKE '%$string%'
-        OR `cost_value` LIKE '%$string%'
-        OR `description` LIKE '%$string%'
-        OR `status` LIKE '%$string%'
-            )";
+        FROM view_check_hscodes, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (`customer_name` LIKE '%$string%'
+        OR `project_name` LIKE '%$string%'
+        OR `date` LIKE '%$string%'
+        OR `country_name` LIKE '%$string%'
+        OR `country_code` LIKE '%$string%'
+        OR `employee_name` LIKE '%$string%'
+        OR `status` LIKE '%$string%')";
 
 		$totalData = $this->db->query($sql)->num_rows();
 		$totalFiltered = $this->db->query($sql)->num_rows();
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'qty_container',
-			2 => 'cost_value',
-			3 => 'description',
-			4 => 'status',
+			1 => 'customer_name',
+			2 => 'project_name',
+			3 => 'date',
+			4 => 'country_name',
+			5 => 'employee_name',
 		);
 
-		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
+		$sql .= " ORDER BY `modified_at` DESC, " . $columns_order_by[$column] . " " . $dir . " ";
 		$sql .= " LIMIT " . $start . " ," . $length . " ";
 		$query  = $this->db->query($sql);
-
 
 		$data  = array();
 		$urut1  = 1;
 		$urut2  = 0;
 
 		$status = [
-			'0' => '<span class="bg-danger tx-white pd-5 tx-11 tx-bold rounded-5">Inactive</span>',
-			'1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
+			'OPN' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">New</span>',
+			'CHK' => '<span class="bg-success tx-white pd-5 tx-11 tx-bold rounded-5">Checked</span>',
+			'CNL' => '<span class="bg-light tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
+			'RVI' => '<span class="bg-warning tx-white pd-5 tx-11 tx-bold rounded-5">Revision</span>',
+			'HIS' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">History</span>',
 		];
 
 		/* Button */
@@ -99,15 +108,25 @@ class Requests extends Admin_Controller
 			}
 
 			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
-			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
-			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
-			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
+			$edit 		= '<a href="' . base_url($this->uri->segment(1) . '/edit/' . $row['id']) . '" class="btn btn-success btn-sm" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></a>';
+			$revision 	= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="fa fa-pen"></i></a>';
+			$cancel 	= '<button type="button" class="btn btn-danger btn-sm cancel" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="fa fa-minus-circle"></i></button>';
+			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $cancel;
+
+			if ($row['status'] == 'CHK') {
+				$buttons 	= $view . "&nbsp;" . $revision;
+			}
+			if ($row['status'] == 'HIS') {
+				$buttons 	= $view;
+			}
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['qty_container'];
-			$nestedData[]  = 'Rp. ' . number_format($row['cost_value']);
-			$nestedData[]  = $row['description'];
+			$nestedData[]  = $row['customer_name'];
+			$nestedData[]  = $row['project_name'];
+			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
+			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
+			$nestedData[]  = $row['employee_name'];
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
@@ -133,11 +152,11 @@ class Requests extends Admin_Controller
 
 	public function add()
 	{
-		$this->template->title('Requests HS Code | Create Request');
 		$this->auth->restrict($this->addPermission);
 		$customers = $this->db->get_where('customers', ['status' => '1'])->result();
 		$countries = $this->db->get_where('countries')->result();
 		$this->template->set([
+			'subtitle' => 'Create Request HS Code',
 			'customers' => $customers,
 			'countries' => $countries,
 		]);
@@ -147,11 +166,36 @@ class Requests extends Admin_Controller
 	public function edit($id)
 	{
 		$this->auth->restrict($this->managePermission);
-		$surveyor = $this->db->get_where('Requests', array('id' => $id))->row();
-		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
+		$request 	= $this->db->get_where('check_hscodes', ['id' => $id])->row();
+		$dtlRequest = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
+		$countries 	= $this->db->get_where('countries')->result();
 		$data = [
-			'surveyor' 		=> $surveyor,
-			'containers'	=> $containers,
+			'subtitle' 	=> 'Edit Request HS Code',
+			'request' 	=> $request,
+			'customers' => $customers,
+			'countries' => $countries,
+			'dtlRequest' => $dtlRequest,
+		];
+		$this->template->set($data);
+		$this->template->render('form');
+	}
+
+	public function revision($id)
+	{
+		$this->auth->restrict($this->managePermission);
+		$request 	= $this->db->get_where('check_hscodes', ['id' => $id])->row();
+		$dtlRequest = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
+		$countries 	= $this->db->get_where('countries')->result();
+		$flag_revision = true;
+		$data = [
+			'subtitle' 		=> 'Revision Check HS Code',
+			'request' 		=> $request,
+			'customers' 	=> $customers,
+			'countries' 	=> $countries,
+			'dtlRequest' 	=> $dtlRequest,
+			'flag_revision' => $flag_revision,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
@@ -160,10 +204,26 @@ class Requests extends Admin_Controller
 	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$surveyor = $this->db->get_where('Requests', array('id' => $id))->row();
-		$this->template->set([
-			'surveyor' => $surveyor,
-		]);
+		$request 		= $this->db->get_where('check_hscodes', ['id' => $id])->row();
+		$dtlRequest 	= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$customers 		= $this->db->get_where('customers', ['status' => '1'])->result_array();
+		$countries 		= $this->db->get_where('countries')->result_array();
+		$employee 		= $this->db->get_where('employees')->result_array();
+		$ArrCustomer 	= array_column($customers, 'customer_name', 'id_customer');
+		$ArrCountry 	= array_column($countries, 'name', 'id');
+		$ArrCountryCode = array_column($countries, 'country_code', 'id');
+		$ArrEmpl 		= array_column($employee, 'name', 'id');
+
+		$data = [
+			'subtitle' 			=> 'Edit Request HS Code',
+			'request' 			=> $request,
+			'ArrCustomer' 		=> $ArrCustomer,
+			'ArrCountry' 		=> $ArrCountry,
+			'ArrCountryCode' 	=> $ArrCountryCode,
+			'ArrEmpl' 			=> $ArrEmpl,
+			'dtlRequest' 		=> $dtlRequest,
+		];
+		$this->template->set($data);
 		$this->template->render('view');
 	}
 
@@ -173,31 +233,74 @@ class Requests extends Admin_Controller
 		$post 			= $this->input->post();
 		$data 			= $post;
 		$data['id'] 	= isset($post['id']) && $post['id'] ? $post['id'] : $this->Requests_model->generate_id();
-		$data['date'] 	= date("Y-m-d", strtotime($post['date']));
-		$detail 		= $post['detail'];
+		$data['number'] = isset($post['number']) && $post['number'] ? $post['number'] : $this->Requests_model->generate_number();
+		$data['date'] 	= date("Y-m-d", strtotime(str_replace("/", "-", $post['date'])));
+		$detail 		= isset($post['detail']) ? $post['detail'] : '';
+		$replace 		= ($post['replace']);
 		unset($data['detail']);
+		unset($data['replace']);
+
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("requests", $data);
+			$this->db->where('id', $post['id'])->update("check_hscodes", $data);
 		} else {
+			if (isset($data['old_id']) && $data['old_id']) {
+				$oldData 				= $this->db->get_where('check_hscodes', ['id' => $data['old_id']])->row();
+				$data['revision_count'] = $oldData->revision_count + 1;
+				$data['status'] = 'RVI';
+				$this->db->update('check_hscodes', ['status' => 'HIS'], ['id' => $data['old_id']]);
+			}
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("requests", $data);
+			$this->db->insert("check_hscodes", $data);
 		}
 
 		if ($detail) {
+			if ($replace == '1') {
+				$exist_data = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $data['id']])->result();
+				$root = $_SERVER['DOCUMENT_ROOT'];
+				if (count($exist_data) > 0) :
+					$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
+					foreach ($exist_data as $exdt) {
+						if ($exdt->image) {
+							if (file_exists($root . '/assets/uploads/' . $data['id'] . "/" . $exdt->image)) {
+								unlink($root . '/assets/uploads/' . $data['id'] . "/" . $exdt->image);
+							}
+						}
+					}
+				endif;
+			}
 			$dtlId =  ($this->Requests_model->getDetailId($data['id']));
 			foreach ($detail as $dtl) {
 				$dtlId++;
-				$dtl['request_id'] = $data['id'];
-				$dtl['id'] = isset($dtl['id']) && $dtl['id'] ? $data['id'] : $data['id'] . "-" . str_pad($dtlId, 4, "0", STR_PAD_LEFT);
-				$check = $this->db->get_where('request_detail', ['id' => $dtl['id']])->num_rows();
+				$dtl['check_hscode_id'] 	= $data['id'];
+				$dtl['id'] 					= isset($dtl['id']) && $dtl['id'] ? $dtl['id'] : $data['id'] . "-" . str_pad($dtlId, 4, "0", STR_PAD_LEFT);
+				if (isset($data['old_id']) && $data['old_id']) {
+					$dtl['id'] 					= $data['id'] . "-" . sprintf("%04d", $dtlId);
+				}
+				$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
+
+				if (isset($dtl['image']) && $dtl['image']) {
+					$root = $_SERVER['DOCUMENT_ROOT'];
+					if (!is_dir($root . '/assets/uploads/' . $data['id'])) {
+						mkdir($root . '/assets/uploads/' . $data['id'], 0755);
+						chmod($root . '/assets/uploads/' . $data['id'], 0755);
+					}
+					$explode 	= explode(".", $dtl['image']);
+					$ext 		= $explode['1'];
+					$imgName 	= 'img-' . $dtl['id'] . "." . $ext;
+					if (file_exists($root . '/assets/temp/' . $dtl['image'])) {
+						rename($root . '/assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+					}
+					$dtl['image'] = $imgName;
+				}
+
 				if ($check > 0) {
-					$this->db->update('request_detail', $dtl, ['id' => $dtl['id']]);
+					$this->db->update('check_hscode_detail', $dtl, ['id' => $dtl['id']]);
 				} else {
-					$this->db->insert('request_detail', $dtl);
+					$this->db->insert('check_hscode_detail', $dtl);
 				}
 			}
 		}
@@ -295,27 +398,38 @@ class Requests extends Admin_Controller
 			$config['allowed_types']        = 'xlsx';
 			$log_import = [
 				'file_name' 	=> "File name " . $file_name,
-				// 'file_type' => "File type " . $file_type,
 				'start' 		=> "Start Import",
 			];
 
-			// $oobj = new  PHPExcel_Reader_Excel2007;
+			/* Import with Image */
 			$obj 				= new PHPExcel_Reader_Excel2007;
 			$objReader 			= $obj->load($file_tmp);
 			$objWorksheet 		= $objReader->getActiveSheet();
 			$objGetWorksheet 	= $objReader->getSheetByName('imp_hscode');
-			// $objImg = new PHPExcel_Worksheet_Drawing;
 			if (!$objGetWorksheet) {
 				$log_import['status'] 	= "Error!";
 				$log_import['msg'] 		= "Worksheet name not valid!";
 			} else {
 				$dataArray = $objWorksheet->toArray();
-				for ($i = 2; $i < count($dataArray); $i++) {
+				for ($i = 1; $i < count($dataArray); $i++) {
 					$data[] = [
 						'product_name' => $dataArray[$i]['1'],
 						'specification' => $dataArray[$i]['2'],
 						'origin_hscode' => $dataArray[$i]['3'],
 					];
+					foreach ($objWorksheet->getDrawingCollection() as $k => $drawing) {
+						// $string = $drawing->getCoordinates();
+						// $coordinate = PHPExcel_Cell::coordinateFromString($string);
+						if ($drawing instanceof PHPExcel_Worksheet_Drawing) {
+							$filename = $drawing->getPath();
+							// $img = $drawing->getFilename();
+							$ext = $drawing->getExtension();
+							$temp_name = 'temp_' . date('YmdHis') . "." . $ext;
+							copy($filename, $_SERVER['DOCUMENT_ROOT'] . '/assets/temp/' . $temp_name);
+						}
+						$data[$k]['image'] = ($temp_name) ?: '';
+						// $data[$k]['image'] = '';
+					}
 				}
 				$log_import['msg'] = "Data has been imported.";
 				$log_import['count_data'] = "Total Data " . count($data);

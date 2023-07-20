@@ -1,10 +1,3 @@
-<?php
-$ENABLE_ADD     = has_permission('Trucking_containers.Add');
-$ENABLE_MANAGE  = has_permission('Trucking_containers.Manage');
-$ENABLE_VIEW    = has_permission('Trucking_containers.View');
-$ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
-?>
-
 <div class="br-pagetitle">
     <i class="tx-primary fa-4x <?= $template['page_icon']; ?>"></i>
     <div>
@@ -15,7 +8,7 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
 
 <div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30">
     <?php if ($ENABLE_ADD) : ?>
-        <button class="btn btn-primary btn-oblong add" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New</button>
+        <a href="<?= base_url($this->uri->segment(1) . '/create'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Create New HS Code"><i class="fa fa-plus">&nbsp;</i>New Check HS Code</a>
     <?php endif; ?>
     <?php echo Template::message(); ?>
 </div>
@@ -27,12 +20,15 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet mobile tx-bold tx-dark">City Name</th>
-                        <th class="desktop tablet mobile">Area</th>
-                        <th class="desktop tablet mobile no-sort">Detail</th>
-                        <th class="desktop text-center no-sort" width="100">Status</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
+                        <th class="desktop tablet text-center">Project Name</th>
+                        <th class="desktop mobile tablet text-center" width="110">Date Request</th>
+                        <th class="desktop text-center" width="60">Qty</th>
+                        <th class="desktop text-center" width="150">Marketing</th>
+                        <th class="desktop text-center no-sort" width="60">Revision</th>
+                        <th class="desktop text-center" width="110">Last Checked</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="100">Opsi</th>
+                            <th class="desktop text-center no-sort" width="150">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -40,10 +36,13 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>City Name</th>
-                        <th>Area</th>
-                        <th>Detail</th>
-                        <th>Status</th>
+                        <th>Customer Name</th>
+                        <th>Project Name</th>
+                        <th>Date Request</th>
+                        <th>QTY</th>
+                        <th>Marketing</th>
+                        <th>Revision</th>
+                        <th>Last Checked</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>
@@ -56,7 +55,7 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
 
 <!-- Modal -->
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg mx-wd-lg-95p-force">
         <form id="data-form" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -65,10 +64,8 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn wd-100 btn btn-primary" name="save" id="save"><i class="fa fa-save"></i>
-                        Save</button>
-                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
-                        <span class="fa fa-times"></span> Close</button>
+                    <button type="submit" class="btn wd-100 btn btn-primary" name="save" id="save"><i class="fa fa-save"></i>Save</button>
+                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal"><span class="fa fa-times"></span> Close</button>
                 </div>
             </div>
         </form>
@@ -80,6 +77,16 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
 <script type="text/javascript">
     $(document).ready(function() {
         loadData();
+        <?php if ($this->session->flashdata('msg')) : ?>
+            Lobibox.notify('success', {
+                icon: 'fa fa-check',
+                msg: '<?= $this->session->flashdata('msg'); ?>',
+                position: 'top right',
+                showClass: 'zoomIn',
+                hideClass: 'zoomOut',
+                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+            });
+        <?php endif; ?>
     })
 
     $(document).on('click', '.add', function() {
@@ -89,17 +96,17 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
         $("#save").removeClass('d-none');
     });
 
-    $(document).on('click', '.edit', function(e) {
+    $(document).on('click', '.quotation', function(e) {
         var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Trucking Container")
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Create Quotation")
         $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
         $("#save").removeClass('d-none');
     });
 
     $(document).on('click', '.view', function(e) {
         var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Trucking Container")
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Check HS Code")
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
         $("#save").addClass('d-none');
@@ -252,13 +259,7 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
 
     /* detail cost */
 
-    $(document).on('click', '#addBtn', function() {
-        d
-    })
-
-
     function loadData() {
-
         var oTable = $('#dataTable').DataTable({
             "processing": true,
             "serverSide": true,
@@ -330,7 +331,7 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
                 url: siteurl + thisController + 'getData',
                 type: "post",
                 data: function(d) {
-                    d.status = '1'
+                    d.status = 'CHK'
                 },
                 cache: false,
                 error: function() {

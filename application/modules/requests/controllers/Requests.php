@@ -113,6 +113,9 @@ class Requests extends Admin_Controller
 			$cancel 	= '<button type="button" class="btn btn-danger btn-sm cancel" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="fa fa-minus-circle"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $cancel;
 
+			if ($row['status'] == 'RVI') {
+				$buttons 	=  $view . "&nbsp;" . $edit;
+			}
 			if ($row['status'] == 'CHK') {
 				$buttons 	= $view . "&nbsp;" . $revision;
 			}
@@ -166,7 +169,7 @@ class Requests extends Admin_Controller
 	public function edit($id)
 	{
 		$this->auth->restrict($this->managePermission);
-		$request 	= $this->db->get_where('check_hscodes', ['id' => $id])->row();
+		$request 	= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
 		$dtlRequest = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
 		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
 		$countries 	= $this->db->get_where('countries')->result();
@@ -184,7 +187,7 @@ class Requests extends Admin_Controller
 	public function revision($id)
 	{
 		$this->auth->restrict($this->managePermission);
-		$request 	= $this->db->get_where('check_hscodes', ['id' => $id])->row();
+		$request 	= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
 		$dtlRequest = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
 		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
 		$countries 	= $this->db->get_where('countries')->result();
@@ -232,6 +235,7 @@ class Requests extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post 			= $this->input->post();
 		$data 			= $post;
+
 		$data['id'] 	= isset($post['id']) && $post['id'] ? $post['id'] : $this->Requests_model->generate_id();
 		$data['number'] = isset($post['number']) && $post['number'] ? $post['number'] : $this->Requests_model->generate_number();
 		$data['date'] 	= date("Y-m-d", strtotime(str_replace("/", "-", $post['date'])));
@@ -239,6 +243,7 @@ class Requests extends Admin_Controller
 		$replace 		= ($post['replace']);
 		unset($data['detail']);
 		unset($data['replace']);
+		unset($data['deleteItem']);
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
@@ -273,15 +278,20 @@ class Requests extends Admin_Controller
 				endif;
 			}
 			$dtlId =  ($this->Requests_model->getDetailId($data['id']));
+
 			foreach ($detail as $dtl) {
-				$dtlId++;
 				$dtl['check_hscode_id'] 	= $data['id'];
-				$dtl['id'] 					= isset($dtl['id']) && $dtl['id'] ? $dtl['id'] : $data['id'] . "-" . str_pad($dtlId, 4, "0", STR_PAD_LEFT);
+				if (isset($dtl['id']) && $dtl['id']) {
+					$dtl['id'] 	= $dtl['id'];
+				} else {
+					$dtlId++;
+					$dtl['id'] 	= $data['id'] . "-" . str_pad($dtlId, 4, "0", STR_PAD_LEFT);
+				}
+
 				if (isset($data['old_id']) && $data['old_id']) {
-					$dtl['id'] 					= $data['id'] . "-" . sprintf("%04d", $dtlId);
+					$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
 				}
 				$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
-
 				if (isset($dtl['image']) && $dtl['image']) {
 					$root = $_SERVER['DOCUMENT_ROOT'];
 					if (!is_dir($root . '/assets/uploads/' . $data['id'])) {
@@ -291,8 +301,14 @@ class Requests extends Admin_Controller
 					$explode 	= explode(".", $dtl['image']);
 					$ext 		= $explode['1'];
 					$imgName 	= 'img-' . $dtl['id'] . "." . $ext;
+
 					if (file_exists($root . '/assets/temp/' . $dtl['image'])) {
-						rename($root . '/assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+						if (file_exists($root . '/assets/uploads/' . $data['id'] . '/' . $imgName)) {
+							unlink($root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+							rename($root . '/assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+						} else {
+							rename($root . '/assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+						}
 					}
 					$dtl['image'] = $imgName;
 				}
@@ -300,9 +316,37 @@ class Requests extends Admin_Controller
 				if ($check > 0) {
 					$this->db->update('check_hscode_detail', $dtl, ['id' => $dtl['id']]);
 				} else {
+					$dtl['id'] = $data['id'] . "-" . str_pad($dtlId++, 4, "0", STR_PAD_LEFT);
 					$this->db->insert('check_hscode_detail', $dtl);
 				}
 			}
+		} else {
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
+			$files = glob($root . '/assets/uploads/' . $data['id'] . "/*"); // get all file names
+			foreach ($files as $file) { // iterate files
+				if (is_file($file)) {
+					unlink($file); // delete file
+				}
+			}
+		}
+
+
+		if ($post['deleteItem']) {
+			$ArrDelete = explode(",", $post['deleteItem']);
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			if ($ArrDelete) :
+				foreach ($ArrDelete as $exdt) {
+					$ID = substr($exdt, 0, 10);
+					$exData = $this->db->get_where('check_hscode_detail', ['id' => $exdt])->row();
+					if ($exData && $exData->image != '') {
+						if (file_exists($root . '/assets/uploads/' . $ID . "/" . $exData->image)) {
+							unlink($root . '/assets/uploads/' . $ID . "/" . $exData->image);
+						}
+					}
+					$this->db->delete('check_hscode_detail', ['id' => $exdt]);
+				}
+			endif;
 		}
 
 		if ($this->db->trans_status() === FALSE) {
@@ -377,6 +421,36 @@ class Requests extends Admin_Controller
 		echo json_encode($return);
 	}
 
+	public function change_image()
+	{
+		$config['upload_path'] 		= './assets/temp/';
+		$config['allowed_types'] 	= 'gif|jpg|png|jpeg';
+		$config['max_size']     	= '1000';
+		$config['max_width'] 		= '1024';
+		$config['max_height'] 		= '768';
+		$config['file_name'] 		= 'temp_' . date('YmdHis') . "_" . "0";
+
+		$this->load->library('upload', $config);
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('image')) {
+			$error = array('error' => $this->upload->display_errors());
+			$return = [
+				'status' => 0,
+				'msg' => $error,
+			];
+		} else {
+			$data = $this->upload->data();
+			$return = [
+				'status' => 1,
+				'msg' => 'Upload Successfull!',
+				'data' => $data['file_name'],
+			];
+		}
+
+		echo json_encode($return);
+	}
+
 	/* LOAD DATA */
 	public function load_marketing()
 	{
@@ -412,23 +486,26 @@ class Requests extends Admin_Controller
 			} else {
 				$dataArray = $objWorksheet->toArray();
 				for ($i = 1; $i < count($dataArray); $i++) {
-					$data[] = [
-						'product_name' => $dataArray[$i]['1'],
+
+					$data[$i] = [
+						'product_name' 	=> $dataArray[$i]['1'],
 						'specification' => $dataArray[$i]['2'],
-						'origin_hscode' => $dataArray[$i]['3'],
+						'origin_hscode' => str_replace(".", "", $dataArray[$i]['3']),
 					];
-					foreach ($objWorksheet->getDrawingCollection() as $k => $drawing) {
-						// $string = $drawing->getCoordinates();
-						// $coordinate = PHPExcel_Cell::coordinateFromString($string);
+
+					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {
+						$n++;
+						$string 			= $drawing->getCoordinates();
+						$coordinate 		= PHPExcel_Cell::coordinateFromString($string)[1] - 1;
+						$image 				= $drawing->setCoordinates($string);
+						$desc 				= $drawing->getDescription();
 						if ($drawing instanceof PHPExcel_Worksheet_Drawing) {
-							$filename = $drawing->getPath();
-							// $img = $drawing->getFilename();
-							$ext = $drawing->getExtension();
-							$temp_name = 'temp_' . date('YmdHis') . "." . $ext;
+							$filename 		= $drawing->getPath();
+							$ext 			= $drawing->getExtension();
+							$temp_name 		= 'temp_' . date('YmdHis') . "_" . ($n) . "." . $ext;
 							copy($filename, $_SERVER['DOCUMENT_ROOT'] . '/assets/temp/' . $temp_name);
 						}
-						$data[$k]['image'] = ($temp_name) ?: '';
-						// $data[$k]['image'] = '';
+						$data[$coordinate]['image'] = ($temp_name) ?: '';
 					}
 				}
 				$log_import['msg'] = "Data has been imported.";

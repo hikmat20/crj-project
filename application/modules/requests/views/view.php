@@ -82,7 +82,7 @@
             if (isset($dtlRequest)) foreach ($dtlRequest as $dtl) : $n++;
                 $image = $dtl->image ? base_url('/assets/uploads/' . $dtl->check_hscode_id . "/") . $dtl->image : base_url('assets/no-image.jpg');
                 $img = ($dtl->image) ? $dtl->image : ''; ?>
-                <tr data-row="<?= $n; ?>">
+                <tr data-row="<?= $n; ?>" class="tx-dark">
                     <td class="rowIdx text-center"><?= $n; ?></td>
                     <td><?= $dtl->product_name; ?></td>
                     <td><?= $dtl->specification; ?></td>

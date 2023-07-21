@@ -12,3 +12,5 @@ application/config/development
 !application/logs/index.html
 !application/logs/.htaccess
 /vendor/
+/assets/temp/*
+/assets/uploads/*

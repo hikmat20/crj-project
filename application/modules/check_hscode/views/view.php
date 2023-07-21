@@ -82,13 +82,13 @@
             <?php $n = 0;
             if ($details) foreach ($details as $dtl) : $n++; ?>
                 <tr>
-                    <td class="bg-light text-center"><?= $n; ?>
+                    <td class="text-center"><?= $n; ?>
                     </td>
-                    <td class="bg-light"><?= $dtl->product_name; ?>
+                    <td><?= $dtl->product_name; ?>
                     </td>
-                    <td class="bg-light"><?= $dtl->specification; ?>
+                    <td><?= $dtl->specification; ?>
                     </td>
-                    <td class="bg-light text-center"><?= $dtl->origin_hscode; ?>
+                    <td class="text-center"><?= $dtl->origin_hscode; ?>
                     </td>
                     <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?>
                     </td>

@@ -111,7 +111,7 @@ class Check_hscode extends Admin_Controller
 
 			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
 			// $edit 		= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></a>';
-			$print 		= '<a href="' . base_url($this->uri->segment(1) . '/printout/' . $row['id']) . '" class="btn btn-info btn-sm" data-toggle="tooltip" title="Print Check" data-id="' . $row['id'] . '"><i class="fa fa-print"></i></a>';
+			$print 		= '<a target="_blank" href="' . base_url($this->uri->segment(1) . '/printout/' . $row['id']) . '" class="btn btn-info btn-sm" data-toggle="tooltip" title="Print Check" data-id="' . $row['id'] . '"><i class="fa fa-print"></i></a>';
 			$quotation 	= '<button type="button" class="btn btn-pink btn-sm quotation" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-file-alt"></i></button>';
 			$buttons 	= $view . "&nbsp;"  . $print . "&nbsp;" . $quotation;
 

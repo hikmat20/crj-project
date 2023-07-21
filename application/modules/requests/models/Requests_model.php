@@ -92,7 +92,7 @@ class Requests_model extends BF_Model
     function getDetailId($checkID)
     {
         $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('check_hscode_detail')->where(['check_hscode_id' => $checkID])->get()->row()->id;
-        $newId =  ($maxID) ?: 0;
+        $newId =  ($maxID) ? intval($maxID) : 0;
         return $newId;
     }
 

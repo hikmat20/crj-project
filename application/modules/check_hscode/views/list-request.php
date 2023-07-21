@@ -152,7 +152,7 @@
             console.log(val);
             if (val.isConfirmed) {
                 if (val.value.status == '1') {
-                    window.href = siteurl + thisController, "_self"
+                    window.open(siteurl + thisController, '_self');
                     $("#dialog-popup").modal('hide');
                 } else {
                     Lobibox.notify('warning', {

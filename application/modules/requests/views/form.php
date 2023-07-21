@@ -77,7 +77,7 @@
 										<label for="marketing_name" class="tx-dark tx-bold">Marketing <span class="tx-danger">*</span></label>
 									</div>
 									<div class="col-md-7">
-										<input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" placeholder="-">
+										<input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->employee_name : ''; ?>" placeholder="-">
 										<input type="hidden" required name="marketing_id" id="marketing_id" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" readonly>
 									</div>
 								</div>
@@ -158,10 +158,12 @@
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][product_name]" value="<?= $dtl->product_name; ?>"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][specification]" value="<?= $dtl->specification; ?>"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>"></td>
-										<td class="text-center"><img src="<?= $image; ?>" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
-											<input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
+										<td class="text-center">
+											<img id="preview_<?= $n; ?>" src="<?= $image; ?>" ondblclick="$('#image_<?= $n; ?>').click()" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
+											<input type="hidden" id="img_<?= $n; ?>" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
+											<input type="file" accept="image/*" data-row="<?= $n; ?>" class="d-none change_image" id="image_<?= $n; ?>" name="detail[<?= $n; ?>][change_image]">
 										</td>
-										<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode" data-row="<?= $n; ?>"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+										<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode" data-id="<?= $dtl->id; ?>" data-row="<?= $n; ?>"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 									</tr>
 								<?php endforeach; ?>
 							</tbody>
@@ -172,6 +174,7 @@
 						</div>
 					</section>
 				</div>
+				<input type="hidden" name="deleteItem" id="deleteItem" value="">
 			</form>
 		</div>
 	</div>
@@ -199,7 +202,6 @@
 							<input type="file" data-parsley-errors-container="#errFile" name="file" accept=".xlsx" id="file" data-parsley-required>
 							<div id="errFile"></div>
 						</div>
-						<button type="submit" class="btn btn-teal" id="import"><i class="fas fa-file-import"></i> Start Import</button>
 						<label class="rdiobox rdiobox-success mg-t-20">
 							<input type="radio" id="add" checked name="choose" value="1">
 							<span class="pd-0">Add to Existing</span>
@@ -208,6 +210,7 @@
 							<input type="radio" id="replace" name="choose" value="0">
 							<span class="pd-0">Replace Existing</span>
 						</label>
+						<button type="submit" class="btn btn-teal mg-y-20" id="import"><i class="fas fa-file-import"></i> Start Import</button>
 					</form>
 					<pre id="logs" class="bg-gray-300 pd-10 rounded mb-b-0"></pre>
 				</div>
@@ -262,7 +265,6 @@
 
 		replace = $("#replace").is(':checked')
 		add = $("#add").is(':checked')
-		// alert(customer_id)
 		let formdata = new FormData($('#import-form')[0])
 		$.ajax({
 			url: siteurl + thisController + 'importdata',
@@ -281,7 +283,7 @@
 					$.each(result.log_import, function(i, v) {
 						$('#logs').append(document.createTextNode(" - " + v + "\n"))
 					});
-					if (result.data.length > 0) {
+					if (result.data) {
 						if (replace == true) {
 							$('table#listHscode tbody').html('');
 							$('#replace-list').attr('checked', true)
@@ -290,7 +292,9 @@
 						let image, img
 						$.each(result.data, function(i, vl) {
 							n++;
-							image = vl.image ? '<?= base_url('/assets/temp/') ?>' + vl.image : '<?= base_url('assets/no-image.jpg'); ?>'
+							console.log(vl);
+							console.log(i);
+							image = vl.image ? '<?= base_url('assets/temp/') ?>' + vl.image : '<?= base_url('assets/no-image.jpg'); ?>'
 							img = (vl.image) ? vl.image : ''
 							$('table#listHscode tbody').append(`
 							<tr class="row-data" data-row="` + n + `">
@@ -298,7 +302,11 @@
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control" value="` + vl.product_name + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
-								<td class="text-center"><img src="` + image + `" data-row="` + n + `" width="80" class="img-fluid rounded" alt=""><input type="hidden" name="detail[` + n + `][image]" value="` + img + `"></td>
+								<td class="text-center">
+									<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
+									<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="` + img + `">
+									<input type="file" data-row="` + n + `" class="d-none change_image" id="image_` + n + `">
+								</td>
 								<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode" data-row="` + n + `"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 							</tr>`);
 						})
@@ -311,13 +319,18 @@
 
 	$(document).on('click', '#addItem', function() {
 		let n = $('table#listHscode tbody tr').length + 1
+		image = '<?= base_url('assets/no-image.jpg'); ?>'
 		$('table#listHscode tbody').append(`
 			<tr class="row-data" data-row="` + n + `">
 				<td class="text-center rowIdx">` + n + `</td>
-				<td><input type="text" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
-				<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
-				<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
-				<td class="text-center"><img src="<?= base_url('assets/no-image.jpg'); ?>" data-row="` + n + `" width="80" class="img-fluid rounded" alt=""></td>
+				<td><input type="text" placeholder="Product Name" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
+				<td><input type="text" placeholder="Specification" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
+				<td><input type="text" placeholder="HS Code" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
+				<td class="text-center">
+					<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
+					<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="">
+					<input type="file" data-row="` + n + `" class="d-none change_image" id="image_` + n + `">
+				</td>
 				<td class="text-center"><button type="button" data-row="` + n + `" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 			</tr>`)
 	})
@@ -347,12 +360,21 @@
 		})
 	})
 
-	$(document).on('click', '.delHscode', function() {
+	$(document).on('click', '.delHscode ', function() {
+		let arr = $('#deleteItem').val()
+
+		if ($(this).data('id') !== undefined) {
+			if (arr == '') {
+				arr += $(this).data('id');
+			} else {
+				arr += "," + $(this).data('id');
+			}
+			$('#deleteItem').val(arr)
+		}
+
 		let idx = 0
 		let row = $(this).data('row')
-		// let id = $(this).data('id')
-		var child = $(this).closest('tr', 'row-data').nextAll();
-		// alert(row)
+		let child = $(this).closest('tr', 'row-data').nextAll();
 		child.each(function() {
 			var rowNum = $(this).data('row');
 			if (rowNum !== undefined) {
@@ -372,14 +394,46 @@
 				button1.attr('data-row', `${num - 1}`);
 			}
 		});
+		idx--;
 
 		// $('table tr.row_data_' + row).remove()
 		$(this).parents('tr').remove()
-		idx--;
 	})
 
 	$(document).on('change', '#country_id', function() {
 		$("#country_id").parsley().validate();
+	})
+
+	$(document).on('change', '.change_image', function() {
+		let n = $(this).data('row')
+		let formData = new FormData();
+		let files = $('#image_' + n)[0].files[0];
+		formData.append('image', files);
+		$.ajax({
+			url: siteurl + thisController + 'change_image',
+			dataType: 'JSON',
+			type: 'POST',
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function(response) {
+				console.log(response);
+				if (response.status == '1') {
+					$("#preview_" + n).attr("src", siteurl + 'assets/temp/' + response.data);
+					$("#img_" + n).val(response.data);
+				} else {
+					Lobibox.notify('error', {
+						title: 'Error!!!',
+						icon: 'fa fa-times',
+						position: 'top right',
+						showClass: 'zoomIn',
+						hideClass: 'zoomOut',
+						soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+						msg: response.msg.error
+					});
+				}
+			},
+		});
 	})
 
 	$(document).ready(function() {

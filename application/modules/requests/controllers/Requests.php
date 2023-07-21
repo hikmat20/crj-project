@@ -265,7 +265,7 @@ class Requests extends Admin_Controller
 		if ($detail) {
 			if ($replace == '1') {
 				$exist_data = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $data['id']])->result();
-				$root = $_SERVER['DOCUMENT_ROOT'];
+				$root = FCPATH;
 				if (count($exist_data) > 0) :
 					$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
 					foreach ($exist_data as $exdt) {
@@ -293,7 +293,7 @@ class Requests extends Admin_Controller
 				}
 				$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
 				if (isset($dtl['image']) && $dtl['image']) {
-					$root = $_SERVER['DOCUMENT_ROOT'];
+					$root = FCPATH;
 					if (!is_dir($root . '/assets/uploads/' . $data['id'])) {
 						mkdir($root . '/assets/uploads/' . $data['id'], 0755);
 						chmod($root . '/assets/uploads/' . $data['id'], 0755);
@@ -321,7 +321,7 @@ class Requests extends Admin_Controller
 				}
 			}
 		} else {
-			$root = $_SERVER['DOCUMENT_ROOT'];
+			$root = FCPATH;
 			$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
 			$files = glob($root . '/assets/uploads/' . $data['id'] . "/*"); // get all file names
 			foreach ($files as $file) { // iterate files
@@ -334,7 +334,7 @@ class Requests extends Admin_Controller
 
 		if ($post['deleteItem']) {
 			$ArrDelete = explode(",", $post['deleteItem']);
-			$root = $_SERVER['DOCUMENT_ROOT'];
+			$root = FCPATH;
 			if ($ArrDelete) :
 				foreach ($ArrDelete as $exdt) {
 					$ID = substr($exdt, 0, 10);
@@ -462,6 +462,7 @@ class Requests extends Admin_Controller
 
 	public function importdata()
 	{
+
 		$this->load->library('excel');
 		$log_import = [];
 		$data = [];
@@ -503,7 +504,7 @@ class Requests extends Admin_Controller
 							$filename 		= $drawing->getPath();
 							$ext 			= $drawing->getExtension();
 							$temp_name 		= 'temp_' . date('YmdHis') . "_" . ($n) . "." . $ext;
-							copy($filename, $_SERVER['DOCUMENT_ROOT'] . '/assets/temp/' . $temp_name);
+							copy($filename, FCPATH . '/assets/temp/' . $temp_name);
 						}
 						$data[$coordinate]['image'] = ($temp_name) ?: '';
 					}

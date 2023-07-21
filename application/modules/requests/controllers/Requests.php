@@ -270,8 +270,8 @@ class Requests extends Admin_Controller
 					$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
 					foreach ($exist_data as $exdt) {
 						if ($exdt->image) {
-							if (file_exists($root . '/assets/uploads/' . $data['id'] . "/" . $exdt->image)) {
-								unlink($root . '/assets/uploads/' . $data['id'] . "/" . $exdt->image);
+							if (file_exists($root . 'assets/uploads/' . $data['id'] . "/" . $exdt->image)) {
+								unlink($root . 'assets/uploads/' . $data['id'] . "/" . $exdt->image);
 							}
 						}
 					}
@@ -294,20 +294,20 @@ class Requests extends Admin_Controller
 				$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
 				if (isset($dtl['image']) && $dtl['image']) {
 					$root = FCPATH;
-					if (!is_dir($root . '/assets/uploads/' . $data['id'])) {
-						mkdir($root . '/assets/uploads/' . $data['id'], 0755);
-						chmod($root . '/assets/uploads/' . $data['id'], 0755);
+					if (!is_dir($root . 'assets/uploads/' . $data['id'])) {
+						mkdir($root . 'assets/uploads/' . $data['id'], 0755);
+						chmod($root . 'assets/uploads/' . $data['id'], 0755);
 					}
 					$explode 	= explode(".", $dtl['image']);
 					$ext 		= $explode['1'];
 					$imgName 	= 'img-' . $dtl['id'] . "." . $ext;
 
-					if (file_exists($root . '/assets/temp/' . $dtl['image'])) {
-						if (file_exists($root . '/assets/uploads/' . $data['id'] . '/' . $imgName)) {
-							unlink($root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-							rename($root . '/assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+					if (file_exists($root . 'assets/temp/' . $dtl['image'])) {
+						if (file_exists($root . 'assets/uploads/' . $data['id'] . '/' . $imgName)) {
+							unlink($root . 'assets/uploads/' . $data['id'] . '/' . $imgName);
+							rename($root . 'assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
 						} else {
-							rename($root . '/assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
+							rename($root . 'assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
 						}
 					}
 					$dtl['image'] = $imgName;
@@ -323,7 +323,7 @@ class Requests extends Admin_Controller
 		} else {
 			$root = FCPATH;
 			$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
-			$files = glob($root . '/assets/uploads/' . $data['id'] . "/*"); // get all file names
+			$files = glob($root . 'assets/uploads/' . $data['id'] . "/*"); // get all file names
 			foreach ($files as $file) { // iterate files
 				if (is_file($file)) {
 					unlink($file); // delete file
@@ -340,8 +340,8 @@ class Requests extends Admin_Controller
 					$ID = substr($exdt, 0, 10);
 					$exData = $this->db->get_where('check_hscode_detail', ['id' => $exdt])->row();
 					if ($exData && $exData->image != '') {
-						if (file_exists($root . '/assets/uploads/' . $ID . "/" . $exData->image)) {
-							unlink($root . '/assets/uploads/' . $ID . "/" . $exData->image);
+						if (file_exists($root . 'assets/uploads/' . $ID . "/" . $exData->image)) {
+							unlink($root . 'assets/uploads/' . $ID . "/" . $exData->image);
 						}
 					}
 					$this->db->delete('check_hscode_detail', ['id' => $exdt]);
@@ -504,7 +504,7 @@ class Requests extends Admin_Controller
 							$filename 		= $drawing->getPath();
 							$ext 			= $drawing->getExtension();
 							$temp_name 		= 'temp_' . date('YmdHis') . "_" . ($n) . "." . $ext;
-							copy($filename, FCPATH . '/assets/temp/' . $temp_name);
+							copy($filename, FCPATH . 'assets/temp/' . $temp_name);
 						}
 						$data[$coordinate]['image'] = ($temp_name) ?: '';
 					}

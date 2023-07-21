@@ -7,6 +7,7 @@
 </div><!-- d-flex -->
 
 <div class="br-pagebody pd-x-20 pd-sm-x-30">
+    <?php echo Template::message(); ?>
     <div class="row row-sm mg-t-20">
         <div class="col-sm-6 col-lg-4">
             <div class="bg-white rounded bd bd-gray-400 overflow-hidden">
@@ -61,243 +62,243 @@
 </div>
 
 <script>
-$(function() {
-    var ch5 = new Rickshaw.Graph({
-        element: document.querySelector('#ch5'),
-        renderer: 'area',
-        max: 80,
-        series: [{
-            data: [{
-                    x: 0,
-                    y: 40
-                },
-                {
-                    x: 1,
-                    y: 45
-                },
-                {
-                    x: 2,
-                    y: 30
-                },
-                {
-                    x: 3,
-                    y: 40
-                },
-                {
-                    x: 4,
-                    y: 50
-                },
-                {
-                    x: 5,
-                    y: 40
-                },
-                {
-                    x: 6,
-                    y: 20
-                },
-                {
-                    x: 7,
-                    y: 10
-                },
-                {
-                    x: 8,
-                    y: 20
-                },
-                {
-                    x: 9,
-                    y: 25
-                },
-                {
-                    x: 10,
-                    y: 35
-                },
-                {
-                    x: 11,
-                    y: 20
-                },
-                {
-                    x: 12,
-                    y: 40
-                }
-            ],
-            color: '#0866C6'
-        }]
-    });
-    ch5.render();
-
-    //Responsive Mode
-    new ResizeSensor($('.br-mainpanel'), function() {
-        ch5.configure({
-            width: $('#ch5').width(),
-            height: $('#ch5').height()
+    $(function() {
+        var ch5 = new Rickshaw.Graph({
+            element: document.querySelector('#ch5'),
+            renderer: 'area',
+            max: 80,
+            series: [{
+                data: [{
+                        x: 0,
+                        y: 40
+                    },
+                    {
+                        x: 1,
+                        y: 45
+                    },
+                    {
+                        x: 2,
+                        y: 30
+                    },
+                    {
+                        x: 3,
+                        y: 40
+                    },
+                    {
+                        x: 4,
+                        y: 50
+                    },
+                    {
+                        x: 5,
+                        y: 40
+                    },
+                    {
+                        x: 6,
+                        y: 20
+                    },
+                    {
+                        x: 7,
+                        y: 10
+                    },
+                    {
+                        x: 8,
+                        y: 20
+                    },
+                    {
+                        x: 9,
+                        y: 25
+                    },
+                    {
+                        x: 10,
+                        y: 35
+                    },
+                    {
+                        x: 11,
+                        y: 20
+                    },
+                    {
+                        x: 12,
+                        y: 40
+                    }
+                ],
+                color: '#0866C6'
+            }]
         });
         ch5.render();
-    });
 
-    var ch6 = new Rickshaw.Graph({
-        element: document.querySelector('#ch6'),
-        renderer: 'area',
-        max: 80,
-        series: [{
-            data: [{
-                    x: 0,
-                    y: 40
-                },
-                {
-                    x: 1,
-                    y: 45
-                },
-                {
-                    x: 2,
-                    y: 30
-                },
-                {
-                    x: 3,
-                    y: 40
-                },
-                {
-                    x: 4,
-                    y: 50
-                },
-                {
-                    x: 5,
-                    y: 40
-                },
-                {
-                    x: 6,
-                    y: 20
-                },
-                {
-                    x: 7,
-                    y: 10
-                },
-                {
-                    x: 8,
-                    y: 20
-                },
-                {
-                    x: 9,
-                    y: 25
-                },
-                {
-                    x: 10,
-                    y: 35
-                },
-                {
-                    x: 11,
-                    y: 20
-                },
-                {
-                    x: 12,
-                    y: 40
-                }
-            ],
-            color: '#6F42C1'
-        }]
-    });
-    ch6.render();
+        //Responsive Mode
+        new ResizeSensor($('.br-mainpanel'), function() {
+            ch5.configure({
+                width: $('#ch5').width(),
+                height: $('#ch5').height()
+            });
+            ch5.render();
+        });
 
-    // Responsive Mode
-    new ResizeSensor($('.br-mainpanel'), function() {
-        ch6.configure({
-            width: $('#ch6').width(),
-            height: $('#ch6').height()
+        var ch6 = new Rickshaw.Graph({
+            element: document.querySelector('#ch6'),
+            renderer: 'area',
+            max: 80,
+            series: [{
+                data: [{
+                        x: 0,
+                        y: 40
+                    },
+                    {
+                        x: 1,
+                        y: 45
+                    },
+                    {
+                        x: 2,
+                        y: 30
+                    },
+                    {
+                        x: 3,
+                        y: 40
+                    },
+                    {
+                        x: 4,
+                        y: 50
+                    },
+                    {
+                        x: 5,
+                        y: 40
+                    },
+                    {
+                        x: 6,
+                        y: 20
+                    },
+                    {
+                        x: 7,
+                        y: 10
+                    },
+                    {
+                        x: 8,
+                        y: 20
+                    },
+                    {
+                        x: 9,
+                        y: 25
+                    },
+                    {
+                        x: 10,
+                        y: 35
+                    },
+                    {
+                        x: 11,
+                        y: 20
+                    },
+                    {
+                        x: 12,
+                        y: 40
+                    }
+                ],
+                color: '#6F42C1'
+            }]
         });
         ch6.render();
-    });
 
-    var ch7 = new Rickshaw.Graph({
-        element: document.querySelector('#ch7'),
-        renderer: 'area',
-        max: 80,
-        series: [{
-            data: [{
-                    x: 0,
-                    y: 40
-                },
-                {
-                    x: 1,
-                    y: 45
-                },
-                {
-                    x: 2,
-                    y: 30
-                },
-                {
-                    x: 3,
-                    y: 40
-                },
-                {
-                    x: 4,
-                    y: 50
-                },
-                {
-                    x: 5,
-                    y: 40
-                },
-                {
-                    x: 6,
-                    y: 20
-                },
-                {
-                    x: 7,
-                    y: 10
-                },
-                {
-                    x: 8,
-                    y: 20
-                },
-                {
-                    x: 9,
-                    y: 25
-                },
-                {
-                    x: 10,
-                    y: 35
-                },
-                {
-                    x: 11,
-                    y: 20
-                },
-                {
-                    x: 12,
-                    y: 40
-                }
-            ],
-            color: '#20C997'
-        }]
-    });
-    ch7.render();
+        // Responsive Mode
+        new ResizeSensor($('.br-mainpanel'), function() {
+            ch6.configure({
+                width: $('#ch6').width(),
+                height: $('#ch6').height()
+            });
+            ch6.render();
+        });
 
-    // Responsive Mode
-    new ResizeSensor($('.br-mainpanel'), function() {
-        ch7.configure({
-            width: $('#ch7').width(),
-            height: $('#ch7').height()
+        var ch7 = new Rickshaw.Graph({
+            element: document.querySelector('#ch7'),
+            renderer: 'area',
+            max: 80,
+            series: [{
+                data: [{
+                        x: 0,
+                        y: 40
+                    },
+                    {
+                        x: 1,
+                        y: 45
+                    },
+                    {
+                        x: 2,
+                        y: 30
+                    },
+                    {
+                        x: 3,
+                        y: 40
+                    },
+                    {
+                        x: 4,
+                        y: 50
+                    },
+                    {
+                        x: 5,
+                        y: 40
+                    },
+                    {
+                        x: 6,
+                        y: 20
+                    },
+                    {
+                        x: 7,
+                        y: 10
+                    },
+                    {
+                        x: 8,
+                        y: 20
+                    },
+                    {
+                        x: 9,
+                        y: 25
+                    },
+                    {
+                        x: 10,
+                        y: 35
+                    },
+                    {
+                        x: 11,
+                        y: 20
+                    },
+                    {
+                        x: 12,
+                        y: 40
+                    }
+                ],
+                color: '#20C997'
+            }]
         });
         ch7.render();
+
+        // Responsive Mode
+        new ResizeSensor($('.br-mainpanel'), function() {
+            ch7.configure({
+                width: $('#ch7').width(),
+                height: $('#ch7').height()
+            });
+            ch7.render();
+        });
+
+    })
+
+    'use strict';
+    $(window).resize(function() {
+        minimizeMenu();
     });
 
-})
-
-'use strict';
-$(window).resize(function() {
     minimizeMenu();
-});
 
-minimizeMenu();
-
-function minimizeMenu() {
-    if (window.matchMedia('(min-width: 992px)').matches && window.matchMedia('(max-width: 1199px)')
-        .matches) {
-        // show only the icons and hide left menu label by default
-        $('.menu-item-label,.menu-item-arrow').addClass('op-lg-0-force d-lg-none');
-        $('body').addClass('collapsed-menu');
-        $('.show-sub + .br-menu-sub').slideUp();
-    } else if (window.matchMedia('(min-width: 1200px)').matches && !$('body').hasClass('collapsed-menu')) {
-        $('.menu-item-label,.menu-item-arrow').removeClass('op-lg-0-force d-lg-none');
-        $('body').removeClass('collapsed-menu');
-        $('.show-sub + .br-menu-sub').slideDown();
+    function minimizeMenu() {
+        if (window.matchMedia('(min-width: 992px)').matches && window.matchMedia('(max-width: 1199px)')
+            .matches) {
+            // show only the icons and hide left menu label by default
+            $('.menu-item-label,.menu-item-arrow').addClass('op-lg-0-force d-lg-none');
+            $('body').addClass('collapsed-menu');
+            $('.show-sub + .br-menu-sub').slideUp();
+        } else if (window.matchMedia('(min-width: 1200px)').matches && !$('body').hasClass('collapsed-menu')) {
+            $('.menu-item-label,.menu-item-arrow').removeClass('op-lg-0-force d-lg-none');
+            $('body').removeClass('collapsed-menu');
+            $('.show-sub + .br-menu-sub').slideDown();
+        }
     }
-}
 </script>

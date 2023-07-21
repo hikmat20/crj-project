@@ -801,8 +801,8 @@ class Template
 			$type = self::$tMessage['type'];
 		}
 
-        $arr_icon = array('info' => 'icon ion-ios-info', 'success' => 'icon ion-ios-close', 'danger' => 'icon ion-ios-close', 'warning' => 'con ion-ios-circled');
-        $arr_title = array('info' => 'Information', 'success' => 'Success', 'danger' => 'Error', 'warning' => 'Warning');
+		$arr_icon = array('info' => 'fas fa-comment-dots', 'success' => 'fa fa-check-circle', 'danger' => 'fa fa-times-circle', 'warning' => 'fas fa-exclamation-triangle');
+		$arr_title = array('info' => 'Information', 'success' => 'Success', 'danger' => 'Error', 'warning' => 'Warning');
 
 		// Get the message template and replace the placeholders.
 		$template = str_replace(

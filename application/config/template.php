@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
@@ -100,18 +100,28 @@ $config['theme'] = '';
 //    </b>
 //    <br>{message}
 // </div>
-$config['template.message_template'] =<<<EOD
-<div class="alert alert-solid alert-{type}" role="alert">
-  <button type="button" class="close btn-icon btn-default btn-xs wd-20" data-dismiss="alert" aria-label="Close">
+// <div class="alert alert-solid alert-{type}" role="alert">
+//   <button type="button" class="close btn-icon btn-default btn-xs wd-20" data-dismiss="alert" aria-label="Close">
+//     <span aria-hidden="true">&times;</span>
+//   </button>
+//   <div class="d-flex align-items-center justify-content-start">
+//     <i class="{icon} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
+//     <span><strong>{title}!</strong>&nbsp;{message}</span>
+//   </div>
+// </div>
+
+$config['template.message_template'] = <<<EOD
+<div class="alert alert-bordered alert-{type}" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
   <div class="d-flex align-items-center justify-content-start">
     <i class="{icon} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
-    <span><strong>{title}!</strong>&nbsp;{message}</span>
+    <span>{message}</span>
   </div>
 </div>
 EOD;
 
 $config['theme_locations'] = array(
-	'themes/'
+  'themes/'
 );

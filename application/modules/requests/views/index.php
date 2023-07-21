@@ -21,7 +21,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
     <?php if ($ENABLE_ADD) : ?>
         <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a>
         <div class="right">
-            <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all"><i class="fa fa-check-circle" aria-hidden="true"></i> All</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CHK" title="Checked">Checked</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
@@ -259,7 +259,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         $('button.active').each(function() {
             $(this).removeClass('active').children('i').remove()
         })
-        $(this).addClass('active').prepend('<i class="fa fa-check-circle" aria-hidden="true"></i>')
+        $(this).addClass('active')
         loadData('');
     })
 
@@ -268,11 +268,11 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         $('button#all').removeClass('active').find('i').remove()
 
         if (!$(this).hasClass('active')) {
-            $(this).addClass('active').prepend('<i class="fa fa-check-circle" aria-hidden="true"></i> ')
+            $(this).addClass('active')
         } else {
             $(this).removeClass('active').find('i').remove()
             if ($('button.active').length == 0) {
-                $('#all').addClass('active').prepend('<i class="fa fa-check-circle" aria-hidden="true"></i> ')
+                $('#all').addClass('active')
             }
         }
 

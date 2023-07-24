@@ -332,6 +332,8 @@
 				<td><input type="text" placeholder="Product Name" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
 				<td><input type="text" placeholder="Specification" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
 				<td><input type="text" placeholder="HS Code" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
+				<td><input type="text" placeholder="FOB Price" class="form-control border-0" name="detail[` + n + `][fob_price]" class="form-control"></td>
+				<td><input type="text" placeholder="CIF Price" class="form-control border-0" name="detail[` + n + `][cif_price]" class="form-control"></td>
 				<td class="text-center">
 					<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
 					<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="">

@@ -105,16 +105,14 @@
             }
         })
 
-        // if (err > 0) {
-        //     swalWithBootstrapButtons.fire({
-        //         title: "Warning!",
-        //         text: "There are some local codes that are still empty. Please complete in advance.",
-        //         icon: "warning",
-        //         // confirmButtonText: "<i class='fa fa-check'></i> Yes",
-        //     })
-        //     alert(err)
-        //     return false;
-        // }
+        if (err > 0) {
+            swalWithBootstrapButtons.fire({
+                title: "Warning!",
+                text: "Some HS Code are not available (N/A), please complete them first.",
+                icon: "warning",
+            })
+            return false;
+        }
 
         let formData = new FormData($('#data-form')[0]);
         swalWithBootstrapButtons.fire({

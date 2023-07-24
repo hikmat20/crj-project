@@ -110,6 +110,7 @@ class Requests extends Admin_Controller
 			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
 			$edit 		= '<a href="' . base_url($this->uri->segment(1) . '/edit/' . $row['id']) . '" class="btn btn-success btn-sm" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></a>';
 			$revision 	= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="fa fa-pen"></i></a>';
+			$print 		= '<a href="' . base_url($this->uri->segment(1) . '/printout/' . $row['id']) . '" class="btn btn-light btn-sm" data-toggle="tooltip" title="Print HS Code" data-id="' . $row['id'] . '" target="_blank"><i class="fa fa-print"></i></a>';
 			$cancel 	= '<button type="button" class="btn btn-danger btn-sm cancel" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="fa fa-minus-circle"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $cancel;
 
@@ -117,7 +118,7 @@ class Requests extends Admin_Controller
 				$buttons 	=  $view . "&nbsp;" . $edit;
 			}
 			if ($row['status'] == 'CHK') {
-				$buttons 	= $view . "&nbsp;" . $revision;
+				$buttons 	= $view . "&nbsp;" . $revision . "&nbsp;" . $print;
 			}
 			if ($row['status'] == 'HIS') {
 				$buttons 	= $view;
@@ -204,29 +205,72 @@ class Requests extends Admin_Controller
 		$this->template->render('form');
 	}
 
+	// public function view($id)
+	// {
+	// 	$this->auth->restrict($this->viewPermission);
+	// 	$request 		= $this->db->get_where('check_hscodes', ['id' => $id])->row();
+	// 	$dtlRequest 	= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+	// 	$customers 		= $this->db->get_where('customers', ['status' => '1'])->result_array();
+	// 	$countries 		= $this->db->get_where('countries')->result_array();
+	// 	$employee 		= $this->db->get_where('employees')->result_array();
+	// 	$ArrCustomer 	= array_column($customers, 'customer_name', 'id_customer');
+	// 	$ArrCountry 	= array_column($countries, 'name', 'id');
+	// 	$ArrCountryCode = array_column($countries, 'country_code', 'id');
+	// 	$ArrEmpl 		= array_column($employee, 'name', 'id');
+
+	// 	$data = [
+	// 		'subtitle' 			=> 'Edit Request HS Code',
+	// 		'request' 			=> $request,
+	// 		'ArrCustomer' 		=> $ArrCustomer,
+	// 		'ArrCountry' 		=> $ArrCountry,
+	// 		'ArrCountryCode' 	=> $ArrCountryCode,
+	// 		'ArrEmpl' 			=> $ArrEmpl,
+	// 		'dtlRequest' 		=> $dtlRequest,
+	// 	];
+	// 	$this->template->set($data);
+	// 	$this->template->render('view');
+	// }
+
+
 	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$request 		= $this->db->get_where('check_hscodes', ['id' => $id])->row();
-		$dtlRequest 	= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$customers 		= $this->db->get_where('customers', ['status' => '1'])->result_array();
-		$countries 		= $this->db->get_where('countries')->result_array();
-		$employee 		= $this->db->get_where('employees')->result_array();
-		$ArrCustomer 	= array_column($customers, 'customer_name', 'id_customer');
-		$ArrCountry 	= array_column($countries, 'name', 'id');
-		$ArrCountryCode = array_column($countries, 'country_code', 'id');
-		$ArrEmpl 		= array_column($employee, 'name', 'id');
+		$request 			= $this->db->get_where('view_check_hscodes', array('id' => $id))->row();
+		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$customers 			= $this->db->get_where('customers')->result_array();
+		$countries 			= $this->db->get_where('countries')->result_array();
+		$details 			= $this->db->get_where('check_hscode_detail', array('check_hscode_id' => $id))->result();
+		$hscodes 			= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 		= $this->db->get_where('hscode_requirements')->result();
+		$current_ppn 		= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
+		$employee 			= $this->db->get_where('employees')->result_array();
+		$ArrHscode 			= [];
+		$ArrDocs 			= [];
+		$ArrCountry 		= array_column($countries, 'name', 'id');
+		$ArrCountryCode 	= array_column($countries, 'country_code', 'id');
+		$ArrCustomer 		= array_column($customers, 'customer_name', 'id_customer');
+		$ArrEmpl 			= array_column($employee, 'name', 'id');
 
-		$data = [
-			'subtitle' 			=> 'Edit Request HS Code',
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->origin_code] = $hs;
+		}
+
+		foreach ($hscodes_doc as $doc) {
+			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		$this->template->set([
 			'request' 			=> $request,
-			'ArrCustomer' 		=> $ArrCustomer,
+			'dtlRequest' 		=> $dtlRequest,
+			'ArrEmpl' 			=> $ArrEmpl,
+			'details' 			=> $details,
+			'ArrHscode' 		=> $ArrHscode,
+			'current_ppn' 		=> $current_ppn,
+			'ArrDocs' 			=> $ArrDocs,
 			'ArrCountry' 		=> $ArrCountry,
 			'ArrCountryCode' 	=> $ArrCountryCode,
-			'ArrEmpl' 			=> $ArrEmpl,
-			'dtlRequest' 		=> $dtlRequest,
-		];
-		$this->template->set($data);
+			'ArrCustomer' 		=> $ArrCustomer,
+		]);
 		$this->template->render('view');
 	}
 
@@ -492,6 +536,8 @@ class Requests extends Admin_Controller
 						'product_name' 	=> $dataArray[$i]['1'],
 						'specification' => $dataArray[$i]['2'],
 						'origin_hscode' => str_replace(".", "", $dataArray[$i]['3']),
+						'fob_price' => str_replace(".", "", $dataArray[$i]['4']),
+						'cif_price' => str_replace(".", "", $dataArray[$i]['5']),
 					];
 
 					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {
@@ -519,5 +565,37 @@ class Requests extends Admin_Controller
 				'data' => $data
 			]);
 		}
+	}
+
+
+	function printout($id)
+	{
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
+		$this->auth->restrict($this->viewPermission);
+		$request 		= $this->db->get_where('view_check_hscodes', array('id' => $id))->row();
+		$details 		= $this->db->get_where('check_hscode_detail', array('check_hscode_id' => $id))->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
+		$ArrHscode 		= [];
+		$ArrDocs 		= [];
+
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->origin_code] = $hs;
+		}
+		foreach ($hscodes_doc as $doc) {
+			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		$this->template->set([
+			'request' 		=> $request,
+			'details' 		=> $details,
+			'ArrHscode' 	=> $ArrHscode,
+			'current_ppn' 	=> $current_ppn,
+			'ArrDocs' 		=> $ArrDocs,
+		]);
+		$html = $this->template->load_view('print');
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
 	}
 }

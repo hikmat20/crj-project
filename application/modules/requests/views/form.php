@@ -142,6 +142,8 @@
 									<th width="35%">Product Name</th>
 									<th class="text-center">Specification</th>
 									<th class="text-center">Origin HS Code</th>
+									<th class="text-center">FOB Price</th>
+									<th class="text-center">CIF Price</th>
 									<th class="text-center" width="100">Photo</th>
 									<th class="text-center" width="80">Opsi</th>
 								</tr>
@@ -158,6 +160,8 @@
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][product_name]" value="<?= $dtl->product_name; ?>"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][specification]" value="<?= $dtl->specification; ?>"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>"></td>
+										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][fob_price]" value="<?= $dtl->fob_price; ?>"></td>
+										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][cif_price]" value="<?= $dtl->cif_price; ?>"></td>
 										<td class="text-center">
 											<img id="preview_<?= $n; ?>" src="<?= $image; ?>" ondblclick="$('#image_<?= $n; ?>').click()" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
 											<input type="hidden" id="img_<?= $n; ?>" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
@@ -302,6 +306,8 @@
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control" value="` + vl.product_name + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
+								<td><input type="text" class="form-control border-0" name="detail[` + n + `][fob_price]" class="form-control" value="` + vl.fob_price + `"></td>
+								<td><input type="text" class="form-control border-0" name="detail[` + n + `][cif_price]" class="form-control" value="` + vl.cif_price + `"></td>
 								<td class="text-center">
 									<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
 									<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="` + img + `">

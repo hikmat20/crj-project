@@ -27,7 +27,7 @@ $ENABLE_DELETE  = has_permission('Ocean_freights.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet mobile tx-bold tx-dark">City Name</th>
+                        <th class="desktop tablet mobile tx-bold tx-dark">Origin Port</th>
                         <th class="desktop tablet mobile text-center">Container Size</th>
                         <th class="desktop tablet text-center">Cost Value</th>
                         <th class="desktop tablet no-sort">Description</th>
@@ -41,7 +41,7 @@ $ENABLE_DELETE  = has_permission('Ocean_freights.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>City Name</th>
+                        <th>Origin Port</th>
                         <th>Container Size</th>
                         <th>Cost Value</th>
                         <th>Description</th>

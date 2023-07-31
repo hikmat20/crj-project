@@ -164,6 +164,7 @@ class Trucking_containers extends Admin_Controller
 		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
 		$dtlTrucking 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id])->result();
 		$ArrDtl 		= [];
+
 		foreach ($dtlTrucking as $dtl) {
 			$ArrDtl[$dtl->trucking_id][$dtl->container_id] = $dtl;
 		}
@@ -214,10 +215,25 @@ class Trucking_containers extends Admin_Controller
 		$post = $this->input->post();
 		$data = $post;
 		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Trucking_containers_model->generate_id();
+		$data['area'] = json_encode($data['area']);
+		$dataArea = $post['area'];
 		$detail = $post['detail'];
 		unset($data['detail']);
+		$Area = [];
+		foreach ($dataArea as $k => $area) {
+			$Area[$k] = [
+				'city_id' => $data['city_id'],
+				'name' => ucfirst($area),
+			];
+		}
 
 		$this->db->trans_begin();
+		foreach ($Area as $ar) {
+			$check = $this->db->get_where('areas', ['city_id' => $ar['city_id'], 'name' => $ar['name']])->num_rows();
+			if ($check <= 0) {
+				$this->db->insert('areas', $ar);
+			}
+		}
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
@@ -309,5 +325,17 @@ class Trucking_containers extends Admin_Controller
 		}
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
+	}
+
+	public function loadArea($city_id)
+	{
+		$areas 			= $this->db->get_where('areas', ['city_id' => $city_id])->result();
+		$html 			= "<select id='city_id' class='form-control select-tags' multiple name='area[]'>";
+		$html 			.= "<option value=''></option>";
+		foreach ($areas as $area) {
+			$html 		.= "<option value='" . $area->city_id . "'>" . $area->name . "</option>";
+		}
+		$html 			.= "</select>";
+		echo $html;
 	}
 }

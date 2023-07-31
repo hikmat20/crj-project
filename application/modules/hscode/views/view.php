@@ -64,15 +64,7 @@
                     <span>Lartas</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->lartas == 'Y' ? 'Yes' : 'No'; ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-5 tx-dark tx-bold">
-                    <span>PI</span>
-                </div>
-                <div class="col-md-7">:
-                    <?= isset($hs) && $hs->pi == 'Y' ? 'Yes' : 'No'; ?>
+                    <?= isset($hs->lartas) ? $ArrLartas[$hs->lartas] : '-'; ?>
                 </div>
             </div>
         </div>

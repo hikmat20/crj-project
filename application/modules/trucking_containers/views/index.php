@@ -105,6 +105,52 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
         $("#save").addClass('d-none');
     });
 
+    // $(document).on('change', '#city_id', function() {
+    //     let city_id = $(this).val()
+    //     $('#city').load(siteurl + thisController + 'loadArea/' + city_id)
+    //     $('.select-tags').select2({
+    //         // minimumResultsForSearch: -1,
+    //         tags: true,
+    //         tokenSeparators: [',', ' '],
+    //         placeholder: 'Choose one',
+    //         dropdownParent: $('.modal-body'),
+    //         width: "100%",
+    //         allowClear: true
+    //     });
+    // })
+    $(document).on('change', '#city_id', function() {
+        let city_id = $('#city_id').val();
+        $('#city_id').val('null').trigger('change')
+        $('#state_id').select2({
+            ajax: {
+                url: siteurl + thisController + 'getProvince',
+                dataType: 'JSON',
+                type: 'GET',
+                delay: 100,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        country_id: country_id, // search term
+                    };
+                },
+                processResults: function(res) {
+                    return {
+                        results: $.map(res, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name
+                            }
+                        })
+                    };
+                }
+            },
+            cache: true,
+            placeholder: 'Choose one',
+            dropdownParent: $('#data-form-customer'),
+            width: "100%",
+            allowClear: true
+        })
+    })
     $(document).on('click', '.delete', function(e) {
         e.preventDefault()
         var swalWithBootstrapButtons = Swal.mixin({

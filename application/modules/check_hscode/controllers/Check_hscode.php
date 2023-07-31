@@ -112,8 +112,7 @@ class Check_hscode extends Admin_Controller
 			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
 			// $edit 		= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></a>';
 			$print 		= '<a target="_blank" href="' . base_url($this->uri->segment(1) . '/printout/' . $row['id']) . '" class="btn btn-info btn-sm" data-toggle="tooltip" title="Print Check" data-id="' . $row['id'] . '"><i class="fa fa-print"></i></a>';
-			$quotation 	= '<button type="button" class="btn btn-pink btn-sm quotation" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-file-invoice"></i></button>';
-			$buttons 	= $view . "&nbsp;"  . $print . "&nbsp;" . $quotation;
+			$buttons 	= $view . "&nbsp;"  . $print;
 
 			if ($row['status'] == 'QTT') {
 				$buttons 	= $view;
@@ -327,9 +326,9 @@ class Check_hscode extends Admin_Controller
 		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
-		$ArrCountry 		= array_column($countries, 'name', 'id');
-		$ArrCountryCode 		= array_column($countries, 'country_code', 'id');
-		$ArrCustomer 		= array_column($customers, 'customer_name', 'id_customer');
+		$ArrCountry 	= array_column($countries, 'name', 'id');
+		$ArrCountryCode = array_column($countries, 'country_code', 'id');
+		$ArrCustomer 	= array_column($customers, 'customer_name', 'id_customer');
 
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
@@ -421,13 +420,6 @@ class Check_hscode extends Admin_Controller
 		}
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
-	}
-
-	public function createQuotation()
-	{
-		$this->auth->restrict($this->addPermission);
-
-		$this->template->render('createQuotation');
 	}
 
 	function printout($id)

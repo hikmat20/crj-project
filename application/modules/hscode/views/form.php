@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mg-b-20">
         <div class="col-sm-6">
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
@@ -71,23 +71,21 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="lartas_act">Lartas <span class="tx-danger">*</span></label>
+                    <label for="lartas">Lartas <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-8">
-                    <div id="cbWrapperLartas" class="parsley-checkbox mg-b-0">
-                        <label class="rdiobox rdiobox-success d-inline-block mg-r-5">
-                            <input type="radio" id="lartas_act" <?= isset($hs) && $hs->lartas == 'Y' ? 'checked' : null; ?> name="lartas" value="Y" required data-required="true" data-parsley-inputs data-parsley-class-handler="#cbWrapperLartas" data-parsley-errors-container="#cbErrorContainerLartas">
-                            <span>Yes</span>
-                        </label>
-                        <label class="rdiobox rdiobox-danger d-inline-block mg-r-5">
-                            <input type="radio" id="lartas_nact" <?= isset($hs) && $hs->lartas == 'N' ? 'checked' : null; ?> name="lartas" value="N">
-                            <span>No</span>
-                        </label>
+                    <div id="slWrapperLartas" class="parsley-select">
+                        <select id="lartas" name="lartas" class="form-control select-not-search" required data-parsley-validate-if-empty="true" data-parsley-class-handler="#slWrapperLartas" data-parsley-errors-container="#slErrorLartas">
+                            <option value=""></option>
+                            <?php if ($lartas) foreach ($lartas as $lts) : ?>
+                                <option value="<?= $lts->id; ?>" <?= (isset($hs->lartas) && ($hs->lartas == $lts->id)) ? 'selected' : ''; ?>><?= $lts->name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <div id="cbErrorContainerLartas"></div>
+                    <div id="slErrorLartas"></div>
                 </div>
             </div>
-            <div class="form-group row">
+            <!-- <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <label for="pi_yes">PI <span class="tx-danger">*</span></label>
                 </div>
@@ -104,7 +102,7 @@
                     </div>
                     <div id="cbErrorContainerPi"></div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -450,7 +448,7 @@
     $(document).ready(function() {
         $('.select').select2({
             placeholder: 'Choose one',
-            dropdownParent: $('#data-form-customer'),
+            dropdownParent: $('.modal-body'),
             width: "100%",
             allowClear: true
         });
@@ -458,14 +456,14 @@
         $('.select-not-search').select2({
             minimumResultsForSearch: Infinity,
             placeholder: 'Choose one',
-            dropdownParent: $('#data-form-customer'),
+            dropdownParent: $('.modal-body'),
             width: "100%",
             allowClear: true
         });
 
         window.Parsley.on('form:validated', function() {
-            $('select').on('select2:select', function(evt) {
-                $("#country_id").parsley().validate();
+            $('select').on('change', function(evt) {
+                $(this).parsley().validate();
             });
         });
     })

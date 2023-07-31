@@ -28,7 +28,7 @@ class Fee_values extends Admin_Controller
 			'Fee_values/Fee_values_model',
 			'Aktifitas/aktifitas_model',
 		));
-		$this->template->title('Manage Fee Values');
+		$this->template->title('Manage Fee CSJ');
 		$this->template->page_icon('fas fa-hand-holding-usd');
 
 		date_default_timezone_set('Asia/Bangkok');

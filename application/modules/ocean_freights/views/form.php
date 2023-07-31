@@ -9,7 +9,7 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4 tx-dark tx-bold">
-			<label for="port_id">Shipment Port <span class="tx-danger">*</span></label>
+			<label for="port_id">Origin Shipment Port <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
 			<div id="slWrapperPort" class="parsley-select">

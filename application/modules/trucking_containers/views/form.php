@@ -31,8 +31,9 @@
         <div class="col-md-4">
             <label for="area" class="tx-dark tx-bold">Area</label>
         </div>
-        <div class="col-md-7">
-            <input name="area" id="area" class="form-control" placeholder="Area" value="<?= isset($trucking->area) ? $trucking->area : ''; ?>">
+        <div class="col-md-7" id="city">
+            <!-- <input name="area" id="area" class="form-control" placeholder="Area" value="<?= isset($trucking->area) ? $trucking->area : ''; ?>"> -->
+            <select name="area[]" multiple id="area" class="form-control select-tags"></select>
         </div>
     </div>
     <h5 class="tx-dark tx-bold">Detail</h5>
@@ -71,15 +72,15 @@
     $(document).ready(function() {
         $('.select').select2({
             placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
+            dropdownParent: $('.modal-body'),
             width: "100%",
             allowClear: true
         });
 
         $('.select.not-search').select2({
-            minimumResultsForSearch: -1,
+            minimumResultsForSearch: Infinity,
             placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
+            dropdownParent: $('.modal-body'),
             width: "100%",
             allowClear: true,
         });
@@ -87,10 +88,18 @@
         $('.cost_value').mask('#,##0', {
             reverse: true
         });
-
+        $('.select-tags').select2({
+            // minimumResultsForSearch: -1,
+            tags: true,
+            tokenSeparators: [',', ' '],
+            placeholder: 'Choose one',
+            dropdownParent: $('.modal-body'),
+            width: "100%",
+            allowClear: true
+        });
         window.Parsley.on('form:validated', function() {
             $('select').on('select2:select', function(evt) {
-                $("#city_id").parsley().validate();
+                $(this).parsley().validate();
             });
         });
     });

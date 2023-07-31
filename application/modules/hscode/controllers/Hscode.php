@@ -146,11 +146,13 @@ class Hscode extends Admin_Controller
         $def_ppn = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
         $def_pph_api = $this->db->get_where('configs', ['key' => 'pph_api'])->row()->value;
         $def_pph_napi = $this->db->get_where('configs', ['key' => 'pph_napi'])->row()->value;
+        $lartas = $this->db->get_where('fee_lartas', ['status' => '1'])->result();
         $this->template->set([
-            'def_ppn' => $def_ppn,
-            'def_pph_api' => $def_pph_api,
-            'def_pph_napi' => $def_pph_napi,
-            'countries' => $countries,
+            'def_ppn'       => $def_ppn,
+            'def_pph_api'   => $def_pph_api,
+            'def_pph_napi'  => $def_pph_napi,
+            'countries'     => $countries,
+            'lartas'        => $lartas,
         ]);
         $this->template->render('form');
     }
@@ -158,13 +160,15 @@ class Hscode extends Admin_Controller
     public function edit($id)
     {
         $this->auth->restrict($this->managePermission);
-        $hs = $this->db->get_where('hscodes', ['id' => $id])->row();
-        $countries = $this->Hscode_model->get_data('countries');
-        $def_ppn = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
-        $def_pph_api = $this->db->get_where('configs', ['key' => 'pph_api'])->row()->value;
-        $def_pph_napi = $this->db->get_where('configs', ['key' => 'pph_napi'])->row()->value;
-        $requirements = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
-        $ArrRQ = [];
+        $hs             = $this->db->get_where('hscodes', ['id' => $id])->row();
+        $countries      = $this->Hscode_model->get_data('countries');
+        $def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
+        $def_pph_api    = $this->db->get_where('configs', ['key' => 'pph_api'])->row()->value;
+        $def_pph_napi   = $this->db->get_where('configs', ['key' => 'pph_napi'])->row()->value;
+        $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+        $ArrRQ          = [];
+        $lartas         = $this->db->get_where('fee_lartas', ['status' => '1'])->result();
+
         foreach ($requirements as $rq) {
             $ArrRQ[$rq['type']][] = $rq;
         }
@@ -176,6 +180,7 @@ class Hscode extends Admin_Controller
             'def_pph_napi' => $def_pph_napi,
             'countries' => $countries,
             'ArrRQ' => $ArrRQ,
+            'lartas' => $lartas,
         ]);
         $this->template->render('form');
     }
@@ -187,6 +192,8 @@ class Hscode extends Admin_Controller
         $countries      = $this->db->get('countries')->result_array();
         $def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
         $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+        $lartas         = $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+        $ArrLartas = array_column($lartas, 'name', 'id');
         $unit = [
             'rp'        => '(Rp)',
             'm'         => 'Meter',
@@ -200,11 +207,12 @@ class Hscode extends Admin_Controller
 
         $ArrCountries = array_column($countries, 'name', 'id');
         $this->template->set([
-            'hs' => $hs,
-            'def_ppn' => $def_ppn,
-            'ArrCountries' => $ArrCountries,
-            'ArrRQ' => $ArrRQ,
-            'unit' => $unit,
+            'hs'            => $hs,
+            'def_ppn'       => $def_ppn,
+            'ArrCountries'  => $ArrCountries,
+            'ArrRQ'         => $ArrRQ,
+            'ArrLartas'     => $ArrLartas,
+            'unit'          => $unit,
         ]);
         $this->template->render('view');
     }

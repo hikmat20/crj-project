@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Requests.Add');
-$ENABLE_MANAGE  = has_permission('Requests.Manage');
-$ENABLE_VIEW    = has_permission('Requests.View');
-$ENABLE_DELETE  = has_permission('Requests.Delete');
+$ENABLE_ADD     = has_permission('Quotations.Add');
+$ENABLE_MANAGE  = has_permission('Quotations.Manage');
+$ENABLE_VIEW    = has_permission('Quotations.View');
+$ENABLE_DELETE  = has_permission('Quotations.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -19,13 +19,14 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 <?php endif; ?>
 <div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-between align-items-center">
     <?php if ($ENABLE_ADD) : ?>
-        <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a>
+        <div class=""></div>
+        <!-- <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a> -->
         <div class="right">
             <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CHK" title="Checked">Checked</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="DEAL" title="Checked">Deal</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="LOSE" title="Cancel">Lose</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button>
         </div>
     <?php endif; ?>
@@ -41,8 +42,8 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
                         <th class="desktop mobile tablet tx-bold tx-dark tx-center">Number</th>
                         <th class="desktop mobile tablet tx-dark tx-center">Project Name</th>
-                        <th class="desktop mobile tablet text-center" width="110">Date Request</th>
-                        <th class="desktop tablet text-center">Origin</th>
+                        <th class="desktop mobile tablet text-center" width="110">Date</th>
+
                         <th class="desktop text-center" width="100">Marketing</th>
                         <th class="desktop tablet text-center" width="50">Rev.</th>
                         <th class="desktop text-center no-sort" width="60">Status</th>
@@ -58,8 +59,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         <th>Customer Name</th>
                         <th>Project Name</th>
                         <th>Number</th>
-                        <th>Date Request</th>
-                        <th>Origin</th>
+                        <th>Date</th>
                         <th>Marketing</th>
                         <th>Rev.</th>
                         <th>Status</th>
@@ -117,6 +117,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
             $("#save").addClass('d-none');
         });
+
         $(document).on('click', '.delete', function(e) {
             e.preventDefault()
             var swalWithBootstrapButtons = Swal.mixin({
@@ -186,6 +187,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             })
 
         })
+
         $(document).on('submit', '#data-form', function(e) {
             e.preventDefault()
             var swalWithBootstrapButtons = Swal.mixin({
@@ -199,11 +201,13 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             let formData = new FormData($('#data-form')[0]);
             formData.append('total_product', $('#tx-total-product').text());
             formData.append('ocean_freight', $('#tx-ocean-freight').text());
-            formData.append('total_shipping', $('#tx-shipping').text());
+            formData.append('shipping', $('#tx-shipping').text());
+            formData.append('surveyor', $('#tx-surveyor').text());
+            formData.append('handling', $('#tx-handling').text());
+            formData.append('custom_clearance', $('#tx-cc-storage').text());
+            formData.append('trucking', $('#tx-trucking').text());
+            formData.append('fee_lartas', $('#tx-fee-lartas').text());
             formData.append('fee_value', $('#tx-fee-csj').text());
-            formData.append('total_fee_lartas', $('#tx-fee-lartas').text());
-            formData.append('total_custom_clearance', $('#tx-custome-clearance').text());
-            formData.append('total_trucking', $('#tx-trucking').text());
             // formData.append('subtotal', $('#tx-fee-csj').text());
             // formData.append('discount', $('#tx-fee-csj').text());
             // formData.append('total_bm', $('#tx-fee-csj').text());
@@ -269,6 +273,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 }
             })
         })
+
         $(document).on('click', '#all', function() {
             $('button.active').each(function() {
                 $(this).removeClass('active').children('i').remove()
@@ -276,6 +281,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             $(this).addClass('active')
             loadData('');
         })
+
         $(document).on('click', '.btn-filter', function() {
             let filter = "";
             $('button#all').removeClass('active').find('i').remove()
@@ -298,13 +304,15 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 minimumResultsForSearch: -1
             })
         })
+
         $(document).on('click', '.quotation', function(e) {
             var id = $(this).data('id');
             $('#dialog-popup .modal-title').html("<i class='fas fa-file-invoice'></i> Create Quotation")
             $("#dialog-popup").modal();
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
             $("#save").removeClass('d-none');
-        })
+        });
+
         $(document).on('change', 'select', function() {
             $(this).parsley().validate();
         })
@@ -331,12 +339,12 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             storage();
         })
         $(document).on('input change', '#qty_container,#fee_type', function() {
+            storage();
             load_price();
         })
-        $(document).on('input', '#fee_lartas_pi,#fee_lartas_alkes,#fee_lartas_ski', function() {
-            fee_lartas();
-        })
+
     })
+
 
     function loadData(filter = null) {
         $('#dataTable').DataTable({
@@ -435,6 +443,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         })
     }
 
+
     function change_price() {
         let price_type = $('#price_type').val()
         let price = 0;
@@ -519,23 +528,12 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         // est_as_per_bill()
     }
 
-    function fee_lartas() {
-        let fee_lartas_pi = parseInt($('#fee_lartas_pi').val().replace(/[\,]/g, "") || 0)
-        let fee_lartas_alkes = parseInt($('#fee_lartas_alkes').val().replace(/[\,]/g, "") || 0)
-        let fee_lartas_ski = parseInt($('#fee_lartas_ski').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = fee_lartas_pi + fee_lartas_alkes + fee_lartas_ski
-        $('#tx-fee-lartas').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
     function load_price() {
         let dest_city = $('#dest_city').val() || 0
         let src_city = $('#source_port').val() || 0
         let qty = $('#qty_container').val() || 0
         let container = $('#container_id').val() || 0
         let fee_type = $('#fee_type').val()
-        let customer_id = $('#customer_id').val()
         let product_price = $('#tx-total-product').text().replace(/[\,]/g, "") || 0
         if (qty && container && src_city) {
             $.ajax({
@@ -549,7 +547,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     src_city,
                     fee_type,
                     product_price,
-                    customer_id,
                 },
                 success: (result) => {
                     $('#ocean_freight').val('0');
@@ -561,9 +558,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     $('#trucking').val(result.trucking);
                     $('#surveyor').val(result.surveyor);
                     $('#fee').val(result.fee);
-                    $('#fee_customer_id').val(result.fee_customer_id);
-                    $('#fee_customer').val(result.fee_customer_value);
-                    $('#tx-fee-customer').text(result.fee_customer_value);
+                    console.log(result.fee);
                     shipping();
                     fee_csj();
                     custom_clearance();
@@ -571,16 +566,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     trucking();
                     surveyor();
                     ocean_freight()
-                    if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
-                        Lobibox.notify('warning', {
-                            icon: 'fa fa-exclamation',
-                            msg: 'Warning! ' + result.err_fee_customer,
-                            position: 'top right',
-                            showClass: 'zoomIn',
-                            hideClass: 'zoomOut',
-                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                        });
-                    }
                     // est_as_per_bill()
                 },
                 error: (result) => {

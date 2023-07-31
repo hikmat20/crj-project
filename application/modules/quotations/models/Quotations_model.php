@@ -7,13 +7,13 @@
  * This is model class for table "Customer"
  */
 
-class Requests_model extends BF_Model
+class Quotations_model extends BF_Model
 {
 
     /**
      * @var string  User Table Name
      */
-    protected $table_name = 'requests';
+    protected $table_name = 'quotations';
     protected $key        = 'id';
 
     /**
@@ -119,12 +119,6 @@ class Requests_model extends BF_Model
     function getDetailId($checkID)
     {
         $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('check_hscode_detail')->where(['check_hscode_id' => $checkID])->get()->row()->id;
-        $newId =  ($maxID) ? intval($maxID) : 0;
-        return $newId;
-    }
-    function getDetailQuotId($checkID)
-    {
-        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('quotation_details')->where(['quotation_id' => $checkID])->get()->row()->id;
         $newId =  ($maxID) ? intval($maxID) : 0;
         return $newId;
     }

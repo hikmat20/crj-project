@@ -9,10 +9,10 @@
     </div>
     <div class="form-group row">
         <div class="col-md-4 tx-dark tx-bold">
-            <span>Lartas</span>
+            <span>Name</span>
         </div>
         <div class="col-md-7 tx-dark tx-bold">:
-            <?= (isset($fee)) ? $fee->lartas : null; ?>
+            <?= (isset($fee)) ? $fee->name : null; ?>
         </div>
     </div>
     <div class="form-group row">

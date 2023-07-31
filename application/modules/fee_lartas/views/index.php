@@ -27,7 +27,7 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop tablet tx-bold tx-dark">Lartas</th>
+                        <th class="desktop tablet tx-bold tx-dark">Name</th>
                         <th class="desktop tablet text-center">Fee Value</th>
                         <th class="desktop tablet no-sort">Description</th>
                         <?php if ($ENABLE_MANAGE) : ?>
@@ -39,7 +39,7 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Lartas</th>
+                        <th>Name</th>
                         <th>Fee Value</th>
                         <th>Description</th>
                         <?php if ($ENABLE_MANAGE) : ?>

@@ -96,14 +96,6 @@
         $("#save").removeClass('d-none');
     });
 
-    $(document).on('click', '.quotation', function(e) {
-        var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Create Quotation")
-        $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
-        $("#save").removeClass('d-none');
-    });
-
     $(document).on('click', '.view', function(e) {
         var id = $(this).data('id');
         $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Check HS Code")

@@ -9,10 +9,10 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4 tx-dark tx-bold">
-			<label for="lartas">Lartas <span class="tx-danger">*</span></label>
+			<label for="name">Lartas <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
-			<input type="text" required class="form-control" id="lartas" name="lartas" value="<?= (isset($fee)) ? $fee->lartas : null; ?>" placeholder="Lartas">
+			<input type="text" required class="form-control" id="name" name="name" value="<?= (isset($fee)) ? $fee->lartas : null; ?>" placeholder="Lartas">
 		</div>
 	</div>
 	<div class="form-group row">

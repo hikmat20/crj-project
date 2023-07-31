@@ -50,7 +50,7 @@ class Fee_lartas extends Admin_Controller
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM fee_lartas, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
-        AND (`lartas` LIKE '%$string%'
+        AND (`name` LIKE '%$string%'
         OR `fee_value` LIKE '%$string%'
         OR `description` LIKE '%$string%'
             )";
@@ -60,7 +60,7 @@ class Fee_lartas extends Admin_Controller
 
 		$columns_order_by = array(
 			0 => 'num',
-			1 => 'lartas',
+			1 => 'name',
 			2 => 'fee_value',
 			3 => 'description',
 		);
@@ -103,7 +103,7 @@ class Fee_lartas extends Admin_Controller
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
-			$nestedData[]  = $row['lartas'];
+			$nestedData[]  = $row['name'];
 			$nestedData[]  = "Rp. " . number_format($row['fee_value']);
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $buttons;

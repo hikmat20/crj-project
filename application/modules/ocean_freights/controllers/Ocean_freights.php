@@ -165,12 +165,15 @@ class Ocean_freights extends Admin_Controller
 	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$freight = $this->db->get_where('ocean_freights', array('id' => $id))->row();
-		$harbours = $this->db->get_where('view_harbours', array('status' => '1'))->result_array();
-		$containers = $this->db->get_where('containers', ['status' => '1'])->result_array();
+		$freight 		= $this->db->get_where('ocean_freights', array('id' => $id))->row();
+		$harbours 		= $this->db->get_where('view_harbours', array('status' => '1'))->result_array();
+		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result_array();
+		$ArrPorts 		= array_column($harbours, 'city_name', 'id');
+		$ArrConte 		= array_column($containers, 'name', 'id');
 		$data = [
 			'freight' 		=> $freight,
-			'harbours'	 	=> $harbours,
+			'ArrPorts'	 	=> $ArrPorts,
+			'ArrConte'	 	=> $ArrConte,
 		];
 		$this->template->set($data);
 		$this->template->render('view');

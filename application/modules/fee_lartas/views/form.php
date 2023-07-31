@@ -12,7 +12,7 @@
 			<label for="name">Lartas <span class="tx-danger">*</span></label>
 		</div>
 		<div class="col-md-7">
-			<input type="text" required class="form-control" id="name" name="name" value="<?= (isset($fee)) ? $fee->lartas : null; ?>" placeholder="Lartas">
+			<input type="text" required class="form-control" id="name" name="name" value="<?= (isset($fee)) ? $fee->name : null; ?>" placeholder="Lartas">
 		</div>
 	</div>
 	<div class="form-group row">

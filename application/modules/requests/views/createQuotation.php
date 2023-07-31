@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="price_type" class="tx-dark tx-bold col-md-3 pd-x-0">FOB/ CFR/CFI <span class="text-danger tx-bold">*</span></label>
+            <label for="price_type" class="tx-dark tx-bold col-md-3 pd-x-0">FOB/ CFR/CIF <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-7 px-0">
                 <div id="slWrAmount" class="parsley-select">
                     <select name="price_type" id="price_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrAmount" data-parsley-errors-container="#errAmount">
@@ -327,8 +327,8 @@
                     <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
                         <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
                     </td>
-                    <td class="text-center"><?= $ArrLartas[$ArrHscode[$dt->origin_hscode]->lartas]; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= $ArrHscode[$dt->origin_hscode]->lartas; ?>">
+                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->lartas) ? $ArrLartas[$ArrHscode[$dt->origin_hscode]->lartas] : '-'; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($ArrHscode[$dt->origin_hscode]->lartas) ? $ArrHscode[$dt->origin_hscode]->lartas : null; ?>">
                     </td>
                     <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%

@@ -71,11 +71,11 @@
             </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="lartas">Lartas <span class="tx-danger">*</span></label>
+                    <label for="lartas">Lartas</label>
                 </div>
                 <div class="col-md-8">
                     <div id="slWrapperLartas" class="parsley-select">
-                        <select id="lartas" name="lartas" class="form-control select-not-search" required data-parsley-validate-if-empty="true" data-parsley-class-handler="#slWrapperLartas" data-parsley-errors-container="#slErrorLartas">
+                        <select id="lartas" name="lartas" class="form-control select-not-search" data-parsley-validate-if-empty="true" data-parsley-class-handler="#slWrapperLartas" data-parsley-errors-container="#slErrorLartas">
                             <option value=""></option>
                             <?php if ($lartas) foreach ($lartas as $lts) : ?>
                                 <option value="<?= $lts->id; ?>" <?= (isset($hs->lartas) && ($hs->lartas == $lts->id)) ? 'selected' : ''; ?>><?= $lts->name; ?></option>

@@ -77,6 +77,7 @@ class Trucking_containers extends Admin_Controller
 			'1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
 		];
 
+
 		/* Button */
 		foreach ($query->result_array() as $row) {
 			$html = "";
@@ -103,11 +104,17 @@ class Trucking_containers extends Admin_Controller
 			foreach ($details as $dtl) {
 				$html .= "<li>" . html_escape($dtl->container_name) . " - Rp. " . number_format($dtl->cost_value) . "</li>";
 			}
+			$implodeArea = '';
+			$areas = json_decode($row['area']);
+			if ($areas) {
+				$implodeArea = implode(", ", $areas);
+			}
+
 			// " - Rp. " . ($dtl->cost_value) ? (number_format($dtl->cost_value)) : '' .
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['city_name'];
-			$nestedData[]  = $row['area'];
+			$nestedData[]  = strtoupper($implodeArea);
 			$nestedData[]  = "<ul class='pd-l-10 mg-b-0'>" . $html . "</ul>";
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
@@ -164,6 +171,8 @@ class Trucking_containers extends Admin_Controller
 		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
 		$dtlTrucking 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id])->result();
 		$ArrDtl 		= [];
+		$areas 			= $this->db->get_where('areas', ['city_id' => $trucking->city_id])->result_array();
+		$ArrArea		= ($areas) ? array_column($areas, 'name') : [];
 
 		foreach ($dtlTrucking as $dtl) {
 			$ArrDtl[$dtl->trucking_id][$dtl->container_id] = $dtl;
@@ -177,6 +186,7 @@ class Trucking_containers extends Admin_Controller
 			'ArrCities' 	=> $ArrCities,
 			'containers' 	=> $containers,
 			'ArrDtl' 		=> $ArrDtl,
+			'ArrArea' 		=> $ArrArea,
 		]);
 		$this->template->render('form');
 	}
@@ -214,17 +224,47 @@ class Trucking_containers extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
-		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Trucking_containers_model->generate_id();
-		$data['area'] = json_encode($data['area']);
-		$dataArea = $post['area'];
-		$detail = $post['detail'];
+		$data['id'] 	= isset($post['id']) && $post['id'] ? $post['id'] : $this->Trucking_containers_model->generate_id();
+		if (isset($post['area'])) foreach ($post['area'] as $k => $va) {
+			$post['area'][$k] = strtoupper($va);
+		}
+		$data['area'] 	= isset($post['area']) ? json_encode($post['area']) : null;
+		$dataArea 		= isset($post['area']) ? $post['area'] : [];
+		$detail 		= $post['detail'];
 		unset($data['detail']);
+
 		$Area = [];
-		foreach ($dataArea as $k => $area) {
+		if ($dataArea) foreach ($dataArea as $k => $area) {
 			$Area[$k] = [
 				'city_id' => $data['city_id'],
-				'name' => ucfirst($area),
+				'name' => strtoupper($area),
 			];
+		}
+
+		$AreaData = [];
+		$check_exits = $this->db->get_where('trucking_containers', ['city_id' => $post['city_id']])->result();
+		if ($check_exits) foreach ($check_exits as $trucking) {
+			if ($trucking->area) {
+				$AreaData = array_merge(json_decode($trucking->area));
+			}
+		}
+
+		$n = 0;
+		if (isset($post['area']) && $post['area']) {
+			foreach ($post['area'] as $a) {
+				if (in_array($a, $AreaData)) {
+					$n++;
+				}
+			}
+		}
+
+		if ($n > 0) {
+			$return	= array(
+				'msg'		=> 'Area name already registered!',
+				'status'	=> 0
+			);
+			echo json_encode($return);
+			return false;
 		}
 
 		$this->db->trans_begin();
@@ -234,6 +274,7 @@ class Trucking_containers extends Admin_Controller
 				$this->db->insert('areas', $ar);
 			}
 		}
+
 		if (isset($post['id']) && $post['id']) {
 			$data['modified_at']	= date('Y-m-d H:i:s');
 			$data['modified_by']	= $this->auth->user_id();
@@ -281,6 +322,7 @@ class Trucking_containers extends Admin_Controller
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}
+
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
 	}
@@ -325,6 +367,18 @@ class Trucking_containers extends Admin_Controller
 		}
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
+	}
+
+	function getArea()
+	{
+		$city_id 	= $_GET['city_id'];
+		$areas 		= [];
+
+		if (isset($city_id) && $city_id) {
+			$areas = $this->db->where(['city_id' => $city_id])->get('areas')->result_array();
+		}
+
+		echo json_encode($areas);
 	}
 
 	public function loadArea($city_id)

@@ -119,34 +119,35 @@ $ENABLE_DELETE  = has_permission('Trucking_containers.Delete');
     //     });
     // })
     $(document).on('change', '#city_id', function() {
-        let city_id = $('#city_id').val();
-        $('#city_id').val('null').trigger('change')
-        $('#state_id').select2({
+        let city_id = $(this).val();
+        $('#area').val('null').trigger('change')
+        $('#area').select2({
             ajax: {
-                url: siteurl + thisController + 'getProvince',
+                url: siteurl + thisController + 'getArea',
                 dataType: 'JSON',
                 type: 'GET',
                 delay: 100,
                 data: function(params) {
                     return {
                         q: params.term, // search term
-                        country_id: country_id, // search term
+                        city_id: city_id, // search term
                     };
                 },
                 processResults: function(res) {
                     return {
                         results: $.map(res, function(item) {
                             return {
-                                id: item.id,
+                                id: item.name,
                                 text: item.name
                             }
                         })
                     };
                 }
             },
+            tags: true,
             cache: true,
             placeholder: 'Choose one',
-            dropdownParent: $('#data-form-customer'),
+            dropdownParent: $('.modal-body'),
             width: "100%",
             allowClear: true
         })

@@ -20,7 +20,7 @@
             <label for="area" class="tx-dark tx-bold">Area</label>
         </div>
         <div class="col-md-7">:
-            <?= isset($trucking->area) ? $trucking->area : ''; ?>
+            <?= isset($trucking->area) ? ucfirst(implode(", ", json_decode($trucking->area))) : ''; ?>
         </div>
     </div>
     <h5 class="tx-dark tx-bold">Detail</h5>

@@ -33,7 +33,12 @@
         </div>
         <div class="col-md-7" id="city">
             <!-- <input name="area" id="area" class="form-control" placeholder="Area" value="<?= isset($trucking->area) ? $trucking->area : ''; ?>"> -->
-            <select name="area[]" multiple id="area" class="form-control select-tags"></select>
+            <select name="area[]" multiple id="area" class="form-control select-tags">
+                <!-- <option value=""></option> -->
+                <?php if ($trucking->area) foreach (json_decode($trucking->area) as $area) : ?>
+                    <option value="<?= $area; ?>" <?= in_array(ucfirst($area), $ArrArea) ? 'selected' : '' ?>><?= $area; ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
     <h5 class="tx-dark tx-bold">Detail</h5>

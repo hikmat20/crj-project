@@ -336,6 +336,44 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         $(document).on('input', '#fee_lartas_pi,#fee_lartas_alkes,#fee_lartas_ski', function() {
             fee_lartas();
         })
+        $(document).on('change', '#dest_city', function() {
+            let city_id = $(this).val();
+            $('#dest_area').val('null').trigger('change')
+            $('#dest_area').select2({
+                ajax: {
+                    url: siteurl + thisController + 'getArea',
+                    dataType: 'JSON',
+                    type: 'GET',
+                    delay: 100,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            city_id: city_id, // search term
+                        };
+                    },
+                    processResults: function(res) {
+                        return {
+                            results: $.map(res, function(item) {
+                                return {
+                                    id: item.name,
+                                    text: item.name
+                                }
+                            })
+                        };
+                    }
+                },
+                tags: true,
+                cache: true,
+                placeholder: 'Choose one',
+                dropdownParent: $('.modal-body'),
+                width: "100%",
+                allowClear: true
+            })
+            load_price()
+        })
+        $(document).on('change', '#dest_area', function() {
+            load_price()
+        })
     })
 
     function loadData(filter = null) {
@@ -530,7 +568,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
     }
 
     function load_price() {
-        let dest_city = $('#dest_city').val() || 0
+        let dest_area = $('#dest_area').val() || 0
         let src_city = $('#source_port').val() || 0
         let qty = $('#qty_container').val() || 0
         let container = $('#container_id').val() || 0
@@ -545,7 +583,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 data: {
                     container,
                     qty,
-                    dest_city,
+                    dest_area,
                     src_city,
                     fee_type,
                     product_price,
@@ -559,6 +597,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     $('#shipping').val(result.thc);
                     $('#custom_clearance').val(result.custom_clearance);
                     $('#trucking').val(result.trucking);
+                    $('#trucking_id').val(result.trucking_id);
                     $('#surveyor').val(result.surveyor);
                     $('#fee').val(result.fee);
                     $('#fee_customer_id').val(result.fee_customer_id);

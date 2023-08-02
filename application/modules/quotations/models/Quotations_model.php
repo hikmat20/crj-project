@@ -1,10 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
- * @author Yunas Handra
- * @copyright Copyright (c) 2018, Yunas Handra
+ * @author Hikmat A.R
+ * @copyright Copyright (c) 2023, Hikmat A.R
  *
- * This is model class for table "Customer"
+ * This is model class for table "Quotations"
  */
 
 class Quotations_model extends BF_Model

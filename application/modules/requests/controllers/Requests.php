@@ -555,7 +555,6 @@ class Requests extends Admin_Controller
 		}
 	}
 
-
 	function printout($id)
 	{
 		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
@@ -586,7 +585,6 @@ class Requests extends Admin_Controller
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
 	}
-
 
 	public function createQuotation($id)
 	{
@@ -633,21 +631,32 @@ class Requests extends Admin_Controller
 		$this->template->render('createQuotation');
 	}
 
+	function getArea()
+	{
+		$city_id 	= $_GET['city_id'];
+		$areas 		= [];
+
+		if (isset($city_id) && $city_id) {
+			$areas = $this->db->where(['city_id' => $city_id])->get('areas')->result_array();
+		}
+
+		echo json_encode($areas);
+	}
+
 	function load_price()
 	{
 		$post 				= $this->input->post();
 		$container 			= $post['container'];
 		$qty 				= $post['qty'];
-		$dest_city 			= $post['dest_city'];
+		$dest_area 			= $post['dest_area'];
 		$src_city 			= $post['src_city'];
 		$fee_type 			= $post['fee_type'];
 		$customer 			= $post['customer_id'];
 		$product_price 		= str_replace(",", "", $post['product_price']);
-
 		$ocean_freight 		= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
 		$thc 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
 		$custom_clearance 	= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
-		$trucking 			= $this->db->get_where('trucking_containers', ['city_id' => $dest_city, 'status' => '1'])->row();
+		$trucking 			= $this->db->get_where('trucking_containers', ['area like' => "%$dest_area%", 'status' => '1'])->row();
 		if ($trucking) {
 			$trucking_dtl 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id, 'container_id' => $container])->row();
 		}
@@ -679,7 +688,8 @@ class Requests extends Admin_Controller
 			'ocean_freight' 	 => isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
 			'thc' 				 => isset($thc->cost_value) ? number_format($thc->cost_value) : 0,
 			'custom_clearance' 	 => isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value) : 0,
-			'trucking' 			 => isset($trucking_dtl->cost_value) ? number_format($trucking_dtl->cost_value) : 0,
+			'trucking' 			 => isset($trucking_dtl) ? number_format($trucking_dtl->cost_value) : 0,
+			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
 			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
 			'fee' 				 => $fee,
 			'fee_customer_id' 	 => $fee_customer_id,
@@ -749,7 +759,7 @@ class Requests extends Admin_Controller
 				$dtl['fob_price'] 		= str_replace(",", "", $dtl['fob_price']);
 				$dtl['cif_price'] 		= str_replace(",", "", $dtl['cif_price']);
 				$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
-				$dtl['created_by'] 		= $dtl['modified_by'] = date('Y-m-d H:i:s');
+				$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
 				$dtl['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
 				$this->db->insert('quotation_details', $dtl);
 			}

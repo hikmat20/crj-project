@@ -8,7 +8,7 @@ if (!defined('BASEPATH')) {
  * @author Hikmat Aolia
  * @copyright Copyright (c) 2023, Hikmat Aolia
  *
- * This is controller for Requests HS Code
+ * This is controller for Quotations
  */
 
 class Quotations extends Admin_Controller
@@ -104,19 +104,20 @@ class Quotations extends Admin_Controller
 				$nomor = ($total_data - $start_dari) - $urut2;
 			}
 
-			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
-			$edit 		= '<a href="' . base_url($this->uri->segment(1) . '/edit/' . $row['id']) . '" class="btn btn-success btn-sm" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></a>';
-			$revision 	= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="fa fa-pen"></i></a>';
-			$print 		= '<a href="' . base_url($this->uri->segment(1) . '/printout/' . $row['id']) . '" class="btn btn-light btn-sm" data-toggle="tooltip" title="Print HS Code" data-id="' . $row['id'] . '" target="_blank"><i class="fa fa-print"></i></a>';
-			$cancel 	= '<button type="button" class="btn btn-danger btn-sm cancel" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="fa fa-minus-circle"></i></button>';
-			$quotation 	= '<button type="button" class="btn btn-pink btn-sm quotation" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-file-invoice"></i></button>';
-			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $cancel;
+			$view 		= '<a href="javascript:void(0)" class="nav-link view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '" data-number="' . $row['number'] . '"><i class="fa fa-eye text-primary"></i> View</a>';
+			$edit 		= '<a href="' . base_url($this->uri->segment(1) . '/edit/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="icon ion-edit text-success"></i> Edit</a>';
+			$revision 	= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="icon ion-edit text-warning"></i> Revison</a>';
+			$deal 		= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-handshake text-primary"></i> Deal</a>';
+			$printAI 	= '<a href="' . base_url($this->uri->segment(1) . '/print_all_in/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print All-In" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> Print All-In</a>';
+			$printAPB 	= '<a href="' . base_url($this->uri->segment(1) . '/print_apb/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print As Per-Bill</span></a>';
+			$cancel 	= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="icon ion-minus-circled text-danger"></i> Cancel</a>';
+			$buttons 	= $view . $edit  . $deal .  $printAI . $printAPB . $cancel;
 
 			if ($row['status'] == 'RVI') {
-				$buttons 	=  $view . "&nbsp;" . $edit;
+				$buttons 	=  $view . $revision . $printAPB . $printAI;
 			}
 			if ($row['status'] == 'DEAL') {
-				$buttons 	= $view . "&nbsp;" . $revision . "&nbsp;" . $print . "&nbsp;" . $quotation;
+				$buttons 	= $view . $printAPB . $printAI;
 			}
 			if ($row['status'] == 'HIS') {
 				$buttons 	= $view;
@@ -131,7 +132,16 @@ class Quotations extends Admin_Controller
 			$nestedData[]  = $row['employee_name'];
 			$nestedData[]  = ($row['revision_count']) ? "Rev-" . $row['revision_count'] : '-';
 			$nestedData[]  = $status[$row['status']];
-			$nestedData[]  = $buttons;
+			$nestedData[]  = '<div class="dropdown">
+								<a href="#" class="btn btn-primary btn-sm" data-toggle="dropdown">
+									<span class="tx- h6">Opsi</span> <i class="fa fa-cog mg-l-5"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right wd-100">
+									<nav class="nav nav-style-2 flex-column">
+									' . $buttons . '
+									</nav>
+								</div>
+							</div>';
 			$data[] = $nestedData;
 			$urut1++;
 			$urut2++;
@@ -153,35 +163,51 @@ class Quotations extends Admin_Controller
 		$this->template->render('index');
 	}
 
-	public function add()
-	{
-		$this->auth->restrict($this->addPermission);
-		$customers = $this->db->get_where('customers', ['status' => '1'])->result();
-		$countries = $this->db->get_where('countries')->result();
-		$this->template->set([
-			'subtitle' => 'Create Request HS Code',
-			'customers' => $customers,
-			'countries' => $countries,
-		]);
-		$this->template->render('form');
-	}
-
 	public function edit($id)
 	{
-		$this->auth->restrict($this->managePermission);
-		$request 	= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
-		$dtlRequest = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
-		$countries 	= $this->db->get_where('countries')->result();
+		$this->auth->restrict($this->addPermission);
+		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
+		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
+		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
+		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
+		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
+		$areas 			= $this->db->get_where('areas', ['city_id' => $header->dest_city])->result();
+		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$lartas 		= $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$ArrHscode 		= [];
+		$ArrDocs 		= [];
+		$ArrPorts 		= [];
+
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->origin_code] = $hs;
+		}
+
+		foreach ($hscodes_doc as $doc) {
+			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		foreach ($ports as $port) {
+			$ArrPorts[$port->country_id][] = $port;
+		}
+
 		$data = [
-			'subtitle' 	=> 'Edit Request HS Code',
-			'request' 	=> $request,
-			'customers' => $customers,
-			'countries' => $countries,
-			'dtlRequest' => $dtlRequest,
+			'header' 		=> $header,
+			'companies' 	=> $companies,
+			'ports' 		=> $ports,
+			'containers' 	=> $containers,
+			'cities' 		=> $cities,
+			'areas' 		=> $areas,
+			'details' 		=> $details,
+			'ArrHscode' 	=> $ArrHscode,
+			'ArrDocs' 		=> $ArrDocs,
+			'ArrPorts' 		=> $ArrPorts,
+			'ArrLartas' 	=> $ArrLartas,
 		];
 		$this->template->set($data);
-		$this->template->render('form');
+		$this->template->render('edit');
 	}
 
 	public function revision($id)
@@ -479,122 +505,111 @@ class Quotations extends Admin_Controller
 		echo json_encode($return);
 	}
 
-	/* LOAD DATA */
-	public function load_marketing()
+	function saveQuotation()
 	{
-		$customer_id = $this->input->post('customer_id');
-		$get_cust = $this->db->get_where('customers', ['id_customer' => $customer_id])->row();
-		$get_sales = $this->db->get_where('employees', ['id' => $get_cust->sales_id])->row();
-		echo json_encode($get_sales);
 	}
 
-	public function importdata()
+	function getArea()
 	{
+		$city_id 	= $_GET['city_id'];
+		$areas 		= [];
 
-		$this->load->library('excel');
-		$log_import = [];
-		$data = [];
-		if (isset($_FILES['file']['name'])) {
-			$file_tmp = $_FILES['file']['tmp_name'];
-			$file_name = $_FILES['file']['name'];
-			$file_type = $_FILES['file']['type'];
-			$config['allowed_types']        = 'xlsx';
-			$log_import = [
-				'file_name' 	=> "File name " . $file_name,
-				'start' 		=> "Start Import",
-			];
+		if (isset($city_id) && $city_id) {
+			$areas = $this->db->where(['city_id' => $city_id])->get('areas')->result_array();
+		}
 
-			/* Import with Image */
-			$obj 				= new PHPExcel_Reader_Excel2007;
-			$objReader 			= $obj->load($file_tmp);
-			$objWorksheet 		= $objReader->getActiveSheet();
-			$objGetWorksheet 	= $objReader->getSheetByName('imp_hscode');
-			if (!$objGetWorksheet) {
-				$log_import['status'] 	= "Error!";
-				$log_import['msg'] 		= "Worksheet name not valid!";
-			} else {
-				$dataArray = $objWorksheet->toArray();
-				for ($i = 1; $i < count($dataArray); $i++) {
+		echo json_encode($areas);
+	}
 
-					$data[$i] = [
-						'product_name' 	=> $dataArray[$i]['1'],
-						'specification' => $dataArray[$i]['2'],
-						'origin_hscode' => str_replace(".", "", $dataArray[$i]['3']),
-						'fob_price' => str_replace(".", "", $dataArray[$i]['4']),
-						'cif_price' => str_replace(".", "", $dataArray[$i]['5']),
-					];
+	function load_price()
+	{
+		$post 				= $this->input->post();
+		$container 			= $post['container'];
+		$qty 				= $post['qty'];
+		$dest_area 			= $post['dest_area'];
+		$src_city 			= $post['src_city'];
+		$fee_type 			= $post['fee_type'];
+		$customer 			= $post['customer_id'];
+		$product_price 		= str_replace(",", "", $post['product_price']);
+		$ocean_freight 		= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
+		$thc 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
+		$custom_clearance 	= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
+		$trucking 			= $this->db->get_where('trucking_containers', ['area like' => "%$dest_area%", 'status' => '1'])->row();
+		if ($trucking) {
+			$trucking_dtl 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id, 'container_id' => $container])->row();
+		}
+		$surveyor			= $this->db->get_where('surveyors', ['qty_container' => $qty, 'status' => '1'])->row();
+		$fee 				= 0;
+		$fee_customer_id 	= null;
+		$fee_customer_value = 0;
+		$err_fee_customer 	= '';
 
-					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {
-						$n++;
-						$string 			= $drawing->getCoordinates();
-						$coordinate 		= PHPExcel_Cell::coordinateFromString($string)[1] - 1;
-						$image 				= $drawing->setCoordinates($string);
-						$desc 				= $drawing->getDescription();
-						if ($drawing instanceof PHPExcel_Worksheet_Drawing) {
-							$filename 		= $drawing->getPath();
-							$ext 			= $drawing->getExtension();
-							$temp_name 		= 'temp_' . date('YmdHis') . "_" . ($n) . "." . $ext;
-							copy($filename, FCPATH . 'assets/temp/' . $temp_name);
-						}
-						$data[$coordinate]['image'] = ($temp_name) ?: '';
-					}
+		if (isset($fee_type) && $fee_type == 'V') {
+			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
+			foreach ($fees as $f) {
+				if ($f->max_value >= $product_price) {
+					$fee = $f->fee;
+					break;
 				}
-				$log_import['msg'] = "Data has been imported.";
-				$log_import['count_data'] = "Total Data " . count($data);
-				$log_import['status'] = "Successfull!";
 			}
-
-			echo json_encode([
-				'log_import' => $log_import,
-				'data' => $data
-			]);
+		} else if (isset($fee_type) && $fee_type == 'C') {
+			$err_fee_customer 	= 'Fee Customer not available in this Customer.';
+			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+			if ($feeCust) {
+				$fee_customer_id 	= $feeCust->id;
+				$fee_customer_value = number_format($feeCust->fee_value);
+				$err_fee_customer 	= '';
+			}
 		}
+
+		$data = [
+			'ocean_freight' 	 => isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
+			'thc' 				 => isset($thc->cost_value) ? number_format($thc->cost_value) : 0,
+			'custom_clearance' 	 => isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value) : 0,
+			'trucking' 			 => isset($trucking_dtl) ? number_format($trucking_dtl->cost_value) : 0,
+			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
+			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
+			'fee' 				 => $fee,
+			'fee_customer_id' 	 => $fee_customer_id,
+			'fee_customer_value' => $fee_customer_value,
+			'err_fee_customer' 	 => $err_fee_customer,
+		];
+		echo json_encode($data);
 	}
 
-
-	function printout($id)
+	function load_storage()
 	{
-		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
+		$post 				= $this->input->post();
+		$days 				= ($post['days']) ?: 7;
+		$container 			= $post['container'];
+		$storage 			= $this->db->get_where('storages', ['day_stacking' => $days, 'status' => '1'])->row();
+
+		$storage_dtl 		= '';
+		if ($storage) {
+			$storage_dtl 	= $this->db->get_where('storage_details', ['storage_id' => $storage->id, 'container_id' => $container])->row();
+		}
+
+		$data = [
+			'storage' 	=> $storage_dtl
+		];
+		echo json_encode($data);
+	}
+
+	/* PRINT QUOTATION */
+	function print_all_in($id)
+	{
 		$this->auth->restrict($this->viewPermission);
-		$request 		= $this->db->get_where('view_check_hscodes', array('id' => $id))->row();
-		$details 		= $this->db->get_where('check_hscode_detail', array('check_hscode_id' => $id))->result();
-		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
-		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
-		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
-		$ArrHscode 		= [];
-		$ArrDocs 		= [];
-
-		foreach ($hscodes as $hs) {
-			$ArrHscode[$hs->origin_code] = $hs;
-		}
-		foreach ($hscodes_doc as $doc) {
-			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
-		}
-
-		$this->template->set([
-			'request' 		=> $request,
-			'details' 		=> $details,
-			'ArrHscode' 	=> $ArrHscode,
-			'current_ppn' 	=> $current_ppn,
-			'ArrDocs' 		=> $ArrDocs,
-		]);
-		$html = $this->template->load_view('print');
-		$mpdf->WriteHTML($html);
-		$mpdf->Output();
-	}
-
-
-	public function createQuotation($id)
-	{
-		$this->auth->restrict($this->addPermission);
-		$header 		= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4', 'setAutoTopMargin' => 'pad', 'autoMarginPadding' => 0]);
+		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
 		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
 		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
 		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
-		$details 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
 		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
 		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$lartas 		= $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
@@ -621,186 +636,60 @@ class Quotations extends Admin_Controller
 			'ArrHscode' 	=> $ArrHscode,
 			'ArrDocs' 		=> $ArrDocs,
 			'ArrPorts' 		=> $ArrPorts,
+			'ArrLartas' 	=> $ArrLartas,
 		];
 		$this->template->set($data);
-		$this->template->render('createQuotation');
+		$html = $this->template->load_view('print_all_in');
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
 	}
 
-	function load_price()
+	function print_apb($id)
 	{
-		$post 				= $this->input->post();
-		$container 			= $post['container'];
-		$qty 				= $post['qty'];
-		$dest_city 			= $post['dest_city'];
-		$src_city 			= $post['src_city'];
-		$fee_type 			= $post['fee_type'];
-		$product_price 		= str_replace(",", "", $post['product_price']);
+		$this->auth->restrict($this->viewPermission);
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4', 'setAutoTopMargin' => 'pad', 'autoMarginPadding' => 0]);
+		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
+		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
+		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
+		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
+		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
+		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$lartas 		= $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$ArrHscode 		= [];
+		$ArrDocs 		= [];
+		$ArrPorts 		= [];
 
-		$ocean_freight 		= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
-		$thc 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
-		$custom_clearance 	= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
-		$trucking 			= $this->db->get_where('trucking_containers', ['city_id' => $dest_city, 'status' => '1'])->row();
-		if ($trucking) {
-			$trucking_dtl 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id, 'container_id' => $container])->row();
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->origin_code] = $hs;
 		}
-		$surveyor			= $this->db->get_where('surveyors', ['qty_container' => $qty, 'status' => '1'])->row();
-		$fee = 0;
 
-		if (isset($fee_type) && $fee_type == 'V') {
-			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
-			foreach ($fees as $f) {
-				if ($f->max_value >= $product_price) {
-					$fee = $f->fee;
-					break;
-				}
-			}
+		foreach ($hscodes_doc as $doc) {
+			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		foreach ($ports as $port) {
+			$ArrPorts[$port->country_id][] = $port;
 		}
 
 		$data = [
-			'ocean_freight' 	=> isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
-			'thc' 				=> isset($thc->cost_value) ? number_format($thc->cost_value) : 0,
-			'custom_clearance' 	=> isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value) : 0,
-			'trucking' 			=> isset($trucking_dtl->cost_value) ? number_format($trucking_dtl->cost_value) : 0,
-			'surveyor' 			=> isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
-			'fee' 				=> $fee,
+			'header' 		=> $header,
+			'companies' 	=> $companies,
+			'ports' 		=> $ports,
+			'containers' 	=> $containers,
+			'cities' 		=> $cities,
+			'details' 		=> $details,
+			'ArrHscode' 	=> $ArrHscode,
+			'ArrDocs' 		=> $ArrDocs,
+			'ArrPorts' 		=> $ArrPorts,
+			'ArrLartas' 	=> $ArrLartas,
 		];
-		echo json_encode($data);
-	}
-
-	function load_storage()
-	{
-		$post 				= $this->input->post();
-		$days 				= ($post['days']) ?: 7;
-		$container 			= $post['container'];
-		$storage 			= $this->db->get_where('storages', ['day_stacking' => $days, 'status' => '1'])->row();
-
-		$storage_dtl 		= '';
-		if ($storage) {
-			$storage_dtl 	= $this->db->get_where('storage_details', ['storage_id' => $storage->id, 'container_id' => $container])->row();
-		}
-
-		$data = [
-			'storage' 	=> $storage_dtl
-		];
-		echo json_encode($data);
-	}
-
-	function saveQuotation()
-	{
-		$this->auth->restrict($this->managePermission);
-		$post = $this->input->post();
-		$data = $post;
-
-
-		$data['id'] 			= $this->Requests_model->generateIdQuotation();
-		$data['number'] 		= $this->Requests_model->generateQuotNumber();
-		$data['date'] 			= date("Y-m-d");
-		$data['ocean_freight'] 	= str_replace(",", "", $post['ocean_freight']);
-		$data['shipping'] 		= str_replace(",", "", $post['shipping']);
-		$data['storage'] 		= str_replace(",", "", $post['storage']);
-		$data['trucking'] 		= str_replace(",", "", $post['trucking']);
-		$data['surveyor'] 		= str_replace(",", "", $post['surveyor']);
-		$data['total_product'] 	= str_replace(",", "", $post['total_product']);
-		$data['handling'] 		= str_replace(",", "", $post['handling']);
-		$data['fee_lartas'] 	= str_replace(",", "", $post['fee_lartas']);
-		$data['fee_value'] 		= str_replace(",", "", $post['fee_value']);
-		// $detail 			= $post['detail'];
-
-
-		unset($data['detail']);
-		unset($data['deleteItem']);
-
-		$this->db->trans_begin();
-		$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
-		$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-		$this->db->insert("quotations", $data);
-
-		// if ($detail) {
-
-		// 	$dtlId =  ($this->Requests_model->getDetailId($data['id']));
-
-		// 	foreach ($detail as $dtl) {
-		// 		$dtl['check_hscode_id'] 	= $data['id'];
-		// 		$dtl['fob_price'] 			= str_replace(",", "", $dtl['fob_price']);
-		// 		$dtl['cif_price'] 			= str_replace(",", "", $dtl['cif_price']);
-
-		// 		if (isset($dtl['id']) && $dtl['id']) {
-		// 			$dtl['id'] 	= $dtl['id'];
-		// 		} else {
-		// 			$dtlId++;
-		// 			$dtl['id'] 	= $data['id'] . "-" . str_pad($dtlId, 4, "0", STR_PAD_LEFT);
-		// 		}
-
-		// 		if (isset($data['old_id']) && $data['old_id']) {
-		// 			$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
-		// 		}
-
-		// 		$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
-		// 		if (isset($dtl['image']) && $dtl['image']) {
-		// 			$root = FCPATH;
-		// 			if (!is_dir($root . 'assets/uploads/' . $data['id'])) {
-		// 				mkdir($root . 'assets/uploads/' . $data['id'], 0755);
-		// 				chmod($root . 'assets/uploads/' . $data['id'], 0755);
-		// 			}
-		// 			$explode 	= explode(".", $dtl['image']);
-		// 			$ext 		= $explode['1'];
-		// 			$imgName 	= 'img-' . $dtl['id'] . "." . $ext;
-
-		// 			if (file_exists($root . 'assets/temp/' . $dtl['image'])) {
-		// 				if (file_exists($root . 'assets/uploads/' . $data['id'] . '/' . $imgName)) {
-		// 					unlink($root . 'assets/uploads/' . $data['id'] . '/' . $imgName);
-		// 					rename($root . 'assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-		// 				} else {
-		// 					rename($root . 'assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-		// 				}
-		// 			} else {
-		// 				$ID = $data['id'];
-		// 				if (isset($data['old_id']) && $data['old_id']) {
-		// 					$ID 				= $data['old_id'];
-		// 				}
-		// 				if (file_exists($root . 'assets/uploads/' . $ID . '/' . $dtl['image'])) {
-		// 					copy($root . 'assets/uploads/' . $ID . '/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-		// 				}
-		// 			}
-		// 			$dtl['image'] = $imgName;
-		// 		}
-
-		// 		if ($check > 0) {
-		// 			$this->db->update('check_hscode_detail', $dtl, ['id' => $dtl['id']]);
-		// 		} else {
-		// 			$dtl['id'] = $data['id'] . "-" . str_pad($dtlId++, 4, "0", STR_PAD_LEFT);
-		// 			$this->db->insert('check_hscode_detail', $dtl);
-		// 		}
-		// 	}
-		// }
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$return	= array(
-				'msg'		=> 'Failed save data Requests HS Code.  Please try again.',
-				'status'	=> 0
-			);
-			$keterangan     = "FAILD save data Requests HS Code" . $data['id'];
-			$status         = 1;
-			$nm_hak_akses   = $this->addPermission;
-			$kode_universal = $data['id'];
-			$jumlah         = 1;
-			$sql            = $this->db->last_query();
-		} else {
-			$this->db->trans_commit();
-			$return	= array(
-				'msg'		=> 'Success Save data Requests HS Code.',
-				'status'	=> 1
-			);
-			$keterangan     = "SUCCESS save data Requests HS Code" . $data['id'];
-			$status         = 1;
-			$nm_hak_akses   = $this->addPermission;
-			$kode_universal = $data['id'];
-			$jumlah         = 1;
-			$sql            = $this->db->last_query();
-			$this->session->set_flashdata('msg', 'Success Save data Requests HS Code.');
-		}
-		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
-		echo json_encode($return);
+		$this->template->set($data);
+		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
+		$html = $this->template->load_view('print_apb');
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
 	}
 }

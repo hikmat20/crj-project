@@ -93,6 +93,15 @@
             </div>
         </div>
         <div class="form-group row">
+            <label for="dest_area" class="tx-dark tx-bold col-md-3 pd-x-0">Destination Area <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-7 px-0">
+                <div id="slWrDestArea" class="parsley-select">
+                    <select name="dest_area" id="dest_area" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrDestArea" data-parsley-errors-container="#errDescArea"></select>
+                </div>
+                <div id="errDescArea"></div>
+            </div>
+        </div>
+        <div class="form-group row">
             <label for="price_type" class="tx-dark tx-bold col-md-3 pd-x-0">FOB/ CFR/CIF <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-7 px-0">
                 <div id="slWrAmount" class="parsley-select">
@@ -199,6 +208,7 @@
             <label for="trucking" class="tx-dark tx-bold col-md-3 pd-x-0">Trucking <span class="text-dange tx-bold">*</span></label>
             <div class="col-md-7 px-0">
                 <input type="text" name="trucking" id="trucking" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+                <input type="hidden" name="trucking_id" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
             </div>
         </div>
     </div>

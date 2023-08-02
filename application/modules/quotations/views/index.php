@@ -17,6 +17,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
         <?php echo Template::message(); ?>
     </div>
 <?php endif; ?>
+
 <div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-between align-items-center">
     <?php if ($ENABLE_ADD) : ?>
         <div class=""></div>
@@ -48,7 +49,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                         <th class="desktop tablet text-center" width="50">Rev.</th>
                         <th class="desktop text-center no-sort" width="60">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="140">Opsi</th>
+                            <th class="desktop text-center no-sort" width="80">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -112,7 +113,8 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
 
         $(document).on('click', '.view', function(e) {
             var id = $(this).data('id');
-            $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Request Check HS Code")
+            var number = $(this).data('number');
+            $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Quotation [" + number + "]")
             $("#dialog-popup").modal();
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
             $("#save").addClass('d-none');

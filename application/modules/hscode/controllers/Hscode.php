@@ -56,6 +56,7 @@ class Hscode extends Admin_Controller
         OR origin_code LIKE '%$string%'
         OR `country_code` LIKE '%$string%'
         OR `country_name` LIKE '%$string%'
+        -- OR `product_name` LIKE '%$string%'
         OR `brand` LIKE '%$string%'
         OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%'
@@ -69,9 +70,10 @@ class Hscode extends Admin_Controller
             1 => 'local_code',
             2 => 'origin_code',
             3 => 'country_code',
-            4 => 'brand',
-            5 => 'description',
+            4 => 'description',
+            5 => 'brand',
             6 => 'status',
+            7 => 'modified_at',
         ];
 
         $sql .= ' ORDER BY ' . $columns_order_by[$column] . ' ' . $dir . ' ';
@@ -117,6 +119,7 @@ class Hscode extends Admin_Controller
             $nestedData[] = $row['description'];
             $nestedData[] = $row['brand'];
             $nestedData[] = $status[$row['status']];
+            $nestedData[] = $row['modified_at'];
             $nestedData[] = $buttons;
             $data[] = $nestedData;
             ++$urut1;

@@ -42,7 +42,8 @@
                             <?php if ($countries) {
                                 foreach ($countries as $country) { ?>
                                     <option value="<?= $country->id; ?>" <?= ($country->id == $hs->country_id) ? 'selected' : ''; ?>>
-                                        <?= $country->country_code . ' - ' . $country->name; ?></option>
+                                        <?= $country->country_code . ' - ' . $country->name; ?>
+                                    </option>
                             <?php }
                             } ?>
                         </select>
@@ -61,6 +62,14 @@
         </div>
 
         <div class="col-md-6">
+            <!-- <div class="form-group row">
+                <div class="col-md-3 tx-dark tx-bold">
+                    <label for="product_name">Product Name <span class="tx-danger">*</span></label>
+                </div>
+                <div class="col-md-8">
+                    <textarea class="form-control" required id="product_name" name="product_name" placeholder="Product Name"><?= isset($hs) ? $hs->product_name : ''; ?></textarea>
+                </div>
+            </div> -->
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <label for="description">Description <span class="tx-danger">*</span></label>
@@ -231,7 +240,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" name="bmad" id="bmad" class="form-control text-right" placeholder="0" value="<?= isset($hs) ? $hs->mbad : '0'; ?>">
+                        <input type="text" name="bmad" id="bmad" class="form-control text-right" placeholder="0" value="<?= isset($hs) ? $hs->bmad : '0'; ?>">
                         <div class="input-group-append wd-80">
                             <select class="custom-select select-not-search" name="unit_bmad">
                                 <option value=""></option>

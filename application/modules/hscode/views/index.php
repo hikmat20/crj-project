@@ -28,10 +28,12 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                         <th class="text-center desktop tablet mobile" width="30">No</th>
                         <th class="desktop tablet mobile tx-dark tx-bold">Local Code</th>
                         <th class="desktop tablet mobile">Origin Code</th>
-                        <th class="desktop tablet">Origin Name</th>
+                        <th class="desktop tablet">Origin</th>
+                        <!-- <th class="desktop tablet">Product Name</th> -->
                         <th class="desktop tablet" width="20%">Description</th>
                         <th class="desktop">Type</th>
-                        <th class="desktop text-center">Status</th>
+                        <th class="desktop text-center" width="60">Status</th>
+                        <th class="desktop text-center" width="100">Last Update</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th width="110" class="desktop text-center no-sort">Opsi</th>
                         <?php endif; ?>
@@ -43,10 +45,12 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                         <th>No</th>
                         <th>Local Code</th>
                         <th>Origin Code</th>
-                        <th>Origin Name</th>
+                        <th>Origin</th>
+                        <!-- <th>Product Name</th> -->
                         <th>Description</th>
                         <th>Type</th>
                         <th>Status</th>
+                        <th>Last Update</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>

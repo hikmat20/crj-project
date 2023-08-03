@@ -16,9 +16,9 @@
         <div class="col-sm-6 mg-b-20">
             <div class="row">
                 <div class="col-md-5 tx-dark tx-bold">
-                    <span>Local Code</span>
+                    <span>Indonesia Code</span>
                 </div>
-                <div class="col-md-7">:
+                <div class="col-md-7 tx-bold tx-dark">:
                     <?= isset($hs) && $hs->local_code ? $hs->local_code : null; ?>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                 <div class="col-md-5 tx-dark tx-bold">
                     <span>Origin Code</span>
                 </div>
-                <div class="col-md-7">:
+                <div class="col-md-7 tx-bold tx-dark">:
                     <?= isset($hs) && $hs->origin_code ? $hs->origin_code : ''; ?>
                 </div>
             </div>
@@ -50,6 +50,14 @@
         </div>
 
         <div class="col-md-6">
+            <!-- <div class="row">
+                <div class="col-md-5 tx-dark tx-bold">
+                    <span>Product Name</span>
+                </div>
+                <div class="col-md-7 tx-bold tx-dark">:
+                    <?= isset($hs) && $hs->product_name ? $hs->product_name : '-'; ?>
+                </div>
+            </div> -->
             <div class="row">
                 <div class="col-md-5 tx-dark tx-bold">
                     <span>Description</span>
@@ -131,7 +139,7 @@
                     <span>Cukai</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->cukai ? $hs->cukai : '0' . " " . (isset($hs->unit_cukai) ? $unit[$hs->unit_cukai] : ''); ?>
+                    <?= (isset($hs) && $hs->cukai ? $hs->cukai : '0') . (isset($hs->unit_cukai) ? $unit[$hs->unit_cukai] : ''); ?>
                 </div>
             </div>
         </div>
@@ -142,7 +150,7 @@
                     <span>BMAD</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->bmad ? $hs->bmad : '0' . " " . (isset($hs->unit_bmad) ? $unit[$hs->unit_bmad] : ''); ?>
+                    <?= (isset($hs) && $hs->bmad ? $hs->bmad : '0') . " " . (isset($hs->unit_bmad) ? $unit[$hs->unit_bmad] : '-'); ?>
                 </div>
             </div>
             <div class="row">
@@ -150,7 +158,7 @@
                     <span>BMTP</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->bmtp ? $hs->bmtp : '0' . " " . (isset($hs->unit_bmtp) ? $unit[$hs->unit_bmtp] : ''); ?>
+                    <?= (isset($hs) && $hs->bmtp ? $hs->bmtp : '0') .  (isset($hs->unit_bmtp) ? $unit[$hs->unit_bmtp] : ''); ?>
                 </div>
             </div>
             <div class="row">
@@ -158,7 +166,7 @@
                     <span>BM IM</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->bm_im ? $hs->bm_im : '0'; ?>%
+                    <?= (isset($hs) && $hs->bm_im) ? $hs->bm_im : '0'; ?>%
                 </div>
             </div>
             <div class="row">
@@ -166,7 +174,7 @@
                     <span>BK</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->bk ? $hs->bk : '0'; ?>%
+                    <?= (isset($hs) && $hs->bk) ? $hs->bk : '0'; ?>%
                 </div>
             </div>
             <div class="row">
@@ -174,7 +182,7 @@
                     <span>Tariff Dana Sawit</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->dana_sawit ? $hs->dana_sawit : '0'; ?>%
+                    <?= (isset($hs) && $hs->dana_sawit) ? $hs->dana_sawit : '0'; ?>%
                 </div>
             </div>
             <div class="row">
@@ -182,7 +190,7 @@
                     <span>Wajib Lapor DHE-SDA</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->dhe_sda ? $hs->dhe_sda : '0'; ?>%
+                    <?= (isset($hs) && $hs->dhe_sda) ? $hs->dhe_sda : '0'; ?>%
                 </div>
             </div>
             <div class="row">
@@ -190,7 +198,7 @@
                     <span>Status</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->status == '1' ? 'Active' : 'Inactive'; ?>
+                    <?= (isset($hs) && $hs->status == '1') ? 'Active' : 'Inactive'; ?>
                 </div>
             </div>
         </div>

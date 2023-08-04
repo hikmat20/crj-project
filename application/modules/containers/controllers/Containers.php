@@ -216,7 +216,7 @@ class Containers extends Admin_Controller
 		$id = $this->input->post('id');
 		$container = $this->db->get_where('containers')->row_array();
 		$data = [
-			'status' => 0,
+			'status' => '0',
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];

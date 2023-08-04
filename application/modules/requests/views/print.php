@@ -154,12 +154,16 @@
                 <th width="100" class="text-center">CIF Price</th>
                 <th width="120" class="text-center">Cost</th>
                 <th width="130">Other Cost</th>
-                <th width="">Docs. Requirement</th>
+                <th width="150">Docs. Requirement</th>
+                <th width="50">Image</th>
+                <th width="">Remarks</th>
             </tr>
         </thead>
         <tbody>
             <?php $n = 0;
-            if ($details) foreach ($details as $dtl) : $n++; ?>
+            $no_img = base_url('assets/no-image.jpg');
+            if ($details) foreach ($details as $dtl) : $n++;
+                $img = ($dtl->image) ? base_url('assets/uploads/' . $dtl->check_hscode_id . "/" . $dtl->image) : $no_img; ?>
                 <tr>
                     <td class="text-center"><?= $n; ?></td>
                     <td style="font-family: sun-exta"><?= $dtl->product_name; ?></td>
@@ -177,23 +181,63 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
-                            <p><small>PPH Non API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_napi) ?: '0'; ?>%</small></p>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->ppn_bm) > 0) : ?>
+                            <p><small class="d-block">PPn BM : <?= ($ArrHscode[$dtl->origin_hscode]->ppn_bm) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->cukai) > 0) : ?>
+                            <p><small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bmad) > 0) : ?>
+                            <p><small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bmtp) > 0) : ?>
+                            <p><small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bm_im) > 0) : ?>
+                            <p><small class="d-block">BM IM : <?= ($ArrHscode[$dtl->origin_hscode]->bm_im) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->pph_napi) > 0) : ?>
+                            <p><small class="d-block">PPH (NON-API) : <?= ($ArrHscode[$dtl->origin_hscode]->pph_napi) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bk) > 0) : ?>
+                            <p><small class="d-block">BK : <?= ($ArrHscode[$dtl->origin_hscode]->bk) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->dana_sawit) > 0) : ?>
+                            <p><small class="d-block">Tariff Dana Sawit : <?= ($ArrHscode[$dtl->origin_hscode]->dana_sawit) ?: '0'; ?>%</small></p>
+                        <?php endif; ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->dhe_sda) > 0) : ?>
+                            <p><small class="d-block">Wajib Lapor DHE-SDA : <?= ($ArrHscode[$dtl->origin_hscode]->dhe_sda) ?: '0'; ?>%</small></p>
                         <?php endif; ?>
                     </td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode]->id)) :
                             $idHs = $ArrHscode[$dtl->origin_hscode]->id;
                         ?>
-                            <?php if (isset($ArrDocs[$idHs])) : ?>
-                                <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
-                                    <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                                        <p>- <small><?= $d->name ?></small></p>
-                                    <?php endforeach; ?>
+                            <ul>
+                                <?php if (isset($ArrDocs[$idHs])) : ?>
+                                    <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 <?php endif; ?>
-                            <?php endif; ?>
+                            </ul>
                         <?php endif; ?>
                     </td>
+                    <td><img src="<?= $img; ?>" width="50"></td>
+                    <td><?= $dtl->remarks; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

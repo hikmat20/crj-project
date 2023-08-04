@@ -71,27 +71,29 @@
                 <th width="" class="">Specification</th>
                 <th width="100" class="text-center">Origin HS Code</th>
                 <th width="100" class="text-center">Indonesia HS Code</th>
+                <th class="text-right">FOB Price</th>
+                <th class="text-right">CIF Price</th>
                 <th width="120">Cost</th>
                 <th width="130">Other Cost</th>
                 <th width="200">Docs. Requirement</th>
-                <th width="150">Remarks</th>
-                <!-- <th width="80" class="text-center">Image</th> -->
+                <th width="80" class="text-center">Image</th>
+                <th width="100">Remarks</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="tx-dark">
             <?php $n = 0;
-            if ($details) foreach ($details as $dtl) : $n++; ?>
+            $no_img = base_url('assets/no-image.jpg');
+            if ($details) foreach ($details as $dtl) : $n++;
+                $img = ($dtl->image) ? base_url('assets/uploads/' . $dtl->check_hscode_id . "/" . $dtl->image) : $no_img;
+            ?>
                 <tr>
-                    <td class="text-center"><?= $n; ?>
-                    </td>
-                    <td><?= $dtl->product_name; ?>
-                    </td>
-                    <td><?= $dtl->specification; ?>
-                    </td>
-                    <td class="text-center"><?= $dtl->origin_hscode; ?>
-                    </td>
-                    <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?>
-                    </td>
+                    <td class="text-center"><?= $n; ?></td>
+                    <td><?= $dtl->product_name; ?></td>
+                    <td><?= $dtl->specification; ?></td>
+                    <td class="text-center"><?= $dtl->origin_hscode; ?></td>
+                    <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
+                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price) : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price) : '-'; ?></td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
@@ -101,31 +103,31 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->ppn_bm)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->ppn_bm) > 0) : ?>
                             <small class="d-block">PPn BM : <?= ($ArrHscode[$dtl->origin_hscode]->ppn_bm) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->cukai)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->cukai) > 0) : ?>
                             <small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmad)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bmad) > 0) : ?>
                             <small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmtp)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bmtp) > 0) : ?>
                             <small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bm_im)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bm_im) > 0) : ?>
                             <small class="d-block">BM IM : <?= ($ArrHscode[$dtl->origin_hscode]->bm_im) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->pph_napi)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->pph_napi) > 0) : ?>
                             <small class="d-block">PPH (NON-API) : <?= ($ArrHscode[$dtl->origin_hscode]->pph_napi) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bk)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->bk) > 0) : ?>
                             <small class="d-block">BK : <?= ($ArrHscode[$dtl->origin_hscode]->bk) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->dana_sawit)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->dana_sawit) > 0) : ?>
                             <small class="d-block">Tariff Dana Sawit : <?= ($ArrHscode[$dtl->origin_hscode]->dana_sawit) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->dhe_sda)) : ?>
+                        <?php if (($ArrHscode[$dtl->origin_hscode]->dhe_sda) > 0) : ?>
                             <small class="d-block">Wajib Lapor DHE-SDA : <?= ($ArrHscode[$dtl->origin_hscode]->dhe_sda) ?: '0'; ?>%</small>
                         <?php endif; ?>
                     </td>
@@ -153,9 +155,10 @@
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 <?php endif; ?>
-                            <?php endif; ?>
                             </ul>
+                        <?php endif; ?>
                     </td>
+                    <td><img src="<?= $img; ?>" width="50"></td>
                     <td><?= $dtl->remarks; ?></td>
                 </tr>
             <?php endforeach; ?>

@@ -458,8 +458,8 @@ class Requests extends Admin_Controller
 		$config['upload_path'] 		= './assets/temp/';
 		$config['allowed_types'] 	= 'gif|jpg|png|jpeg';
 		$config['max_size']     	= '2048';
-		$config['max_width'] 		= '1024';
-		$config['max_height'] 		= '1024';
+		$config['max_width'] 		= '2048';
+		$config['max_height'] 		= '2048';
 		$config['file_name'] 		= 'temp_' . date('YmdHis') . "_" . "0";
 
 		$this->load->library('upload', $config);
@@ -523,9 +523,9 @@ class Requests extends Admin_Controller
 					$data[$i] = [
 						'product_name' 	=> $dataArray[$i]['1'],
 						'specification' => $dataArray[$i]['2'],
-						'origin_hscode' => str_replace(".", "", $dataArray[$i]['3']),
-						'fob_price' => str_replace(".", "", $dataArray[$i]['4']),
-						'cif_price' => str_replace(".", "", $dataArray[$i]['5']),
+						'origin_hscode' => trim(str_replace(".", "", $dataArray[$i]['3'])),
+						'fob_price' => trim(str_replace(".", "", $dataArray[$i]['4'])),
+						'cif_price' => trim(str_replace(".", "", $dataArray[$i]['5'])),
 					];
 
 					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {

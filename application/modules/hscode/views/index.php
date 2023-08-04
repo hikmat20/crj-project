@@ -34,9 +34,7 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                         <th class="desktop">Type</th>
                         <th class="desktop text-center" width="60">Status</th>
                         <th class="desktop text-center" width="100">Last Update</th>
-                        <?php if ($ENABLE_MANAGE) : ?>
-                            <th width="110" class="desktop text-center no-sort">Opsi</th>
-                        <?php endif; ?>
+                        <th width="110" class="desktop text-center no-sort">Opsi</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -51,9 +49,7 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                         <th>Type</th>
                         <th>Status</th>
                         <th>Last Update</th>
-                        <?php if ($ENABLE_MANAGE) : ?>
-                            <th>Opsi</th>
-                        <?php endif; ?>
+                        <th>Opsi</th>
                     </tr>
                 </tfoot>
             </table>

@@ -125,6 +125,18 @@
                                             <small class="d-block">- <?= $d->name ?></small>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
+
+                                    <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                                            <small class="d-block">- <?= $d->name ?></small>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                                            <small class="d-block">- <?= $d->name ?></small>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </td>

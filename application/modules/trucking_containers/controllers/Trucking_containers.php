@@ -242,17 +242,22 @@ class Trucking_containers extends Admin_Controller
 		}
 
 		$AreaData = [];
-		$check_exits = $this->db->get_where('trucking_containers', ['city_id' => $post['city_id']])->result();
-		if ($check_exits) foreach ($check_exits as $trucking) {
+		$check_exits = $this->db->get_where('trucking_containers', ['city_id' => $post['city_id'], 'status' => '1'])->result();
+
+		$AreaDt = [];
+		if ($check_exits) foreach ($check_exits as $k => $trucking) {
 			if ($trucking->area) {
-				$AreaData = array_merge(json_decode($trucking->area));
+				$AreaData = json_decode($trucking->area);
+				foreach ($AreaData as $are) {
+					$AreaDt[] = $are;
+				}
 			}
 		}
 
 		$n = 0;
 		if (isset($post['area']) && $post['area']) {
 			foreach ($post['area'] as $a) {
-				if (in_array($a, $AreaData)) {
+				if (in_array(strtoupper($a), $AreaDt)) {
 					$n++;
 				}
 			}
@@ -260,7 +265,7 @@ class Trucking_containers extends Admin_Controller
 
 		if ($n > 0) {
 			$return	= array(
-				'msg'		=> 'Area name already registered!',
+				'msg'		=> 'Regional and Area name already registered!',
 				'status'	=> 0
 			);
 			echo json_encode($return);

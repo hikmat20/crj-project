@@ -29,16 +29,19 @@
     </div>
     <div class="form-group row">
         <div class="col-md-4">
-            <label for="area" class="tx-dark tx-bold">Area</label>
+            <label for="area" class="tx-dark tx-bold">Area <span class="tx-danger">*</span></label>
         </div>
         <div class="col-md-7" id="city">
             <!-- <input name="area" id="area" class="form-control" placeholder="Area" value="<?= isset($trucking->area) ? $trucking->area : ''; ?>"> -->
-            <select name="area[]" multiple id="area" class="form-control select-tags">
-                <!-- <option value=""></option> -->
-                <?php if ($trucking->area) foreach (json_decode($trucking->area) as $area) : ?>
-                    <option value="<?= $area; ?>" <?= in_array(ucfirst($area), $ArrArea) ? 'selected' : '' ?>><?= $area; ?></option>
-                <?php endforeach; ?>
-            </select>
+            <div id="slWrapperArea" class="parsley-select">
+                <select name="area[]" multiple id="area" class="form-control select-tags" required data-parsley-class-handler="#slWrapperArea" data-parsley-errors-container="#slErrorArea">
+                    <!-- <option value=""></option> -->
+                    <?php if ($trucking->area) foreach (json_decode($trucking->area) as $area) : ?>
+                        <option value="<?= $area; ?>" <?= in_array(ucfirst($area), $ArrArea) ? 'selected' : '' ?>><?= $area; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div id="slErrorArea"></div>
         </div>
     </div>
     <h5 class="tx-dark tx-bold">Detail</h5>

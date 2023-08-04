@@ -81,7 +81,7 @@ class Storages extends Admin_Controller
 		/* Button */
 		$html = '';
 		$ArrDtl = [];
-		$details = $this->db->get_where('view_storage_details')->result();
+		$details = $this->db->get_where('view_storage_details', ['status' => '1'])->result();
 		foreach ($details as $dtl) {
 			$ArrDtl[$dtl->storage_id][] = $dtl;
 		}

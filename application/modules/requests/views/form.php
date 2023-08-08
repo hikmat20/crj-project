@@ -104,7 +104,7 @@
 							<div class="col-md-6">
 								<div class="form-group row">
 									<div class="col-md-4">
-										<label for="origin_country_id" class="tx-dark tx-bold">Origin <span class="tx-danger">*</span></label>
+										<label for="country_id" class="tx-dark tx-bold">Origin <span class="tx-danger">*</span></label>
 									</div>
 									<div class="col-md-7">
 										<div id="slWrapperCountry" class="parsley-select">
@@ -117,6 +117,25 @@
 											</select>
 										</div>
 										<div id="errCountry"></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group row">
+									<div class="col-md-4">
+										<label for="currency" class="tx-dark tx-bold">Currency <span class="tx-danger">*</span></label>
+									</div>
+									<div class="col-md-7">
+										<div id="slWrapperCurrency" class="parsley-select">
+											<?php $default = '45'; ?>
+											<select id="currency" name="currency" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCurrency" data-parsley-errors-container="#errCurrency">
+												<option value=""></option>
+												<?php foreach ($currency as $cur) : ?>
+													<option value="<?= $cur->code; ?>" <?= (isset($request) && $request->currency == $cur->code) ? 'selected' : (($default == $country->id) ? 'selected' : ''); ?>><?= $cur->code . " - " . $cur->name; ?></option>
+												<?php endforeach; ?>
+											</select>
+										</div>
+										<div id="errCurrency"></div>
 									</div>
 								</div>
 							</div>
@@ -139,13 +158,14 @@
 							<thead class="bg-light">
 								<tr>
 									<th class="text-center">No</th>
-									<th width="35%">Product Name</th>
+									<th width="">Product Name</th>
 									<th class="text-center">Specification</th>
-									<th class="text-center">Origin HS Code</th>
-									<th class="text-center">FOB Price</th>
-									<th class="text-center">CIF Price</th>
-									<th class="text-center" width="100">Photo</th>
-									<th class="text-center" width="80">Opsi</th>
+									<th class="text-center" width="150">Origin HS Code</th>
+									<th class="text-center" width="50">Curr ency</th>
+									<th class="text-center" width="140">FOB Price</th>
+									<th class="text-center" width="140">CIF Price</th>
+									<th class="text-center" width="80">Photo</th>
+									<th class="text-center" width="30">Opsi</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -160,8 +180,9 @@
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][product_name]" value="<?= $dtl->product_name; ?>" placeholder="Product Name"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][specification]" value="<?= $dtl->specification; ?>" placeholder="Specification"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>" placeholder="Origin HS Code"></td>
-										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][fob_price]" value="<?= isset($dtl->fob_price) ? number_format($dtl->fob_price) : '-'; ?>" placeholder="0"></td>
-										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][cif_price]" value="<?= isset($dtl->cif_price) ? number_format($dtl->cif_price) : '-'; ?>" placeholder="0"></td>
+										<td class="text-center"><span class="symbol"><?= (isset($request->currency) && $request->currency) ? $symbol[$request->currency] : '-'; ?></span></td>
+										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][fob_price]" value="<?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?>" placeholder="0"></td>
+										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][cif_price]" value="<?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?>" placeholder="0"></td>
 										<td class="text-center">
 											<img id="preview_<?= $n; ?>" src="<?= $image; ?>" ondblclick="$('#image_<?= $n; ?>').click()" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
 											<input type="hidden" id="img_<?= $n; ?>" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
@@ -226,6 +247,11 @@
 	</div>
 </div>
 <script type="text/javascript">
+	$(document).on('change', 'select', function() {
+		// alert(customer_id)
+		$(this).parsley().validate();
+	})
+
 	$(document).on('change', '#customer_id', function() {
 		let customer_id = $(this).val();
 		// alert(customer_id)
@@ -294,10 +320,16 @@
 						}
 						let n = $('table#listHscode tbody tr').length;
 						let image, img
+
+						let currency = $('#currency').val()
+						let ArrCurrency = <?= json_encode($currency); ?>;
+						let arr = [];
+						for (var i = 0; i < ArrCurrency.length; i++) {
+							arr[ArrCurrency[i].code] = ArrCurrency[i].symbol;
+						}
+
 						$.each(result.data, function(i, vl) {
 							n++;
-							console.log(vl);
-							console.log(i);
 							image = vl.image ? '<?= base_url('assets/temp/') ?>' + vl.image : '<?= base_url('assets/no-image.jpg'); ?>'
 							img = (vl.image) ? vl.image : ''
 							$('table#listHscode tbody').append(`
@@ -306,6 +338,7 @@
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control" value="` + vl.product_name + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
+								<td class="text-center"><span class="symbol">` + arr[currency] + `</span></td>
 								<td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][fob_price]" class="form-control" value="` + vl.fob_price + `" placholder="0"></td>
 								<td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][cif_price]" class="form-control" value="` + vl.cif_price + `" placholder="0"></td>
 								<td class="text-center">
@@ -325,6 +358,12 @@
 
 	$(document).on('click', '#addItem', function() {
 		let n = $('table#listHscode tbody tr').length + 1
+		let currency = $('#currency').val();
+		let ArrCurrency = <?= json_encode($currency); ?>;
+		let arr = [];
+		for (var i = 0; i < ArrCurrency.length; i++) {
+			arr[ArrCurrency[i].code] = ArrCurrency[i].symbol;
+		}
 		image = '<?= base_url('assets/no-image.jpg'); ?>'
 		$('table#listHscode tbody').append(`
 			<tr class="row-data" data-row="` + n + `">
@@ -332,6 +371,7 @@
 				<td><input type="text" placeholder="Product Name" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
 				<td><input type="text" placeholder="Specification" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
 				<td><input type="text" placeholder="HS Code" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
+				<td class="text-center "><span class="symbol">` + arr[currency] + `</span></td>
 				<td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][fob_price]" class="form-control"></td>
 				<td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][cif_price]" class="form-control"></td>
 				<td class="text-center">
@@ -341,6 +381,18 @@
 				</td>
 				<td class="text-center"><button type="button" data-row="` + n + `" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 			</tr>`)
+	})
+
+	$(document).on('change', '#currency', function() {
+		let currency = $(this).val()
+		let ArrCurrency = <?= json_encode($currency); ?>;
+		let arr = [];
+		for (var i = 0; i < ArrCurrency.length; i++) {
+			arr[ArrCurrency[i].code] = ArrCurrency[i].symbol;
+		}
+		$('.symbol').each(function() {
+			$(this).text(arr[currency])
+		})
 	})
 
 	$(document).on('click', '#removeAll', function() {
@@ -446,7 +498,7 @@
 
 	$(document).ready(function() {
 		$(document).on('input', '.number-format', function() {
-			$(this).mask("#,##0", {
+			$(this).mask("#,##0.00", {
 				reverse: true
 			})
 		});
@@ -464,14 +516,16 @@
 						var project_name = $('#project_name').parsley();
 						var marketing_name = $('#marketing_name').parsley();
 						var country_id = $('#country_id').parsley();
+						var currency = $('#currency').parsley();
 
-						if (customer_id.isValid() && project_name.isValid() && marketing_name.isValid() && country_id.isValid()) {
+						if (customer_id.isValid() && project_name.isValid() && marketing_name.isValid() && country_id.isValid() && currency.isValid()) {
 							return true;
 						} else {
 							customer_id.validate();
 							project_name.validate();
 							marketing_name.validate();
 							country_id.validate();
+							currency.validate();
 						}
 					}
 

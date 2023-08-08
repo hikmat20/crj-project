@@ -17,18 +17,19 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         <?php echo Template::message(); ?>
     </div>
 <?php endif; ?>
+
 <div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-between align-items-center">
     <?php if ($ENABLE_ADD) : ?>
         <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a>
-        <div class="right">
-            <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CHK" title="Checked">Checked</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button>
-        </div>
     <?php endif; ?>
+    <div class="right">
+        <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
+        <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
+        <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CHK" title="Checked">Checked</button>
+        <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
+        <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
+        <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button>
+    </div>
 </div>
 
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
@@ -39,7 +40,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
-                        <th class="desktop mobile tablet tx-bold tx-dark tx-center">Number</th>
+                        <th class="desktop mobile tablet tx-dark tx-center">Number</th>
                         <th class="desktop mobile tablet tx-dark tx-center">Project Name</th>
                         <th class="desktop mobile tablet text-center" width="110">Date Request</th>
                         <th class="desktop tablet text-center">Origin</th>

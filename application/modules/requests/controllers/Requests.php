@@ -18,7 +18,7 @@ class Requests extends Admin_Controller
 	protected $addPermission  	= 'Requests.Add';
 	protected $managePermission = 'Requests.Manage';
 	protected $deletePermission = 'Requests.Delete';
-
+	protected $currency;
 	public function __construct()
 	{
 		parent::__construct();
@@ -30,7 +30,7 @@ class Requests extends Admin_Controller
 		));
 		$this->template->title('Requests HS Code');
 		$this->template->page_icon('far fa-list-alt');
-
+		$this->currency = $this->db->get('currency')->result();
 		date_default_timezone_set('Asia/Bangkok');
 	}
 
@@ -162,27 +162,36 @@ class Requests extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$customers = $this->db->get_where('customers', ['status' => '1'])->result();
 		$countries = $this->db->get_where('countries')->result();
+
 		$this->template->set([
-			'subtitle' => 'Create Request HS Code',
+			'subtitle' 	=> 'Create Request HS Code',
 			'customers' => $customers,
 			'countries' => $countries,
+			'currency' 	=> $this->currency,
 		]);
+
 		$this->template->render('form');
 	}
 
 	public function edit($id)
 	{
 		$this->auth->restrict($this->managePermission);
-		$request 	= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
-		$dtlRequest = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
-		$countries 	= $this->db->get_where('countries')->result();
+		$request 			= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
+		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$customers 			= $this->db->get_where('customers', ['status' => '1'])->result();
+		$countries 			= $this->db->get_where('countries')->result();
+		$symbol = [];
+		foreach ($this->currency as $cur) {
+			$symbol[$cur->code] = $cur->symbol;
+		}
 		$data = [
-			'subtitle' 	=> 'Edit Request HS Code',
-			'request' 	=> $request,
-			'customers' => $customers,
-			'countries' => $countries,
-			'dtlRequest' => $dtlRequest,
+			'subtitle' 		=> 'Edit Request HS Code',
+			'request' 		=> $request,
+			'customers' 	=> $customers,
+			'countries' 	=> $countries,
+			'dtlRequest' 	=> $dtlRequest,
+			'currency' 		=> $this->currency,
+			'symbol' 		=> $symbol,
 		];
 		$this->template->set($data);
 		$this->template->render('form');
@@ -222,6 +231,7 @@ class Requests extends Admin_Controller
 		$employee 			= $this->db->get_where('employees')->result_array();
 		$ArrHscode 			= [];
 		$ArrDocs 			= [];
+		$ArrCurrency 			= [];
 		$ArrCountry 		= array_column($countries, 'name', 'id');
 		$ArrCountryCode 	= array_column($countries, 'country_code', 'id');
 		$ArrCustomer 		= array_column($customers, 'customer_name', 'id_customer');
@@ -235,6 +245,10 @@ class Requests extends Admin_Controller
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
 		}
 
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
+
 		$this->template->set([
 			'request' 			=> $request,
 			'dtlRequest' 		=> $dtlRequest,
@@ -246,6 +260,7 @@ class Requests extends Admin_Controller
 			'ArrCountry' 		=> $ArrCountry,
 			'ArrCountryCode' 	=> $ArrCountryCode,
 			'ArrCustomer' 		=> $ArrCustomer,
+			'currency' 			=> $ArrCurrency,
 		]);
 		$this->template->render('view');
 	}
@@ -303,6 +318,7 @@ class Requests extends Admin_Controller
 				$dtl['check_hscode_id'] 	= $data['id'];
 				$dtl['fob_price'] 			= str_replace(",", "", $dtl['fob_price']);
 				$dtl['cif_price'] 			= str_replace(",", "", $dtl['cif_price']);
+				$dtl['origin_hscode'] 		= trim(str_replace(['-', '.'], "", $dtl['origin_hscode']));
 
 				if (isset($dtl['id']) && $dtl['id']) {
 					$dtl['id'] 	= $dtl['id'];
@@ -318,10 +334,12 @@ class Requests extends Admin_Controller
 				$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
 				if (isset($dtl['image']) && $dtl['image']) {
 					$root = FCPATH;
+
 					if (!is_dir($root . 'assets/uploads/' . $data['id'])) {
 						mkdir($root . 'assets/uploads/' . $data['id'], 0755);
 						chmod($root . 'assets/uploads/' . $data['id'], 0755);
 					}
+
 					$explode 	= explode(".", $dtl['image']);
 					$ext 		= $explode['1'];
 					$imgName 	= 'img-' . $dtl['id'] . "." . $ext;
@@ -523,9 +541,9 @@ class Requests extends Admin_Controller
 					$data[$i] = [
 						'product_name' 	=> $dataArray[$i]['1'],
 						'specification' => $dataArray[$i]['2'],
-						'origin_hscode' => trim(str_replace(".", "", $dataArray[$i]['3'])),
-						'fob_price' => trim(str_replace(".", "", $dataArray[$i]['4'])),
-						'cif_price' => trim(str_replace(".", "", $dataArray[$i]['5'])),
+						'origin_hscode' => trim(str_replace(['-', '.'], "", $dataArray[$i]['3'])),
+						'fob_price' => trim($dataArray[$i]['4']),
+						'cif_price' => trim($dataArray[$i]['5']),
 					];
 
 					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {
@@ -564,14 +582,20 @@ class Requests extends Admin_Controller
 		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
 		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
 		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
-
+		$ArrCurrency 	= [];
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
 		}
+
 		foreach ($hscodes_doc as $doc) {
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
 		}
 
 		$this->template->set([
@@ -579,8 +603,10 @@ class Requests extends Admin_Controller
 			'details' 		=> $details,
 			'ArrHscode' 	=> $ArrHscode,
 			'current_ppn' 	=> $current_ppn,
-			'ArrDocs' 		=> $ArrDocs,
+			'ArrDocs' 			=> $ArrDocs,
+			'currency' 		=> $ArrCurrency,
 		]);
+
 		$html = $this->template->load_view('print');
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();

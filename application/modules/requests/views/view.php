@@ -56,7 +56,15 @@
                     <label for="description" class="tx-dark tx-bold">Description</label>
                 </div>
                 <div class="col-md-7">:
-                    <?= (isset($request) && $request->description) ? $request->description : null; ?>
+                    <?= (isset($request) && $request->description) ? $request->description : '-'; ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="currency" class="tx-dark tx-bold">Currency</label>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>
                 </div>
             </div>
         </div>
@@ -74,6 +82,7 @@
                 <th width="20%">Product Name</th>
                 <th class="text-center">Specification</th>
                 <th class="text-center">Origin HS Code</th>
+                <th class="text-center" width="30">Curr</th>
                 <th class="text-right">FOB Price</th>
                 <th class="text-right">CIF Price</th>
                 <?php if ($request->status == 'CHK') : ?>
@@ -86,7 +95,7 @@
                 <th width="100">Remarks</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="tx-dark">
             <?php $n = 0;
             if (isset($dtlRequest)) foreach ($dtlRequest as $dtl) : $n++;
                 $image = $dtl->image ? base_url('/assets/uploads/' . $dtl->check_hscode_id . "/") . $dtl->image : base_url('assets/no-image.jpg');
@@ -96,8 +105,9 @@
                     <td><?= $dtl->product_name; ?></td>
                     <td><?= $dtl->specification; ?></td>
                     <td><?= $dtl->origin_hscode; ?></td>
-                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price) : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price) : '-'; ?></td>
+                    <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
                     <?php if ($request->status == 'CHK') : ?>
                         <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
                         <td>

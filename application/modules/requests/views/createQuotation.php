@@ -308,7 +308,7 @@
                 <th class="text-center">CFR/CIF</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="tx-dark">
             <?php $n = $totalFOB = $totalPPH = $totalCIF = $totalBM = $gtotalBM = $gtotalPPH = 0;
             $no_image = base_url('assets/no-image.jpg');
             if ($details) foreach ($details as $dt) : $n++;

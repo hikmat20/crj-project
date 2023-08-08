@@ -43,10 +43,10 @@ table.dataTable thead .sorting_asc,
 }
 
 
-table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before {
-    /* top: 11px; */
+/* table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before {
+    top: 11px;
     line-height: 17px;
-}
+} */
 
 table .dataTables_wrapper .dataTable_processing {
     height: 90% !important;

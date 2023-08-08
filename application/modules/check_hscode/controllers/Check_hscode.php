@@ -18,7 +18,7 @@ class Check_hscode extends Admin_Controller
 	protected $addPermission  	= 'Check_hscode.Add';
 	protected $managePermission = 'Check_hscode.Manage';
 	protected $deletePermission = 'Check_hscode.Delete';
-
+	protected $currency;
 	public function __construct()
 	{
 		parent::__construct();
@@ -37,6 +37,7 @@ class Check_hscode extends Admin_Controller
 			'ENABLE_VIEW'  		=> has_permission('Check_hscode.View'),
 			'ENABLE_DELETE'  	=> has_permission('Check_hscode.Delete'),
 		];
+		$this->currency = $this->db->get('currency')->result();
 		$this->template->set($perm);
 	}
 
@@ -58,6 +59,7 @@ class Check_hscode extends Admin_Controller
         FROM view_check_hscodes, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`customer_name` LIKE '%$string%'
         OR `project_name` LIKE '%$string%'
+        OR `number` LIKE '%$string%'
         OR `date` LIKE '%$string%'
         OR `employee_name` LIKE '%$string%'
         OR `revision_count` LIKE '%$string%'
@@ -70,16 +72,18 @@ class Check_hscode extends Admin_Controller
 		$columns_order_by = array(
 			0 => 'num',
 			1 => 'customer_name',
-			2 => 'project_name',
-			3 => 'date',
-			4 => 'qty',
-			5 => 'employee_name',
-			6 => 'last_checked_at',
+			2 => 'number',
+			3 => 'project_name',
+			4 => 'date',
+			5 => 'qty',
+			6 => 'employee_name',
+			7 => 'last_checked_at',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
 		$sql .= " LIMIT " . $start . " ," . $length . " ";
 		$query  = $this->db->query($sql);
+
 
 
 		$data  = array();
@@ -121,6 +125,7 @@ class Check_hscode extends Admin_Controller
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['customer_name'];
+			$nestedData[]  = $row['number'];
 			$nestedData[]  = $row['project_name'];
 			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
 			$nestedData[]  = $row['qty'];
@@ -265,7 +270,11 @@ class Check_hscode extends Admin_Controller
 		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
+		$ArrCur 			= [];
 
+		foreach ($this->currency as $cur) {
+			$ArrCur[$cur->code] = $cur;
+		}
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
 		}
@@ -279,6 +288,8 @@ class Check_hscode extends Admin_Controller
 			'ArrHscode' 	=> $ArrHscode,
 			'current_ppn' 	=> $current_ppn,
 			'ArrDocs' 		=> $ArrDocs,
+			'currency' 		=> $ArrCur,
+
 		]);
 		$this->template->render('form');
 	}
@@ -338,6 +349,12 @@ class Check_hscode extends Admin_Controller
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
 		}
 
+		$symbol 			= [];
+
+		foreach ($this->currency as $cur) {
+			$symbol[$cur->code] = $cur->symbol;
+		}
+
 		$this->template->set([
 			'request' 			=> $request,
 			'details' 			=> $details,
@@ -347,6 +364,8 @@ class Check_hscode extends Admin_Controller
 			'ArrCountry' 		=> $ArrCountry,
 			'ArrCountryCode' 	=> $ArrCountryCode,
 			'ArrCustomer' 		=> $ArrCustomer,
+			'currency' 			=> $this->currency,
+			'symbol' 			=> $symbol,
 		]);
 		$this->template->render('view');
 	}
@@ -433,6 +452,11 @@ class Check_hscode extends Admin_Controller
 		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
+		$ArrCurrency 	= [];
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
 
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
@@ -447,6 +471,7 @@ class Check_hscode extends Admin_Controller
 			'ArrHscode' 	=> $ArrHscode,
 			'current_ppn' 	=> $current_ppn,
 			'ArrDocs' 		=> $ArrDocs,
+			'currency' 		=> $ArrCurrency,
 		]);
 		$html = $this->template->load_view('print');
 		$mpdf->WriteHTML($html);

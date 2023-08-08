@@ -43,7 +43,7 @@
                     <label for="marketing_name" class="tx-dark tx-bold">Marketing</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" placeholder="-">
+                    <input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->employee_name : ''; ?>" placeholder="-">
                     <input type="hidden" required name="marketing_id" id="marketing_id" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" readonly>
                 </div>
             </div>
@@ -61,6 +61,14 @@
                 </div>
                 <div class="col-md-7">
                     <textarea type="text" readonly class="form-control" id="description" name="description" placeholder="Description"><?= (isset($request) && $request->description) ? $request->description : null; ?></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="currency" class="tx-dark tx-bold">Currency</label>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" readonly class="form-control" id="currency" name="currency" placeholder="-" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>">
                 </div>
             </div>
         </div>

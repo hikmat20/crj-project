@@ -20,23 +20,25 @@
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
-                        <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark" width="200">Customer Name</th>
+                        <th class="desktop mobile tablet tx-dark">Number</th>
                         <th class="desktop tablet text-center">Project Name</th>
-                        <th class="desktop mobile tablet text-center" width="110">Date Request</th>
+                        <th class="desktop tablet text-center" width="110">Date Request</th>
                         <th class="desktop text-center" width="60">Qty</th>
-                        <th class="desktop text-center" width="150">Marketing</th>
+                        <th class="desktop text-center" width="100">Marketing</th>
                         <th class="desktop text-center no-sort" width="60">Revision</th>
                         <th class="desktop text-center" width="110">Last Checked</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="150">Opsi</th>
+                            <th class="desktop text-center no-sort" width="">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody class="tx-dark"></tbody>
                 <tfoot>
                     <tr>
                         <th>No</th>
                         <th>Customer Name</th>
+                        <th>Number</th>
                         <th>Project Name</th>
                         <th>Date Request</th>
                         <th>QTY</th>
@@ -172,7 +174,6 @@
                 };
             }
         })
-
     })
 
     $(document).on('submit', '#data-form', function(e) {
@@ -250,7 +251,6 @@
     })
 
     /* detail cost */
-
     function loadData() {
         var oTable = $('#dataTable').DataTable({
             "processing": true,

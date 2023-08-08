@@ -109,7 +109,7 @@
             <td></td>
             <th width="200">Marketing</th>
             <td width="20">:</td>
-            <td><?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?></td>
+            <td><?= (isset($request) && $request->marketing_id) ? $request->employee_name : ''; ?></td>
         </tr>
         <tr>
             <th>Customer</th>
@@ -133,6 +133,10 @@
             <th>Origin</th>
             <td>:</td>
             <td><?= $request->country_code . " - " . $request->country_name; ?></td>
+            <th></th>
+            <th>Currency</th>
+            <td>:</td>
+            <td><?= isset($request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?></td>
         </tr>
     </table>
     <!-- details -->

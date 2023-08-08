@@ -59,6 +59,14 @@
                     <?= (isset($request) && $request->description) ? $request->description : null; ?>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="currency" class="tx-dark tx-bold">Currency</label>
+                </div>
+                <div class="col-md-7">:
+                    <?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?>
+                </div>
+            </div>
         </div>
     </div>
     <hr>

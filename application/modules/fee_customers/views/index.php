@@ -1,8 +1,8 @@
 <?php
-$ENABLE_ADD     = has_permission('Harbours.Add');
-$ENABLE_MANAGE  = has_permission('Harbours.Manage');
-$ENABLE_VIEW    = has_permission('Harbours.View');
-$ENABLE_DELETE  = has_permission('Harbours.Delete');
+$ENABLE_ADD     = has_permission('Fee_customers.Add');
+$ENABLE_MANAGE  = has_permission('Fee_customers.Manage');
+$ENABLE_VIEW    = has_permission('Fee_customers.View');
+$ENABLE_DELETE  = has_permission('Fee_customers.Delete');
 ?>
 
 <div class="br-pagetitle">
@@ -29,8 +29,9 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop tablet tx-bold tx-dark">Customer Name</th>
                         <th class="desktop tablet text-center">Marketing</th>
-                        <th class="desktop tablet text-center" width="150">Fee SJT</th>
-                        <th class="desktop text-center no-sort">Description</th>
+                        <th class="desktop tablet text-center" width="100">Fee SJT</th>
+                        <th class="desktop tablet text-center" width="150">Type</th>
+                        <th class="desktop no-sort">Description</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
                         <?php endif; ?>
@@ -43,6 +44,7 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
                         <th>Customer Name</th>
                         <th>Marketing</th>
                         <th>Fee SJT</th>
+                        <th>Type</th>
                         <th>Description</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
@@ -84,9 +86,6 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
 
     $(document).on('click', '.add', function() {
         $('#dialog-popup .modal-title').text("Add New Fee Customer")
-        $('#dialog-popup .modal-dialog').css({
-            'max-width': '70%'
-        })
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'add');
         $("#save").removeClass('d-none');
@@ -95,9 +94,6 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
         $('#dialog-popup .modal-title').text("Edit Fee Customer")
-        $('#dialog-popup .modal-dialog').css({
-            'max-width': '70%'
-        })
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit/' + id);
         $("#save").removeClass('d-none');
@@ -106,9 +102,6 @@ $ENABLE_DELETE  = has_permission('Harbours.Delete');
     $(document).on('click', '.view', function(e) {
         var id = $(this).data('id');
         $('#dialog-popup .modal-title').text("View Fee Customer")
-        $('#dialog-popup .modal-dialog').css({
-            'max-width': '50%'
-        })
         $("#dialog-popup").modal();
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
         $("#save").addClass('d-none');

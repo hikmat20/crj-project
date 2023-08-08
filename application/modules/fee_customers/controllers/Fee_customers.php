@@ -18,6 +18,7 @@ class Fee_customers extends Admin_Controller
 	protected $addPermission  	= 'Fee_customers.Add';
 	protected $managePermission = 'Fee_customers.Manage';
 	protected $deletePermission = 'Fee_customers.Delete';
+	protected $type;
 
 	public function __construct()
 	{
@@ -30,6 +31,9 @@ class Fee_customers extends Admin_Controller
 		));
 		$this->template->title('Manage Fee Customers');
 		$this->template->page_icon('fas fa-hand-holding-usd');
+		$this->type = [
+			"DDU" => "DDU", "APB" => "As Per Bill", "ALL" => "All In", "ULS" => "Undername Lartas", "UNL" => "Undername non Lartas",
+		];
 
 		date_default_timezone_set('Asia/Bangkok');
 	}
@@ -64,7 +68,8 @@ class Fee_customers extends Admin_Controller
 			1 => 'customer_name',
 			2 => 'employee_name',
 			3 => 'fee_value',
-			4 => 'description',
+			4 => 'type',
+			5 => 'description',
 		);
 
 		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
@@ -102,12 +107,14 @@ class Fee_customers extends Admin_Controller
 			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
+			$type 		= isset($row['type']) ? $this->type[$row['type']] : '-';
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['customer_name'];
 			$nestedData[]  = $row['employee_name'];
 			$nestedData[]  = 'Rp. ' . number_format($row['fee_value']);
+			$nestedData[]  = $type;
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
@@ -160,8 +167,9 @@ class Fee_customers extends Admin_Controller
 		$ArrCustomers = array_column($customers, 'customer_name', 'id_customer');
 
 		$data = [
-			'fee' 			=> $fee,
+			'fee' 				=> $fee,
 			'ArrCustomers'	 	=> $ArrCustomers,
+			'type'	 			=> $this->type,
 		];
 		$this->template->set($data);
 		$this->template->render('view');

@@ -25,6 +25,14 @@
     </div>
     <div class="form-group row">
         <div class="col-md-3">
+            <span class="tx-dark tx-bold">Type</span>
+        </div>
+        <div class="col-md-7">:
+            <?= (isset($fee) && $fee->type) ? $type[$fee->type] : '-'; ?>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
             <span class="tx-dark tx-bold">Description</span>
         </div>
         <div class="col-md-7">:

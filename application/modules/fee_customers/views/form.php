@@ -39,12 +39,40 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-md-4">
+			<label for="description" class="tx-dark tx-bold">Type</label>
+		</div>
+		<div class="col-md-7">
+			<label class="rdiobox">
+				<input name="type" type="radio" value="DDU" <?= (isset($fee->type) && $fee->type == 'DDU') ? 'checked' : ''; ?>>
+				<span>DDU</span>
+			</label>
+			<label class="rdiobox">
+				<input name="type" type="radio" value="APB" <?= (isset($fee->type) && $fee->type == 'APB') ? 'checked' : ''; ?>>
+				<span>As Per Bill</span>
+			</label>
+			<label class="rdiobox">
+				<input name="type" type="radio" value="ALL" <?= (isset($fee->type) && $fee->type == 'ALL') ? 'checked' : ''; ?>>
+				<span>All In</span>
+			</label>
+			<label class="rdiobox">
+				<input name="type" type="radio" value="ULS" <?= (isset($fee->type) && $fee->type == 'ULS') ? 'checked' : ''; ?>>
+				<span>Undername Lartas</span>
+			</label>
+			<label class="rdiobox">
+				<input name="type" type="radio" value="UNL" <?= (isset($fee->type) && $fee->type == 'UNL') ? 'checked' : ''; ?>>
+				<span>Undername non Lartas</span>
+			</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-md-4">
 			<label for="description" class="tx-dark tx-bold">Description</label>
 		</div>
 		<div class="col-md-7">
 			<textarea type="text" class="form-control" id="description" name="description" placeholder="Description"><?= (isset($fee) && $fee->description) ? $fee->description : null; ?></textarea>
 		</div>
 	</div>
+
 </div>
 
 <script type="text/javascript">

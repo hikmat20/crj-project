@@ -131,7 +131,7 @@
 											<select id="currency" name="currency" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrapperCurrency" data-parsley-errors-container="#errCurrency">
 												<option value=""></option>
 												<?php foreach ($currency as $cur) : ?>
-													<option value="<?= $cur->code; ?>" <?= (isset($request) && $request->currency == $cur->code) ? 'selected' : (($default == $country->id) ? 'selected' : ''); ?>><?= $cur->code . " - " . $cur->name; ?></option>
+													<option value="<?= $cur->code; ?>" <?= (isset($request->currency) && $request->currency == $cur->code) ? 'selected' : ''; ?>><?= $cur->code . " - " . $cur->name; ?></option>
 												<?php endforeach; ?>
 											</select>
 										</div>

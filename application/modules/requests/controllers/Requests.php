@@ -180,10 +180,12 @@ class Requests extends Admin_Controller
 		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
 		$customers 			= $this->db->get_where('customers', ['status' => '1'])->result();
 		$countries 			= $this->db->get_where('countries')->result();
-		$symbol = [];
+		$symbol 			= [];
+
 		foreach ($this->currency as $cur) {
 			$symbol[$cur->code] = $cur->symbol;
 		}
+
 		$data = [
 			'subtitle' 		=> 'Edit Request HS Code',
 			'request' 		=> $request,
@@ -193,6 +195,7 @@ class Requests extends Admin_Controller
 			'currency' 		=> $this->currency,
 			'symbol' 		=> $symbol,
 		];
+
 		$this->template->set($data);
 		$this->template->render('form');
 	}
@@ -205,6 +208,12 @@ class Requests extends Admin_Controller
 		$customers 	= $this->db->get_where('customers', ['status' => '1'])->result();
 		$countries 	= $this->db->get_where('countries')->result();
 		$flag_revision = true;
+		$symbol 			= [];
+
+		foreach ($this->currency as $cur) {
+			$symbol[$cur->code] = $cur->symbol;
+		}
+
 		$data = [
 			'subtitle' 		=> 'Revision Check HS Code',
 			'request' 		=> $request,
@@ -212,6 +221,8 @@ class Requests extends Admin_Controller
 			'countries' 	=> $countries,
 			'dtlRequest' 	=> $dtlRequest,
 			'flag_revision' => $flag_revision,
+			'currency' 		=> $this->currency,
+			'symbol' 		=> $symbol,
 		];
 		$this->template->set($data);
 		$this->template->render('form');

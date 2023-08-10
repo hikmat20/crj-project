@@ -64,7 +64,7 @@
                     <label for="currency" class="tx-dark tx-bold">Currency</label>
                 </div>
                 <div class="col-md-7">:
-                    <?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>
+                    <?= (isset($request->currency) && $request->currency) ? $currency[$request->currency]->symbol : '-'; ?>
                 </div>
             </div>
         </div>

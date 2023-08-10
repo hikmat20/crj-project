@@ -118,31 +118,31 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->ppn_bm)) : ?>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->ppn_bm) && $ArrHscode[$dtl->origin_hscode]->ppn_bm > 0) : ?>
                             <small class="d-block">PPn BM : <?= ($ArrHscode[$dtl->origin_hscode]->ppn_bm) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->cukai)) : ?>
-                            <small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) . $unit[$ArrHscode[$dtl->origin_hscode]->unit_cukai] ?: '0'; ?></small>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->cukai) && $ArrHscode[$dtl->origin_hscode]->cukai > 0) : ?>
+                            <small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) . ($ArrHscode[$dtl->origin_hscode]->unit_cukai ? $unit[$ArrHscode[$dtl->origin_hscode]->unit_cukai] : '-'); ?></small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmad)) : ?>
-                            <small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) . $unit[$ArrHscode[$dtl->origin_hscode]->unit_bmad] ?: '0'; ?></small>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmad) && $ArrHscode[$dtl->origin_hscode]->bmad > 0) : ?>
+                            <small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) . ($ArrHscode[$dtl->origin_hscode]->unit_bmad ? $unit[$ArrHscode[$dtl->origin_hscode]->unit_bmad] : '-'); ?></small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmtp)) : ?>
-                            <small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) . $unit[$ArrHscode[$dtl->origin_hscode]->unit_bmtp] ?: '0'; ?></small>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmtp) && $ArrHscode[$dtl->origin_hscode]->bmtp > 0) : ?>
+                            <small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) . ($ArrHscode[$dtl->origin_hscode]->unit_bmtp ? $unit[$ArrHscode[$dtl->origin_hscode]->unit_bmtp] : '-'); ?></small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bm_im)) : ?>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bm_im) && $ArrHscode[$dtl->origin_hscode]->bm_im > 0) : ?>
                             <small class="d-block">BM IM : <?= ($ArrHscode[$dtl->origin_hscode]->bm_im) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->pph_napi)) : ?>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->pph_napi) && $ArrHscode[$dtl->origin_hscode]->pph_napi > 0) : ?>
                             <small class="d-block">PPH (NON-API) : <?= ($ArrHscode[$dtl->origin_hscode]->pph_napi) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bk)) : ?>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->bk) && $ArrHscode[$dtl->origin_hscode]->bk > 0) : ?>
                             <small class="d-block">BK : <?= ($ArrHscode[$dtl->origin_hscode]->bk) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->dana_sawit)) : ?>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->dana_sawit) && $ArrHscode[$dtl->origin_hscode]->dana_sawit > 0) : ?>
                             <small class="d-block">Tariff Dana Sawit : <?= ($ArrHscode[$dtl->origin_hscode]->dana_sawit) ?: '0'; ?>%</small>
                         <?php endif; ?>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->dhe_sda)) : ?>
+                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->dhe_sda) && $ArrHscode[$dtl->origin_hscode]->dhe_sda > 0) : ?>
                             <small class="d-block">Wajib Lapor DHE-SDA : <?= ($ArrHscode[$dtl->origin_hscode]->dhe_sda) ?: '0'; ?>%</small>
                         <?php endif; ?>
                     </td>

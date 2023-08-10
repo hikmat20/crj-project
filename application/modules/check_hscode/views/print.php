@@ -151,7 +151,7 @@
                 <th width="100" class="text-center">Origin HS Code</th>
                 <th width="100" class="text-center">Indonesia HS Code</th>
                 <th class="text-right">FOB Price</th>
-                <th class="text-right">CIF Price</th>
+                <th class="text-right">CFR/CIF Price</th>
                 <th width="120" class="text-center">Cost</th>
                 <th width="150">Other Cost</th>
                 <th width="150">Docs. Requirement</th>

@@ -156,7 +156,7 @@
                 <th width="100" class="text-center">Indonesia HS Code</th>
                 <th width="30" class="text-center">Curr</th>
                 <th width="100" class="text-center">FOB Price</th>
-                <th width="100" class="text-center">CIF Price</th>
+                <th width="100" class="text-center">CFR/CIF Price</th>
                 <th width="120" class="text-center">Cost</th>
                 <th width="130">Other Cost</th>
                 <th width="150">Docs. Requirement</th>
@@ -181,7 +181,7 @@
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
-                            <p><small>BM with ASK : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small></p>
+                            <p><small>BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small></p>
                             <p><small>PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn : '0'; ?>%</small></p>
                             <p><small>PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small></p>
                         <?php endif; ?>
@@ -191,13 +191,13 @@
                             <p><small class="d-block">PPn BM : <?= ($ArrHscode[$dtl->origin_hscode]->ppn_bm) ?: '0'; ?>%</small></p>
                         <?php endif; ?>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode]->cukai) && $ArrHscode[$dtl->origin_hscode]->cukai > 0) : ?>
-                            <p><small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) ?: '0'; ?>%</small></p>
+                            <p><small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) . $unit[$ArrHscode[$dtl->origin_hscode]->unit_cukai] ?: '0'; ?></small></p>
                         <?php endif; ?>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmad) && $ArrHscode[$dtl->origin_hscode]->bmad > 0) : ?>
-                            <p><small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) ?: '0'; ?>%</small></p>
+                            <p><small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) . $unit[$ArrHscode[$dtl->origin_hscode]->unit_bmad] ?: '0'; ?></small></p>
                         <?php endif; ?>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmtp) && $ArrHscode[$dtl->origin_hscode]->bmtp > 0) : ?>
-                            <p><small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) ?: '0'; ?>%</small></p>
+                            <p><small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) . $unit[$ArrHscode[$dtl->origin_hscode]->unit_bmtp] ?: '0'; ?></small></p>
                         <?php endif; ?>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode]->bm_im) && $ArrHscode[$dtl->origin_hscode]->bm_im > 0) : ?>
                             <p><small class="d-block">BM IM : <?= ($ArrHscode[$dtl->origin_hscode]->bm_im) ?: '0'; ?>%</small></p>

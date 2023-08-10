@@ -19,6 +19,7 @@ class Check_hscode extends Admin_Controller
 	protected $managePermission = 'Check_hscode.Manage';
 	protected $deletePermission = 'Check_hscode.Delete';
 	protected $currency;
+	protected $unit;
 	public function __construct()
 	{
 		parent::__construct();
@@ -38,6 +39,12 @@ class Check_hscode extends Admin_Controller
 			'ENABLE_DELETE'  	=> has_permission('Check_hscode.Delete'),
 		];
 		$this->currency = $this->db->get('currency')->result();
+		$this->unit = [
+			'rp'        => '(Rp)',
+			'm'         => 'Meter',
+			'percent'   => '%',
+			'kg'        => 'Kg',
+		];
 		$this->template->set($perm);
 	}
 
@@ -289,6 +296,7 @@ class Check_hscode extends Admin_Controller
 			'current_ppn' 	=> $current_ppn,
 			'ArrDocs' 		=> $ArrDocs,
 			'currency' 		=> $ArrCur,
+			'unit' 		=> $this->unit,
 
 		]);
 		$this->template->render('form');

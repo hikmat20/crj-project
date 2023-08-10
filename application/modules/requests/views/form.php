@@ -163,7 +163,7 @@
 									<th class="text-center" width="150">Origin HS Code</th>
 									<th class="text-center" width="50">Curr ency</th>
 									<th class="text-center" width="140">FOB Price</th>
-									<th class="text-center" width="140">CIF Price</th>
+									<th class="text-center" width="140">CFR/CIF Price</th>
 									<th class="text-center" width="80">Photo</th>
 									<th class="text-center" width="30">Opsi</th>
 								</tr>

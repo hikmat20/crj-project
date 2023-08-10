@@ -19,6 +19,7 @@ class Requests extends Admin_Controller
 	protected $managePermission = 'Requests.Manage';
 	protected $deletePermission = 'Requests.Delete';
 	protected $currency;
+	protected $unit;
 	public function __construct()
 	{
 		parent::__construct();
@@ -31,6 +32,12 @@ class Requests extends Admin_Controller
 		$this->template->title('Requests HS Code');
 		$this->template->page_icon('far fa-list-alt');
 		$this->currency = $this->db->get('currency')->result();
+		$this->unit = [
+			'rp'        => '(Rp)',
+			'm'         => 'Meter',
+			'percent'   => '%',
+			'kg'        => 'Kg',
+		];
 		date_default_timezone_set('Asia/Bangkok');
 	}
 
@@ -614,8 +621,9 @@ class Requests extends Admin_Controller
 			'details' 		=> $details,
 			'ArrHscode' 	=> $ArrHscode,
 			'current_ppn' 	=> $current_ppn,
-			'ArrDocs' 			=> $ArrDocs,
+			'ArrDocs' 		=> $ArrDocs,
 			'currency' 		=> $ArrCurrency,
+			'unit' 			=> $this->unit,
 		]);
 
 		$html = $this->template->load_view('print');
@@ -639,6 +647,7 @@ class Requests extends Admin_Controller
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
+		$ArrCurrency 	= [];
 
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
@@ -652,7 +661,12 @@ class Requests extends Admin_Controller
 			$ArrPorts[$port->country_id][] = $port;
 		}
 
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
+
 		$data = [
+			'currency' 		=> $ArrCurrency,
 			'header' 		=> $header,
 			'companies' 	=> $companies,
 			'ports' 		=> $ports,

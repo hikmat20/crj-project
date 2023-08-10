@@ -10,6 +10,11 @@
             <input type="hidden" name="customer_id" id="customer_id" value="<?= $header->customer_id; ?>">
             <input type="text" id="customer_name" value="<?= $header->customer_name; ?>" readonly class="form-control form-control-sm col-md-7" placeholder="Customer">
         </div>
+
+        <div class="form-group row">
+            <label for="project_name" class="tx-dark tx-bold col-md-3 pd-x-0">Project Name</label>
+            <input type="text" name="project_name" id="project_name" value="<?= $header->project_name; ?>" readonly class="form-control form-control-sm col-md-7" placeholder="Project Name">
+        </div>
         <div class="form-group row">
             <label for="origin_country_id" class="tx-dark tx-bold col-md-3 pd-x-0">Origin</label>
             <input type="hidden" name="origin_country_id" id="origin_country_id" value="<?= $header->origin_country_id; ?>">
@@ -18,13 +23,21 @@
     </div>
     <div class="col-md-6">
         <div class="form-group row">
-            <label for="project_name" class="tx-dark tx-bold col-md-3 pd-x-0">Project Name</label>
-            <input type="text" name="project_name" id="project_name" value="<?= $header->project_name; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="Project Name">
+            <label for="date-request" class="tx-dark tx-bold col-md-3 pd-x-0">Date Request</label>
+            <input type="text" id="date-request" value="<?= $header->date; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
         </div>
         <div class="form-group row">
             <label for="marketing_name" class="tx-dark tx-bold col-md-3 pd-x-0">Marketing</label>
             <input type="hidden" name="marketing_id" id="marketing_id" value="<?= $header->marketing_id; ?>">
             <input type="text" id="marketing_name" value="<?= $header->employee_name; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="Marketing">
+        </div>
+        <div class="form-group row">
+            <label for="desc" class="tx-dark tx-bold col-md-3 pd-x-0">Description</label>
+            <input type="text" id="desc" value="<?= $header->description; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
+        </div>
+        <div class="form-group row">
+            <label for="currency" class="tx-dark tx-bold col-md-3 pd-x-0">Currency</label>
+            <input type="text" id="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->code . " - " . $currency[$header->currency]->symbol : ''; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
         </div>
     </div>
 </div>
@@ -298,7 +311,7 @@
                 <th class="text-center align-middle" rowspan="2">BM without form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle" colspan="2">Amount(Rp)</th>
+                <th class="text-center align-middle" colspan="2">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
                 <th class="text-center align-middle" rowspan="2">BM</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
                 <th class="text-center align-middle" rowspan="2">Image</th>
@@ -350,10 +363,10 @@
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
-                    <td class="text-right"><?= ($dt->fob_price) ? number_format($dt->fob_price) : '0' ?>
+                    <td class="text-right"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
                         <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
                     </td>
-                    <td class="text-right"><?= ($dt->cif_price) ? number_format($dt->cif_price) : '0' ?>
+                    <td class="text-right"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
                         <input type="hidden" name="detail[<?= $n; ?>][cif_price]" value="<?= ($dt->cif_price) ? $dt->cif_price : '0'; ?>">
                     </td>
                     <td class="text-right"><?= ($totalBM) ? number_format($totalBM) : '0' ?>

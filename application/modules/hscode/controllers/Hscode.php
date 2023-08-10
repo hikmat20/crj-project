@@ -224,7 +224,6 @@ class Hscode extends Admin_Controller
         $this->template->render('view');
     }
 
-
     public function delete()
     {
         $id = $this->input->post('id');
@@ -261,7 +260,6 @@ class Hscode extends Admin_Controller
         simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
         echo json_encode($return);
     }
-
 
     // -------------------------------------------------------------
     public function save()

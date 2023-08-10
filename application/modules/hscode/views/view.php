@@ -114,7 +114,7 @@
                     <span>PPn BM</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs) && $hs->ppn_bm ? $hs->ppn_bm : 0; ?>
+                    <?= isset($hs) && $hs->ppn_bm ? $hs->ppn_bm : 0; ?>%
                 </div>
             </div>
 

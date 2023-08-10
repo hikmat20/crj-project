@@ -279,6 +279,7 @@ class Requests extends Admin_Controller
 			'ArrCountryCode' 	=> $ArrCountryCode,
 			'ArrCustomer' 		=> $ArrCustomer,
 			'currency' 			=> $ArrCurrency,
+			'unit' 				=> $this->unit,
 		]);
 		$this->template->render('view');
 	}

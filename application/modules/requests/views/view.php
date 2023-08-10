@@ -82,11 +82,11 @@
                 <th width="20%">Product Name</th>
                 <th class="text-center">Specification</th>
                 <th class="text-center">Origin HS Code</th>
+                <th class="text-center" width="100">Indonesia HS Code</th>
                 <th class="text-center" width="30">Curr</th>
                 <th class="text-right">FOB Price</th>
                 <th class="text-right">CFR/CIF Price</th>
                 <?php if ($request->status == 'CHK') : ?>
-                    <th class="text-center" width="100">Indonesia HS Code</th>
                     <th width="120">Cost</th>
                     <th width="150">Other Cost</th>
                     <th width="150">Doc. Requirement</th>
@@ -104,12 +104,12 @@
                     <td class="rowIdx text-center"><?= $n; ?></td>
                     <td><?= $dtl->product_name; ?></td>
                     <td><?= $dtl->specification; ?></td>
-                    <td><?= $dtl->origin_hscode; ?></td>
+                    <td class="text-center"><?= $dtl->origin_hscode; ?></td>
+                    <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
                     <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
                     <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
                     <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
                     <?php if ($request->status == 'CHK') : ?>
-                        <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
                         <td>
                             <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                                 <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>

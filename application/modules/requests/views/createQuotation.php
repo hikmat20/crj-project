@@ -630,10 +630,11 @@
                 reverse: true
             })
         })
+
         $('.select').select2({
             // minimumResultsForSearch: -1,
             placeholder: 'Choose one',
-            dropdownParent: $('.modal-body'),
+            dropdownParent: $('#dialog-popup .modal-body'),
             width: "100%",
             allowClear: true
         });
@@ -641,7 +642,7 @@
         $('.select-no-search').select2({
             minimumResultsForSearch: -1,
             placeholder: 'Choose one',
-            dropdownParent: $('.modal-body'),
+            dropdownParent: $('#dialog-popup .modal-body'),
             width: "100%",
             allowClear: true
         });

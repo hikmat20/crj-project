@@ -55,7 +55,7 @@ class Requests extends Admin_Controller
 		if ($status) {
 			$where = " AND `status` IN($status)";
 		} else {
-			$where = " AND `status` NOT IN('QTT','HIS')";
+			$where = " AND `status` NOT IN('QTT','HIS','CNL')";
 		}
 
 		$string = $this->db->escape_like_str($search);
@@ -92,7 +92,7 @@ class Requests extends Admin_Controller
 		$status = [
 			'OPN' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">New</span>',
 			'CHK' => '<span class="bg-success tx-white pd-5 tx-11 tx-bold rounded-5">Checked</span>',
-			'CNL' => '<span class="bg-light tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
+			'CNL' => '<span class="bg-danger tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
 			'RVI' => '<span class="bg-warning tx-white pd-5 tx-11 tx-bold rounded-5">Revision</span>',
 			'HIS' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">History</span>',
 		];
@@ -128,7 +128,7 @@ class Requests extends Admin_Controller
 			if ($row['status'] == 'CHK') {
 				$buttons 	= $view . "&nbsp;" . $revision . "&nbsp;" . $print . "&nbsp;" . $quotation;
 			}
-			if ($row['status'] == 'HIS') {
+			if ($row['status'] == 'HIS' || $row['status'] == 'CNL') {
 				$buttons 	= $view;
 			}
 
@@ -448,47 +448,67 @@ class Requests extends Admin_Controller
 		echo json_encode($return);
 	}
 
-	public function delete()
+	function cancelForm($id)
 	{
 		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		$dt = $this->db->get_where('Requests')->row_array();
-		$data = [
-			'status' => '0',
-			'deleted_by' => $this->auth->user_id(),
-			'deleted_at' => date('Y-m-d H:i:s'),
+		$this->template->set('id', $id);
+		$this->template->render('cancelForm');
+	}
+
+	public function cancel()
+	{
+
+		$this->auth->restrict($this->deletePermission);
+		$post = $this->input->post();
+		$reason = [
+			'0' => $post['cancel_reason'],
+			'1' => "Incorrect data entry",
+			'2' => "Cancellation requests from customers",
+			'3' => "Data change",
+			'4' => "User error",
+			'5' => "Dummy data only",
 		];
+
+		$data = [
+			'status' 		=> 'CNL',
+			'canceled_by' 	=> $this->auth->user_id(),
+			'canceled_at' 	=> date('Y-m-d H:i:s'),
+			'reason_id' 	=> $post['rdio'],
+			'cancel_reason' => $reason[$post['rdio']],
+		];
+
 		$this->db->trans_begin();
-		$this->db->update('Requests', $data, ['id' => $id]);
+		$this->db->update('check_hscodes', $data, ['id' => $post['id']]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed delete data Requests.  Please try again.',
+				'msg'		=> 'Failed Cancel data Requests.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD delete data Requests " . $dt['id'];
+			$keterangan     = "FAILD Cancel data Request ";
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $dt['id'];
+			$kode_universal = $post['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		} else {
 			$this->db->trans_commit();
 			$return	= array(
-				'msg'		=> 'Success delete data Requests.',
+				'msg'		=> 'Success cancel data Requests.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Requests " . $dt['id'];
+			$keterangan     = "SUCCESS cancel data Requests " . $post['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $dt['id'];
+			$kode_universal = $post['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
 		}
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
 	}
+
 
 	public function change_image()
 	{

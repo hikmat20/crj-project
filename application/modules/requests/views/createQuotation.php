@@ -43,7 +43,6 @@
 </div>
 <hr>
 <div class="row pd-x-20">
-
     <div class="col-md-5 offset-md-1">
         <div class="form-group row">
             <label for="company_id" class="tx-dark tx-bold col-md-3 pd-x-0">Company <span class="text-danger tx-bold">*</span></label>
@@ -57,6 +56,19 @@
                     </select>
                 </div>
                 <div id="errCompany"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label for="exchange" class="tx-dark tx-bold col-md-3 pd-x-0">Exchange Rate (Kurs) <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Rp.</span>
+                    </div>
+                    <input type="text" name="exchange" id="kurs" value="" placeholder="0" class="form-control text-right number-format">
+                </div>
             </div>
         </div>
     </div>
@@ -306,7 +318,7 @@
                 <th class="text-center align-middle" rowspan="2">Specification</th>
                 <th class="text-center align-middle" rowspan="2">Origin HS Code</th>
                 <th class="text-center align-middle" rowspan="2">Indonesia HS Code</th>
-                <th class="text-center align-middle" rowspan="2">Lartas</th>
+                <th class="text-center align-middle" rowspan="2">Add Doc.</th>
                 <!-- <th class="text-center align-middle" rowspan="2">Select</th> -->
                 <th class="text-center align-middle" rowspan="2">BM without form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with form E</th>
@@ -350,8 +362,33 @@
                     <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
                         <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
                     </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->lartas) ? $ArrLartas[$ArrHscode[$dt->origin_hscode]->lartas] : '-'; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($ArrHscode[$dt->origin_hscode]->lartas) ? $ArrHscode[$dt->origin_hscode]->lartas : null; ?>">
+                    <td class="">
+                        <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
+                            $idHs = $ArrHscode[$dt->origin_hscode]->id;
+                        ?>
+                            <ul class="pd-l-15">
+                                <?php if (isset($ArrDocs[$idHs])) : ?>
+                                    <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </ul>
+                        <?php endif; ?>
+                        <!-- <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($ArrHscode[$dt->origin_hscode]->lartas) ? $ArrHscode[$dt->origin_hscode]->lartas : null; ?>"> -->
                     </td>
                     <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%

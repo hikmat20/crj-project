@@ -401,7 +401,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 tags: true,
                 cache: true,
                 placeholder: 'Choose one',
-                dropdownParent: $('.modal-body'),
+                dropdownParent: $('#dialog-popup .modal-body'),
                 width: "100%",
                 allowClear: true
             })

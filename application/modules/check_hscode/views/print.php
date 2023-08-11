@@ -12,6 +12,14 @@
             padding: 0;
         }
 
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
         p {
             margin: 0;
             padding: 0;
@@ -63,10 +71,6 @@
             background: #ccc;
         }
 
-        .text-center {
-            text-align: center;
-        }
-
         #footer {
             /*width:180mm;*/
             margin: 0 15mm;
@@ -77,9 +81,7 @@
             width: 100%;
             border-left: 1px solid #ccc;
             border-top: 1px solid #ccc;
-
             background: #eee;
-
             border-spacing: 0;
             border-collapse: collapse;
         }
@@ -145,18 +147,22 @@
     <table class="bordered" width="100%">
         <thead>
             <tr>
-                <th width="50" class="text-center">No</th>
-                <th width="" class="text-center">Product Name</th>
-                <th width="200" class="text-center">Specification</th>
-                <th width="100" class="text-center">Origin HS Code</th>
-                <th width="100" class="text-center">Indonesia HS Code</th>
+                <th rowspan="2" width="50" class="text-center">No</th>
+                <th rowspan="2" width="" class="text-center">Product Name</th>
+                <th rowspan="2" width="200" class="text-center">Specification</th>
+                <th rowspan="2" width="100" class="text-center">Origin HS Code</th>
+                <th rowspan="2" width="100" class="text-center">Indonesia HS Code</th>
+                <th rowspan="2" width="50" class="text-center">Curr ency</th>
+                <th colspan="2" width="130" class="text-center">Amount</th>
+                <th rowspan="2" width="120" class="text-center">Cost</th>
+                <th rowspan="2" width="150">Other Cost</th>
+                <th rowspan="2" width="150">Docs. Requirement</th>
+                <th rowspan="2" width="50">Image</th>
+                <th rowspan="2" width="">Remarks</th>
+            </tr>
+            <tr>
                 <th class="text-right">FOB Price</th>
                 <th class="text-right">CFR/CIF Price</th>
-                <th width="120" class="text-center">Cost</th>
-                <th width="150">Other Cost</th>
-                <th width="150">Docs. Requirement</th>
-                <th width="50">Image</th>
-                <th width="">Remarks</th>
             </tr>
         </thead>
         <tbody>
@@ -171,6 +177,7 @@
                     <td style="font-family: sun-exta"><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
                     <td class="text-center" <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
+                    <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : ''; ?></td>
                     <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price) : '-'; ?></td>
                     <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price) : '-'; ?></td>
                     <td>

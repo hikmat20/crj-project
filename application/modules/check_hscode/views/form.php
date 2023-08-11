@@ -68,7 +68,8 @@
                     <label for="currency" class="tx-dark tx-bold">Currency</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="text" readonly class="form-control" id="currency" name="currency" placeholder="-" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>">
+                    <input type="text" readonly class="form-control" id="currency" placeholder="-" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>">
+                    <input type="hidden" name="currency" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol : '-'; ?>">
                 </div>
             </div>
         </div>

@@ -277,14 +277,16 @@ class Check_hscode extends Admin_Controller
 		$current_ppn 	= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
-		$ArrCur 			= [];
+		$ArrCur 		= [];
 
 		foreach ($this->currency as $cur) {
 			$ArrCur[$cur->code] = $cur;
 		}
+
 		foreach ($hscodes as $hs) {
-			$ArrHscode[$hs->origin_code] = $hs;
+			$ArrHscode[substr($hs->origin_code, 0, 6)] = $hs;
 		}
+
 		foreach ($hscodes_doc as $doc) {
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
 		}
@@ -299,6 +301,7 @@ class Check_hscode extends Admin_Controller
 			'unit' 		=> $this->unit,
 
 		]);
+
 		$this->template->render('form');
 	}
 
@@ -357,10 +360,10 @@ class Check_hscode extends Admin_Controller
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
 		}
 
-		$symbol 			= [];
+		$ArrCurrency 			= [];
 
 		foreach ($this->currency as $cur) {
-			$symbol[$cur->code] = $cur->symbol;
+			$ArrCurrency[$cur->code] = $cur->symbol;
 		}
 
 		$this->template->set([
@@ -372,8 +375,7 @@ class Check_hscode extends Admin_Controller
 			'ArrCountry' 		=> $ArrCountry,
 			'ArrCountryCode' 	=> $ArrCountryCode,
 			'ArrCustomer' 		=> $ArrCustomer,
-			'currency' 			=> $this->currency,
-			'symbol' 			=> $symbol,
+			'currency' 			=> $ArrCurrency,
 		]);
 		$this->template->render('view');
 	}

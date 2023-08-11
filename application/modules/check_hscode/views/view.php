@@ -64,6 +64,7 @@
                     <label for="currency" class="tx-dark tx-bold">Currency</label>
                 </div>
                 <div class="col-md-7">:
+                    <?= $request->currency; ?>
                     <?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?>
                 </div>
             </div>
@@ -74,18 +75,22 @@
     <table id="table-detail" class="table table-sm table-bordered border table-hover" width="100%">
         <thead class="table-secondary">
             <tr>
-                <th width="50" class="text-center">No</th>
-                <th width="" class="">Product Name</th>
-                <th width="" class="">Specification</th>
-                <th width="100" class="text-center">Origin HS Code</th>
-                <th width="100" class="text-center">Indonesia HS Code</th>
+                <th rowspan="2" width="50" class="text-center">No</th>
+                <th rowspan="2" width="" class="">Product Name</th>
+                <th rowspan="2" width="" class="">Specification</th>
+                <th rowspan="2" width="100" class="text-center">Origin HS Code</th>
+                <th rowspan="2" width="100" class="text-center">Indonesia HS Code</th>
+                <th rowspan="2" width="50" class="text-center">Curr ency</th>
+                <th colspan="2" width="100" class="text-center">Amount</th>
+                <th rowspan="2" width="120">Cost</th>
+                <th rowspan="2" width="130">Other Cost</th>
+                <th rowspan="2" width="200">Docs. Requirement</th>
+                <th rowspan="2" width="80" class="text-center">Image</th>
+                <th rowspan="2" width="100">Remarks</th>
+            </tr>
+            <tr>
                 <th class="text-right">FOB Price</th>
                 <th class="text-right">CFR/CIF Price</th>
-                <th width="120">Cost</th>
-                <th width="130">Other Cost</th>
-                <th width="200">Docs. Requirement</th>
-                <th width="80" class="text-center">Image</th>
-                <th width="100">Remarks</th>
             </tr>
         </thead>
         <tbody class="tx-dark">
@@ -99,9 +104,10 @@
                     <td><?= $dtl->product_name; ?></td>
                     <td><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
-                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price) : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price) : '-'; ?></td>
+                    <td class=" text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
+                    <td class="text-center"><?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>

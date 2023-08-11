@@ -204,7 +204,6 @@
         </div>
     </div>
 </div>
-
 <h5 class="mg-b-20 tx-dark tx-bold">Document Requirements</h5>
 <div class="card pd-7">
     <ul class="nav nav-pills flex-column flex-md-row tx-bold tx-dark" role="tablist">

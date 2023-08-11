@@ -38,6 +38,7 @@
         <div class="form-group row">
             <label for="currency" class="tx-dark tx-bold col-md-3 pd-x-0">Currency</label>
             <input type="text" id="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->code . " - " . $currency[$header->currency]->symbol : ''; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
+            <input type="hidden" name="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->code : ''; ?>" readonly>
         </div>
     </div>
 </div>
@@ -67,7 +68,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Rp.</span>
                     </div>
-                    <input type="text" name="exchange" id="kurs" value="" placeholder="0" class="form-control text-right number-format">
+                    <input type="text" name="exchange" id="kurs" placeholder="0" class="form-control text-right number-format">
                 </div>
             </div>
         </div>
@@ -154,7 +155,7 @@
                 <div id="errFee"></div>
             </div>
         </div>
-        <div class="form-group row">
+        <!-- <div class="form-group row">
             <label for="service" class="tx-dark tx-bold col-md-3 pd-x-0">Service <span class="text-anger tx-bold">*</span></label>
             <div class="col-md-6 px-0">
                 <div id="slWrService" class="parsley-select">
@@ -166,6 +167,19 @@
                     </select>
                 </div>
                 <div id="errService"></div>
+            </div>
+        </div> -->
+        <div class="form-group row">
+            <label for="fee_lartas_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Lartas Type <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div id="slWrFeeLartas" class="parsley-select">
+                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
+                        <option value=""></option>
+                        <option value="STD">Standard</option>
+                        <option value="CORP">Corporate</option>
+                    </select>
+                </div>
+                <div id="errFeeLartas"></div>
             </div>
         </div>
         <div class="form-group row">
@@ -186,6 +200,20 @@
             <label for="qty_container" class="tx-dark tx-bold col-md-3 pd-x-0">Qty Container <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-6 px-0">
                 <input type="number" required name="qty_container" id="qty_container" class="form-control text-right" placeholder="0" min="0">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="ls_type" class="tx-dark tx-bold col-md-3 pd-x-0">LS Type <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div id="slWrLS" class="parsley-select">
+                    <select name="ls_type" id="ls_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
+                        <option value=""></option>
+                        <option value="FULL">Full LS</option>
+                        <option value="NON">Non LS</option>
+                        <option value="OTH">Others</option>
+                    </select>
+                </div>
+                <div id="errLS"></div>
             </div>
         </div>
     </div>
@@ -267,42 +295,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <label for="fee_lartas" class="tx-dark col-12 tx-bold pd-x-0">Fee Lartas <span class="text-dange tx-bold">*</span></label>
-        </div>
-        <div class="form-group row">
-            <label for="fee_lartas_pi" class="col-md-3 tx-dark tx-bold pd-x-0">PI</label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="input1">Rp</span>
-                    </div>
-                    <input type="text" name="fee_lartas_pi" id="fee_lartas_pi" data-parsley-false autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="fee_lartas_alkes" class="col-md-3 tx-dark tx-bold pd-x-0">ALKES</label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="input1">Rp</span>
-                    </div>
-                    <input type="text" name="fee_lartas_alkes" id="fee_lartas_alkes" data-parsley-inputs autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="fee_lartas_ski" class="col-md-3 tx-dark tx-bold pd-x-0">SKI BPOM</label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="input1">Rp</span>
-                    </div>
-                    <input type="text" name="fee_lartas_ski" id="fee_lartas_ski" data-parsley-inputs autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <hr>
@@ -323,26 +315,35 @@
                 <th class="text-center align-middle" rowspan="2">BM without form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle" colspan="2">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
-                <th class="text-center align-middle" rowspan="2">BM</th>
-                <th class="text-center align-middle" rowspan="2">PPH</th>
+                <th class="text-center align-middle" colspan="6">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
                 <th class="text-center align-middle" rowspan="2">Image</th>
             </tr>
             <tr>
                 <th class="text-center border border-top-0 border-right-0">FOB</th>
+                <th class="text-center align-middle">BM</th>
+                <th class="text-center align-middle">PPH</th>
                 <th class="text-center">CFR/CIF</th>
+                <th class="text-center align-middle">BM</th>
+                <th class="text-center align-middle">PPH</th>
             </tr>
         </thead>
         <tbody class="tx-dark">
-            <?php $n = $totalFOB = $totalPPH = $totalCIF = $totalBM = $gtotalBM = $gtotalPPH = 0;
+            <?php $n = $totalFOB = $totalBMFOB = $totalCIF = $totalPPHFOB = $gtotalBMFOB = $gtotalPPHFOB = $gtotalBMCIF = $totalBMCIF = $gtotalPPHCIF = $totalPPHCIF = 0;
             $no_image = base_url('assets/no-image.jpg');
             if ($details) foreach ($details as $dt) : $n++;
-                $totalFOB   += $dt->fob_price;
-                $totalCIF   += $dt->cif_price;
-                $totalBM    = $dt->cif_price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                $totalPPH   = ($dt->cif_price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
-                $gtotalBM   += $totalBM;
-                $gtotalPPH  += $totalPPH;
+                $totalFOB      += $dt->fob_price;
+                $totalCIF      += $dt->cif_price;
+
+                $totalBMFOB     = $dt->fob_price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
+                $totalPPHFOB    = ($dt->fob_price + $totalBMFOB) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+
+                $totalBMCIF     = $dt->cif_price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
+                $totalPPHCIF    = ($dt->cif_price + $totalBMCIF) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+
+                $gtotalBMFOB   += $totalBMFOB;
+                $gtotalPPHFOB  += $totalPPHFOB;
+                $gtotalBMCIF   += $totalBMCIF;
+                $gtotalPPHCIF  += $totalPPHCIF;
                 $img = '';
                 if ($dt->image) {
                     $img = 'assets/uploads/' . $header->id . "/" . $dt->image;
@@ -388,7 +389,6 @@
                                 <?php endif; ?>
                             </ul>
                         <?php endif; ?>
-                        <!-- <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($ArrHscode[$dt->origin_hscode]->lartas) ? $ArrHscode[$dt->origin_hscode]->lartas : null; ?>"> -->
                     </td>
                     <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
@@ -400,17 +400,23 @@
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
-                    <td class="text-right"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
+                    <td class="text-right" style="background-color: #fff9dd;"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
                         <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
                     </td>
-                    <td class="text-right"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
+                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalBMFOB) ? number_format($totalBMFOB, 2) : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMFOB) ? $totalBMFOB : '0'; ?>">
+                    </td>
+                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalPPHFOB) ? number_format($totalPPHFOB, 2)  : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHFOB) ? $totalPPHFOB : '0'; ?>">
+                    </td>
+                    <td class="text-right" style="background-color: #e2fffb;"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
                         <input type="hidden" name="detail[<?= $n; ?>][cif_price]" value="<?= ($dt->cif_price) ? $dt->cif_price : '0'; ?>">
                     </td>
-                    <td class="text-right"><?= ($totalBM) ? number_format($totalBM) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
+                    <td class="text-right" style="background-color: #e2fffb;"><?= ($totalBMCIF) ? number_format($totalBMCIF, 2) : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMCIF) ? $totalBMCIF : '0'; ?>">
                     </td>
-                    <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH)  : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
+                    <td class="text-right" style="background-color: #e2fffb;"><?= ($totalPPHCIF) ? number_format($totalPPHCIF, 2)  : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHCIF) ? $totalPPHCIF : '0'; ?>">
                     </td>
                     <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
                         <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
@@ -419,15 +425,95 @@
             <?php endforeach; ?>
             <tr class="bg-light">
                 <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
-                <th class="text-right tx-dark font-weight-bold" id="totalFOB"><?= number_format(($totalFOB) ?: '0'); ?></th>
-                <th class="text-right tx-dark font-weight-bold" id="totalCIF"><?= number_format(($totalCIF) ?: '0'); ?></th>
-                <th class="text-right tx-dark font-weight-bold"><?= number_format($gtotalBM); ?></th>
-                <th class="text-right tx-dark font-weight-bold"><?= number_format(($gtotalPPH) ?: '0'); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalFOB"><?= number_format(($totalFOB) ?: '0', 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format($gtotalBMFOB, 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format(($gtotalPPHFOB) ?: '0', 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;" id="totalCIF"><?= number_format(($totalCIF) ?: '0', 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format($gtotalBMCIF, 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format(($gtotalPPHCIF) ?: '0', 2); ?></th>
                 <th></th>
             </tr>
         </tbody>
     </table>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <h5 class="tx-dark tx-bold">Fee Lartas</h5>
+        <table class="table table-sm table-borderless">
+            <thead class="tx-dark tx-bold">
+                <tr>
+                    <td class="border-bottom">Lartas Type</td>
+                    <td class="text-center border-bottom">Qty</td>
+                    <td class="text-right border-bottom">Total</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="tx-dark tx-bold">Non Lartas</th>
+                    <th class="text-center">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="" id="" value="" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="input1">/Tonase</span>
+                            </div>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="input1">Rp</span>
+                            </div>
+                            <input type="text" name="" id="" value="<?= number_format(array_sum($ArrLartas['0']), 2); ?>" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="tx-dark tx-bold">PI</th>
+                    <th class="text-center"><?= isset($ArrLartas['FL23-0003']) ? (count($ArrLartas['FL23-0003'])) : '-'; ?></th>
+                    <th>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="input1">Rp</span>
+                            </div>
+                            <input type="text" name="" id="" value="<?= isset($ArrLartas['FL23-0003']) ? number_format(array_sum($ArrLartas['FL23-0003']), 2) : '0'; ?>" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="tx-dark tx-bold">ALKES</th>
+                    <th class="text-center"><?= isset($ArrLartas['FL23-0002']) ? count(($ArrLartas['FL23-0002'])) : '-'; ?></th>
+                    <th>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="input1">Rp</span>
+                            </div>
+                            <input type="text" name="" id="" value="<?= isset($ArrLartas['FL23-0002']) ? number_format(array_sum($ArrLartas['FL23-0002']), 2) : '0'; ?>" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="tx-dark tx-bold">SKI BPOM</th>
+                    <th class="text-center"></th>
+                    <th>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="input1">Rp</span>
+                            </div>
+                            <input type="text" name="" id="" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
+                        </div>
+                    </th>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="border-top">
+                    <th colspan="2" class="border-top tx-dark tx-bold text-center">Total Lartas</th>
+                    <th class="border-top tx-dark tx-bold text-right">0</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<hr>
 <div class="row">
     <div class="col-md-5">
         <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-dollar-sign"></i> Costing</h5>
@@ -494,15 +580,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="tx-dark tx-bold">Handling Break Bulk</th>
-                    <td class="text-right tx-dark">
-                        <span>0</span>
-                    </td>
-                </tr>
-                <tr>
                     <th class="tx-dark tx-bold">Trucking Container</th>
                     <td class="text-right tx-dark">
                         <span id="tx-trucking">0</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="tx-dark tx-bold">Others (Coordination Fee)</th>
+                    <td class="tx-dark">
+                        <input type="text" name="coordination_fee" id="coordination_fee" class="form-control form-control-sm text-right number-format" placeholder="0">
                     </td>
                 </tr>
             </tbody>

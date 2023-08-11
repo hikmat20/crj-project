@@ -18,11 +18,10 @@ class Hscode extends Admin_Controller
     protected $addPermission = 'HS_Code.Add';
     protected $managePermission = 'HS_Code.Manage';
     protected $deletePermission = 'HS_Code.Delete';
-
+    protected $ls;
     public function __construct()
     {
         parent::__construct();
-
         $this->load->library(['mpdf', 'upload', 'Image_lib']);
         $this->load->model([
             'Hscode/Hscode_model',
@@ -31,7 +30,10 @@ class Hscode extends Admin_Controller
 
         $this->template->title('HS Code Master');
         $this->template->page_icon('fa fa-table');
-
+        $this->ls = [
+            'Y' => 'Yes',
+            'N' => 'No',
+        ];
         date_default_timezone_set('Asia/Bangkok');
     }
 
@@ -200,7 +202,7 @@ class Hscode extends Admin_Controller
         $def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
         $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
         $lartas         = $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
-        $ArrLartas = array_column($lartas, 'name', 'id');
+        $ArrLartas      = array_column($lartas, 'name', 'id');
         $unit = [
             'rp'        => '(Rp)',
             'm'         => 'Meter',
@@ -220,6 +222,7 @@ class Hscode extends Admin_Controller
             'ArrRQ'         => $ArrRQ,
             'ArrLartas'     => $ArrLartas,
             'unit'          => $unit,
+            'LS'            => $this->ls,
         ]);
         $this->template->render('view');
     }

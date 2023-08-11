@@ -16,6 +16,18 @@
 		</div>
 	</div>
 	<div class="form-group row">
+		<div class="col-md-4 tx-dark tx-bold">
+			<label for="type">Type <span class="tx-danger">*</span></label>
+		</div>
+		<div class="col-md-7">
+			<select type="text" required class="form-control select-not-search" id="type" name="type">
+				<option value=""></option>
+				<option value="TNE" <?= (isset($fee->type) && $fee->type == 'TNE') ? 'selected' : ''; ?>>Tonase</option>
+				<option value="SPM" <?= (isset($fee->type) && $fee->type == 'SPM') ? 'selected' : ''; ?>>Shipment</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
 		<div class="col-md-4">
 			<label for="fee_value" class="tx-dark tx-bold">Fee Value<span class="tx-danger">*</span></label>
 		</div>
@@ -43,6 +55,14 @@
 	$(document).ready(function() {
 		$('#fee_value').mask('#,##0', {
 			reverse: true
+		});
+
+		$('.select-not-search').select2({
+			minimumResultsForSearch: Infinity,
+			placeholder: 'Choose one',
+			dropdownParent: $('.modal-body'),
+			width: "100%",
+			allowClear: true
 		});
 	});
 </script>

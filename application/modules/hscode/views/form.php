@@ -94,24 +94,24 @@
                     <div id="slErrorLartas"></div>
                 </div>
             </div>
-            <!-- <div class="form-group row">
+            <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
-                    <label for="pi_yes">PI <span class="tx-danger">*</span></label>
+                    <label for="ls_yes">LS <span class="tx-danger">*</span></label>
                 </div>
                 <div class="col-md-8">
-                    <div id="cbWrapperPi" class="parsley-checkbox mg-b-0">
+                    <div id="cbWrapperLS" class="parsley-checkbox mg-b-0">
                         <label class="rdiobox rdiobox-success d-inline-block mg-r-5">
-                            <input type="radio" id="pi_yes" <?= isset($hs) && $hs->pi == 'Y' ? 'checked' : null; ?> name="pi" value="Y" required data-required="true" data-parsley-inputs data-parsley-class-handler="#cbWrapperPi" data-parsley-errors-container="#cbErrorContainerPi">
+                            <input type="radio" id="ls_yes" <?= isset($hs->ls) && $hs->ls == 'Y' ? 'checked' : null; ?> name="ls" value="Y" required data-required="true" data-parsley-inputs data-parsley-class-handler="#cbWrapperLS" data-parsley-errors-container="#cbErrorContainerLS">
                             <span>Yes</span>
                         </label>
                         <label class="rdiobox rdiobox-danger d-inline-block mg-r-5">
-                            <input type="radio" id="pi_no" <?= isset($hs) && $hs->pi == 'N' ? 'checked' : null; ?> name="pi" value="N">
+                            <input type="radio" id="ls_no" <?= isset($hs->ls) && $hs->ls == 'N' ? 'checked' : null; ?> name="ls" value="N">
                             <span>No</span>
                         </label>
                     </div>
-                    <div id="cbErrorContainerPi"></div>
+                    <div id="cbErrorContainerLS"></div>
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
 

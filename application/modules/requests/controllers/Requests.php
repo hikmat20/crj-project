@@ -686,6 +686,14 @@ class Requests extends Admin_Controller
 			$ArrCurrency[$cur->code] = $cur;
 		}
 
+		$ArrLartas = [];
+		foreach ($details as $dtl) {
+			if (!$ArrHscode[$dtl->origin_hscode]->lartas) {
+				$ArrLartas['0'][] = $dtl->fob_price;
+			} else {
+				$ArrLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->fob_price;
+			}
+		}
 		$data = [
 			'currency' 		=> $ArrCurrency,
 			'header' 		=> $header,
@@ -751,7 +759,7 @@ class Requests extends Admin_Controller
 			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
 			if ($feeCust) {
 				$fee_customer_id 	= $feeCust->id;
-				$fee_customer_value = number_format($feeCust->fee_value);
+				$fee_customer_value = ($feeCust->fee_value) * $qty;
 				$err_fee_customer 	= '';
 			}
 		}
@@ -765,7 +773,7 @@ class Requests extends Admin_Controller
 			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
 			'fee' 				 => $fee,
 			'fee_customer_id' 	 => $fee_customer_id,
-			'fee_customer_value' => $fee_customer_value,
+			'fee_customer_value' => number_format($fee_customer_value),
 			'err_fee_customer' 	 => $err_fee_customer,
 		];
 		echo json_encode($data);
@@ -794,7 +802,6 @@ class Requests extends Admin_Controller
 		$this->auth->restrict($this->managePermission);
 		$post = $this->input->post();
 		$data = $post;
-
 
 		$data['id'] 					= $this->Requests_model->generateIdQuotation();
 		$data['number'] 				= $this->Requests_model->generateQuotNumber();

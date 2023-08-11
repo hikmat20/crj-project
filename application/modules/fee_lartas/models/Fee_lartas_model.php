@@ -76,6 +76,17 @@ class Fee_lartas_model extends BF_Model
         $newID = "FL$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
         return $newID;
     }
+    function generate_id2($kode = '')
+    {
+        $y = date('y');
+        $count = 1;
+        $maxID = $this->db->select("MAX(RIGHT(id,4)) as id")->from('fee_lartas_customers')->where(['SUBSTR(id,3,2)' => date('y')])->get()->row()->id;
+        if ($maxID || $maxID > 0) {
+            $count = $maxID + 1;
+        }
+        $newID = "FC$y" . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+        return $newID;
+    }
 
     public function get_data($table, $where_field = '', $where_value = '')
     {

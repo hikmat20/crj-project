@@ -16,6 +16,14 @@
         </div>
     </div>
     <div class="form-group row">
+        <div class="col-md-4 tx-dark tx-bold">
+            <span>Type</span>
+        </div>
+        <div class="col-md-7">:
+            <?= (isset($fee) && $fee->type == 'TNE') ? 'Tonase' : (($fee->type == 'SPM') ? 'Shipment' : ''); ?>
+        </div>
+    </div>
+    <div class="form-group row">
         <div class="col-md-4">
             <span class="tx-dark tx-bold">Fee Value</span>
         </div>

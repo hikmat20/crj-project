@@ -75,6 +75,15 @@
                     <?= isset($hs->lartas) ? $ArrLartas[$hs->lartas] : '-'; ?>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-5 tx-dark tx-bold">
+                    <span>LS</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= isset($hs->ls) ? $LS[$hs->ls] : '-'; ?>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -99,112 +99,113 @@
             if ($details) foreach ($details as $dtl) : $n++;
                 $img = ($dtl->image) ? base_url('assets/uploads/' . $dtl->check_hscode_id . "/" . $dtl->image) : $no_img;
             ?>
-                <tr>
-                    <td class="text-center"><?= $n; ?></td>
-                    <td><?= $dtl->product_name; ?></td>
-                    <td><?= $dtl->specification; ?></td>
-                    <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class=" text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
-                    <td class="text-center"><?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
-                    <td>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
-                            <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
-                            <small class="d-block">BM with ASK : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small>
-                            <small class="d-block">PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn : '0'; ?>%</small>
-                            <small class="d-block">PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->ppn_bm) > 0) : ?>
-                            <small class="d-block">PPn BM : <?= ($ArrHscode[$dtl->origin_hscode]->ppn_bm) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->cukai) > 0) : ?>
-                            <small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->bmad) > 0) : ?>
-                            <small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->bmtp) > 0) : ?>
-                            <small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->bm_im) > 0) : ?>
-                            <small class="d-block">BM IM : <?= ($ArrHscode[$dtl->origin_hscode]->bm_im) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->pph_napi) > 0) : ?>
-                            <small class="d-block">PPH (NON-API) : <?= ($ArrHscode[$dtl->origin_hscode]->pph_napi) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->bk) > 0) : ?>
-                            <small class="d-block">BK : <?= ($ArrHscode[$dtl->origin_hscode]->bk) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->dana_sawit) > 0) : ?>
-                            <small class="d-block">Tariff Dana Sawit : <?= ($ArrHscode[$dtl->origin_hscode]->dana_sawit) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                        <?php if (($ArrHscode[$dtl->origin_hscode]->dhe_sda) > 0) : ?>
-                            <small class="d-block">Wajib Lapor DHE-SDA : <?= ($ArrHscode[$dtl->origin_hscode]->dhe_sda) ?: '0'; ?>%</small>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if (isset($ArrHscode[$dtl->origin_hscode]->id)) :
+            <tr>
+                <td class="text-center"><?= $n; ?></td>
+                <td><?= $dtl->product_name; ?></td>
+                <td><?= $dtl->specification; ?></td>
+                <td class="text-center"><?= $dtl->origin_hscode; ?></td>
+                <td class=" text-center <?= isset($ArrHscode[($dtl->origin_hscode)]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
+                <td class="text-center"><?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?></td>
+                <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
+                <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
+                <td>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
+                    <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
+                    <small class="d-block">BM with ASK : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small>
+                    <small class="d-block">PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn : '0'; ?>%</small>
+                    <small class="d-block">PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                </td>
+                <td>
+
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->ppn_bm) && ($ArrHscode[$dtl->origin_hscode]->ppn_bm) > 0) : ?>
+                    <small class="d-block">PPn BM : <?= ($ArrHscode[$dtl->origin_hscode]->ppn_bm) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->cukai) && ($ArrHscode[$dtl->origin_hscode]->cukai) > 0) : ?>
+                    <small class="d-block">Cukai : <?= ($ArrHscode[$dtl->origin_hscode]->cukai) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmad) && ($ArrHscode[$dtl->origin_hscode]->bmad) > 0) : ?>
+                    <small class="d-block">BMAD : <?= ($ArrHscode[$dtl->origin_hscode]->bmad) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->bmtp) && ($ArrHscode[$dtl->origin_hscode]->bmtp) > 0) : ?>
+                    <small class="d-block">BMTP : <?= ($ArrHscode[$dtl->origin_hscode]->bmtp) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->bm_im) && ($ArrHscode[$dtl->origin_hscode]->bm_im) > 0) : ?>
+                    <small class="d-block">BM IM : <?= ($ArrHscode[$dtl->origin_hscode]->bm_im) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->pph_napi) && ($ArrHscode[$dtl->origin_hscode]->pph_napi) > 0) : ?>
+                    <small class="d-block">PPH (NON-API) : <?= ($ArrHscode[$dtl->origin_hscode]->pph_napi) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->bk) && ($ArrHscode[$dtl->origin_hscode]->bk) > 0) : ?>
+                    <small class="d-block">BK : <?= ($ArrHscode[$dtl->origin_hscode]->bk) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->dana_sawit) && ($ArrHscode[$dtl->origin_hscode]->dana_sawit) > 0) : ?>
+                    <small class="d-block">Tariff Dana Sawit : <?= ($ArrHscode[$dtl->origin_hscode]->dana_sawit) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->dhe_sda) && ($ArrHscode[$dtl->origin_hscode]->dhe_sda) > 0) : ?>
+                    <small class="d-block">Wajib Lapor DHE-SDA : <?= ($ArrHscode[$dtl->origin_hscode]->dhe_sda) ?: '0'; ?>%</small>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php if (isset($ArrHscode[$dtl->origin_hscode]->id)) :
                             $idHs = $ArrHscode[$dtl->origin_hscode]->id;
                         ?>
-                            <ul class="pd-l-15 pd-y-0">
-                                <?php if (isset($ArrDocs[$idHs])) : ?>
-                                    <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
-                                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-
-                                    <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
-                                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-
-                                    <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
-                                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </ul>
+                    <ul class="pd-l-15 pd-y-0">
+                        <?php if (isset($ArrDocs[$idHs])) : ?>
+                        <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
+                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
+                        <li class="tx-sm"><small><?= $d->name ?></small></li>
+                        <?php endforeach; ?>
                         <?php endif; ?>
-                    </td>
-                    <td><img src="<?= $img; ?>" width="50"></td>
-                    <td><?= $dtl->remarks; ?></td>
-                </tr>
+
+                        <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                        <li class="tx-sm"><small><?= $d->name ?></small></li>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                        <li class="tx-sm"><small><?= $d->name ?></small></li>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                    </ul>
+                    <?php endif; ?>
+                </td>
+                <td><img src="<?= $img; ?>" width="50"></td>
+                <td><?= $dtl->remarks; ?></td>
+            </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.select').select2({
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
-            width: "100%",
-            allowClear: true
-        });
+$(document).ready(function() {
+    $('.select').select2({
+        placeholder: 'Choose one',
+        dropdownParent: $('#dialog-popup'),
+        width: "100%",
+        allowClear: true
+    });
 
-        $('.select.not-search').select2({
-            minimumResultsForSearch: -1,
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
-            width: "100%",
-            allowClear: true,
-        });
+    $('.select.not-search').select2({
+        minimumResultsForSearch: -1,
+        placeholder: 'Choose one',
+        dropdownParent: $('#dialog-popup'),
+        width: "100%",
+        allowClear: true,
+    });
 
-        $('.cost_value').mask('#,##0', {
-            reverse: true
-        });
+    $('.cost_value').mask('#,##0', {
+        reverse: true
+    });
 
-        window.Parsley.on('form:validated', function() {
-            $('select').on('select2:select', function(evt) {
-                $("#city_id").parsley().validate();
-            });
+    window.Parsley.on('form:validated', function() {
+        $('select').on('select2:select', function(evt) {
+            $("#city_id").parsley().validate();
         });
     });
+});
 </script>

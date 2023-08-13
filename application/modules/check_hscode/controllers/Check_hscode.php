@@ -284,7 +284,7 @@ class Check_hscode extends Admin_Controller
 		}
 
 		foreach ($hscodes as $hs) {
-			$ArrHscode[substr($hs->origin_code, 0, 6)] = $hs;
+			$ArrHscode[$hs->origin_code] = $hs;
 		}
 
 		foreach ($hscodes_doc as $doc) {

@@ -52,7 +52,7 @@
                     <select name="company_id" id="company_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrCompany" data-parsley-errors-container="#errCompany">
                         <option value=""></option>
                         <?php if ($companies) foreach ($companies as $comp) : ?>
-                            <option value="<?= $comp->id; ?>"><?= $comp->company_name; ?></option>
+                        <option value="<?= $comp->id; ?>"><?= $comp->company_name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -68,7 +68,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Rp.</span>
                     </div>
-                    <input type="text" name="exchange" id="kurs" placeholder="0" class="form-control text-right number-format">
+                    <input type="text" name="exchange" id="exchange" placeholder="0" class="form-control text-right number-format">
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                     <select name="port_loading" id="source_port" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrPol" data-parsley-errors-container="#errPol">
                         <option value=""></option>
                         <?php if ($ArrPorts[$header->origin_country_id]) foreach ($ArrPorts[$header->origin_country_id] as $scPort) : ?>
-                            <option value="<?= $scPort->id; ?>"><?= $scPort->city_name; ?></option>
+                        <option value="<?= $scPort->id; ?>"><?= $scPort->city_name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -97,7 +97,7 @@
                     <select name="port_discharge" id="dest_port" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrPod" data-parsley-errors-container="#errPod">
                         <option value=""></option>
                         <?php if ($ArrPorts['102']) foreach ($ArrPorts['102'] as $desPort) : ?>
-                            <option value="<?= $desPort->id; ?>"><?= $desPort->city_name; ?></option>
+                        <option value="<?= $desPort->id; ?>"><?= $desPort->city_name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -111,7 +111,7 @@
                     <select name="dest_city" id="dest_city" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrDestCity" data-parsley-errors-container="#errDescCity">
                         <option value=""></option>
                         <?php if ($cities) foreach ($cities as $city) : ?>
-                            <option value="<?= $city->id; ?>"><?= $city->name; ?></option>
+                        <option value="<?= $city->id; ?>"><?= $city->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -183,37 +183,56 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="container_id" class="tx-dark tx-bold col-md-3 pd-x-0">Container Size <span class="text-danger tx-bold">*</span></label>
+            <label for="container_id" class="tx-dark tx-bold col-md-3 pd-x-0">Container <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-6 px-0">
+                <!-- <input type="number" name="qty_container" id="qty_container" class="form-control text-right" required placeholder="0" min="0" data-parsley-inputs data-parsley-class-handler="#slWrConteSize" data-parsley-errors-container="#errConteSize2"> -->
                 <div id="slWrConteSize" class="parsley-select">
-                    <select name="container_id" id="container_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrConteSize" data-parsley-errors-container="#errConteSize">
-                        <option value=""></option>
-                        <?php if ($containers) foreach ($containers as $conte) : ?>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">QTY</span>
+                        </div>
+                        <input type="number" min="0" name="qty_container" id="qty_container" autocomplete="off" class="form-control text-right" required placeholder="0" data-parsley-errors-container="#errConteSize1">
+                        <div class="input-group-prepend input-group-append">
+                            <span class="input-group-text">Size</span>
+                        </div>
+                        <select name="container_id" id="container_id" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrConteSize" data-parsley-errors-container="#errConteSize2">
+                            <option value=""></option>
+                            <?php if ($containers) foreach ($containers as $conte) : ?>
                             <option value="<?= $conte->id; ?>"><?= $conte->name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <div id="errConteSize"></div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="qty_container" class="tx-dark tx-bold col-md-3 pd-x-0">Qty Container <span class="text-danger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <input type="number" required name="qty_container" id="qty_container" class="form-control text-right" placeholder="0" min="0">
+                <div class="row">
+                    <div id="errConteSize1" class="col-md-6"></div>
+                    <div id="errConteSize2" class="col-md-6"></div>
+                </div>
             </div>
         </div>
         <div class="form-group row">
             <label for="ls_type" class="tx-dark tx-bold col-md-3 pd-x-0">LS Type <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-6 px-0">
                 <div id="slWrLS" class="parsley-select">
-                    <select name="ls_type" id="ls_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
-                        <option value=""></option>
-                        <option value="FULL">Full LS</option>
-                        <option value="NON">Non LS</option>
-                        <option value="OTH">Others</option>
-                    </select>
+                    <div class="input-group">
+                        <select name="ls_type" id="ls_type" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
+                            <option value=""></option>
+                            <option value="FULL">Full LS</option>
+                            <option value="NON">Non LS</option>
+                            <option value="OTH">Others</option>
+                        </select>
+                        <div class="input-group-append input-group-prepend">
+                            <span class="input-group-text">QTY Container</span>
+                        </div>
+                        <input type="number" name="qty_ls_container" id="qty_ls_container" placeholder="0" min="0" readonly class="form-control text-right">
+                    </div>
                 </div>
                 <div id="errLS"></div>
+                <div class="input-group input-group-sm mg-t-10">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                    </div>
+                    <input type="text" name="surveyor" id="surveyor" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                </div>
             </div>
         </div>
     </div>
@@ -266,20 +285,19 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="form-group row">
-            <label for="surveyor" class="tx-dark tx-bold col-md-3 pd-x-0">Surveyor <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <input type="text" name="surveyor" id="surveyor" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
+
         <div class="form-group row">
             <label for="fee" class="tx-dark tx-bold col-md-3 pd-x-0">Fee CSJ (%) <span class="text-dange tx-bold">*</span></label>
             <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group wd-sm-50p input-group-sm">
+                <div class="input-group input-group-sm">
                     <input type="number" name="fee" id="fee" readonly autocomplete="off" min="0" class="form-control text-right" placeholder="0">
                     <div class="input-group-append">
-                        <span class="input-group-text" id="input1">%</span>
+                        <span class="input-group-text">%</span>
                     </div>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                    </div>
+                    <input type="text" id="fee_csj_value" readonly autocomplete="off" class="form-control text-right" placeholder="0">
                 </div>
             </div>
         </div>
@@ -288,7 +306,7 @@
             <div class="col-md-6 px-0 d-flex justify-content-end">
                 <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="input1">Rp</span>
+                        <span class="input-group-text">Rp</span>
                     </div>
                     <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
                     <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
@@ -315,16 +333,16 @@
                 <th class="text-center align-middle" rowspan="2">BM without form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle" colspan="6">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
+                <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
                 <th class="text-center align-middle" rowspan="2">Image</th>
             </tr>
             <tr>
-                <th class="text-center border border-top-0 border-right-0">FOB</th>
+                <th class="text-center border border-top-0 border-right-0">FOB/CFR/CIF</th>
                 <th class="text-center align-middle">BM</th>
                 <th class="text-center align-middle">PPH</th>
-                <th class="text-center">CFR/CIF</th>
+                <!-- <th class="text-center">CFR/CIF</th>
                 <th class="text-center align-middle">BM</th>
-                <th class="text-center align-middle">PPH</th>
+                <th class="text-center align-middle">PPH</th> -->
             </tr>
         </thead>
         <tbody class="tx-dark">
@@ -349,88 +367,88 @@
                     $img = 'assets/uploads/' . $header->id . "/" . $dt->image;
                 }
             ?>
-                <tr class="tx-dark">
-                    <td><?= $n; ?></td>
-                    <td><?= $dt->product_name; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][product_name]" value="<?= $dt->product_name; ?>">
-                    </td>
-                    <td><?= $dt->specification; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][specification]" value="<?= $dt->specification; ?>">
-                    </td>
-                    <td class="text-center"><?= $dt->origin_hscode; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dt->origin_hscode; ?>">
-                    </td>
-                    <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
-                    </td>
-                    <td class="">
-                        <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
+            <tr class="tx-dark">
+                <td><?= $n; ?></td>
+                <td><?= $dt->product_name; ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][product_name]" value="<?= $dt->product_name; ?>">
+                </td>
+                <td><?= $dt->specification; ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][specification]" value="<?= $dt->specification; ?>">
+                </td>
+                <td class="text-center"><?= $dt->origin_hscode; ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dt->origin_hscode; ?>">
+                </td>
+                <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
+                </td>
+                <td class="">
+                    <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
                             $idHs = $ArrHscode[$dt->origin_hscode]->id;
                         ?>
-                            <ul class="pd-l-15">
-                                <?php if (isset($ArrDocs[$idHs])) : ?>
-                                    <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
-                                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-
-                                    <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
-                                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-
-                                    <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
-                                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </ul>
+                    <ul class="pd-l-15">
+                        <?php if (isset($ArrDocs[$idHs])) : ?>
+                        <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
+                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
+                        <li class="tx-sm"><small><?= $d->name ?></small></li>
+                        <?php endforeach; ?>
                         <?php endif; ?>
-                    </td>
-                    <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
-                        <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
-                    </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%
-                        <input type="hidden" name="detail[<?= $n; ?>][bm_e]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>">
-                    </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
-                        <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
-                    </td>
-                    <td class="text-right" style="background-color: #fff9dd;"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
-                    </td>
-                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalBMFOB) ? number_format($totalBMFOB, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMFOB) ? $totalBMFOB : '0'; ?>">
-                    </td>
-                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalPPHFOB) ? number_format($totalPPHFOB, 2)  : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHFOB) ? $totalPPHFOB : '0'; ?>">
-                    </td>
-                    <td class="text-right" style="background-color: #e2fffb;"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][cif_price]" value="<?= ($dt->cif_price) ? $dt->cif_price : '0'; ?>">
-                    </td>
-                    <td class="text-right" style="background-color: #e2fffb;"><?= ($totalBMCIF) ? number_format($totalBMCIF, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMCIF) ? $totalBMCIF : '0'; ?>">
-                    </td>
-                    <td class="text-right" style="background-color: #e2fffb;"><?= ($totalPPHCIF) ? number_format($totalPPHCIF, 2)  : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHCIF) ? $totalPPHCIF : '0'; ?>">
-                    </td>
-                    <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
-                        <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
-                    </td>
-                </tr>
+
+                        <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                        <li class="tx-sm"><small><?= $d->name ?></small></li>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                        <li class="tx-sm"><small><?= $d->name ?></small></li>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                    </ul>
+                    <?php endif; ?>
+                </td>
+                <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
+                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
+                    <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
+                </td>
+                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%
+                    <input type="hidden" name="detail[<?= $n; ?>][bm_e]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>">
+                </td>
+                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
+                    <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
+                </td>
+                <td class="text-right" style="background-color: #fff9dd;"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
+                </td>
+                <td class="text-right" style="background-color: #fff9dd;"><?= ($totalBMFOB) ? number_format($totalBMFOB, 2) : '0' ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMFOB) ? $totalBMFOB : '0'; ?>">
+                </td>
+                <td class="text-right" style="background-color: #fff9dd;"><?= ($totalPPHFOB) ? number_format($totalPPHFOB, 2)  : '0' ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHFOB) ? $totalPPHFOB : '0'; ?>">
+                </td>
+                <!-- <td class="text-right" style="background-color: #e2fffb;"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][cif_price]" value="<?= ($dt->cif_price) ? $dt->cif_price : '0'; ?>">
+                </td>
+                <td class="text-right" style="background-color: #e2fffb;"><?= ($totalBMCIF) ? number_format($totalBMCIF, 2) : '0' ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMCIF) ? $totalBMCIF : '0'; ?>">
+                </td>
+                <td class="text-right" style="background-color: #e2fffb;"><?= ($totalPPHCIF) ? number_format($totalPPHCIF, 2)  : '0' ?>
+                    <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHCIF) ? $totalPPHCIF : '0'; ?>">
+                </td> -->
+                <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
+                    <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
+                </td>
+            </tr>
             <?php endforeach; ?>
             <tr class="bg-light">
                 <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalFOB"><?= number_format(($totalFOB) ?: '0', 2); ?></th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format($gtotalBMFOB, 2); ?></th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format(($gtotalPPHFOB) ?: '0', 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;" id="totalCIF"><?= number_format(($totalCIF) ?: '0', 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format($gtotalBMCIF, 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format(($gtotalPPHCIF) ?: '0', 2); ?></th>
+                <!-- <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;" id="totalCIF"><?= number_format(($totalCIF) ?: '0', 2); ?></th> -->
+                <!-- <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format($gtotalBMCIF, 2); ?></th> -->
+                <!-- <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format(($gtotalPPHCIF) ?: '0', 2); ?></th> -->
                 <th></th>
             </tr>
         </tbody>
@@ -439,78 +457,8 @@
 <div class="row">
     <div class="col-md-6">
         <h5 class="tx-dark tx-bold">Fee Lartas</h5>
-        <table class="table table-sm table-borderless">
-            <thead class="tx-dark tx-bold">
-                <tr>
-                    <td class="border-bottom">Lartas Type</td>
-                    <td class="text-center border-bottom">Qty</td>
-                    <td class="text-right border-bottom">Total</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th class="tx-dark tx-bold">Non Lartas</th>
-                    <th class="text-center">
-                        <div class="input-group input-group-sm">
-                            <input type="text" name="" id="" value="" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="input1">/Tonase</span>
-                            </div>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="input1">Rp</span>
-                            </div>
-                            <input type="text" name="" id="" value="<?= number_format(array_sum($ArrLartas['0']), 2); ?>" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <th class="tx-dark tx-bold">PI</th>
-                    <th class="text-center"><?= isset($ArrLartas['FL23-0003']) ? (count($ArrLartas['FL23-0003'])) : '-'; ?></th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="input1">Rp</span>
-                            </div>
-                            <input type="text" name="" id="" value="<?= isset($ArrLartas['FL23-0003']) ? number_format(array_sum($ArrLartas['FL23-0003']), 2) : '0'; ?>" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <th class="tx-dark tx-bold">ALKES</th>
-                    <th class="text-center"><?= isset($ArrLartas['FL23-0002']) ? count(($ArrLartas['FL23-0002'])) : '-'; ?></th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="input1">Rp</span>
-                            </div>
-                            <input type="text" name="" id="" value="<?= isset($ArrLartas['FL23-0002']) ? number_format(array_sum($ArrLartas['FL23-0002']), 2) : '0'; ?>" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <th class="tx-dark tx-bold">SKI BPOM</th>
-                    <th class="text-center"></th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="input1">Rp</span>
-                            </div>
-                            <input type="text" name="" id="" class="form-control form-control-sm text-right number-format" placeholder="0" aria-describedby="helpId">
-                        </div>
-                    </th>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr class="border-top">
-                    <th colspan="2" class="border-top tx-dark tx-bold text-center">Total Lartas</th>
-                    <th class="border-top tx-dark tx-bold text-right">0</th>
-                </tr>
-            </tfoot>
-        </table>
+        <div id="loadLartas">
+        </div>
     </div>
 </div>
 <hr>
@@ -747,28 +695,36 @@
     </div> -->
 </div>
 <script>
-    $(document).ready(function() {
-        $(document).on('input', '.number-format', function() {
-            $(this).mask('#,##0', {
-                reverse: true
-            })
+$(document).ready(function() {
+    $(document).on('input', '.number-format', function() {
+        $(this).mask('#,##0', {
+            reverse: true
         })
-
-        $('.select').select2({
-            // minimumResultsForSearch: -1,
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup .modal-body'),
-            width: "100%",
-            allowClear: true
-        });
-
-        $('.select-no-search').select2({
-            minimumResultsForSearch: -1,
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup .modal-body'),
-            width: "100%",
-            allowClear: true
-        });
-
     })
+
+    $('.select').select2({
+        // minimumResultsForSearch: -1,
+        placeholder: 'Choose one',
+        dropdownParent: $('#dialog-popup .modal-body'),
+        width: "100%",
+        allowClear: true
+    });
+
+    $('.select-50').select2({
+        // minimumResultsForSearch: -1,
+        placeholder: 'Choose one',
+        dropdownParent: $('#dialog-popup .modal-body'),
+        width: "50%",
+        allowClear: true
+    });
+
+    $('.select-no-search').select2({
+        minimumResultsForSearch: -1,
+        placeholder: 'Choose one',
+        dropdownParent: $('#dialog-popup .modal-body'),
+        width: "100%",
+        allowClear: true
+    });
+
+})
 </script>

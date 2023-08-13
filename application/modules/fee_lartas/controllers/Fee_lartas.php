@@ -113,7 +113,7 @@ class Fee_lartas extends Admin_Controller
 			$nestedData[]  = "Rp. " . number_format($row['fee_value']);
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $buttons;
-			$data[] = $nestedData;
+			$data[] 	   = $nestedData;
 			$urut1++;
 			$urut2++;
 		}
@@ -395,7 +395,7 @@ class Fee_lartas extends Admin_Controller
 		$id = $this->input->post('id');
 		$fee = $this->db->get_where('fee_lartas')->row_array();
 		$data = [
-			'status' => 0,
+			'status' => '0',
 			'deleted_by' => $this->auth->user_id(),
 			'deleted_at' => date('Y-m-d H:i:s'),
 		];

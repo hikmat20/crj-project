@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-md-7">
                     <input type="text" readonly class="form-control" id="currency" placeholder="-" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>">
-                    <input type="hidden" name="currency" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol : '-'; ?>">
+                    <input type="hidden" name="currency" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->code : '-'; ?>">
                 </div>
             </div>
         </div>

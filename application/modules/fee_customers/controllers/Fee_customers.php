@@ -107,7 +107,7 @@ class Fee_customers extends Admin_Controller
 			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
-			$type 		= isset($row['type']) ? $this->type[$row['type']] : '-';
+			$type 		= (isset($row['type']) && $row['type']) ? $this->type[$row['type']] : '-';
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;

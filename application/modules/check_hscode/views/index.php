@@ -299,7 +299,7 @@
                 ],
             },
             "aaSorting": [
-                [1, "asc"]
+                [4, "desc"]
             ],
             "columnDefs": [{
                     "targets": 'no-sort',

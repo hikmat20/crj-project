@@ -91,8 +91,6 @@ class Check_hscode extends Admin_Controller
 		$sql .= " LIMIT " . $start . " ," . $length . " ";
 		$query  = $this->db->query($sql);
 
-
-
 		$data  = array();
 		$urut1  = 1;
 		$urut2  = 0;

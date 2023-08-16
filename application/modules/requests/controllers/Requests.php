@@ -700,10 +700,6 @@ class Requests extends Admin_Controller
 			}
 		}
 
-		// echo '<pre>';
-		// print_r(array_sum($itemLartas[0]));
-		// echo '</pre>';
-		// exit;
 
 		$data = [
 			'currency' 		=> $ArrCurrency,
@@ -782,6 +778,7 @@ class Requests extends Admin_Controller
 		} else if (isset($fee_type) && $fee_type == 'C') {
 			$err_fee_customer 	= 'Fee Customer not available in this Customer.';
 			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+
 			if ($feeCust) {
 				$fee_customer_id 	= $feeCust->id;
 				$fee_customer_value = ($feeCust->fee_value);
@@ -799,6 +796,7 @@ class Requests extends Admin_Controller
 			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
 			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
 			'fee' 				 => $fee,
+			'product_price'		 => number_format($convertRate),
 			'fee_csj_value' 	 => number_format($fee_csj_value),
 			'fee_customer_id' 	 => $fee_customer_id,
 			'fee_customer_value' => number_format($fee_customer_value),
@@ -817,12 +815,15 @@ class Requests extends Admin_Controller
 		$exchange 			= str_replace(",", "", $post['exchange']);
 		$lartas 			= [];
 		$fee 				= 0;
+		$nonLartasConvert   = 0;
 
 		if ($fee_lartas_type == 'STD') {
-			$lartas = $this->db->get_where('fee_lartas', ['status' => '1'])->result();
+			$lartas = $this->db->get_where('view_fee_lartas', ['status' => '1'])->result();
 		} else if ($fee_lartas_type == 'CORP') {
 			$header = $this->db->get_where('fee_lartas_customers', ['customer_id' => $customer_id, 'status' => '1'])->row();
-			$lartas = $this->db->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id, 'status' => '1'])->result();
+			if ($header) {
+				$lartas = $this->db->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id])->result();
+			}
 		} else {
 			echo 'Data not valid';
 		}
@@ -844,9 +845,11 @@ class Requests extends Admin_Controller
 			}
 		}
 
-		$nonLartas = array_sum($itemLartas[0]);
+		if (isset($itemLartas[0])) {
+			$nonLartas = array_sum($itemLartas[0]);
+			$nonLartasConvert = $exchange * $nonLartas;
+		}
 
-		$nonLartasConvert = $exchange * $nonLartas;
 		if (isset($fee_type) && $fee_type == 'V') {
 			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
 			foreach ($fees as $f) {
@@ -926,14 +929,16 @@ class Requests extends Admin_Controller
 		$data['custom_clearance'] 		= str_replace(",", "", $post['custom_clearance']);
 		$data['fee_value'] 				= str_replace(",", "", $post['fee_value']);
 		$data['fee_customer'] 			= str_replace(",", "", $post['fee_customer']);
+		$data['exchange'] 				= str_replace(",", "", $post['exchange']);
+		$data['coordination_fee'] 		= str_replace(",", "", $post['coordination_fee']);
 		$data['fee_customer_id'] 		= ($post['fee_customer_id']) ?: null;
-		$data['fee_lartas_pi'] 			= str_replace(",", "", $post['fee_lartas_pi']);
-		$data['fee_lartas_alkes'] 		= str_replace(",", "", $post['fee_lartas_alkes']);
-		$data['fee_lartas_ski'] 		= str_replace(",", "", $post['fee_lartas_ski']);
 		$data['created_at']				= $data['modified_at'] = date('Y-m-d H:i:s');
 		$data['created_by']				= $data['modified_by'] = $this->auth->user_id();
 		$detail 						= $data['detail'];
+		$detail_lartas 					= $data['detail_fee_lartas'];
+
 		unset($data['detail']);
+		unset($data['detail_fee_lartas']);
 		$this->db->trans_begin();
 		$this->db->insert("quotations", $data);
 
@@ -943,13 +948,29 @@ class Requests extends Admin_Controller
 				$dtlId++;
 				$dtl['quotation_id'] 	= $data['id'];
 				$dtl['fob_price'] 		= str_replace(",", "", $dtl['fob_price']);
-				$dtl['cif_price'] 		= str_replace(",", "", $dtl['cif_price']);
+				// $dtl['cif_price'] 		= str_replace(",", "", $dtl['cif_price']);
 				$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
 				$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
 				$dtl['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
 				$this->db->insert('quotation_details', $dtl);
 			}
 		}
+
+		if ($detail_lartas) {
+			$dtlId = 0;
+			foreach ($detail_lartas as $dtla) {
+				$dtlId++;
+				$dtla['id'] 				= $data['id'] . "-L" . sprintf("%03d", $dtlId);
+				$dtla['quotation_id'] 	= $data['id'];
+				$dtla['price'] 			= str_replace(",", "", $dtla['price']);
+				$dtla['total_price'] 	= str_replace(",", "", $dtla['total_price']);
+				// $dtla['created_at'] 	= date('Y-m-d H:i:s');
+				// $dtla['created_by'] 	= $this->auth->user_id();;
+				$this->db->insert('quotation_detail_lartas', $dtla);
+			}
+		}
+
+		$this->db->update("check_hscodes", ['status' => 'QTT'], ['id' => $data['check_id']]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

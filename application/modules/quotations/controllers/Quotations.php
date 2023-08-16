@@ -18,7 +18,7 @@ class Quotations extends Admin_Controller
 	protected $addPermission  	= 'Quotations.Add';
 	protected $managePermission = 'Quotations.Manage';
 	protected $deletePermission = 'Quotations.Delete';
-
+	protected $currency;
 	public function __construct()
 	{
 		parent::__construct();
@@ -30,7 +30,7 @@ class Quotations extends Admin_Controller
 		));
 		$this->template->title('Quotations');
 		$this->template->page_icon('far fa-list-alt');
-
+		$this->currency = $this->db->get('currency')->result();
 		date_default_timezone_set('Asia/Bangkok');
 	}
 
@@ -175,11 +175,24 @@ class Quotations extends Admin_Controller
 		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
 		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
 		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
-		$lartas 		= $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
-		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$lartas 		= $this->db->get_where('view_quotation_detail_lartas', ['quotation_id' => $id])->result();
+		// $ArrLartas 		= array_column($lartas, 'name', 'id');
+
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
+		$ArrCurrency 	= [];
+
+		$typeLartas 	= [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+			'ITM' => 'Item',
+		];
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
 
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
@@ -204,7 +217,9 @@ class Quotations extends Admin_Controller
 			'ArrHscode' 	=> $ArrHscode,
 			'ArrDocs' 		=> $ArrDocs,
 			'ArrPorts' 		=> $ArrPorts,
-			'ArrLartas' 	=> $ArrLartas,
+			'lartas' 		=> $lartas,
+			'currency' 		=> $ArrCurrency,
+			'typeLartas' 	=> $typeLartas,
 		];
 		$this->template->set($data);
 		$this->template->render('edit');
@@ -275,141 +290,72 @@ class Quotations extends Admin_Controller
 	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
-		$post 			= $this->input->post();
-		$data 			= $post;
+		$post = $this->input->post();
+		$data = $post;
 
-		$data['id'] 	= isset($post['id']) && $post['id'] ? $post['id'] : $this->Requests_model->generate_id();
-		$data['number'] = isset($post['number']) && $post['number'] ? $post['number'] : $this->Requests_model->generate_number();
-		$data['date'] 	= date("Y-m-d", strtotime(str_replace("/", "-", $post['date'])));
-		$detail 		= isset($post['detail']) ? $post['detail'] : '';
-		$replace 		= ($post['replace']);
-		unset($data['detail']);
-		unset($data['replace']);
-		unset($data['deleteItem']);
+		$data['id'] 					= $post['id'];
+		$data['number'] 				= $post['number'];
+		$data['date'] 					= date("Y-m-d");
+		$data['ocean_freight'] 			= str_replace(",", "", $post['ocean_freight']);
+		$data['shipping'] 				= str_replace(",", "", $post['shipping']);
+		$data['storage'] 				= str_replace(",", "", $post['storage']);
+		$data['trucking'] 				= str_replace(",", "", $post['trucking']);
+		$data['surveyor'] 				= str_replace(",", "", $post['surveyor']);
+		$data['total_product'] 			= str_replace(",", "", $post['total_product']);
+		$data['total_shipping'] 		= str_replace(",", "", $post['total_shipping']);
+		$data['total_custom_clearance'] = str_replace(",", "", $post['total_custom_clearance']);
+		$data['total_trucking'] 		= str_replace(",", "", $post['total_trucking']);
+		$data['total_fee_lartas'] 		= str_replace(",", "", $post['total_fee_lartas']);
+		$data['custom_clearance'] 		= str_replace(",", "", $post['custom_clearance']);
+		$data['fee_value'] 				= str_replace(",", "", $post['fee_value']);
+		$data['fee_customer'] 			= str_replace(",", "", $post['fee_customer']);
+		$data['exchange'] 				= str_replace(",", "", $post['exchange']);
+		$data['coordination_fee'] 		= str_replace(",", "", $post['coordination_fee']);
+		$data['fee_customer_id'] 		= ($post['fee_customer_id']) ?: null;
+		$data['modified_at'] 			= date('Y-m-d H:i:s');
+		$data['modified_by'] 			= $this->auth->user_id();
+		$data['date'] 					= date("Y-m-d", strtotime(str_replace("/", "-", $data['date'])));
+		$detail 						= $data['detail'];
+		$detail_lartas 					= $data['detail_fee_lartas'];
 
 		$this->db->trans_begin();
-		if (isset($post['id']) && $post['id']) {
-			$data['modified_at']	= date('Y-m-d H:i:s');
-			$data['modified_by']	= $this->auth->user_id();
-			$this->db->where('id', $post['id'])->update("check_hscodes", $data);
-		} else {
-			if (isset($data['old_id']) && $data['old_id']) {
-				$oldData 				= $this->db->get_where('check_hscodes', ['id' => $data['old_id']])->row();
-				$data['revision_count'] = $oldData->revision_count + 1;
-				$data['status'] = 'RVI';
-				$this->db->update('check_hscodes', ['status' => 'HIS'], ['id' => $data['old_id']]);
+		unset($data['detail']);
+		unset($data['detail_fee_lartas']);
+		unset($data['deleteItem']);
+
+		$this->db->update("quotations", $data, ['id' => $post['id']]);
+
+		// if ($detail) {
+		// 	$dtlId =  ($this->Requests_model->getDetailQuotId($data['id']));
+		// 	foreach ($detail as $dtl) {
+		// 		$dtlId++;
+		// 		$dtl['fob_price'] 		= str_replace(",", "", $dtl['fob_price']);
+		// 		$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
+		// 		$dtl['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
+		// 		$this->db->update('quotation_details', $dtl, ['id' => $dtl['id']]);
+		// 	}
+		// }
+
+		if ($detail_lartas) {
+			$dtlId = 0;
+			foreach ($detail_lartas as $dtla) {
+				$dtlId++;
+				// $dtla['id'] 				= $data['id'] . "-L" . sprintf("%03d", $dtlId);
+				$dtla['price'] 			= str_replace(",", "", $dtla['price']);
+				$dtla['total_price'] 	= str_replace(",", "", $dtla['total_price']);
+				// $dtla['created_at'] 	= date('Y-m-d H:i:s');
+				// $dtla['created_by'] 	= $this->auth->user_id();;
+				$this->db->update('quotation_detail_lartas', $dtla, ['id' => $dtla['id']]);
 			}
-			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
-			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
-			$this->db->insert("check_hscodes", $data);
-		}
-
-		if ($detail) {
-			if ($replace == '1') {
-				$exist_data = $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $data['id']])->result();
-				$root = FCPATH;
-				if (count($exist_data) > 0) :
-					$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
-					foreach ($exist_data as $exdt) {
-						if ($exdt->image) {
-							if (file_exists($root . 'assets/uploads/' . $data['id'] . "/" . $exdt->image)) {
-								unlink($root . 'assets/uploads/' . $data['id'] . "/" . $exdt->image);
-							}
-						}
-					}
-				endif;
-			}
-			$dtlId =  ($this->Requests_model->getDetailId($data['id']));
-
-			foreach ($detail as $dtl) {
-				$dtl['check_hscode_id'] 	= $data['id'];
-				$dtl['fob_price'] 			= str_replace(",", "", $dtl['fob_price']);
-				$dtl['cif_price'] 			= str_replace(",", "", $dtl['cif_price']);
-
-				if (isset($dtl['id']) && $dtl['id']) {
-					$dtl['id'] 	= $dtl['id'];
-				} else {
-					$dtlId++;
-					$dtl['id'] 	= $data['id'] . "-" . str_pad($dtlId, 4, "0", STR_PAD_LEFT);
-				}
-
-				if (isset($data['old_id']) && $data['old_id']) {
-					$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
-				}
-
-				$check 						= $this->db->get_where('check_hscode_detail', ['id' => $dtl['id']])->num_rows();
-				if (isset($dtl['image']) && $dtl['image']) {
-					$root = FCPATH;
-					if (!is_dir($root . 'assets/uploads/' . $data['id'])) {
-						mkdir($root . 'assets/uploads/' . $data['id'], 0755);
-						chmod($root . 'assets/uploads/' . $data['id'], 0755);
-					}
-					$explode 	= explode(".", $dtl['image']);
-					$ext 		= $explode['1'];
-					$imgName 	= 'img-' . $dtl['id'] . "." . $ext;
-
-					if (file_exists($root . 'assets/temp/' . $dtl['image'])) {
-						if (file_exists($root . 'assets/uploads/' . $data['id'] . '/' . $imgName)) {
-							unlink($root . 'assets/uploads/' . $data['id'] . '/' . $imgName);
-							rename($root . 'assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-						} else {
-							rename($root . 'assets/temp/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-						}
-					} else {
-						$ID = $data['id'];
-						if (isset($data['old_id']) && $data['old_id']) {
-							$ID 				= $data['old_id'];
-						}
-						if (file_exists($root . 'assets/uploads/' . $ID . '/' . $dtl['image'])) {
-							copy($root . 'assets/uploads/' . $ID . '/' . $dtl['image'], $root . '/assets/uploads/' . $data['id'] . '/' . $imgName);
-						}
-					}
-					$dtl['image'] = $imgName;
-				}
-
-				if ($check > 0) {
-					$this->db->update('check_hscode_detail', $dtl, ['id' => $dtl['id']]);
-				} else {
-					$dtl['id'] = $data['id'] . "-" . str_pad($dtlId++, 4, "0", STR_PAD_LEFT);
-					$this->db->insert('check_hscode_detail', $dtl);
-				}
-			}
-		} else {
-			$root = FCPATH;
-			$this->db->delete('check_hscode_detail', ['check_hscode_id' => $data['id']]);
-			$files = glob($root . 'assets/uploads/' . $data['id'] . "/*"); // get all file names
-			foreach ($files as $file) { // iterate files
-				if (is_file($file)) {
-					unlink($file); // delete file
-				}
-			}
-		}
-
-
-		if ($post['deleteItem']) {
-			$ArrDelete = explode(",", $post['deleteItem']);
-			$root = FCPATH;
-			if ($ArrDelete) :
-				foreach ($ArrDelete as $exdt) {
-					$ID = substr($exdt, 0, 10);
-					$exData = $this->db->get_where('check_hscode_detail', ['id' => $exdt])->row();
-					if ($exData && $exData->image != '') {
-						if (file_exists($root . 'assets/uploads/' . $ID . "/" . $exData->image)) {
-							unlink($root . 'assets/uploads/' . $ID . "/" . $exData->image);
-						}
-					}
-					$this->db->delete('check_hscode_detail', ['id' => $exdt]);
-				}
-			endif;
 		}
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$return	= array(
-				'msg'		=> 'Failed save data Requests HS Code.  Please try again.',
+				'msg'		=> 'Failed save data Quotation.  Please try again.',
 				'status'	=> 0
 			);
-			$keterangan     = "FAILD save data Requests HS Code" . $data['id'];
+			$keterangan     = "FAILD save data Quotation" . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
@@ -421,13 +367,13 @@ class Quotations extends Admin_Controller
 				'msg'		=> 'Success Save data Requests HS Code.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS save data Requests HS Code" . $data['id'];
+			$keterangan     = "SUCCESS save data Quotation" . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;
 			$kode_universal = $data['id'];
 			$jumlah         = 1;
 			$sql            = $this->db->last_query();
-			$this->session->set_flashdata('msg', 'Success Save data Requests HS Code.');
+			$this->session->set_flashdata('msg', 'Success Save data Quotation.');
 		}
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
@@ -530,6 +476,10 @@ class Quotations extends Admin_Controller
 		$src_city 			= $post['src_city'];
 		$fee_type 			= $post['fee_type'];
 		$customer 			= $post['customer_id'];
+		$ls_type 			= $post['ls_type'];
+		$qty_ls_container 	= $post['qty_ls_container'];
+		$exchange 			= str_replace(",", "", $post['exchange']);
+
 		$product_price 		= str_replace(",", "", $post['product_price']);
 		$ocean_freight 		= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
 		$thc 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
@@ -538,29 +488,40 @@ class Quotations extends Admin_Controller
 		if ($trucking) {
 			$trucking_dtl 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id, 'container_id' => $container])->row();
 		}
-		$surveyor			= $this->db->get_where('surveyors', ['qty_container' => $qty, 'status' => '1'])->row();
+		if ($qty_ls_container || $qty_ls_container > 0) {
+			$surveyor		= $this->db->get_where('surveyors', ['qty_container' => $qty_ls_container, 'status' => '1'])->row();
+		}
+
 		$fee 				= 0;
+		$fee_csj_value		= 0;
+		$totalFee			= 0;
+		$totalFee			= 0;
 		$fee_customer_id 	= null;
 		$fee_customer_value = 0;
 		$err_fee_customer 	= '';
 
+		$convertRate = $product_price * $exchange;
 		if (isset($fee_type) && $fee_type == 'V') {
 			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
 			foreach ($fees as $f) {
-				if ($f->max_value >= $product_price) {
+				if ($f->max_value >= $convertRate) {
 					$fee = $f->fee;
 					break;
 				}
 			}
+			$totalFee = $fee_csj_value = ($convertRate * $fee) / 100;
 		} else if (isset($fee_type) && $fee_type == 'C') {
 			$err_fee_customer 	= 'Fee Customer not available in this Customer.';
 			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+
 			if ($feeCust) {
 				$fee_customer_id 	= $feeCust->id;
-				$fee_customer_value = number_format($feeCust->fee_value);
+				$fee_customer_value = ($feeCust->fee_value);
 				$err_fee_customer 	= '';
 			}
+			$totalFee = $fee_customer_value;
 		}
+
 
 		$data = [
 			'ocean_freight' 	 => isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
@@ -570,11 +531,97 @@ class Quotations extends Admin_Controller
 			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
 			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
 			'fee' 				 => $fee,
+			'product_price'		 => number_format($convertRate),
+			'fee_csj_value' 	 => number_format($fee_csj_value),
 			'fee_customer_id' 	 => $fee_customer_id,
-			'fee_customer_value' => $fee_customer_value,
+			'fee_customer_value' => number_format($fee_customer_value),
 			'err_fee_customer' 	 => $err_fee_customer,
+			'totalFee' 	 		 => number_format($totalFee),
 		];
 		echo json_encode($data);
+	}
+
+	function getPriceLartas()
+	{
+		$post 				= $this->input->post();
+		$id 				= $post['id'];
+		$fee_lartas_type 	= $post['fee_lartas_type'];
+		$customer_id 		= $post['customer_id'];
+		$exchange 			= str_replace(",", "", $post['exchange']);
+		$lartas 			= [];
+		$fee 				= 0;
+		$nonLartasConvert   = 0;
+
+		if ($fee_lartas_type == 'STD') {
+			$lartas = $this->db->get_where('view_fee_lartas', ['status' => '1'])->result();
+		} else if ($fee_lartas_type == 'CORP') {
+			$header = $this->db->get_where('fee_lartas_customers', ['customer_id' => $customer_id, 'status' => '1'])->row();
+			if ($header) {
+				$lartas = $this->db->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id])->result();
+			}
+		} else {
+			echo 'Data not valid';
+		}
+
+		$details 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$ArrHscode 		= [];
+
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->origin_code] = $hs;
+		}
+
+		$itemLartas = [];
+		foreach ($details as $dtl) {
+			if (!$ArrHscode[$dtl->origin_hscode]->lartas) {
+				$itemLartas['0'][] = $dtl->fob_price;
+			} else {
+				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->fob_price;
+			}
+		}
+
+		if (isset($itemLartas[0])) {
+			$nonLartas = array_sum($itemLartas[0]);
+			$nonLartasConvert = $exchange * $nonLartas;
+		}
+
+		if (isset($fee_type) && $fee_type == 'V') {
+			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
+			foreach ($fees as $f) {
+				if ($f->max_value >= $nonLartasConvert) {
+					$fee = $f->fee;
+					break;
+				}
+			}
+			$totalFee = $fee_csj_value = ($nonLartasConvert * $fee) / 100;
+		} else if (isset($fee_type) && $fee_type == 'C') {
+			$err_fee_customer 	= 'Fee Customer not available in this Customer.';
+			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer_id])->row();
+			if ($feeCust) {
+				$fee_customer_id 	= $feeCust->id;
+				$fee_customer_value = ($feeCust->fee_value);
+				$err_fee_customer 	= '';
+			}
+			$totalFee = $fee_customer_value;
+		}
+
+		$typeLartas 	= [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+		];
+
+		$data = [
+			'lartas' 		=> $lartas,
+			'typeLartas' 	=> $typeLartas,
+			// 'totalFee' 		=> $totalFee,
+			// 'fee_csj_value' => $fee_csj_value,
+			// 'err_fee_customer' => $err_fee_customer,
+			'itemLartas' 	=> number_format($nonLartasConvert, 2),
+		];
+
+		$this->template->set($data);
+		$this->template->render('feeLartas');
 	}
 
 	function load_storage()
@@ -599,7 +646,30 @@ class Quotations extends Admin_Controller
 	function print_all_in($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4', 'setAutoTopMargin' => 'pad', 'autoMarginPadding' => 0]);
+		$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+		$fontDirs = $defaultConfig['fontDir'];
+
+		$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+		$fontData = $defaultFontConfig['fontdata'];
+
+		$mpdf = new \Mpdf\Mpdf([
+			'fontDir' => array_merge($fontDirs, [__DIR__]),
+			'fontdata' => $fontData +
+				[
+					'Sun-ExtA' => [
+						'R' => 'assets/fonts/Sun-ExtA.ttf',
+					],
+					'Sun-ExtB' => [
+						'R' => 'assets/fonts/Sun-ExtB.ttf',
+					],
+				],
+			'mode' => 'utf-8',
+			'format' => 'A4',
+			'setAutoTopMargin' => 'pad',
+			'autoMarginPadding' => 0
+		]);
+
+		// $mpdf = new \Mpdf\Mpdf();
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
 		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
@@ -608,7 +678,7 @@ class Quotations extends Admin_Controller
 		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
 		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
 		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
-		$lartas 		= $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
 		$ArrLartas 		= array_column($lartas, 'name', 'id');
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
@@ -638,6 +708,7 @@ class Quotations extends Admin_Controller
 			'ArrPorts' 		=> $ArrPorts,
 			'ArrLartas' 	=> $ArrLartas,
 		];
+
 		$this->template->set($data);
 		$html = $this->template->load_view('print_all_in');
 		$mpdf->WriteHTML($html);

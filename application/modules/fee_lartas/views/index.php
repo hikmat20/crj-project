@@ -39,8 +39,8 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                             <tr>
                                 <th class="text-center desktop mobile tablet" width="30">No</th>
                                 <th class="desktop tablet tx-bold tx-dark">Name</th>
-                                <th class="desktop tablet text-center">Fee Type</th>
                                 <th class="desktop tablet text-center">Fee Value</th>
+                                <th class="desktop tablet text-center">Unit</th>
                                 <th class="desktop tablet no-sort">Description</th>
                                 <?php if ($ENABLE_MANAGE) : ?>
                                     <th class="desktop text-center no-sort" width="100">Opsi</th>
@@ -52,8 +52,8 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                             <tr>
                                 <th>No</th>
                                 <th>Name</th>
-                                <th>Fee Type</th>
                                 <th>Fee Value</th>
+                                <th>Unit</th>
                                 <th>Description</th>
                                 <?php if ($ENABLE_MANAGE) : ?>
                                     <th>Opsi</th>
@@ -74,7 +74,7 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                         <tr>
                             <th class="text-center desktop mobile tablet" width="30">No</th>
                             <th class="desktop tablet mobile tx-bold tx-dark">Customer</th>
-                            <th class="desktop tablet mobile text-center">Details</th>
+                            <th class="desktop tablet mobile no-sort">Details Lartas</th>
                             <th class="desktop tablet no-sort">Description</th>
                             <?php if ($ENABLE_MANAGE) : ?>
                                 <th class="desktop text-center no-sort" width="100">Opsi</th>
@@ -143,13 +143,6 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
         $("#save").removeClass('d-none');
     });
 
-    $(document).on('click', '.add2', function() {
-        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add Fee Lartas Customer")
-        $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add2');
-        $("#save").removeClass('d-none');
-    });
-
     $(document).on('click', '.edit', function(e) {
         var id = $(this).data('id');
         $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Fee Lartas")
@@ -171,7 +164,6 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
         $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
         $("#save").addClass('d-none');
     });
-
 
     $(document).on('click', '.delete', function(e) {
         e.preventDefault()
@@ -195,6 +187,105 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                 return $.ajax({
                     type: 'POST',
                     url: siteurl + thisController + 'delete',
+                    dataType: "JSON",
+                    data: {
+                        'id': id
+                    },
+                    error: function() {
+                        Lobibox.notify('error', {
+                            title: 'Error!!!',
+                            icon: 'fa fa-times',
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            msg: 'Internal server error. Ajax process failed.'
+                        });
+                    }
+                })
+            },
+            allowOutsideClick: true
+        }).then((val) => {
+            if (val.isConfirmed) {
+                if (val.value.status == '1') {
+                    Lobibox.notify('success', {
+                        title: 'Success',
+                        icon: 'fa fa-check',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: val.value.msg
+                    });
+                    $('#dialog-popup').modal('hide')
+                    loadData($('#dataTable'))
+
+                } else {
+                    Lobibox.notify('warning', {
+                        title: 'Warning',
+                        icon: 'fa fa-ban',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: val.value.msg
+                    });
+                };
+            }
+        })
+
+    })
+
+    /* FEE LARTAS CUSTOMER */
+
+    $(document).on('click', '.add2', function() {
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Add Fee Lartas Customer")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'add2');
+        $("#save").removeClass('d-none');
+    });
+
+    $(document).on('click', '.edit2', function(e) {
+        var id = $(this).data('id');
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> Edit Fee Lartas")
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'edit2/' + id);
+        $("#save").removeClass('d-none');
+    });
+
+    $(document).on('click', '.view2', function(e) {
+        var id = $(this).data('id');
+        $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Fee Lartas")
+        $('#dialog-popup .modal-dialog').css({
+            'max-width': '50%'
+        })
+        $("#dialog-popup").modal();
+        $("#dialog-popup .modal-body").load(siteurl + thisController + 'view2/' + id);
+        $("#save").addClass('d-none');
+    });
+
+    $(document).on('click', '.delete2', function(e) {
+        e.preventDefault()
+        var swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                cancelButton: 'btn btn-danger wd-100'
+            },
+            buttonsStyling: false
+        })
+        let id = $(this).data('id');
+        swalWithBootstrapButtons.fire({
+            title: "Confirm!",
+            text: "Are you sure to delete this data?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "<i class='fa fa-check'></i> Yes",
+            cancelButtonText: "<i class='fa fa-ban'></i> No",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                    type: 'POST',
+                    url: siteurl + thisController + 'delete2',
                     dataType: "JSON",
                     data: {
                         'id': id

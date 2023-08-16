@@ -18,7 +18,7 @@ class Fee_lartas extends Admin_Controller
 	protected $addPermission  	= 'Fee_lartas.Add';
 	protected $managePermission = 'Fee_lartas.Manage';
 	protected $deletePermission = 'Fee_lartas.Delete';
-
+	protected $unit;
 	public function __construct()
 	{
 		parent::__construct();
@@ -30,7 +30,12 @@ class Fee_lartas extends Admin_Controller
 		));
 		$this->template->title('Manage Fee Lartas');
 		$this->template->page_icon('fas fa-hand-holding-usd');
-
+		$this->unit = [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+			'ITM' => 'Item',
+		];
 		date_default_timezone_set('Asia/Bangkok');
 	}
 
@@ -49,11 +54,10 @@ class Fee_lartas extends Admin_Controller
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
-        FROM fee_lartas, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        FROM view_fee_lartas, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`name` LIKE '%$string%'
         OR `fee_value` LIKE '%$string%'
-        OR `description` LIKE '%$string%'
-            )";
+        OR `description` LIKE '%$string%')";
 
 		$totalData = $this->db->query($sql)->num_rows();
 		$totalFiltered = $this->db->query($sql)->num_rows();
@@ -61,8 +65,8 @@ class Fee_lartas extends Admin_Controller
 		$columns_order_by = array(
 			0 => 'num',
 			1 => 'name',
-			2 => 'type',
-			3 => 'fee_value',
+			2 => 'fee_value',
+			3 => 'unit',
 			4 => 'description',
 		);
 
@@ -96,21 +100,17 @@ class Fee_lartas extends Admin_Controller
 			) {
 				$nomor = ($total_data - $start_dari) - $urut2;
 			}
-
-			$type = ($row['type'] == 'TNE') ? 'Tonase' : (($row['type'] == 'SPM') ? 'Shipment' : '-');
-
+			$units = $this->unit;
 			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
 			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
 			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 
-
-
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['name'];
-			$nestedData[]  = $type;
 			$nestedData[]  = "Rp. " . number_format($row['fee_value']);
+			$nestedData[]  = $units[$row['unit']];
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $buttons;
 			$data[] 	   = $nestedData;
@@ -176,7 +176,7 @@ class Fee_lartas extends Admin_Controller
 		$details = $this->db->get_where('view_fee_lartas_customer_details')->result();
 
 		foreach ($details as $dtl) {
-			$ArrDtl[$dtl->lartas_id][] = $dtl;
+			$ArrDtl[$dtl->fee_lartas_customer_id][] = $dtl;
 		}
 
 		/* Button */
@@ -198,21 +198,18 @@ class Fee_lartas extends Admin_Controller
 			}
 
 			if (isset($ArrDtl[$row['id']])) foreach ($ArrDtl[$row['id']] as $rowDtl) {
-				$html .= "<li>" . $rowDtl->name . " - Rp. " . number_format($rowDtl->cost_value) . "</li>";
+				$html .= "<li>" . $rowDtl->name . " - Rp. " . number_format($rowDtl->fee_value) . "</li>";
 			}
-			// $type = ($row['type'] == 'TNE') ? 'Tonase' : (($row['type'] == 'SPM') ? 'Shipment' : '-');
 
-			$view 		= '<button type="button" class="btn btn-primary btn-sm view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
-			$edit 		= '<button type="button" class="btn btn-success btn-sm edit" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
-			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
+			$view 		= '<button type="button" class="btn btn-primary btn-sm view2" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
+			$edit 		= '<button type="button" class="btn btn-success btn-sm edit2" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-edit"></i></button>';
+			$delete 	= '<button type="button" class="btn btn-danger btn-sm delete2" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
-
-
 
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['customer_name'];
-			$nestedData[]  = '';
+			$nestedData[]  = $html;
 			$nestedData[]  = $row['description'];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
@@ -239,53 +236,36 @@ class Fee_lartas extends Admin_Controller
 	public function add()
 	{
 		$this->auth->restrict($this->addPermission);
-		$this->template->render('form');
-	}
+		$lartas = $this->db->get_where('lartas', ['status' => '1'])->result();
+		$fee_lartas = $this->db->get_where('fee_lartas', ['lartas_id !=' => null])->result_array();
+		if ($fee_lartas) {
+			$axisting = array_column($fee_lartas, 'lartas_id');
+		}
 
-	public function add2()
-	{
-		$this->auth->restrict($this->addPermission);
-		$customers 	= $this->db->get_where('customers', array('status' => '1'))->result();
-		$lartas 	= $this->db->get_where('fee_lartas', array('status' => '1'))->result();
-		$data 	= [
-			'customers' 		=> $customers,
-			'lartas' 			=> $lartas,
-		];
-		$this->template->set($data);
-		$this->template->render('form2');
+		$this->template->set([
+			'lartas' 		=> $lartas,
+			'axisting' 		=> $axisting,
+			'units' 		=> $this->unit
+		]);
+		$this->template->render('form');
 	}
 
 	public function edit($id)
 	{
 		$this->auth->restrict($this->managePermission);
 		$fee 		= $this->db->get_where('fee_lartas', array('id' => $id))->row();
-		$customers 	= $this->db->get_where('customers', array('status' => '1'))->result();
-		$data 	= [
-			'fee' 			=> $fee,
-			'customers' 	=> $customers,
-		];
-		$this->template->set($data);
-		$this->template->render('form');
-	}
+		$lartas = $this->db->get_where('lartas', ['status' => '1'])->result();
+		$fee_lartas = $this->db->get_where('fee_lartas', ['lartas_id !=' => null])->result_array();
 
-	public function edit2($id)
-	{
-		$this->auth->restrict($this->managePermission);
-		$fee 				= $this->db->get_where('fee_lartas_customers', array('id' => $id))->row();
-		$customers 			= $this->db->get_where('customers', array('status' => '1'))->result();
-		$fee_details 		= $this->db->get_where('fee_lartas_customer_details', array('storage_id' => $storage->id))->result();
-
-		$ArrDtl = [];
-		foreach ($fee_details as $str) {
-			$ArrDtl[$str->container_id] = $str;
+		if ($fee_lartas) {
+			$axisting = array_column($fee_lartas, 'lartas_id');
 		}
-
-		$data 	= [
-			'fee' 			=> $fee,
-			'customers' 	=> $customers,
-			'ArrDtl' 		=> $ArrDtl,
-		];
-		$this->template->set($data);
+		$this->template->set([
+			'data' 		=> $fee,
+			'lartas' 	=> $lartas,
+			'axisting' 	=> $axisting,
+			'units' 	=> $this->unit,
+		]);
 		$this->template->render('form');
 	}
 
@@ -300,15 +280,68 @@ class Fee_lartas extends Admin_Controller
 		$this->template->render('view');
 	}
 
+	public function add2()
+	{
+		$this->auth->restrict($this->addPermission);
+		$customers 	= $this->db->get_where('customers', array('status' => '1'))->result();
+		$lartas 	= $this->db->get_where('lartas', array('status' => '1'))->result();
+		$data 	= [
+			'customers' 		=> $customers,
+			'lartas' 			=> $lartas,
+			'units' 			=> $this->unit,
+		];
+
+		$this->template->set($data);
+		$this->template->render('form2');
+	}
+
+	public function edit2($id)
+	{
+		$this->auth->restrict($this->managePermission);
+		$fee 				= $this->db->get_where('fee_lartas_customers', array('id' => $id))->row();
+		$customers 			= $this->db->get_where('customers', array('status' => '1'))->result();
+		$fee_details 		= $this->db->get_where('fee_lartas_customer_details', array('fee_lartas_customer_id' => $id))->result();
+		$lartas 			= $this->db->get_where('lartas', array('status' => '1'))->result();
+
+		$ArrDtl = [];
+		foreach ($fee_details as $dtl) {
+			$ArrDtl[$dtl->lartas_id] = $dtl;
+		}
+
+		$data 	= [
+			'fee' 			=> $fee,
+			'customers' 	=> $customers,
+			'ArrDtl' 		=> $ArrDtl,
+			'lartas' 		=> $lartas,
+			'units' 		=> $this->unit,
+		];
+		$this->template->set($data);
+		$this->template->render('form2');
+	}
+
 	public function view2($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$fee 	= $this->db->get_where('fee_lartas', array('id' => $id))->row();
-		$data = [
-			'fee' 		=> $fee,
+		$fee 				= $this->db->get_where('fee_lartas_customers', array('id' => $id))->row();
+		$customers 			= $this->db->get_where('customers', array('status' => '1'))->result_array();
+		$fee_details 		= $this->db->get_where('fee_lartas_customer_details', array('fee_lartas_customer_id' => $id))->result();
+		$lartas 			= $this->db->get_where('lartas', array('status' => '1'))->result();
+
+		$ArrCust = array_column($customers, 'name', 'id');
+		$ArrDtl = [];
+		foreach ($fee_details as $dtl) {
+			$ArrDtl[$dtl->lartas_id] = $dtl;
+		}
+
+		$data 	= [
+			'fee' 			=> $fee,
+			'ArrCust' 		=> $ArrCust,
+			'ArrDtl' 		=> $ArrDtl,
+			'lartas' 		=> $lartas,
+			'units' 		=> $this->unit,
 		];
 		$this->template->set($data);
-		$this->template->render('view');
+		$this->template->render('view2');
 	}
 
 	public function save()
@@ -317,13 +350,12 @@ class Fee_lartas extends Admin_Controller
 		$post = $this->input->post();
 		$data = $post;
 
-
 		if (isset($post['_formType']) && $post['_formType'] == 'Customer') {
-
 			$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_lartas_model->generate_id2();
 			$detail 	= $post['detail'];
 			unset($data['_formType']);
 			unset($data['detail']);
+
 			$this->db->trans_begin();
 			if (isset($post['id']) && $post['id']) {
 				$data['modified_at']	= date('Y-m-d H:i:s');
@@ -339,6 +371,7 @@ class Fee_lartas extends Admin_Controller
 				$dtl['cost_value'] 		= str_replace(",", "", $dtl['value']);
 				unset($dtl['value']);
 				$dtl['fee_lartas_customer_id'] = $data['id'];
+
 				if (isset($dtl['id']) && $dtl['id']) {
 					$this->db->update('fee_lartas_customer_details', $dtl, ['id' => $dtl['id']]);
 				} else {
@@ -361,11 +394,13 @@ class Fee_lartas extends Admin_Controller
 		}
 
 		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$return	= array(
-				'msg'		=> 'Failed save data Fee Lartas.  Please try again.',
-				'status'	=> 0
-			);
+			if ($this->db->error()) {
+				$return	= array(
+					'msg'		=> 'Failed save data Fee Lartas. Customer already registered. Error code ' . $this->db->error()['code'] . '  Please try again.',
+					'status'	=> 0
+				);
+				$this->db->trans_rollback();
+			}
 			$keterangan     = "FAILD save data Fee Lartas " . $data['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->addPermission;

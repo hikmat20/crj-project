@@ -155,7 +155,7 @@ class Hscode extends Admin_Controller
         $def_ppn = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
         $def_pph_api = $this->db->get_where('configs', ['key' => 'pph_api'])->row()->value;
         $def_pph_napi = $this->db->get_where('configs', ['key' => 'pph_napi'])->row()->value;
-        $lartas = $this->db->get_where('fee_lartas', ['status' => '1'])->result();
+        $lartas = $this->db->get_where('lartas', ['status' => '1'])->result();
         $this->template->set([
             'def_ppn'       => $def_ppn,
             'def_pph_api'   => $def_pph_api,
@@ -176,7 +176,7 @@ class Hscode extends Admin_Controller
         $def_pph_napi   = $this->db->get_where('configs', ['key' => 'pph_napi'])->row()->value;
         $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
         $ArrRQ          = [];
-        $lartas         = $this->db->get_where('fee_lartas', ['status' => '1'])->result();
+        $lartas         = $this->db->get_where('lartas', ['status' => '1'])->result();
 
         foreach ($requirements as $rq) {
             $ArrRQ[$rq['type']][] = $rq;
@@ -201,7 +201,7 @@ class Hscode extends Admin_Controller
         $countries      = $this->db->get('countries')->result_array();
         $def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
         $requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
-        $lartas         = $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+        $lartas         = $this->db->get_where('lartas', ['status' => '1'])->result_array();
         $ArrLartas      = array_column($lartas, 'name', 'id');
         $unit = [
             'rp'        => '(Rp)',
@@ -275,6 +275,7 @@ class Hscode extends Admin_Controller
 
         $RQ = $post['requirement'];
         unset($data['requirement']);
+        $data['lartas'] = ($data['lartas']) ?: null;
         $this->db->trans_begin();
         if (isset($post['id']) && $post['id'] == '') {
             $data['created_at'] = $data['modified_at'] = date('Y-m-d H:i:s');

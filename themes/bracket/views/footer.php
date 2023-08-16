@@ -36,6 +36,8 @@
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/lobiani/js/lobibox.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/sweetalert2/sweetalert2.all.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery.maskedinput/jquery.mask.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-inputmask/bindings/inputmask.binding.js"></script>
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
 
 <script src="<?= base_url(); ?>themes/bracket/assets/js/ResizeSensor.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/tooltip-colored.js"></script>

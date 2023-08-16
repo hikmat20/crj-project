@@ -9,22 +9,27 @@
     </div>
     <div class="form-group row">
         <div class="col-md-4 tx-dark tx-bold">
-            <label for="name">Lartas <span class="tx-danger">*</span></label>
+            <label for="lartas_id">Lartas Type <span class="tx-danger">*</span></label>
         </div>
         <div class="col-md-7">
-            <input type="text" required class="form-control" id="name" name="name" value="<?= (isset($fee)) ? $fee->name : null; ?>" placeholder="Lartas">
+            <select type="text" required class="form-control select-not-search" id="lartas_id" name="lartas_id">
+                <option value=""></option>
+                <?php if ($lartas) foreach ($lartas as $la) : ?>
+                    <option value="<?= $la->id; ?>" <?= (isset($data->lartas_id) && $data->lartas_id == $la->id) ? 'selected' : (in_array($la->id, $axisting) ? 'disabled' : ''); ?>><?= $la->name; ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
     <div class="form-group row">
         <div class="col-md-4 tx-dark tx-bold">
-            <label for="type">Type <span class="tx-danger">*</span></label>
+            <label for="unit">Unit <span class="tx-danger">*</span></label>
         </div>
         <div class="col-md-7">
-            <select type="text" required class="form-control select-not-search" id="type" name="type">
+            <select type="text" required class="form-control select-not-search" id="unit" name="unit">
                 <option value=""></option>
-                <option value="TNE" <?= (isset($fee->type) && $fee->type == 'TNE') ? 'selected' : ''; ?>>Tonase</option>
-                <option value="SPM" <?= (isset($fee->type) && $fee->type == 'SPM') ? 'selected' : ''; ?>>Shipment</option>
-                <option value="CNT" <?= (isset($fee->type) && $fee->type == 'CNT') ? 'selected' : ''; ?>>Container</option>
+                <?php foreach ($units as $k => $unit) : ?>
+                    <option value="<?= $k; ?>" <?= (isset($data->unit) && $data->unit == $k) ? 'selected' : ''; ?>><?= $unit; ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>
@@ -53,17 +58,17 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('#fee_value').mask('#,##0', {
-        reverse: true
-    });
+    $(document).ready(function() {
+        $('#fee_value').mask('#,##0', {
+            reverse: true
+        });
 
-    $('.select-not-search').select2({
-        minimumResultsForSearch: Infinity,
-        placeholder: 'Choose one',
-        dropdownParent: $('.modal-body'),
-        width: "100%",
-        allowClear: true
+        $('.select-not-search').select2({
+            minimumResultsForSearch: Infinity,
+            placeholder: 'Choose one',
+            dropdownParent: $('.modal-body'),
+            width: "100%",
+            allowClear: true
+        });
     });
-});
 </script>

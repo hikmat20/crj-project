@@ -33,7 +33,7 @@
         </div>
         <div class="form-group row">
             <label for="desc" class="tx-dark tx-bold col-md-3 pd-x-0">Description</label>
-            <input type="text" id="desc" value="<?= $header->description; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
+            <input type="text" id="desc" name="description" value="<?= $header->description; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
         </div>
         <div class="form-group row">
             <label for="currency" class="tx-dark tx-bold col-md-3 pd-x-0">Currency</label>
@@ -52,7 +52,7 @@
                     <select name="company_id" id="company_id" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrCompany" data-parsley-errors-container="#errCompany">
                         <option value=""></option>
                         <?php if ($companies) foreach ($companies as $comp) : ?>
-                        <option value="<?= $comp->id; ?>"><?= $comp->company_name; ?></option>
+                            <option value="<?= $comp->id; ?>"><?= $comp->company_name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -83,7 +83,7 @@
                     <select name="port_loading" id="source_port" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrPol" data-parsley-errors-container="#errPol">
                         <option value=""></option>
                         <?php if ($ArrPorts[$header->origin_country_id]) foreach ($ArrPorts[$header->origin_country_id] as $scPort) : ?>
-                        <option value="<?= $scPort->id; ?>"><?= $scPort->city_name; ?></option>
+                            <option value="<?= $scPort->id; ?>"><?= $scPort->city_name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -97,7 +97,7 @@
                     <select name="port_discharge" id="dest_port" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrPod" data-parsley-errors-container="#errPod">
                         <option value=""></option>
                         <?php if ($ArrPorts['102']) foreach ($ArrPorts['102'] as $desPort) : ?>
-                        <option value="<?= $desPort->id; ?>"><?= $desPort->city_name; ?></option>
+                            <option value="<?= $desPort->id; ?>"><?= $desPort->city_name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -111,7 +111,7 @@
                     <select name="dest_city" id="dest_city" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrDestCity" data-parsley-errors-container="#errDescCity">
                         <option value=""></option>
                         <?php if ($cities) foreach ($cities as $city) : ?>
-                        <option value="<?= $city->id; ?>"><?= $city->name; ?></option>
+                            <option value="<?= $city->id; ?>"><?= $city->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -198,7 +198,7 @@
                         <select name="container_id" id="container_id" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrConteSize" data-parsley-errors-container="#errConteSize2">
                             <option value=""></option>
                             <?php if ($containers) foreach ($containers as $conte) : ?>
-                            <option value="<?= $conte->id; ?>"><?= $conte->name; ?></option>
+                                <option value="<?= $conte->id; ?>"><?= $conte->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -367,67 +367,67 @@
                     $img = 'assets/uploads/' . $header->id . "/" . $dt->image;
                 }
             ?>
-            <tr class="tx-dark">
-                <td><?= $n; ?></td>
-                <td><?= $dt->product_name; ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][product_name]" value="<?= $dt->product_name; ?>">
-                </td>
-                <td><?= $dt->specification; ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][specification]" value="<?= $dt->specification; ?>">
-                </td>
-                <td class="text-center"><?= $dt->origin_hscode; ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dt->origin_hscode; ?>">
-                </td>
-                <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
-                </td>
-                <td class="">
-                    <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
+                <tr class="tx-dark">
+                    <td><?= $n; ?></td>
+                    <td><?= $dt->product_name; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][product_name]" value="<?= $dt->product_name; ?>">
+                    </td>
+                    <td><?= $dt->specification; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][specification]" value="<?= $dt->specification; ?>">
+                    </td>
+                    <td class="text-center"><?= $dt->origin_hscode; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dt->origin_hscode; ?>">
+                    </td>
+                    <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
+                    </td>
+                    <td class="">
+                        <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
                             $idHs = $ArrHscode[$dt->origin_hscode]->id;
                         ?>
-                    <ul class="pd-l-15">
-                        <?php if (isset($ArrDocs[$idHs])) : ?>
-                        <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
-                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                        <li class="tx-sm"><small><?= $d->name ?></small></li>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
+                            <ul class="pd-l-15">
+                                <?php if (isset($ArrDocs[$idHs])) : ?>
+                                    <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
 
-                        <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
-                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
-                        <li class="tx-sm"><small><?= $d->name ?></small></li>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
+                                    <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
 
-                        <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
-                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
-                        <li class="tx-sm"><small><?= $d->name ?></small></li>
-                        <?php endforeach; ?>
+                                    <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                                        <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </ul>
                         <?php endif; ?>
-                        <?php endif; ?>
-                    </ul>
-                    <?php endif; ?>
-                </td>
-                <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
-                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
-                    <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
-                </td>
-                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%
-                    <input type="hidden" name="detail[<?= $n; ?>][bm_e]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>">
-                </td>
-                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
-                    <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
-                </td>
-                <td class="text-right" style="background-color: #fff9dd;"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
-                </td>
-                <td class="text-right" style="background-color: #fff9dd;"><?= ($totalBMFOB) ? number_format($totalBMFOB, 2) : '0' ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMFOB) ? $totalBMFOB : '0'; ?>">
-                </td>
-                <td class="text-right" style="background-color: #fff9dd;"><?= ($totalPPHFOB) ? number_format($totalPPHFOB, 2)  : '0' ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHFOB) ? $totalPPHFOB : '0'; ?>">
-                </td>
-                <!-- <td class="text-right" style="background-color: #e2fffb;"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
+                    </td>
+                    <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
+                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
+                        <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
+                    </td>
+                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%
+                        <input type="hidden" name="detail[<?= $n; ?>][bm_e]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>">
+                    </td>
+                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
+                        <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
+                    </td>
+                    <td class="text-right" style="background-color: #fff9dd;"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
+                    </td>
+                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalBMFOB) ? number_format($totalBMFOB, 2) : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMFOB) ? $totalBMFOB : '0'; ?>">
+                    </td>
+                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalPPHFOB) ? number_format($totalPPHFOB, 2)  : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHFOB) ? $totalPPHFOB : '0'; ?>">
+                    </td>
+                    <!-- <td class="text-right" style="background-color: #e2fffb;"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
                     <input type="hidden" name="detail[<?= $n; ?>][cif_price]" value="<?= ($dt->cif_price) ? $dt->cif_price : '0'; ?>">
                 </td>
                 <td class="text-right" style="background-color: #e2fffb;"><?= ($totalBMCIF) ? number_format($totalBMCIF, 2) : '0' ?>
@@ -436,10 +436,10 @@
                 <td class="text-right" style="background-color: #e2fffb;"><?= ($totalPPHCIF) ? number_format($totalPPHCIF, 2)  : '0' ?>
                     <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHCIF) ? $totalPPHCIF : '0'; ?>">
                 </td> -->
-                <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
-                    <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
-                </td>
-            </tr>
+                    <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
+                        <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
+                    </td>
+                </tr>
             <?php endforeach; ?>
             <tr class="bg-light">
                 <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
@@ -534,7 +534,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="tx-dark tx-bold">Others (Coordination Fee)</th>
+                    <th class="tx-dark tx-bold">Others</th>
                     <td class="tx-dark">
                         <input type="text" name="coordination_fee" id="coordination_fee" class="form-control form-control-sm text-right number-format" placeholder="0">
                     </td>
@@ -695,36 +695,36 @@
     </div> -->
 </div>
 <script>
-$(document).ready(function() {
-    $(document).on('input', '.number-format', function() {
-        $(this).mask('#,##0', {
-            reverse: true
+    $(document).ready(function() {
+        $(document).on('input', '.number-format', function() {
+            $(this).mask('#,##0', {
+                reverse: true
+            })
         })
+
+        $('.select').select2({
+            // minimumResultsForSearch: -1,
+            placeholder: 'Choose one',
+            dropdownParent: $('#dialog-popup .modal-body'),
+            width: "100%",
+            allowClear: true
+        });
+
+        $('.select-50').select2({
+            // minimumResultsForSearch: -1,
+            placeholder: 'Choose one',
+            dropdownParent: $('#dialog-popup .modal-body'),
+            width: "50%",
+            allowClear: true
+        });
+
+        $('.select-no-search').select2({
+            minimumResultsForSearch: -1,
+            placeholder: 'Choose one',
+            dropdownParent: $('#dialog-popup .modal-body'),
+            width: "100%",
+            allowClear: true
+        });
+
     })
-
-    $('.select').select2({
-        // minimumResultsForSearch: -1,
-        placeholder: 'Choose one',
-        dropdownParent: $('#dialog-popup .modal-body'),
-        width: "100%",
-        allowClear: true
-    });
-
-    $('.select-50').select2({
-        // minimumResultsForSearch: -1,
-        placeholder: 'Choose one',
-        dropdownParent: $('#dialog-popup .modal-body'),
-        width: "50%",
-        allowClear: true
-    });
-
-    $('.select-no-search').select2({
-        minimumResultsForSearch: -1,
-        placeholder: 'Choose one',
-        dropdownParent: $('#dialog-popup .modal-body'),
-        width: "100%",
-        allowClear: true
-    });
-
-})
 </script>

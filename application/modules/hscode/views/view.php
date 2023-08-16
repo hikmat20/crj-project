@@ -72,7 +72,7 @@
                     <span>Lartas</span>
                 </div>
                 <div class="col-md-7">:
-                    <?= isset($hs->lartas) ? $ArrLartas[$hs->lartas] : '-'; ?>
+                    <?= (isset($hs->lartas) && $ArrLartas[$hs->lartas]) ? $ArrLartas[$hs->lartas] : 'NON LARTAS'; ?>
                 </div>
             </div>
 

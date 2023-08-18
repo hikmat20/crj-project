@@ -343,9 +343,121 @@
                         </table>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5 class="tx-dark tx-bold">Fee Lartas</h5>
+
+                <h5 class="tx-bold tx-dark"><i class="fa fa-list-alt" aria-hidden="true"></i> Costing</h5>
+                <hr>
+                <div class="row pd-x-20">
+                    <div class="col-md-5">
+                        <div class="form-group row">
+                            <label for="ocean_freight" class="tx-dark tx-bold col-md-5">Ocean Freight <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0">
+                                <input type="text" name="ocean_freight" id="ocean_freight" value="<?= number_format(($header->ocean_freight) ?: '0'); ?>" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="shipping" class="tx-dark tx-bold col-md-5">Shipping Line Cost <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0">
+                                <input type="text" name="shipping" id="shipping" value="<?= number_format(($header->shipping) ?: '0'); ?>" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="custom_clearance" class="tx-dark tx-bold col-md-5">Custom Clearance <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0">
+                                <input type="text" name="custom_clearance" id="custom_clearance" value="<?= number_format(($header->custom_clearance) ?: '0'); ?>" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="stacking_days" class="tx-dark tx-bold col-md-5">Storage & Stacking Days <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Days</span>
+                                    </div>
+                                    <input type="number" min="0" name="stacking_days" id="stacking_days" value="<?= (($header->stacking_days) ?: '0'); ?>" autocomplete="off" class="form-control text-right" placeholder="0" value="7">
+                                    <div class="input-group-append input-group-prepend">
+                                        <span class="input-group-text">Days</span>
+                                    </div>
+                                    <input type="text" name="storage" id="storage" value="<?= number_format(($header->storage) ?: ''); ?>" readonly autocomplete="off" class="form-control form-control-sm text-right" placeholder="0">
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="trucking" class="tx-dark tx-bold col-md-5">Trucking <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0">
+                                <input type="text" name="trucking" id="trucking" value="<?= number_format(($header->trucking) ?: ''); ?>" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+                                <input type="hidden" name="trucking_id" id="trucking_id" value="<?= ($header->trucking_id) ?: ''; ?>" readonly autocomplete="off" class="form-control" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fee" class="tx-dark tx-bold col-md-5">Fee CSJ (%) <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0 d-flex justify-content-end">
+                                <div class="input-group input-group-sm">
+                                    <input type="number" name="fee" id="fee" readonly autocomplete="off" value="<?= isset($header->fee) && $header->fee ? $header->fee : '0'; ?>" min="0" class="form-control text-right" placeholder="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" id="fee_csj_value" readonly autocomplete="off" value="<?= isset($header->fee_value) && $header->fee_value ? number_format($header->fee_value) : '0'; ?>" class="form-control text-right" placeholder="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fee_customer" class="tx-dark tx-bold col-md-5">Fee Customer <span class="text-dange tx-bold">*</span></label>
+                            <div class="col-md-6 px-0 d-flex justify-content-end">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                                    <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group row">
+                            <label for="ls_type" class="tx-dark tx-bold col-md-4">LS Type <span class="text-danger tx-bold">*</span></label>
+                            <div class="col-md-8 px-0">
+                                <div id="slWrLS" class="parsley-select">
+                                    <div class="input-group">
+                                        <select name="ls_type" id="ls_type" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
+                                            <option value=""></option>
+                                            <option value="FULL" <?= (isset($header->ls_type) && $header->ls_type == 'FULL') ? 'selected' : ''; ?>>Full LS</option>
+                                            <option value="NON" <?= (isset($header->ls_type) && $header->ls_type == 'NON') ? 'selected' : ''; ?>>Non LS</option>
+                                            <option value="OTH" <?= (isset($header->ls_type) && $header->ls_type == 'OTH') ? 'selected' : ''; ?>>Others</option>
+                                        </select>
+                                        <div class="input-group-append input-group-prepend">
+                                            <span class="input-group-text">QTY Container</span>
+                                        </div>
+                                        <input type="number" name="qty_ls_container" id="qty_ls_container" value="<?= (isset($header->qty_ls_container) && $header->qty_ls_container) ? $header->qty_ls_container : ''; ?>" placeholder="0" min="0" readonly class="form-control text-right">
+                                    </div>
+                                </div>
+                                <div id="errLS"></div>
+                                <div class="input-group input-group-sm mg-t-10">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" name="surveyor" id="surveyor" readonly autocomplete="off" value="<?= (isset($header->surveyor) && $header->surveyor) ? number_format($header->surveyor) : ''; ?>" class="form-control number-format text-right" placeholder="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fee_lartas_type" class="tx-dark tx-bold col-md-4">Fee Lartas Type <span class="text-danger tx-bold">*</span></label>
+                            <div class="col-md-8 px-0">
+                                <div id="slWrFeeLartas" class="parsley-select">
+                                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
+                                        <option value=""></option>
+                                        <option value="STD" <?= (isset($header->fee_lartas_type) && $header->fee_lartas_type == 'STD') ? 'selected' : ''; ?>>Standard</option>
+                                        <option value="CORP" <?= (isset($header->fee_lartas_type) && $header->fee_lartas_type == 'CORP') ? 'selected' : ''; ?>>Corporate</option>
+                                    </select>
+                                </div>
+                                <div id="errFeeLartas"></div>
+                            </div>
+                        </div>
                         <div id="loadLartas">
                             <table class="table table-sm table-borderless">
                                 <thead class="tx-dark tx-bold">

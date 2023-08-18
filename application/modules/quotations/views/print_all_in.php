@@ -171,14 +171,13 @@
                 <th class="text-center align-middle" rowspan="2">BM without form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle" colspan="">AMOUNT <span style="font-family: sun-exta">总价</span></th>
-                <th class="text-center align-middle" rowspan="2">BM <span style="font-family: sun-exta">进口税</span></th>
-                <th class="text-center align-middle" rowspan="2">PPh <span style="font-family: sun-exta">预付税</span></th>
+                <th class="text-center align-middle" colspan="3">AMOUNT <span style="font-family: sun-exta">总价</span></th>
                 <th class="text-center align-middle" rowspan="2">Remark</th>
             </tr>
             <tr style="background-color:lightgray">
-                <th class="text-center border border-top-0 border-right-0">FOB</th>
-                <!-- <th class="text-center"></th> -->
+                <th class="text-center border border-top-0 border-right-0"><?= ($header->price_type == 'FOB') ? 'FOB' : 'CRF/CIF'; ?></th>
+                <th class="text-center align-middle">BM <span style="font-family: sun-exta">进口税</span></th>
+                <th class="text-center align-middle">PPh <span style="font-family: sun-exta">预付税</span></th>
             </tr>
         </thead>
         <tbody>
@@ -248,17 +247,21 @@
     </table>
     <br>
     <?php
-    $totalProduct   = ($header->price_type == 'FOB') ? ($totalPrice) : ($totalCIF);
-    $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer);
+    $gtotalBM = $gtotalBM * $header->exchange;
+    $gtotalPPH = $gtotalPPH * $header->exchange;
+
+    $totalProduct   = ($totalPrice * $header->exchange);
+    $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer + $header->coordination_fee);
     $subtotal       = ($totalAllIn + $totalProduct);
     $Tax            = (($subtotal + $gtotalBM) * 11) / 100;
     $GrandTotal     = ($subtotal + $Tax);
     $GrandTotalEx   = ($GrandTotal - $totalProduct);
     ?>
+
     <table class="" width="100%">
         <tr>
-            <td width="60%"></td>
-            <td width="40%">
+            <td width="50%"></td>
+            <td width="50%">
                 <table class="bordered" width="100%">
                     <tr>
                         <td colspan="2" width="100">Total Product Price
@@ -270,7 +273,7 @@
                         <td colspan="2" style="word-wrap: break-word;">
                             Ocean Freight <span class="fontA">海运费</span>
                         </td>
-                        <td class="text-right"></td>
+                        <td class="text-right"><?= number_format($header->ocean_freight); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="word-wrap: break-word;">THC, Handling, undername fee and others (ALL IN)
@@ -290,7 +293,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">PPh <span class="fontA">所得税</span></td>
-                        <td class="text-right"></td>
+                        <td class="text-right"><?= number_format($gtotalPPH, 2); ?></td>
                     </tr>
                     <tr>
                         <td>Tax (PPN)</td>

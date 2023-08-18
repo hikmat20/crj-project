@@ -244,9 +244,11 @@
     </table>
     <br>
     <?php
-    $totalProduct   = ($header->price_type == 'FOB') ? ($totalPrice) : ($totalCIF);
+    $gtotalBM       = $gtotalBM * $header->exchange;
+    $gtotalPPH      = $gtotalPPH * $header->exchange;
+    $totalProduct   = ($totalPrice * $header->exchange);
     $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer);
-    $subtotal       = ($totalAllIn + $totalProduct);
+    $subtotal       = ($totalAllIn + $totalProduct + $header->coordination_fee);
     $Tax            = (($subtotal + $gtotalBM) * 11) / 100;
     $GrandTotal     = ($subtotal + $Tax);
     $GrandTotalEx   = ($GrandTotal - $totalProduct);
@@ -284,6 +286,10 @@
                     <tr>
                         <td colspan="2">Fee Lartas <span class="fontA">配额费</span></td>
                         <td class="text-right"><?= number_format($fee_lartas, 2); ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Other <span class="fontA"></span></td>
+                        <td class="text-right"><?= number_format($header->coordination_fee, 2); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">Undername Fee CSJ <span class="fontA">借抬头费</span></td>

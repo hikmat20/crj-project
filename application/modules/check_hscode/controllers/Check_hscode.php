@@ -135,8 +135,8 @@ class Check_hscode extends Admin_Controller
 			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
 			$nestedData[]  = $row['qty'];
 			$nestedData[]  = $row['employee_name'];
-			$nestedData[]  = $row['revision_count'];
 			$nestedData[]  = $row['last_checked_at'];
+			$nestedData[]  = $row['revision_count'];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;
@@ -163,14 +163,15 @@ class Check_hscode extends Admin_Controller
 		$start          = $requestData['start'];
 		$length         = $requestData['length'];
 
-		$where = "";
-		$where = " AND `status` IN('$status','RVI')";
+		$where 	= "";
+		$where 	= " AND `status` IN('$status','RVI')";
 
 		$string = $this->db->escape_like_str($search);
-		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
+		$sql 	= "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM view_check_hscodes, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`customer_name` LIKE '%$string%'
         OR `project_name` LIKE '%$string%'
+        OR `number` LIKE '%$string%'
         OR `date` LIKE '%$string%'
         OR `country_name` LIKE '%$string%'
         OR `country_code` LIKE '%$string%'
@@ -183,11 +184,12 @@ class Check_hscode extends Admin_Controller
 		$columns_order_by = array(
 			0 => 'num',
 			1 => 'customer_name',
-			2 => 'project_name',
-			3 => 'date',
-			4 => 'country_name',
-			5 => 'employee_name',
-			6 => 'status',
+			2 => 'number',
+			3 => 'project_name',
+			4 => 'date',
+			5 => 'country_name',
+			6 => 'employee_name',
+			7 => 'status',
 		);
 
 		$sql .= " ORDER BY `modified_at` DESC, " . $columns_order_by[$column] . " " . $dir . " ";
@@ -230,6 +232,7 @@ class Check_hscode extends Admin_Controller
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['customer_name'];
+			$nestedData[]  = $row['number'];
 			$nestedData[]  = $row['project_name'];
 			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
 			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];

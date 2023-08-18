@@ -335,8 +335,8 @@ class Requests extends Admin_Controller
 
 			foreach ($detail as $dtl) {
 				$dtl['check_hscode_id'] 	= $data['id'];
-				$dtl['fob_price'] 			= str_replace(",", "", $dtl['fob_price']);
-				$dtl['cif_price'] 			= str_replace(",", "", $dtl['cif_price']);
+				$dtl['price'] 			= str_replace(",", "", $dtl['price']);
+				// $dtl['cif_price'] 			= str_replace(",", "", $dtl['cif_price']);
 				$dtl['origin_hscode'] 		= trim(str_replace(['-', '.'], "", $dtl['origin_hscode']));
 
 				if (isset($dtl['id']) && $dtl['id']) {
@@ -581,8 +581,8 @@ class Requests extends Admin_Controller
 						'product_name' 	=> $dataArray[$i]['1'],
 						'specification' => $dataArray[$i]['2'],
 						'origin_hscode' => trim(str_replace(['-', '.'], "", $dataArray[$i]['3'])),
-						'fob_price' => trim($dataArray[$i]['4']),
-						'cif_price' => trim($dataArray[$i]['5']),
+						'price' => trim($dataArray[$i]['4']),
+						// 'cif_price' => trim($dataArray[$i]['5']),
 					];
 
 					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {
@@ -660,10 +660,10 @@ class Requests extends Admin_Controller
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
 		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
 		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
-		$details 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$details 		= $this->db->get_where('view_check_hscode_details', ['check_hscode_id' => $id])->result();
 		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
 		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
-		$lartas 		= $this->db->get_where('fee_lartas', ['status' => '1'])->result_array();
+		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
 		$ArrLartas 		= array_column($lartas, 'name', 'id');
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
@@ -694,12 +694,11 @@ class Requests extends Admin_Controller
 		$itemLartas = [];
 		foreach ($details as $dtl) {
 			if (!$ArrHscode[$dtl->origin_hscode]->lartas) {
-				$itemLartas['0'][] = $dtl->fob_price;
+				$itemLartas['0'][] = $dtl->price;
 			} else {
-				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->fob_price;
+				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->price;
 			}
 		}
-
 
 		$data = [
 			'currency' 		=> $ArrCurrency,
@@ -734,22 +733,20 @@ class Requests extends Admin_Controller
 
 	function load_price()
 	{
-		$post 				= $this->input->post();
-		$container 			= $post['container'];
-		$qty 				= $post['qty'];
-		$dest_area 			= $post['dest_area'];
-		$src_city 			= $post['src_city'];
-		$fee_type 			= $post['fee_type'];
-		$customer 			= $post['customer_id'];
-		$ls_type 			= $post['ls_type'];
-		$qty_ls_container 	= $post['qty_ls_container'];
-		$exchange 			= str_replace(",", "", $post['exchange']);
-
-		$product_price 		= str_replace(",", "", $post['product_price']);
-		$ocean_freight 		= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
-		$thc 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
-		$custom_clearance 	= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
-		$trucking 			= $this->db->get_where('trucking_containers', ['area like' => "%$dest_area%", 'status' => '1'])->row();
+		$post 					= $this->input->post();
+		$container 				= $post['container'];
+		$dest_area 				= $post['dest_area'];
+		$src_city 				= $post['src_city'];
+		$fee_type 				= $post['fee_type'];
+		$customer 				= $post['customer_id'];
+		$qty_ls_container 		= $post['qty_ls_container'];
+		$exchange 				= str_replace(",", "", $post['exchange']);
+		$total_price 			= str_replace(",", "", $post['total_price']);
+		$total_price_non_lartas = str_replace(",", "", $post['total_price_non_lartas']);
+		$ocean_freight 			= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
+		$thc 					= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
+		$custom_clearance 		= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
+		$trucking 				= $this->db->get_where('trucking_containers', ['area like' => "%$dest_area%", 'status' => '1'])->row();
 		if ($trucking) {
 			$trucking_dtl 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id, 'container_id' => $container])->row();
 		}
@@ -760,33 +757,34 @@ class Requests extends Admin_Controller
 		$fee 				= 0;
 		$fee_csj_value		= 0;
 		$totalFee			= 0;
-		$totalFee			= 0;
 		$fee_customer_id 	= null;
 		$fee_customer_value = 0;
 		$err_fee_customer 	= '';
 
-		$convertRate = $product_price * $exchange;
-		if (isset($fee_type) && $fee_type == 'V') {
-			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
-			foreach ($fees as $f) {
-				if ($f->max_value >= $convertRate) {
-					$fee = $f->fee;
-					break;
+		$convertRate = $total_price * $exchange;
+		$total_price_non_lartas_convert = $total_price_non_lartas * $exchange;
+		if ($total_price_non_lartas > 0) {
+			if ((isset($fee_type) && $fee_type == 'V')) {
+				$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
+				foreach ($fees as $f) {
+					if ($f->max_value >= $total_price_non_lartas_convert) {
+						$fee = $f->fee;
+						break;
+					}
 				}
-			}
-			$totalFee = $fee_csj_value = ($convertRate * $fee) / 100;
-		} else if (isset($fee_type) && $fee_type == 'C') {
-			$err_fee_customer 	= 'Fee Customer not available in this Customer.';
-			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+				$totalFee = $fee_csj_value = ($total_price_non_lartas_convert * $fee) / 100;
+			} else if (isset($fee_type) && $fee_type == 'C') {
+				$err_fee_customer 	= 'Fee Customer not available in this Customer.';
+				$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
 
-			if ($feeCust) {
-				$fee_customer_id 	= $feeCust->id;
-				$fee_customer_value = ($feeCust->fee_value);
-				$err_fee_customer 	= '';
+				if ($feeCust) {
+					$fee_customer_id 	= $feeCust->id;
+					$fee_customer_value = ($feeCust->fee_value);
+					$err_fee_customer 	= '';
+				}
+				$totalFee = $fee_customer_value;
 			}
-			$totalFee = $fee_customer_value;
 		}
-
 
 		$data = [
 			'ocean_freight' 	 => isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
@@ -796,7 +794,7 @@ class Requests extends Admin_Controller
 			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
 			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
 			'fee' 				 => $fee,
-			'product_price'		 => number_format($convertRate),
+			'total_price'		 => number_format($convertRate),
 			'fee_csj_value' 	 => number_format($fee_csj_value),
 			'fee_customer_id' 	 => $fee_customer_id,
 			'fee_customer_value' => number_format($fee_customer_value),
@@ -839,9 +837,9 @@ class Requests extends Admin_Controller
 		$itemLartas = [];
 		foreach ($details as $dtl) {
 			if (!$ArrHscode[$dtl->origin_hscode]->lartas) {
-				$itemLartas['0'][] = $dtl->fob_price;
+				$itemLartas['0'][] = $dtl->price;
 			} else {
-				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->fob_price;
+				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->price;
 			}
 		}
 
@@ -947,7 +945,7 @@ class Requests extends Admin_Controller
 			foreach ($detail as $dtl) {
 				$dtlId++;
 				$dtl['quotation_id'] 	= $data['id'];
-				$dtl['fob_price'] 		= str_replace(",", "", $dtl['fob_price']);
+				$dtl['price'] 		= str_replace(",", "", $dtl['price']);
 				// $dtl['cif_price'] 		= str_replace(",", "", $dtl['cif_price']);
 				$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
 				$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');

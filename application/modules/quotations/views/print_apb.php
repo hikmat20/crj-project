@@ -164,29 +164,26 @@
                 <th class="text-center align-middle" rowspan="2">Items <span style="font-family: sun-exta">货物品名</span></th>
                 <th class="text-center align-middle" rowspan="2">Specification</th>
                 <th class="text-center align-middle" rowspan="2">HS Code <span style="font-family: sun-exta">海关编码</span></th>
-                <!-- <th class="text-center align-middle" rowspan="2">Indonesia HS Code</th> -->
                 <th class="text-center align-middle" rowspan="2">Add Doc.</th>
-                <!-- <th class="text-center align-middle" rowspan="2">Select</th> -->
                 <th class="text-center align-middle" rowspan="2">BM without form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle">AMOUNT <span style="font-family: sun-exta">总价</span></th>
-                <th class="text-center align-middle" rowspan="2">BM <span style="font-family: sun-exta">进口税</span></th>
-                <th class="text-center align-middle" rowspan="2">PPh <span style="font-family: sun-exta">预付税</span></th>
+                <th class="text-center align-middle" colspan="3">AMOUNT <span style="font-family: sun-exta">总价</span></th>
                 <th class="text-center align-middle" rowspan="2">Remark</th>
             </tr>
             <tr style="background-color:lightgray">
-                <th class="text-center border border-top-0 border-right-0">FOB</th>
+                <th class="text-center border border-top-0 border-right-0">Price (<?= ($header->price_type == 'FOB') ? 'FOB' : 'CFR/CIF'; ?>)</th>
+                <th class="text-center align-middle">BM <span style="font-family: sun-exta">进口税</span></th>
+                <th class="text-center align-middle">PPh <span style="font-family: sun-exta">预付税</span></th>
             </tr>
         </thead>
         <tbody>
-            <?php $n = $totalFOB = $totalPPH = $totalCIF = $totalBM = $gtotalBM = $gtotalPPH = 0;
+            <?php $n = $totalPrice = $totalPPH = $totalBM = $gtotalBM = $gtotalPPH = 0;
             $no_image = base_url('assets/no-image.jpg');
             if ($details) foreach ($details as $dt) : $n++;
-                $totalFOB   += $dt->fob_price;
-                $totalCIF   += $dt->cif_price;
-                $totalBM    = $dt->cif_price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                $totalPPH   = ($dt->cif_price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+                $totalPrice   += $dt->price;
+                $totalBM    = $dt->price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
+                $totalPPH   = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
                 $gtotalBM   += $totalBM;
                 $gtotalPPH  += $totalPPH;
                 $img = '';
@@ -199,14 +196,11 @@
                     <td class="fontA"><?= $dt->product_name; ?></td>
                     <td class="fontA"><?= $dt->specification; ?></td>
                     <td class="text-center"><?= $dt->origin_hscode; ?></td>
-                    <!-- <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?></td> -->
                     <td class="text-center"></td>
-                    <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%</td>
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td>
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
-                    <td class="text-right"><?= ($dt->fob_price) ? number_format($dt->fob_price) : '0' ?></td>
-                    <!-- <td class="text-right"><?= ($dt->cif_price) ? number_format($dt->cif_price) : '0' ?></td> -->
+                    <td class="text-right"><?= ($dt->price) ? number_format($dt->price) : '0' ?></td>
                     <td class="text-right"><?= ($totalBM) ? number_format($totalBM) : '0' ?></td>
                     <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH)  : '0' ?></td>
                     <td><?= $dt->remarks; ?></td>
@@ -215,7 +209,7 @@
             <?php endforeach; ?>
             <tr class="bg-light" style="background-color:lightgray">
                 <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="8">Total</th>
-                <th class="text-right tx-dark font-weight-bold" id="totalFOB"><?= number_format(($totalFOB) ?: '0'); ?></th>
+                <th class="text-right tx-dark font-weight-bold" id="totalPrice"><?= number_format(($totalPrice) ?: '0'); ?></th>
                 <!-- <th class="text-right tx-dark font-weight-bold" id="totalCIF"><?= number_format(($totalCIF) ?: '0'); ?></th> -->
                 <th class="text-right tx-dark font-weight-bold"><?= number_format($gtotalBM); ?></th>
                 <th class="text-right tx-dark font-weight-bold"><?= number_format(($gtotalPPH) ?: '0'); ?></th>
@@ -225,7 +219,7 @@
     </table>
     <br>
     <?php
-    $totalProduct   = ($header->price_type == 'FOB') ? ($totalFOB) : ($totalCIF);
+    $totalProduct   = ($header->price_type == 'FOB') ? ($totalPrice) : ($totalCIF);
     $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer);
     $subtotal       = ($totalAllIn + $totalProduct);
     $Tax            = (($subtotal + $gtotalBM) * 11) / 100;

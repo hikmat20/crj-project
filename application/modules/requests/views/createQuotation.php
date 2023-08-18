@@ -3,7 +3,7 @@
         <div class="form-group row">
             <label for="number" class="tx-dark tx-bold col-md-3 pd-x-0">Number</label>
             <input type="hidden" name="check_id" id="check_id" value="<?= $header->id; ?>">
-            <input type="text" id="number" value="<?= $header->number; ?>" readonly class="form-control form-control-sm col-md-7" placeholder="Number">
+            <input type="text" id="number" value="<?= $header->number; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="Number">
         </div>
         <div class="form-group row">
             <label for="customer_name" class="tx-dark tx-bold col-md-3 pd-x-0">Customer</label>
@@ -148,44 +148,16 @@
                 <div id="slWrFee" class="parsley-select">
                     <select name="fee_type" id="fee_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrFee" data-parsley-errors-container="#errFee">
                         <option value=""></option>
-                        <option value="V">Fee Value (CSJ)</option>
-                        <option value="C">Fee Customer</option>
+                        <option value="V">Fee Standard (CSJ)</option>
+                        <option value="C">Fee Coporate (Customer)</option>
                     </select>
                 </div>
                 <div id="errFee"></div>
             </div>
         </div>
-        <!-- <div class="form-group row">
-            <label for="service" class="tx-dark tx-bold col-md-3 pd-x-0">Service <span class="text-anger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div id="slWrService" class="parsley-select">
-                    <select name="service" id="service" class="form-control select" data-parsley-inputs data-parsley-class-handler="#slWrService" data-parsley-errors-container="#errService">
-                        <option value=""></option>
-                        <option value="DDU">DDU</option>
-                        <option value="ALL-IN">ALL-IN</option>
-                        <option value="APB">AS PER BILL</option>
-                    </select>
-                </div>
-                <div id="errService"></div>
-            </div>
-        </div> -->
-        <div class="form-group row">
-            <label for="fee_lartas_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Lartas Type <span class="text-danger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div id="slWrFeeLartas" class="parsley-select">
-                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
-                        <option value=""></option>
-                        <option value="STD">Standard</option>
-                        <option value="CORP">Corporate</option>
-                    </select>
-                </div>
-                <div id="errFeeLartas"></div>
-            </div>
-        </div>
         <div class="form-group row">
             <label for="container_id" class="tx-dark tx-bold col-md-3 pd-x-0">Container <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-6 px-0">
-                <!-- <input type="number" name="qty_container" id="qty_container" class="form-control text-right" required placeholder="0" min="0" data-parsley-inputs data-parsley-class-handler="#slWrConteSize" data-parsley-errors-container="#errConteSize2"> -->
                 <div id="slWrConteSize" class="parsley-select">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -209,115 +181,13 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row">
-            <label for="ls_type" class="tx-dark tx-bold col-md-3 pd-x-0">LS Type <span class="text-danger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div id="slWrLS" class="parsley-select">
-                    <div class="input-group">
-                        <select name="ls_type" id="ls_type" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
-                            <option value=""></option>
-                            <option value="FULL">Full LS</option>
-                            <option value="NON">Non LS</option>
-                            <option value="OTH">Others</option>
-                        </select>
-                        <div class="input-group-append input-group-prepend">
-                            <span class="input-group-text">QTY Container</span>
-                        </div>
-                        <input type="number" name="qty_ls_container" id="qty_ls_container" placeholder="0" min="0" readonly class="form-control text-right">
-                    </div>
-                </div>
-                <div id="errLS"></div>
-                <div class="input-group input-group-sm mg-t-10">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="text" name="surveyor" id="surveyor" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<hr>
-<div class="row pd-x-20">
-    <div class="col-md-5 offset-md-1">
-        <div class="form-group row">
-            <label for="ocean_freight" class="tx-dark tx-bold col-md-3 pd-x-0">Ocean Freight <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-7 px-0">
-                <input type="text" name="ocean_freight" id="ocean_freight" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="shipping" class="tx-dark tx-bold col-md-3 pd-x-0">Shipping Line Cost <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-7 px-0">
-                <input type="text" name="shipping" id="shipping" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="custom_clearance" class="tx-dark tx-bold col-md-3 pd-x-0">Custom Clearance <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-7 px-0">
-                <input type="text" name="custom_clearance" id="custom_clearance" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="stacking_days" class="tx-dark tx-bold col-md-3 pd-x-0">Stacking Days <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-7 px-0">
-                <div class="input-group input-group-sm">
-                    <input type="number" min="0" name="stacking_days" id="stacking_days" autocomplete="off" class="form-control text-right" placeholder="0" value="7">
-                    <div class="input-group-append">
-                        <span class="input-group-text">Days</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="storage" class="tx-dark tx-bold col-md-3 pd-x-0">Storage <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-7 px-0">
-                <input type="text" name="storage" id="storage" readonly autocomplete="off" class="form-control form-control-sm text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="trucking" class="tx-dark tx-bold col-md-3 pd-x-0">Trucking <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-7 px-0">
-                <input type="text" name="trucking" id="trucking" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-                <input type="hidden" name="trucking_id" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-
-        <div class="form-group row">
-            <label for="fee" class="tx-dark tx-bold col-md-3 pd-x-0">Fee CSJ (%) <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <input type="number" name="fee" id="fee" readonly autocomplete="off" min="0" class="form-control text-right" placeholder="0">
-                    <div class="input-group-append">
-                        <span class="input-group-text">%</span>
-                    </div>
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="text" id="fee_csj_value" readonly autocomplete="off" class="form-control text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="fee_customer" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Customer <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                    <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <hr>
 
-<!-- Detail Product -->
+
+<!-- START DETAIL PRODUCT -->
+
 <h5 class="tx-dark tx-bold"><i class="fa fa-list" aria-hidden="true"></i> Detail Product</h5>
 <div class="table-responsive mg-b-10">
     <table class="table table-sm border table-hover table-condensed table-bordered ">
@@ -329,42 +199,38 @@
                 <th class="text-center align-middle" rowspan="2">Origin HS Code</th>
                 <th class="text-center align-middle" rowspan="2">Indonesia HS Code</th>
                 <th class="text-center align-middle" rowspan="2">Add Doc.</th>
-                <!-- <th class="text-center align-middle" rowspan="2">Select</th> -->
-                <th class="text-center align-middle" rowspan="2">BM without form E</th>
-                <th class="text-center align-middle" rowspan="2">BM with form E</th>
+                <th class="text-center align-middle" rowspan="2">Lartas</th>
+                <th class="text-center align-middle" rowspan="2">BM without<br>form E</th>
+                <th class="text-center align-middle" rowspan="2">BM with<br>form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
                 <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
                 <th class="text-center align-middle" rowspan="2">Image</th>
             </tr>
             <tr>
-                <th class="text-center border border-top-0 border-right-0">FOB/CFR/CIF</th>
+                <th class="text-center border border-top-0 border-right-0">
+                    Price (<span id="type-price-text"></span>)
+                </th>
                 <th class="text-center align-middle">BM</th>
                 <th class="text-center align-middle">PPH</th>
-                <!-- <th class="text-center">CFR/CIF</th>
-                <th class="text-center align-middle">BM</th>
-                <th class="text-center align-middle">PPH</th> -->
             </tr>
         </thead>
         <tbody class="tx-dark">
-            <?php $n = $totalFOB = $totalBMFOB = $totalCIF = $totalPPHFOB = $gtotalBMFOB = $gtotalPPHFOB = $gtotalBMCIF = $totalBMCIF = $gtotalPPHCIF = $totalPPHCIF = 0;
+            <?php $n = $totalPrice = $totalBM = $totalPPH = $gtotalBM = $gtotalPPH = $totalNonLartas = 0;
             $no_image = base_url('assets/no-image.jpg');
             if ($details) foreach ($details as $dt) : $n++;
-                $totalFOB      += $dt->fob_price;
-                $totalCIF      += $dt->cif_price;
+                $totalPrice  += $dt->price;
+                $totalBM     = $dt->price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
+                $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+                $gtotalBM   += $totalBM;
+                $gtotalPPH  += $totalPPH;
 
-                $totalBMFOB     = $dt->fob_price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                $totalPPHFOB    = ($dt->fob_price + $totalBMFOB) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
-
-                $totalBMCIF     = $dt->cif_price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                $totalPPHCIF    = ($dt->cif_price + $totalBMCIF) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
-
-                $gtotalBMFOB   += $totalBMFOB;
-                $gtotalPPHFOB  += $totalPPHFOB;
-                $gtotalBMCIF   += $totalBMCIF;
-                $gtotalPPHCIF  += $totalPPHCIF;
                 $img = '';
                 if ($dt->image) {
                     $img = 'assets/uploads/' . $header->id . "/" . $dt->image;
+                }
+
+                if (!$dt->lartas) {
+                    $totalNonLartas += $dt->price;
                 }
             ?>
                 <tr class="tx-dark">
@@ -378,8 +244,8 @@
                     <td class="text-center"><?= $dt->origin_hscode; ?>
                         <input type="hidden" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dt->origin_hscode; ?>">
                     </td>
-                    <td class="text-center"><?= $ArrHscode[$dt->origin_hscode]->local_code; ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $ArrHscode[$dt->origin_hscode]->local_code; ?>">
+                    <td class="text-center"><?= $dt->local_hscode; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $dt->local_hscode; ?>">
                     </td>
                     <td class="">
                         <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
@@ -408,7 +274,10 @@
                             </ul>
                         <?php endif; ?>
                     </td>
-                    <!-- <td class="text-center align-middle"><label class="d-inline-block w-100 m-auto" for="ckbox-<?= $n; ?>"><input type="checkbox" name="" id="ckbox-<?= $n; ?>" class="text-center"></label></td> -->
+                    <td class="text-center">
+                        <?= ($dt->lartas) ? $ArrLartas[$dt->lartas] : 'Non Lartas'; ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($dt->lartas) ?: null; ?>">
+                    </td>
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
                         <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
                     </td>
@@ -418,53 +287,162 @@
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
-                    <td class="text-right" style="background-color: #fff9dd;"><?= ($dt->fob_price) ? number_format($dt->fob_price, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][fob_price]" value="<?= ($dt->fob_price) ? $dt->fob_price : '0'; ?>">
+                    <td class="text-right"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][price]" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
                     </td>
-                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalBMFOB) ? number_format($totalBMFOB, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMFOB) ? $totalBMFOB : '0'; ?>">
+                    <td class="text-right"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
                     </td>
-                    <td class="text-right" style="background-color: #fff9dd;"><?= ($totalPPHFOB) ? number_format($totalPPHFOB, 2)  : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHFOB) ? $totalPPHFOB : '0'; ?>">
+                    <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?>
+                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
                     </td>
-                    <!-- <td class="text-right" style="background-color: #e2fffb;"><?= ($dt->cif_price) ? number_format($dt->cif_price, 2) : '0' ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][cif_price]" value="<?= ($dt->cif_price) ? $dt->cif_price : '0'; ?>">
-                </td>
-                <td class="text-right" style="background-color: #e2fffb;"><?= ($totalBMCIF) ? number_format($totalBMCIF, 2) : '0' ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBMCIF) ? $totalBMCIF : '0'; ?>">
-                </td>
-                <td class="text-right" style="background-color: #e2fffb;"><?= ($totalPPHCIF) ? number_format($totalPPHCIF, 2)  : '0' ?>
-                    <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPHCIF) ? $totalPPHCIF : '0'; ?>">
-                </td> -->
                     <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
                         <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
                     </td>
                 </tr>
             <?php endforeach; ?>
             <tr class="bg-light">
-                <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalFOB"><?= number_format(($totalFOB) ?: '0', 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format($gtotalBMFOB, 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format(($gtotalPPHFOB) ?: '0', 2); ?></th>
-                <!-- <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;" id="totalCIF"><?= number_format(($totalCIF) ?: '0', 2); ?></th> -->
-                <!-- <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format($gtotalBMCIF, 2); ?></th> -->
-                <!-- <th class="text-right tx-dark font-weight-bold" style="background-color: #baf0e9;"><?= number_format(($gtotalPPHCIF) ?: '0', 2); ?></th> -->
+                <th class="text-right tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
                 <th></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalPrice"><?= number_format(($totalPrice) ?: '0', 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format($gtotalBM, 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format(($gtotalPPH) ?: '0', 2); ?></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th class="font-weight-bold tx-uppercase text-right" colspan="9">Total Non Lartas</th>
+                <td></td>
+                <th class="text-right" id="total_price_non_lartas"><?= number_format($totalNonLartas, 2); ?></th>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         </tbody>
     </table>
 </div>
-<div class="row">
-    <div class="col-md-6">
-        <h5 class="tx-dark tx-bold">Fee Lartas</h5>
+<!-- END DETAIL PRODUCT -->
+
+<h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Costing</h5>
+<hr>
+<div class="row pd-x-20">
+    <div class="col-md-5">
+        <div class="form-group row">
+            <label for="ocean_freight" class="tx-dark tx-bold col-md-5">Ocean Freight <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <input type="text" name="ocean_freight" id="ocean_freight" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="shipping" class="tx-dark tx-bold col-md-5">Shipping Line Cost <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <input type="text" name="shipping" id="shipping" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="custom_clearance" class="tx-dark tx-bold col-md-5">Custom Clearance <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <input type="text" name="custom_clearance" id="custom_clearance" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="stacking_days" class="tx-dark tx-bold col-md-5"> Storage & Stacking Days <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Days</span>
+                    </div>
+                    <input type="number" min="0" name="stacking_days" id="stacking_days" autocomplete="off" class="form-control text-right" placeholder="0" value="7">
+                    <div class="input-group-append input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                    </div>
+                    <input type="text" name="storage" id="storage" readonly autocomplete="off" class="form-control form-control-sm text-right" placeholder="0">
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="trucking" class="tx-dark tx-bold col-md-5">Trucking <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <input type="text" name="trucking" id="trucking" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
+                <input type="hidden" name="trucking_id" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="fee" class="tx-dark tx-bold col-md-5">Fee CSJ (%) <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0 d-flex justify-content-end">
+                <div class="input-group input-group-sm">
+                    <input type="number" name="fee" id="fee" readonly autocomplete="off" min="0" class="form-control text-right" placeholder="0">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                    </div>
+                    <input type="text" id="fee_csj_value" readonly autocomplete="off" class="form-control text-right" placeholder="0">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="fee_customer" class="tx-dark tx-bold col-md-5">Fee Customer <span class="text-dange tx-bold">*</span></label>
+            <div class="col-md-6 px-0 d-flex justify-content-end">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                    </div>
+                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                    <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="form-group row">
+            <label for="ls_type" class="tx-dark tx-bold col-md-3 pd-x-0">LS Type <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div id="slWrLS" class="parsley-select">
+                    <div class="input-group">
+                        <select name="ls_type" id="ls_type" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
+                            <option value=""></option>
+                            <option value="FULL">Full LS</option>
+                            <option value="NON">Non LS</option>
+                            <option value="OTH">Others</option>
+                        </select>
+                        <div class="input-group-append input-group-prepend">
+                            <span class="input-group-text">QTY Container</span>
+                        </div>
+                        <input type="number" name="qty_ls_container" id="qty_ls_container" placeholder="0" min="0" readonly class="form-control text-right">
+                    </div>
+                </div>
+                <div id="errLS"></div>
+                <div class="input-group input-group-sm mg-t-10">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                    </div>
+                    <input type="text" name="surveyor" id="surveyor" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="fee_lartas_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Lartas <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div id="slWrFeeLartas" class="parsley-select">
+                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
+                        <option value=""></option>
+                        <option value="STD">Standard</option>
+                        <option value="CORP">Corporate</option>
+                    </select>
+                </div>
+                <div id="errFeeLartas"></div>
+            </div>
+        </div>
         <div id="loadLartas">
         </div>
     </div>
 </div>
 <hr>
+<h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-calculator"></i> Summary</h5>
 <div class="row">
     <div class="col-md-5">
-        <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-dollar-sign"></i> Costing</h5>
         <table class="table table-sm table-bordered border wd-md-80p">
             <thead class="bg-light">
                 <tr>

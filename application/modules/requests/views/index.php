@@ -449,18 +449,19 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             }
             load_price()
         })
-
     })
 
     function change_price() {
         let price_type = $('#price_type').val()
         let price = 0;
-        price = $('#totalFOB').text()
-        // if ((price_type != undefined) && (price_type == 'FOB')) {
-        // } else {
-        //     price = $('#totalCIF').text()
-        // }
-        $('#tx-total-product').text(price)
+        // price = $('#totalPrice').text()
+
+        if (price_type == 'FOB') {
+            $('#type-price-text').text('FOB')
+        } else {
+            $('#type-price-text').text('CFR/CIF')
+        }
+        // $('#tx-total-product').text(price)
     }
 
     function surveyor() {
@@ -548,7 +549,8 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 
     function load_price() {
         let formData = new FormData()
-        formData.append('product_price', $('#totalFOB').text().replace(/[\,]/g, "") || 0);
+        formData.append('total_price', $('#totalPrice').text().replace(/[\,]/g, "") || 0);
+        formData.append('total_price_non_lartas', $('#total_price_non_lartas').text().replace(/[\,]/g, "") || 0);
         formData.append('dest_area', $('#dest_area').val() || 0);
         formData.append('src_city', $('#source_port').val() || 0);
         formData.append('qty', $('#qty_container').val() || 0);
@@ -578,7 +580,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     $('#trucking').val(result.trucking);
                     $('#trucking_id').val(result.trucking_id);
                     $('#surveyor').val(result.surveyor);
-                    $('#tx-total-product').text(result.product_price);
+                    $('#tx-total-product').text(result.total_price);
                     $('#fee').val(result.fee);
                     $('#fee_customer_id').val(result.fee_customer_id);
                     $('#fee_customer').val(result.fee_customer_value);

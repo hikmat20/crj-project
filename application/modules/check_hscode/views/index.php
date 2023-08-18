@@ -21,13 +21,13 @@
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop mobile tablet tx-bold tx-dark" width="200">Customer Name</th>
-                        <th class="desktop mobile tablet tx-dark">Number</th>
-                        <th class="desktop tablet text-center">Project Name</th>
-                        <th class="desktop tablet text-center" width="110">Date Request</th>
-                        <th class="desktop text-center" width="60">Qty</th>
-                        <th class="desktop text-center" width="100">Marketing</th>
-                        <th class="desktop text-center no-sort" width="60">Revision</th>
-                        <th class="desktop text-center" width="110">Last Checked</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark">Number</th>
+                        <th class="desktop tablet tx-bold tx-dark tx-center">Project Name</th>
+                        <th class="desktop tablet text-center" width="100">Date Request</th>
+                        <th class="desktop text-center" width="50">Qty</th>
+                        <th class="desktop text-center" width="80">MKT</th>
+                        <th class="desktop text-center" width="100">Last Checked</th>
+                        <th class="desktop text-center no-sort" width="50">Rev</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="">Opsi</th>
                         <?php endif; ?>
@@ -42,9 +42,9 @@
                         <th>Project Name</th>
                         <th>Date Request</th>
                         <th>QTY</th>
-                        <th>Marketing</th>
-                        <th>Revision</th>
+                        <th>MKT</th>
                         <th>Last Checked</th>
+                        <th>Rev</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>
@@ -305,11 +305,14 @@
                     "targets": 'no-sort',
                     "orderable": false,
                 }, {
-                    "targets": 'text-center',
-                    "className": 'text-center',
+                    "targets": 'tx-bold tx-dark tx-center',
+                    "className": 'tx-bold tx-dark text-center',
                 }, {
                     "targets": 'tx-bold tx-dark',
-                    "className": 'tx-bold tx-dark',
+                    "className": 'tx-bold tx-dark ',
+                }, {
+                    "targets": 'text-center',
+                    "className": 'text-center',
                 }, {
                     "targets": 'text-right',
                     "className": 'text-right',

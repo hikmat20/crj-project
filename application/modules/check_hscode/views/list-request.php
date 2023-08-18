@@ -22,6 +22,7 @@
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark">Number</th>
                         <th class="desktop mobile tablet tx-bold tx-dark tx-center">Project Name</th>
                         <th class="desktop mobile tablet text-center" width="110">Date Request</th>
                         <th class="desktop tablet text-center">Origin</th>
@@ -37,6 +38,7 @@
                     <tr>
                         <th>No</th>
                         <th>Customer Name</th>
+                        <th>Number</th>
                         <th>Project Name</th>
                         <th>Date Request</th>
                         <th>Origin</th>

@@ -162,8 +162,7 @@
 									<th class="text-center">Specification</th>
 									<th class="text-center" width="150">Origin HS Code</th>
 									<th class="text-center" width="50">Curr ency</th>
-									<th class="text-center" width="140">FOB Price</th>
-									<th class="text-center" width="140">CFR/CIF Price</th>
+									<th class="text-center" width="140">FOB/CFR/CIF Price</th>
 									<th class="text-center" width="80">Photo</th>
 									<th class="text-center" width="30">Opsi</th>
 								</tr>
@@ -181,8 +180,8 @@
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][specification]" value="<?= $dtl->specification; ?>" placeholder="Specification"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>" placeholder="Origin HS Code"></td>
 										<td class="text-center"><span class="symbol"><?= (isset($request->currency) && $request->currency) ? $symbol[$request->currency] : '-'; ?></span></td>
-										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][fob_price]" value="<?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?>" placeholder="0"></td>
-										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][cif_price]" value="<?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?>" placeholder="0"></td>
+										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][price]" value="<?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?>" placeholder="0"></td>
+										<!-- <td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][cif_price]" value="<?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?>" placeholder="0"></td> -->
 										<td class="text-center">
 											<img id="preview_<?= $n; ?>" src="<?= $image; ?>" ondblclick="$('#image_<?= $n; ?>').click()" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
 											<input type="hidden" id="img_<?= $n; ?>" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
@@ -339,8 +338,7 @@
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
 								<td class="text-center"><span class="symbol">` + arr[currency] + `</span></td>
-								<td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][fob_price]" class="form-control" value="` + vl.fob_price + `" placholder="0"></td>
-								<td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][cif_price]" class="form-control" value="` + vl.cif_price + `" placholder="0"></td>
+								<td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][price]" class="form-control" value="` + vl.price + `" placholder="0"></td>
 								<td class="text-center">
 									<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
 									<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="` + img + `">
@@ -349,6 +347,7 @@
 								<td class="text-center"><button type="button" class="btn btn-sm btn-danger delHscode" data-row="` + n + `"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 							</tr>`);
 						})
+						// <td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][cif_price]" class="form-control" value="` + vl.cif_price + `" placholder="0"></td>
 						$('#import').prop('disabled', true)
 					}
 				}, 1000)
@@ -366,21 +365,21 @@
 		}
 		image = '<?= base_url('assets/no-image.jpg'); ?>'
 		$('table#listHscode tbody').append(`
-			<tr class="row-data" data-row="` + n + `">
-				<td class="text-center rowIdx">` + n + `</td>
-				<td><input type="text" placeholder="Product Name" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
-				<td><input type="text" placeholder="Specification" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
-				<td><input type="text" placeholder="HS Code" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
-				<td class="text-center "><span class="symbol">` + arr[currency] + `</span></td>
-				<td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][fob_price]" class="form-control"></td>
-				<td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][cif_price]" class="form-control"></td>
-				<td class="text-center">
-					<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
-					<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="">
-					<input type="file" data-row="` + n + `" class="d-none change_image" id="image_` + n + `">
-				</td>
-				<td class="text-center"><button type="button" data-row="` + n + `" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
-			</tr>`)
+		<tr class="row-data" data-row="` + n + `">
+		<td class="text-center rowIdx">` + n + `</td>
+		<td><input type="text" placeholder="Product Name" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
+		<td><input type="text" placeholder="Specification" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
+		<td><input type="text" placeholder="HS Code" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
+		<td class="text-center "><span class="symbol">` + arr[currency] + `</span></td>
+		<td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][price]" class="form-control"></td>
+		<td class="text-center">
+		<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
+		<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="">
+		<input type="file" data-row="` + n + `" class="d-none change_image" id="image_` + n + `">
+		</td>
+		<td class="text-center"><button type="button" data-row="` + n + `" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+		</tr>`)
+		// <td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][cif_price]" class="form-control"></td>
 	})
 
 	$(document).on('change', '#currency', function() {

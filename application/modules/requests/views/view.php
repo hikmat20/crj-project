@@ -33,6 +33,16 @@
                     <?= $ArrCountryCode[$request->origin_country_id] . " - " . $ArrCountry[$request->origin_country_id]; ?>
                 </div>
             </div>
+            <?php if (isset($request->last_checked_by) && $request->last_checked_by) : ?>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="origin_country_id" class="tx-dark tx-bold">Last Checked By</label>
+                    </div>
+                    <div class="col-md-7">:
+                        <?= $request->last_checked_by; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
         <div class="col-md-6">
             <div class="row">
@@ -67,6 +77,16 @@
                     <?= (isset($request->currency) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>
                 </div>
             </div>
+            <?php if (isset($request->last_checked_at) && $request->last_checked_at) : ?>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="origin_country_id" class="tx-dark tx-bold">Last Checked By</label>
+                    </div>
+                    <div class="col-md-7">:
+                        <?= $request->last_checked_at; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <hr>
@@ -75,24 +95,23 @@
     <div class="d-flex justify-content-between mg-b-10">
         <span class="h4 tx-dark tx-bold">List HS Code</span>
     </div>
-    <table id="listHscode" class="table table-sm border table-bordered table-hover">
+    <table id="listHscode" class="table table-sm border table-bordered table-striped">
         <thead class="bg-light">
             <tr>
                 <th class="text-center">No</th>
                 <th width="20%">Product Name</th>
                 <th class="text-center">Specification</th>
                 <th class="text-center">Origin HS Code</th>
-                <th class="text-center" width="100">Indonesia HS Code</th>
                 <th class="text-center" width="30">Curr</th>
-                <th class="text-right">FOB Price</th>
-                <th class="text-right">CFR/CIF Price</th>
+                <th class="text-right">Price</th>
                 <?php if ($request->status == 'CHK') : ?>
+                    <th class="text-center" width="100">Indonesia HS Code</th>
                     <th width="120">Cost</th>
                     <th width="150">Other Cost</th>
                     <th width="150">Doc. Requirement</th>
+                    <th width="100">Remarks</th>
                 <?php endif; ?>
                 <th class="text-center" width="60">Image</th>
-                <th width="100">Remarks</th>
             </tr>
         </thead>
         <tbody class="tx-dark">
@@ -105,11 +124,10 @@
                     <td><?= $dtl->product_name; ?></td>
                     <td><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
                     <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td>
                     <?php if ($request->status == 'CHK') : ?>
+                        <td class="text-center"><?= $dtl->local_hscode; ?></td>
                         <td>
                             <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                                 <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
@@ -174,9 +192,9 @@
                                 </ul>
                             <?php endif; ?>
                         </td>
+                        <td><?= $dtl->remarks; ?></td>
                     <?php endif; ?>
                     <td class="text-center"><img src="<?= $image; ?>" data-row="<?= $n; ?>" width="50" class="img-fluid rounded" alt="<?= $image; ?>"></td>
-                    <td><?= $dtl->remarks; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

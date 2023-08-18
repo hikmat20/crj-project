@@ -105,7 +105,7 @@
 
 <body>
     <!-- Header -->
-    <table width="100%">
+    <table width="100%" style="font-size: 7pt;">
         <tr>
             <th width="200">Checking Number</th>
             <td width="20">:</td>
@@ -142,6 +142,15 @@
             <td>:</td>
             <td><?= isset($request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?></td>
         </tr>
+        <tr>
+            <th>Last Checked By</th>
+            <td>:</td>
+            <td><?= $request->last_checked_by; ?></td>
+            <th></th>
+            <th>Last Checked At</th>
+            <td>:</td>
+            <td><?= $request->last_checked_at; ?></td>
+        </tr>
     </table>
     <!-- details -->
     <hr>
@@ -153,15 +162,14 @@
                 <th width="" class="text-center">Product Name</th>
                 <th width="200" class="text-center">Specification</th>
                 <th width="100" class="text-center">Origin HS Code</th>
-                <th width="100" class="text-center">Indonesia HS Code</th>
                 <th width="30" class="text-center">Curr</th>
-                <th width="100" class="text-center">FOB Price</th>
-                <th width="100" class="text-center">CFR/CIF Price</th>
+                <th width="100" class="text-center">Price</th>
+                <th width="100" class="text-center">Indonesia HS Code</th>
                 <th width="120" class="text-center">Cost</th>
                 <th width="130">Other Cost</th>
                 <th width="150">Docs. Requirement</th>
-                <th width="50">Image</th>
                 <th width="">Remarks</th>
+                <th width="50">Image</th>
             </tr>
         </thead>
         <tbody>
@@ -174,10 +182,9 @@
                     <td style="font-family: sun-exta"><?= $dtl->product_name; ?></td>
                     <td style="font-family: sun-exta"><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class="text-center" <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
                     <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->fob_price) ? number_format($dtl->fob_price, 2) : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td>
+                    <td class="text-center"><?= $dtl->local_hscode; ?></td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
@@ -242,8 +249,8 @@
                             </ul>
                         <?php endif; ?>
                     </td>
-                    <td><img src="<?= $img; ?>" width="50"></td>
                     <td><?= $dtl->remarks; ?></td>
+                    <td><img src="<?= $img; ?>" width="50"></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

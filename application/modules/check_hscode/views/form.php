@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-md-7">
                     <input type="hidden" readonly class="form-control" id="id" name="id" value="<?= (isset($request)) ? $request->id : null; ?>">
-                    <input type="text" readonly class="form-control" id="id" name="number" value="<?= (isset($request)) ? $request->number : null; ?>">
+                    <input type="text" readonly class="form-control form-control-sm" id="id" name="number" value="<?= (isset($request)) ? $request->number : null; ?>">
                 </div>
             </div>
             <div class="form-group row" id="input-customer">
@@ -24,7 +24,7 @@
                     <label for="project_name" class="tx-dark tx-bold">Project Name</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="text" readonly class="form-control" id="project_name" name="project_name" value="<?= (isset($request) && $request->project_name) ? $request->project_name : ''; ?>" placeholder="Project Name">
+                    <input type="text" readonly class="form-control form-control-sm" id="project_name" name="project_name" value="<?= (isset($request) && $request->project_name) ? $request->project_name : ''; ?>" placeholder="Project Name">
                 </div>
             </div>
             <div class="form-group row">
@@ -33,7 +33,7 @@
                 </div>
                 <div class="col-md-7">
                     <input type="hidden" name="origin_country_id" value="<?= $request->origin_country_id; ?>">
-                    <input type="text" readonly value="<?= $request->country_code . " - " . $request->country_name; ?>" class="form-control">
+                    <input type="text" readonly value="<?= $request->country_code . " - " . $request->country_name; ?>" class="form-control form-control-sm">
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                     <label for="marketing_name" class="tx-dark tx-bold">Marketing</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="text" class="form-control" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->employee_name : ''; ?>" placeholder="-">
+                    <input type="text" class="form-control form-control-sm" required readonly id="marketing_name" value="<?= (isset($request) && $request->marketing_id) ? $request->employee_name : ''; ?>" placeholder="-">
                     <input type="hidden" required name="marketing_id" id="marketing_id" value="<?= (isset($request) && $request->marketing_id) ? $request->marketing_id : ''; ?>" readonly>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     <label for="date_request" class="tx-dark tx-bold">Date Request</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="text" readonly class="form-control datepicker" name="date_request" id="date_request" value="<?= (isset($request) && $request->date) ? date('d/m/Y', strtotime($request->date)) : date('d/m/Y'); ?>">
+                    <input type="text" readonly class="form-control form-control-sm datepicker" name="date_request" id="date_request" value="<?= (isset($request) && $request->date) ? date('d/m/Y', strtotime($request->date)) : date('d/m/Y'); ?>">
                 </div>
             </div>
             <div class="form-group row">
@@ -60,7 +60,7 @@
                     <label for="description" class="tx-dark tx-bold">Description</label>
                 </div>
                 <div class="col-md-7">
-                    <textarea type="text" readonly class="form-control" id="description" name="description" placeholder="Description"><?= (isset($request) && $request->description) ? $request->description : null; ?></textarea>
+                    <textarea type="text" readonly class="form-control form-control-sm" id="description" name="description" placeholder="Description"><?= (isset($request) && $request->description) ? $request->description : null; ?></textarea>
                 </div>
             </div>
             <div class="form-group row">
@@ -68,7 +68,7 @@
                     <label for="currency" class="tx-dark tx-bold">Currency</label>
                 </div>
                 <div class="col-md-7">
-                    <input type="text" readonly class="form-control" id="currency" placeholder="-" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>">
+                    <input type="text" readonly class="form-control form-control-sm" id="currency" placeholder="-" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->symbol . " - " . $currency[$request->currency]->name : '-'; ?>">
                     <input type="hidden" name="currency" value="<?= (isset($request) && $request->currency) ? $currency[$request->currency]->code : '-'; ?>">
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <th width="200">Remarks</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="tx-dark">
             <?php $n = 0;
             if ($details) foreach ($details as $dtl) : $n++; ?>
                 <tr>
@@ -108,7 +108,7 @@
                         <input type="hidden" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>">
                     </td>
                     <td class="text-center <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>"><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?>
-                        <input type="hidden" class="hscode_local" value="<?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : ''; ?>">
+                        <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" class="hscode_local" value="<?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : ''; ?>">
                     </td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>

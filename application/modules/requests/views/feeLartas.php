@@ -26,32 +26,38 @@
             </th>
         </tr> -->
         <?php $n = 0;
-        if (isset($lartas) && $lartas) foreach ($lartas as $lts) : $n++; ?>
+        if (isset($lartas) && $lartas) :
+            foreach ($lartas as $lts) : $n++; ?>
+                <tr>
+                    <th class="tx-dark tx-bold"><?= $lts->name; ?></th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][lartas_id]" readonly class="form-control text-right" value="<?= ($lts->lartas_id); ?>" placeholder="0">
+                            <input type="text" name="detail_fee_lartas[<?= $n; ?>][price]" readonly class="form-control text-right price_lartas" id="price_lartas_<?= $n; ?>" value="<?= number_format($lts->fee_value, 2); ?>" placeholder="0">
+                        </div>
+                    </td>
+                    <td>/<?= $typeLartas[$lts->unit]; ?>
+                        <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][unit]" value="<?= isset($lts->unit) ? $lts->unit : ''; ?>">
+                    </td>
+                    <th><input type="text" data-row="<?= $n; ?>" name="detail_fee_lartas[<?= $n; ?>][qty]" class="qty_lartas form-control form-control-sm text-right" placeholder="0" aria-describedby="helpId"></th>
+                    <th>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="text" id="total_price_lartas_<?= $n; ?>" name="detail_fee_lartas[<?= $n; ?>][total_price]" class="form-control form-control-sm text-right number-format total_price_lartas" readonly placeholder="0" aria-describedby="helpId">
+                        </div>
+                    </th>
+                </tr>
+            <?php endforeach;
+        else : ?>
             <tr>
-                <th class="tx-dark tx-bold"><?= $lts->name; ?></th>
-                <td>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Rp</span>
-                        </div>
-                        <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][lartas_id]" readonly class="form-control text-right" value="<?= ($lts->lartas_id); ?>" placeholder="0">
-                        <input type="text" name="detail_fee_lartas[<?= $n; ?>][price]" readonly class="form-control text-right price_lartas" id="price_lartas_<?= $n; ?>" value="<?= number_format($lts->fee_value, 2); ?>" placeholder="0">
-                    </div>
-                </td>
-                <td>/<?= $typeLartas[$lts->unit]; ?>
-                    <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][unit]" value="<?= isset($lts->unit) ? $lts->unit : ''; ?>">
-                </td>
-                <th><input type="text" data-row="<?= $n; ?>" name="detail_fee_lartas[<?= $n; ?>][qty]" class="qty_lartas form-control form-control-sm text-right" placeholder="0" aria-describedby="helpId"></th>
-                <th>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Rp</span>
-                        </div>
-                        <input type="text" id="total_price_lartas_<?= $n; ?>" name="detail_fee_lartas[<?= $n; ?>][total_price]" class="form-control form-control-sm text-right number-format total_price_lartas" readonly placeholder="0" aria-describedby="helpId">
-                    </div>
-                </th>
+                <td colspan="5" class="text-center"> ~ Not avalilabe data ~</td>
             </tr>
-        <?php endforeach; ?>
+        <?php endif; ?>
     </tbody>
     <tfoot>
         <tr>

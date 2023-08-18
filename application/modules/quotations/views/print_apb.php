@@ -265,7 +265,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="word-wrap: break-word;">Ocean Freight <span class="fontA">海运费</span></td>
-                        <td class="text-right"><?= number_format(($header->total_ocean_freight) ?: '0', 2); ?></td>
+                        <td class="text-right"><?= number_format(($header->ocean_freight) ?: '0', 2); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="word-wrap: break-word;">Surveyor <span class="fontA">商检费</span></td>

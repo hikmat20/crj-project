@@ -95,9 +95,9 @@
                 <th width="" class="">Product Name</th>
                 <th width="" class="">Specification</th>
                 <th width="100" class="text-center">Origin HS Code</th>
-                <th width="100" class="text-center">Indonesia HS Code</th>
-                <th width="50" class="text-center">Curr</th>
-                <th class="text-right">Price</th>
+                <!-- <th width="100" class="text-center">Indonesia HS Code</th> -->
+                <!-- <th width="50" class="text-center">Curr</th> -->
+                <!-- <th class="text-right">Price</th> -->
                 <th width="120">Cost</th>
                 <th width="130">Other Cost</th>
                 <th width="200">Docs. Requirement</th>
@@ -116,15 +116,21 @@
                     <td><?= $dtl->product_name; ?></td>
                     <td><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class=" text-center"><?= $dtl->local_hscode; ?></td>
-                    <td class="text-center"><?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td>
+                    <!-- <td class=" text-center"><?= $dtl->local_hscode; ?></td> -->
+                    <!-- <td class="text-center"><?= (isset($request->currency) && $request->currency) ? $currency[$request->currency] : '-'; ?></td> -->
+                    <!-- <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td> -->
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
-                            <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
-                            <small class="d-block">BM with ASK : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small>
-                            <small class="d-block">PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn : '0'; ?>%</small>
-                            <small class="d-block">PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small>
+                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_mfn > 0) : ?>
+                                <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
+                            <?php endif; ?>
+                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_e > 0) : ?>
+                                <small class="d-block">BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small>
+                            <?php endif; ?>
+                            <small class="d-block">PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn . "%" : 'NO'; ?></small>
+                            <?php if ($ArrHscode[$dtl->origin_hscode]->pph_api > 0) : ?>
+                                <small class="d-block">PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td>

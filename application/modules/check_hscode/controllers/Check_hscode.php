@@ -320,6 +320,7 @@ class Check_hscode extends Admin_Controller
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
 		}
+
 		foreach ($hscodes_doc as $doc) {
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
 		}

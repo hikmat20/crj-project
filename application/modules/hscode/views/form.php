@@ -60,24 +60,7 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-6">
-            <!-- <div class="form-group row">
-                <div class="col-md-3 tx-dark tx-bold">
-                    <label for="product_name">Product Name <span class="tx-danger">*</span></label>
-                </div>
-                <div class="col-md-8">
-                    <textarea class="form-control" required id="product_name" name="product_name" placeholder="Product Name"><?= isset($hs) ? $hs->product_name : ''; ?></textarea>
-                </div>
-            </div> -->
-            <div class="form-group row">
-                <div class="col-md-3 tx-dark tx-bold">
-                    <label for="description">Description <span class="tx-danger">*</span></label>
-                </div>
-                <div class="col-md-8">
-                    <textarea class="form-control" required id="description" name="description" placeholder="Description"><?= isset($hs) ? $hs->description : ''; ?></textarea>
-                </div>
-            </div>
             <div class="form-group row">
                 <div class="col-md-3 tx-dark tx-bold">
                     <label for="lartas">Lartas</label>
@@ -112,10 +95,17 @@
                     <div id="cbErrorContainerLS"></div>
                 </div>
             </div>
+            <div class="form-group row">
+                <div class="col-md-3 tx-dark tx-bold">
+                    <label for="description">Description <span class="tx-danger">*</span></label>
+                </div>
+                <div class="col-md-8">
+                    <textarea class="form-control" rows="4" required id="description" name="description" placeholder="Description"><?= isset($hs) ? $hs->description : ''; ?></textarea>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- <h4 class="tx-bold tx-dark mg-b-10">Rates</h4> -->
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group row">

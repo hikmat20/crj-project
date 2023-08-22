@@ -50,23 +50,6 @@
         </div>
 
         <div class="col-md-6">
-            <!-- <div class="row">
-                <div class="col-md-5 tx-dark tx-bold">
-                    <span>Product Name</span>
-                </div>
-                <div class="col-md-7 tx-bold tx-dark">:
-                    <?= isset($hs) && $hs->product_name ? $hs->product_name : '-'; ?>
-                </div>
-            </div> -->
-            <div class="row">
-                <div class="col-md-5 tx-dark tx-bold">
-                    <span>Description</span>
-                </div>
-                <div class="col-md-7">:
-                    <?= isset($hs) && $hs->description ? $hs->description : '-'; ?>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-md-5 tx-dark tx-bold">
                     <span>Lartas</span>
@@ -82,6 +65,15 @@
                 </div>
                 <div class="col-md-7">:
                     <?= isset($hs->ls) ? $LS[$hs->ls] : '-'; ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-5 tx-dark tx-bold">
+                    <span>Description</span>
+                </div>
+                <div class="col-md-7">:
+                    <?= isset($hs) && $hs->description ? $hs->description : '-'; ?>
                 </div>
             </div>
         </div>

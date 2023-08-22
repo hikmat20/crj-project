@@ -478,6 +478,7 @@ class Quotations extends Admin_Controller
 		$src_city 				= $post['src_city'];
 		$fee_type 				= $post['fee_type'];
 		$customer 				= $post['customer_id'];
+		$qty_container 			= $post['qty'];
 		$qty_ls_container 		= $post['qty_ls_container'];
 		$exchange 				= str_replace(",", "", $post['exchange']);
 		$total_price 			= str_replace(",", "", $post['total_price']);
@@ -526,20 +527,23 @@ class Quotations extends Admin_Controller
 		}
 
 		$data = [
-			'ocean_freight' 	 => isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
-			'thc' 				 => isset($thc->cost_value) ? number_format($thc->cost_value) : 0,
-			'custom_clearance' 	 => isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value) : 0,
-			'trucking' 			 => isset($trucking_dtl) ? number_format($trucking_dtl->cost_value) : 0,
-			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
-			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
-			'fee' 				 => $fee,
-			'total_price'		 => number_format($convertRate),
-			'fee_csj_value' 	 => number_format($fee_csj_value),
-			'fee_customer_id' 	 => $fee_customer_id,
-			'fee_customer_value' => number_format($fee_customer_value),
-			'err_fee_customer' 	 => $err_fee_customer,
-			'totalFee' 	 		 => number_format($totalFee),
+			'ocean_freight' 	 	=> isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
+			'thc' 				 	=> isset($thc->cost_value) ? number_format($thc->cost_value) : 0,
+			'custom_clearance' 	 	=> isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value) : 0,
+			'trucking' 			 	=> isset($trucking_dtl) ? number_format($trucking_dtl->cost_value) : 0,
+			'trucking_id' 		 	=> isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
+			'surveyor' 			 	=> isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
+			'fee' 				 	=> $fee,
+			'total_price'		 	=> number_format($convertRate),
+			'fee_csj_value' 	 	=> number_format($fee_csj_value),
+			'fee_customer_id' 	 	=> $fee_customer_id,
+			'fee_customer_value' 	=> number_format($fee_customer_value),
+			'total_fee_csj' 	 	=> number_format($fee_csj_value * $qty_container),
+			'total_fee_customer' 	=> number_format($fee_customer_value * $qty_container),
+			'err_fee_customer' 	 	=> $err_fee_customer,
+			'totalFee' 	 		 	=> number_format($totalFee),
 		];
+
 		echo json_encode($data);
 	}
 

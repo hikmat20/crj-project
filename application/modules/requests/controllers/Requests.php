@@ -75,13 +75,16 @@ class Requests extends Admin_Controller
 		$columns_order_by = array(
 			0 => 'num',
 			1 => 'customer_name',
-			2 => 'project_name',
-			3 => 'date',
-			4 => 'country_name',
-			5 => 'employee_name',
+			2 => 'number',
+			3 => 'project_name',
+			4 => 'date',
+			5 => 'country_name',
+			6 => 'employee_name',
+			7 => 'revision_count',
+			8 => 'modified_at',
 		);
 
-		$sql .= " ORDER BY `modified_at` DESC, " . $columns_order_by[$column] . " " . $dir . " ";
+		$sql .= " ORDER BY " . $columns_order_by[$column] . " " . $dir . " ";
 		$sql .= " LIMIT " . $start . " ," . $length . " ";
 		$query  = $this->db->query($sql);
 
@@ -669,7 +672,7 @@ class Requests extends Admin_Controller
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
 		$ArrCurrency 	= [];
-		$typeLartas 	= [
+		$unitLartas 	= [
 			'TNE' => 'Tonase',
 			'SPM' => 'Shipment',
 			'CNT' => 'Container',
@@ -691,22 +694,22 @@ class Requests extends Admin_Controller
 			$ArrCurrency[$cur->code] = $cur;
 		}
 
-		$itemLartas = [];
+		$currency = $ArrCurrency[$header->currency]->symbol;
+		$currency_code = $ArrCurrency[$header->currency]->code;
+
+		$lartasItems = [];
 		foreach ($details as $dtl) {
-			if (!$ArrHscode[$dtl->origin_hscode]->lartas) {
-				$itemLartas['0'][] = $dtl->price;
-			} else {
-				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->price;
-			}
+			$lartasItems[] = $dtl->lartas;
 		}
 
+		$itemLartas = array_unique($lartasItems);
+
 		$data = [
-			'currency' 		=> $ArrCurrency,
+			'currency' 		=> $currency,
+			'currency_code' => $currency_code,
 			'header' 		=> $header,
 			'companies' 	=> $companies,
 			'ports' 		=> $ports,
-			'lartas' 		=> $lartas,
-			'typeLartas' 	=> $typeLartas,
 			'containers' 	=> $containers,
 			'cities' 		=> $cities,
 			'details' 		=> $details,
@@ -714,7 +717,10 @@ class Requests extends Admin_Controller
 			'ArrDocs' 		=> $ArrDocs,
 			'ArrPorts' 		=> $ArrPorts,
 			'ArrLartas' 	=> $ArrLartas,
+			'itemLartas' 	=> $itemLartas,
+			// 'unitLartas' 	=> $unitLartas,
 		];
+
 		$this->template->set($data);
 		$this->template->render('createQuotation');
 	}
@@ -739,43 +745,53 @@ class Requests extends Admin_Controller
 		$src_city 				= $post['src_city'];
 		$fee_type 				= $post['fee_type'];
 		$customer 				= $post['customer_id'];
+		$qty_container 			= $post['qty'];
 		$qty_ls_container 		= $post['qty_ls_container'];
+		$days 					= ($post['stacking_days']) ?: 7;
 		$exchange 				= str_replace(",", "", $post['exchange']);
 		$total_price 			= str_replace(",", "", $post['total_price']);
 		$total_price_non_lartas = str_replace(",", "", $post['total_price_non_lartas']);
 		$ocean_freight 			= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
-		$thc 					= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
+		$shipping 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
 		$custom_clearance 		= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
 		$trucking 				= $this->db->get_where('trucking_containers', ['area like' => "%$dest_area%", 'status' => '1'])->row();
+
+		$storage 				= $this->db->get_where('storages', ['day_stacking' => $days, 'status' => '1'])->row();
+		$storage_dtl 			= '';
+		if ($storage) {
+			$storage_dtl 		= $this->db->get_where('storage_details', ['storage_id' => $storage->id, 'container_id' => $container])->row();
+		}
+
 		if ($trucking) {
 			$trucking_dtl 	= $this->db->get_where('trucking_details', ['trucking_id' => $trucking->id, 'container_id' => $container])->row();
 		}
+
 		if ($qty_ls_container || $qty_ls_container > 0) {
 			$surveyor		= $this->db->get_where('surveyors', ['qty_container' => $qty_ls_container, 'status' => '1'])->row();
 		}
 
 		$fee 				= 0;
-		$fee_csj_value		= 0;
+		$fee_value			= 0;
 		$totalFee			= 0;
 		$fee_customer_id 	= null;
 		$fee_customer_value = 0;
 		$err_fee_customer 	= '';
 
-		$convertRate = $total_price * $exchange;
+		$convertRate 		= $total_price * $exchange;
 		$total_price_non_lartas_convert = $total_price_non_lartas * $exchange;
 		if ($total_price_non_lartas > 0) {
 			if ((isset($fee_type) && $fee_type == 'V')) {
 				$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
 				foreach ($fees as $f) {
 					if ($f->max_value >= $total_price_non_lartas_convert) {
-						$fee = $f->fee;
+						$fee 	= $f->fee;
 						break;
 					}
 				}
-				$totalFee = $fee_csj_value = ($total_price_non_lartas_convert * $fee) / 100;
+				$totalFee = $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
 			} else if (isset($fee_type) && $fee_type == 'C') {
-				$err_fee_customer 	= 'Fee Customer not available in this Customer.';
-				$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+				$err_fee_customer 		= 'Fee Customer not available in this Customer.';
+				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
 
 				if ($feeCust) {
 					$fee_customer_id 	= $feeCust->id;
@@ -786,21 +802,67 @@ class Requests extends Admin_Controller
 			}
 		}
 
-		$data = [
-			'ocean_freight' 	 => isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value) : 0,
-			'thc' 				 => isset($thc->cost_value) ? number_format($thc->cost_value) : 0,
-			'custom_clearance' 	 => isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value) : 0,
-			'trucking' 			 => isset($trucking_dtl) ? number_format($trucking_dtl->cost_value) : 0,
-			'trucking_id' 		 => isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
-			'surveyor' 			 => isset($surveyor->cost_value) ? number_format($surveyor->cost_value) : 0,
-			'fee' 				 => $fee,
-			'total_price'		 => number_format($convertRate),
-			'fee_csj_value' 	 => number_format($fee_csj_value),
-			'fee_customer_id' 	 => $fee_customer_id,
-			'fee_customer_value' => number_format($fee_customer_value),
-			'err_fee_customer' 	 => $err_fee_customer,
-			'totalFee' 	 		 => number_format($totalFee),
+		$freight = [
+			'price' 					=> isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value, 2) : 0,
+			'total' 					=> isset($ocean_freight->cost_value) ? number_format($ocean_freight->cost_value * $qty_container, 2) : 0,
+			'total_foreign_currency' 	=> isset($ocean_freight->cost_value) ? number_format(($ocean_freight->cost_value * $qty_container) / $exchange, 2) : 0,
 		];
+
+		$shippingCost = [
+			'price' 					=> isset($shipping->cost_value) ? number_format($shipping->cost_value, 2) : 0,
+			'total' 					=> isset($shipping->cost_value) ? number_format($shipping->cost_value * $qty_container, 2) : 0,
+			'total_foreign_currency' 	=> isset($shipping->cost_value) ? number_format(($shipping->cost_value * $qty_container) / $exchange, 2) : 0,
+		];
+
+		$cc = [
+			'price' 					=> isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value, 2) : 0,
+			'total' 					=> isset($custom_clearance->cost_value) ? number_format($custom_clearance->cost_value * $qty_container, 2) : 0,
+			'total_foreign_currency' 	=> isset($custom_clearance->cost_value) ? number_format(($custom_clearance->cost_value * $qty_container) / $exchange, 2) : 0,
+		];
+
+		$truck = [
+			'price' 					=> isset($trucking_dtl->cost_value) ? number_format($trucking_dtl->cost_value, 2) : 0,
+			'total' 					=> isset($trucking_dtl->cost_value) ? number_format($trucking_dtl->cost_value * $qty_container, 2) : 0,
+			'total_foreign_currency' 	=> isset($trucking_dtl->cost_value) ? number_format(($trucking_dtl->cost_value * $qty_container) / $exchange, 2) : 0,
+			'trucking_id' 				=> isset($trucking_dtl) ? ($trucking_dtl->trucking_id) : null,
+		];
+
+		$surv = [
+			'price' 					=> isset($surveyor->cost_value) ? number_format($surveyor->cost_value, 2) : 0,
+			'total' 					=> isset($surveyor->cost_value) ? number_format($surveyor->cost_value, 2) : 0,
+			'total_foreign_currency' 	=> isset($surveyor->cost_value) ? number_format(($surveyor->cost_value) / $exchange, 2) : 0,
+		];
+
+		$stor = [
+			'price' 					=> isset($storage_dtl->cost_value) ? number_format($storage_dtl->cost_value, 2) : 0,
+			'total' 					=> isset($storage_dtl->cost_value) ? number_format($storage_dtl->cost_value * $qty_container, 2) : 0,
+			'total_foreign_currency' 	=> isset($storage_dtl->cost_value) ? number_format(($storage_dtl->cost_value * $qty_container) / $exchange, 2) : 0,
+		];
+
+		$totalFeeCSJ = [
+			'price' 						=> isset($totalFee) ? number_format($totalFee, 2) : 0,
+			'total' 						=> isset($totalFee) ? number_format($totalFee * $qty_container, 2) : 0,
+			'total_foreign_currency' 		=> isset($totalFee) ? number_format(($totalFee * $qty_container) / $exchange, 2) : 0,
+			'fee' 							=> $fee,
+			'fee_value' 					=> isset($fee_value) ? number_format($fee_value, 2) : 0,
+			'fee_customer' 					=> isset($fee_customer_value) ? number_format($fee_customer_value, 2) : 0,
+			'fee_customer_id' 				=> $fee_customer_id,
+		];
+
+		$data = [
+			'ocean_freight' 	 			=> $freight,
+			'shipping' 		 	 			=> $shippingCost,
+			'custom_clearance' 	 			=> $cc,
+			'trucking' 			 			=> $truck,
+			'surveyor' 			 			=> $surv,
+			'storage' 			 			=> $stor,
+			'totalFeeCSJ' 	 	 			=> $totalFeeCSJ,
+			'err_fee_customer' 	 			=> $err_fee_customer,
+			// 'total_price'		 => number_format($convertRate),
+			// 'fee_csj_value' 	 => number_format($fee_csj_value),
+			// 'fee_customer_value' => number_format($fee_customer_value),
+		];
+
 		echo json_encode($data);
 	}
 
@@ -810,65 +872,26 @@ class Requests extends Admin_Controller
 		$id 				= $post['id'];
 		$fee_lartas_type 	= $post['fee_lartas_type'];
 		$customer_id 		= $post['customer_id'];
-		$exchange 			= str_replace(",", "", $post['exchange']);
 		$lartas 			= [];
-		$fee 				= 0;
-		$nonLartasConvert   = 0;
+
+		$details 			= $this->db->get_where('view_check_hscode_details', ['check_hscode_id' => $id])->result();
+		$lartasItems 		= [];
+		foreach ($details as $dtl) {
+			$lartasItems[] = $dtl->lartas;
+		}
+
+		$itemLartas = array_unique($lartasItems);
 
 		if ($fee_lartas_type == 'STD') {
-			$lartas = $this->db->get_where('view_fee_lartas', ['status' => '1'])->result();
+			$lartas = $this->db->where_in('lartas_id', $itemLartas)->get_where('view_fee_lartas', ['status' => '1'])->result();
 		} else if ($fee_lartas_type == 'CORP') {
 			$header = $this->db->get_where('fee_lartas_customers', ['customer_id' => $customer_id, 'status' => '1'])->row();
 			if ($header) {
-				$lartas = $this->db->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id])->result();
-			}
-		} else {
-			echo 'Data not valid';
-		}
-
-		$details 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
-		$ArrHscode 		= [];
-
-		foreach ($hscodes as $hs) {
-			$ArrHscode[$hs->origin_code] = $hs;
-		}
-
-		$itemLartas = [];
-		foreach ($details as $dtl) {
-			if (!$ArrHscode[$dtl->origin_hscode]->lartas) {
-				$itemLartas['0'][] = $dtl->price;
-			} else {
-				$itemLartas[$ArrHscode[$dtl->origin_hscode]->lartas][] = $dtl->price;
+				$lartas = $this->db->where_in('lartas_id', $itemLartas)->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id])->result();
 			}
 		}
 
-		if (isset($itemLartas[0])) {
-			$nonLartas = array_sum($itemLartas[0]);
-			$nonLartasConvert = $exchange * $nonLartas;
-		}
-
-		if (isset($fee_type) && $fee_type == 'V') {
-			$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
-			foreach ($fees as $f) {
-				if ($f->max_value >= $nonLartasConvert) {
-					$fee = $f->fee;
-					break;
-				}
-			}
-			$totalFee = $fee_csj_value = ($nonLartasConvert * $fee) / 100;
-		} else if (isset($fee_type) && $fee_type == 'C') {
-			$err_fee_customer 	= 'Fee Customer not available in this Customer.';
-			$feeCust 			= $this->db->get_where('fee_customers', ['customer_id' => $customer_id])->row();
-			if ($feeCust) {
-				$fee_customer_id 	= $feeCust->id;
-				$fee_customer_value = ($feeCust->fee_value);
-				$err_fee_customer 	= '';
-			}
-			$totalFee = $fee_customer_value;
-		}
-
-		$typeLartas 	= [
+		$unitType 	= [
 			'TNE' => 'Tonase',
 			'SPM' => 'Shipment',
 			'CNT' => 'Container',
@@ -876,15 +899,9 @@ class Requests extends Admin_Controller
 
 		$data = [
 			'lartas' 		=> $lartas,
-			'typeLartas' 	=> $typeLartas,
-			// 'totalFee' 		=> $totalFee,
-			// 'fee_csj_value' => $fee_csj_value,
-			// 'err_fee_customer' => $err_fee_customer,
-			'itemLartas' 	=> number_format($nonLartasConvert, 2),
+			'unitType' 	=> $unitType,
 		];
-
-		$this->template->set($data);
-		$this->template->render('feeLartas');
+		echo json_encode($data);
 	}
 
 	function load_storage()
@@ -910,35 +927,40 @@ class Requests extends Admin_Controller
 		$this->auth->restrict($this->managePermission);
 		$post = $this->input->post();
 		$data = $post;
-
 		$data['id'] 					= $this->Requests_model->generateIdQuotation();
 		$data['number'] 				= $this->Requests_model->generateQuotNumber();
 		$data['date'] 					= date("Y-m-d");
-		$data['ocean_freight'] 			= str_replace(",", "", $post['ocean_freight']);
-		$data['shipping'] 				= str_replace(",", "", $post['shipping']);
-		$data['storage'] 				= str_replace(",", "", $post['storage']);
-		$data['trucking'] 				= str_replace(",", "", $post['trucking']);
-		$data['surveyor'] 				= str_replace(",", "", $post['surveyor']);
-		$data['total_product'] 			= str_replace(",", "", $post['total_product']);
-		$data['total_shipping'] 		= str_replace(",", "", $post['total_shipping']);
-		$data['total_custom_clearance'] = str_replace(",", "", $post['total_custom_clearance']);
-		$data['total_trucking'] 		= str_replace(",", "", $post['total_trucking']);
-		$data['total_fee_lartas'] 		= str_replace(",", "", $post['total_fee_lartas']);
-		$data['custom_clearance'] 		= str_replace(",", "", $post['custom_clearance']);
-		$data['fee_value'] 				= str_replace(",", "", $post['fee_value']);
+		// $data['ocean_freight'] 			= str_replace(",", "", $post['ocean_freight']);
+		// $data['shipping'] 				= str_replace(",", "", $post['shipping']);
+		// $data['storage'] 				= str_replace(",", "", $post['storage']);
+		// $data['trucking'] 				= str_replace(",", "", $post['trucking']);
+		// $data['surveyor'] 				= str_replace(",", "", $post['surveyor']);
+		// $data['total_product'] 			= str_replace(",", "", $post['total_product']);
+		// $data['total_shipping'] 		= str_replace(",", "", $post['total_shipping']);
+		// $data['total_custom_clearance'] = str_replace(",", "", $post['total_custom_clearance']);
+		// $data['total_trucking'] 		= str_replace(",", "", $post['total_trucking']);
+		// $data['total_fee_lartas'] 		= str_replace(",", "", $post['total_fee_lartas']);
+		// $data['custom_clearance'] 		= str_replace(",", "", $post['custom_clearance']);
+		// $data['fee_value'] 				= str_replace(",", "", $post['fee_value']);
 		$data['fee_customer'] 			= str_replace(",", "", $post['fee_customer']);
 		$data['exchange'] 				= str_replace(",", "", $post['exchange']);
-		$data['coordination_fee'] 		= str_replace(",", "", $post['coordination_fee']);
+		// $data['coordination_fee'] 		= str_replace(",", "", $post['coordination_fee']);
 		$data['fee_customer_id'] 		= ($post['fee_customer_id']) ?: null;
 		$data['created_at']				= $data['modified_at'] = date('Y-m-d H:i:s');
 		$data['created_by']				= $data['modified_by'] = $this->auth->user_id();
 		$detail 						= $data['detail'];
 		$detail_lartas 					= $data['detail_fee_lartas'];
+		$costing 						= $data['costing'];
 
 		unset($data['detail']);
 		unset($data['detail_fee_lartas']);
+		unset($data['costing']);
+
+
 		$this->db->trans_begin();
 		$this->db->insert("quotations", $data);
+
+
 
 		if ($detail) {
 			$dtlId =  ($this->Requests_model->getDetailQuotId($data['id']));
@@ -946,7 +968,6 @@ class Requests extends Admin_Controller
 				$dtlId++;
 				$dtl['quotation_id'] 	= $data['id'];
 				$dtl['price'] 		= str_replace(",", "", $dtl['price']);
-				// $dtl['cif_price'] 		= str_replace(",", "", $dtl['cif_price']);
 				$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
 				$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
 				$dtl['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
@@ -954,17 +975,35 @@ class Requests extends Admin_Controller
 			}
 		}
 
+
 		if ($detail_lartas) {
 			$dtlId = 0;
 			foreach ($detail_lartas as $dtla) {
 				$dtlId++;
-				$dtla['id'] 				= $data['id'] . "-L" . sprintf("%03d", $dtlId);
-				$dtla['quotation_id'] 	= $data['id'];
-				$dtla['price'] 			= str_replace(",", "", $dtla['price']);
-				$dtla['total_price'] 	= str_replace(",", "", $dtla['total_price']);
-				// $dtla['created_at'] 	= date('Y-m-d H:i:s');
-				// $dtla['created_by'] 	= $this->auth->user_id();;
+				$dtla['id'] 						= $data['id'] . "-L" . sprintf("%03d", $dtlId);
+				$dtla['quotation_id'] 				= $data['id'];
+				$dtla['price'] 						= str_replace(",", "", $dtla['price']);
+				$dtla['total'] 						= str_replace(",", "", $dtla['total']);
+				$dtla['total_foreign_currency'] 	= str_replace(",", "", $dtla['total_foreign_currency']);
+				$dtla['created_at'] 				= date('Y-m-d H:i:s');
+				$dtla['created_by'] 				= $this->auth->user_id();;
+
 				$this->db->insert('quotation_detail_lartas', $dtla);
+			}
+		}
+
+		if ($costing) {
+			$n = 0;
+			foreach ($costing as $cost) {
+				$n++;
+				$cost['id'] 						= $data['id'] . "-C" . sprintf("%03d", $n);
+				$cost['quotation_id'] 				= $data['id'];
+				$cost['price'] 						= str_replace(",", "", $cost['price']);
+				$cost['total'] 						= str_replace(",", "", $cost['total']);
+				$cost['total_foreign_currency'] 	= str_replace(",", "", $cost['total_foreign_currency']);
+				$cost['created_at'] 				= date('Y-m-d H:i:s');
+				$cost['created_by'] 				= $this->auth->user_id();;
+				$this->db->insert('quotation_detail_costing', $cost);
 			}
 		}
 

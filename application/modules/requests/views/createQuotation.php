@@ -3,7 +3,7 @@
         <div class="form-group row">
             <label for="number" class="tx-dark tx-bold col-md-3 pd-x-0">Number</label>
             <input type="hidden" name="check_id" id="check_id" value="<?= $header->id; ?>">
-            <input type="text" id="number" value="<?= $header->number; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="Number">
+            <input type="text" id="number" value="<?= $header->number; ?>" readonly class="form-control form-control-sm col-md-7" placeholder="Number">
         </div>
         <div class="form-group row">
             <label for="customer_name" class="tx-dark tx-bold col-md-3 pd-x-0">Customer</label>
@@ -17,7 +17,7 @@
         </div>
         <div class="form-group row">
             <label for="origin_country_id" class="tx-dark tx-bold col-md-3 pd-x-0">Origin</label>
-            <input type="hidden" name="origin_country_id" id="origin_country_id" value="<?= $header->origin_country_id; ?>">
+            <input type="hidden" name="origin_country_id" value="<?= $header->origin_country_id; ?>">
             <input type="text" id="origin_country_id" value="<?= $header->country_code . " - " . $header->country_name; ?>" readonly class="form-control form-control-sm col-md-7" placeholder="Origin">
         </div>
     </div>
@@ -37,8 +37,9 @@
         </div>
         <div class="form-group row">
             <label for="currency" class="tx-dark tx-bold col-md-3 pd-x-0">Currency</label>
-            <input type="text" id="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->code . " - " . $currency[$header->currency]->symbol : ''; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
-            <input type="hidden" name="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->code : ''; ?>" readonly>
+            <input type="text" id="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency_code . " - " . $currency : ''; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
+            <input type="hidden" name="currency" value="<?= (isset($header->currency) && $header->currency) ? $currency_code : ''; ?>" readonly>
+            <input type="hidden" id="currencySymbol" value="<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>" readonly>
         </div>
     </div>
 </div>
@@ -142,7 +143,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="form-group row">
+        <div class="mg-b-10 row">
             <label for="fee_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Type <span class="text-danger tx-bold">*</span></label>
             <div class="col-md-6 px-0">
                 <div id="slWrFee" class="parsley-select">
@@ -153,6 +154,23 @@
                     </select>
                 </div>
                 <div id="errFee"></div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6 offset-md-3 px-0">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Standard</span>
+                    </div>
+                    <input type="text" name="fee" id="fee" readonly autocomplete="off" min="0" class="form-control text-right" placeholder="0">
+                </div>
+                <div class="input-group input-group-sm mg-t-10">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Customer</span>
+                    </div>
+                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                    <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                </div>
             </div>
         </div>
         <div class="form-group row">
@@ -181,6 +199,37 @@
                 </div>
             </div>
         </div>
+        <div class="form-group row">
+            <label for="stacking_days" class="tx-dark tx-bold col-md-3 pd-x-0">Days stacking est. <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div class="input-group">
+                    <input type="number" min="0" name="stacking_days" id="stacking_days" autocomplete="off" class="form-control text-right" placeholder="0" value="7">
+                    <div class="input-group-append">
+                        <span class="input-group-text">Days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="ls_type" class="tx-dark tx-bold col-md-3 pd-x-0">LS Type <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div id="slWrLS" class="parsley-select">
+                    <div class="input-group">
+                        <select name="ls_type" id="ls_type" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
+                            <option value=""></option>
+                            <option value="FULL">Full LS</option>
+                            <option value="NON">Non LS</option>
+                            <option value="OTH">Others</option>
+                        </select>
+                        <div class="input-group-append input-group-prepend">
+                            <span class="input-group-text">QTY Container</span>
+                        </div>
+                        <input type="number" name="qty_ls_container" id="qty_ls_container" placeholder="0" min="0" readonly class="form-control text-right">
+                    </div>
+                </div>
+                <div id="errLS"></div>
+            </div>
+        </div>
     </div>
 </div>
 <hr>
@@ -203,12 +252,12 @@
                 <th class="text-center align-middle" rowspan="2">BM without<br>form E</th>
                 <th class="text-center align-middle" rowspan="2">BM with<br>form E</th>
                 <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency[$header->currency]->symbol : ''; ?>)</th>
+                <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>)</th>
                 <th class="text-center align-middle" rowspan="2">Image</th>
             </tr>
             <tr>
                 <th class="text-center border border-top-0 border-right-0">
-                    Price (<span id="type-price-text"></span>)
+                    Price (<span class="type-price-text"></span>)
                 </th>
                 <th class="text-center align-middle">BM</th>
                 <th class="text-center align-middle">PPH</th>
@@ -320,130 +369,469 @@
         </tbody>
     </table>
 </div>
+
 <!-- END DETAIL PRODUCT -->
 
-<h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Costing</h5>
-<hr>
 <div class="row pd-x-20">
-    <div class="col-md-5">
-        <div class="form-group row">
-            <label for="ocean_freight" class="tx-dark tx-bold col-md-5">Ocean Freight <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <input type="text" name="ocean_freight" id="ocean_freight" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="shipping" class="tx-dark tx-bold col-md-5">Shipping Line Cost <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <input type="text" name="shipping" id="shipping" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="custom_clearance" class="tx-dark tx-bold col-md-5">Custom Clearance <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <input type="text" name="custom_clearance" id="custom_clearance" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="stacking_days" class="tx-dark tx-bold col-md-5"> Storage & Stacking Days <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Days</span>
-                    </div>
-                    <input type="number" min="0" name="stacking_days" id="stacking_days" autocomplete="off" class="form-control text-right" placeholder="0" value="7">
-                    <div class="input-group-append input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="text" name="storage" id="storage" readonly autocomplete="off" class="form-control form-control-sm text-right" placeholder="0">
-                </div>
-
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="trucking" class="tx-dark tx-bold col-md-5">Trucking <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <input type="text" name="trucking" id="trucking" readonly autocomplete="off" class="form-control form-control-sm number-format text-right" placeholder="0">
-                <input type="hidden" name="trucking_id" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="fee" class="tx-dark tx-bold col-md-5">Fee CSJ (%) <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <input type="number" name="fee" id="fee" readonly autocomplete="off" min="0" class="form-control text-right" placeholder="0">
-                    <div class="input-group-append">
-                        <span class="input-group-text">%</span>
-                    </div>
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="text" id="fee_csj_value" readonly autocomplete="off" class="form-control text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="fee_customer" class="tx-dark tx-bold col-md-5">Fee Customer <span class="text-dange tx-bold">*</span></label>
-            <div class="col-md-6 px-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                    <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="col-md-7">
-        <div class="form-group row">
-            <label for="ls_type" class="tx-dark tx-bold col-md-3 pd-x-0">LS Type <span class="text-danger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div id="slWrLS" class="parsley-select">
-                    <div class="input-group">
-                        <select name="ls_type" id="ls_type" class="form-control select-50" required data-parsley-inputs data-parsley-class-handler="#slWrLS" data-parsley-errors-container="#errLS">
-                            <option value=""></option>
-                            <option value="FULL">Full LS</option>
-                            <option value="NON">Non LS</option>
-                            <option value="OTH">Others</option>
-                        </select>
-                        <div class="input-group-append input-group-prepend">
-                            <span class="input-group-text">QTY Container</span>
+        <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Costing</h5>
+        <hr>
+        <table class="table table-sm table-striped" id="tbCosting">
+            <thead>
+                <tr class="bg-light">
+                    <th class="align-middle" colspan="2" width="220">UNDERNAME WITH CUSTOM</th>
+                    <th class="text-center align-middle">UNIT PRICE</th>
+                    <th class="text-center align-middle">TOTAL (Rp)</th>
+                    <th class="text-center align-middle">TOTAL (<?= $currency_code; ?>)</th>
+                </tr>
+            </thead>
+            <tbody class="tx-dark" id="listCosting">
+                <tr>
+                    <th class="text-right pl-2">1.</th>
+                    <th>Ocean Freight
+                        <input type="hidden" name="costing[ocean_freight][name]" value="ocean_freaight">
+                    </th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[ocean_freight][price]" id="ocean_freight" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
                         </div>
-                        <input type="number" name="qty_ls_container" id="qty_ls_container" placeholder="0" min="0" readonly class="form-control text-right">
-                    </div>
-                </div>
-                <div id="errLS"></div>
-                <div class="input-group input-group-sm mg-t-10">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                    </div>
-                    <input type="text" name="surveyor" id="surveyor" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="fee_lartas_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Lartas <span class="text-danger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div id="slWrFeeLartas" class="parsley-select">
-                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
-                        <option value=""></option>
-                        <option value="STD">Standard</option>
-                        <option value="CORP">Corporate</option>
-                    </select>
-                </div>
-                <div id="errFeeLartas"></div>
-            </div>
-        </div>
-        <div id="loadLartas">
-        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[ocean_freight][total]" id="total_ocean_freight" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[ocean_freight][total_foreign_currency]" id="foreign_currency_ocean_freight" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">2.</th>
+                    <th>Shipping Line Cost
+                        <input type="hidden" name="costing[shipping][name]" value="shipping">
+                    </th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[shipping][price]" id="shipping" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[shipping][total]" id="total_shipping" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[shipping][total_foreign_currency]" id="foreign_currency_shipping" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">3.</th>
+                    <th>Custom Clearance
+                        <input type="hidden" name="costing[custom_clearance][name]" value="custom_clearance">
+
+                    </th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[custom_clearance][price]" id="custom_clearance" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[custom_clearance][total]" id="total_custom_clearance" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[custom_clearance][total_foreign_currency]" id="foreign_currency_custom_clearance" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">4.</th>
+                    <th>Storage
+                        <input type="hidden" name="costing[storage][name]" value="storage">
+
+                    </th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[storage][price]" id="storage" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[storage][total]" id="total_storage" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[storage][total_foreign_currency]" id="foreign_currency_storage" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">5.</th>
+                    <th>Trucking
+                        <input type="hidden" name="costing[trucking][name]" value="trucking">
+                    </th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[trucking][price]" id="trucking" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[trucking][total]" id="total_trucking" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[trucking][total_foreign_currency]" id="foreign_currency_trucking" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                            <input type="hidden" name="trucking_id" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">6.</th>
+                    <th>Surveyor
+                        <input type="hidden" name="costing[surveyor][name]" value="surveyor">
+                    </th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[surveyor][price]" id="surveyor" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[surveyor][total]" id="total_surveyor" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[surveyor][total_foreign_currency]" id="foreign_currency_surveyor" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">7.</th>
+                    <th>Fee CSJ</th>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[fee_csj][price]" id="fee_value" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0">Rp.</span>
+                            </div>
+                            <input type="text" name="costing[fee_csj][total]" id="total_fee_value" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing" placeholder="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="costing[fee_csj][total_foreign_currency]" id="total_fee_value_foreign_currency" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-right">8.</th>
+                    <th colspan="4">
+                        <div class="form-group row mg-b-0">
+                            <label for="fee_lartas_type" class="col-md-3">Fee Lartas</label>
+                            <div class="col-md-4">
+                                <div id="slWrFeeLartas" class="parsley-select">
+                                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control form-control-sm" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
+                                        <option value="">~ Choose One ~</option>
+                                        <option value="STD">Standard</option>
+                                        <option value="CORP">Corporate</option>
+                                    </select>
+                                </div>
+                                <div id="errFeeLartas"></div>
+                            </div>
+                        </div>
+                        <hr class="mg-y-5">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th width="140">Name</th>
+                                    <th>Price (Rp)</th>
+                                    <th>Unit</th>
+                                    <th width="100">Qty</th>
+                                    <th>Total (Rp)</th>
+                                    <th>Total (<?= $currency_code; ?>)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $n = 0;
+                                if ($itemLartas) : foreach ($itemLartas as $lts) : $n++; ?>
+                                        <tr class="bg-white">
+                                            <th><?= $ArrLartas[$lts]; ?></th>
+                                            <th>
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text bg-white border-0">Rp.</span>
+                                                    </div>
+                                                    <input type="text" name="detail_fee_lartas[<?= $n; ?>][price]" data-id="<?= $n; ?>" id="price_lartas_<?= $lts; ?>" readonly autocomplete="off" class="form-control bg-white border-0 text-right form-control-sm clear_input price_lartas_<?= $lts; ?>" placeholder="0">
+                                                </div>
+                                            </th>
+                                            <th class="align-middle">/<span id="unit_<?= $lts; ?>" class="unit_text"></span>
+                                                <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][unit]" class="h-0 p-1 unit unit_<?= $lts; ?>">
+                                            </th>
+                                            <td>
+                                                <input type="number" name="detail_fee_lartas[<?= $n; ?>][qty]" data-id="<?= $lts; ?>" autocomplete="off" min="0" class="form-control text-right bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas<?= $lts; ?>" id="qty_lartas<?= $lts; ?>" placeholder="0">
+                                            </td>
+                                            <td>
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text bg-white border-0">Rp.</span>
+                                                    </div>
+                                                    <input type="text" name="detail_fee_lartas[<?= $n; ?>][total]" readonly class="form-control form-control-sm bg-white text-right border-0 h-0 p-1 clear_input total_lartas total_lartas_<?= $lts; ?>" id="total_lartas_<?= $lts; ?>" placeholder="0">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text bg-white border-0"><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" name="detail_fee_lartas[<?= $n; ?>][total_foreign_currency]" readonly class="form-control form-control-sm bg-white text-right border-0 h-0 p-1 clear_input total_fee_lartas_foreign_currency" id="total_lartas_foreign_currency_<?= $lts; ?>" placeholder="0">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach;
+                                else : ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">~ Non Lartas ~</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <tfoot class="p-0 table-light">
+                                <th class="text-right align-middle" colspan="4">Total Fee Lartas</th>
+                                <th class="text-right align-middle">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border-0 bg-transparent">Rp.</span>
+                                        </div>
+                                        <input type="text" id="total_fee_lartas" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right total_costing" placeholder="0">
+                                    </div>
+                                </th>
+                                <th class="text-right align-middle">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border-0 bg-transparent"><?= $currency; ?></span>
+                                        </div>
+                                        <input type="text" id="total_fee_lartas_foreign_currency" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right total_costing_foreign_currency" placeholder="0">
+                                    </div>
+                                </th>
+                            </tfoot>
+                        </table>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-right">9.</th>
+                    <th colspan="4">Others</th>
+                </tr>
+            </tbody>
+            <tfoot class="p-0">
+                <tr>
+                    <th class="text-right tx-dark tx-bold align-middle" colspan="3">Total Costing</th>
+                    <th class="align-middle">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-0 bg-transparent">Rp.</span>
+                            </div>
+                            <input type="text" name="total_costing" id="total_costing" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right" placeholder="0">
+                        </div>
+                    </th>
+                    <th class="align-middle">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-0 bg-transparent"><?= $currency; ?></span>
+                            </div>
+                            <input type="text" name="total_costing_foreign_currency" id="total_costing_foreign_currency" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right" placeholder="0">
+                        </div>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+        <button type="button" class="btn btn-sm btn-primary" id="addOthFee"><i class="fa fa-plus" aria-hidden="true"></i> Add Other Fee</button>
     </div>
-</div>
-<hr>
-<h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-calculator"></i> Summary</h5>
-<div class="row">
     <div class="col-md-5">
-        <table class="table table-sm table-bordered border wd-md-80p">
+        <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Summary</h5>
+        <hr>
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-sm table table-striped">
+                    <tbody class="tx-dark">
+                        <tr>
+                            <th class="align-middle">Product Price</th>
+                            <td class="align-middle">
+                                <div class="input-group input-group-sm tx-16-force">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="total_product" id="total_product" class=" bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format(($totalPrice) ?: '0', 2); ?>">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">Total Costing & Others</th>
+                            <td class="align-middle">
+                                <div class="input-group input-group-sm tx-16-force">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" id="total_costing_and_others" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td class="align-middle tx-dark tx-bold">Subtotal</td>
+                            <td class="align-middle">
+                                <div class="input-group input-group-sm tx-16-force">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="subtotal" id="subtotal" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">BM</th>
+                            <td class="align-middle">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="total_bm" id="total_bm" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format($gtotalBM, 2); ?>">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">Total PPH</th>
+                            <td class="align-middle wd-lg-30p">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="total_pph" id="total_pph" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format(($gtotalPPH) ?: '0', 2); ?>">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">Tax (11%)</th>
+                            <td class="align-middle wd-lg-30p">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="total_tax" id="total_tax" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td class="align-middle tx-dark tx-bold">Grand Total</td>
+                            <td class="align-middle wd-lg-30p">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="grand_total" id="grand_total" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle"><span class="type-price-text">FOB/CFR/CIF</span></th>
+                            <td class="align-middle wd-lg-30p">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format(($totalPrice) ?: '0', 2); ?>">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td class="align-middle tx-dark tx-bold">Grand Total Exclude FOB</td>
+                            <td class="align-middle wd-lg-30p">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="grand_total_exclude_price" id="grand_total_exclude_price" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-calculator"></i> Summary</h5>
+        <hr>
+        <table class="table table-sm table-bordered border">
             <thead class="bg-light">
                 <tr>
                     <th class="text-center tx-dark tx-bold">Element Costing</th>
@@ -518,159 +906,8 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table> -->
     </div>
-    <!-- <div class="col-md-6">
-        <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-file-invoice-dollar"></i> Estimation</h5>
-
-        <div class="card pd-7">
-            <ul class="nav nav-outline justify-content-center align-items-center active-primary nav-fill flex-column flex-md-row" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a href="#" class="nav-link active justify-content-center tx-bold tx-uppercase" id="as-per-bill-tab" data-toggle="tab" data-target="#as-per-bill" type="button" role="tab" aria-controls="as-per-bill" aria-selected="true">As per-Bill</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a href="#" class="nav-link justify-content-center tx-bold tx-uppercase" id="all-in-tab" data-toggle="tab" data-target="#all-in" type="button" role="tab" aria-controls="all-in" aria-selected="false">All-In</a>
-                </li>
-            </ul>
-            <hr class="mg-5">
-
-            <div class="tab-content">
-                <div class="tab-pane active" id="as-per-bill" role="tabpanel" aria-labelledby="as-per-bill-tab">
-                    <table class="table table-sm table-bordered border">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="text-center">Item</th>
-                                <th width="200" class="text-center">Value(Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="tx-dark">
-                            <tr>
-                                <th class="tx-bold">Product Price</th>
-                                <td id="apb-total_product" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Fee (CSJ)</th>
-                                <td id="apb-fee_undername" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Fee Lartas</th>
-                                <td id="apb-fee_lartas" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Ocean Freight</th>
-                                <td id="apb-ocean_freight" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Shipping Line Cost (THC)</th>
-                                <td id="apb-thc" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Surveyor</th>
-                                <td id="apb-surveyor" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Handling</th>
-                                <td id="apb-handling" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Storage</th>
-                                <td id="apb-storage" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Trucking</th>
-                                <td id="apb-trucking" class="text-right">-</td>
-                            </tr>
-
-                            <tr>
-                                <th class="tx-bold">Subtotal</th>
-                                <td id="apb-subtotal" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Discount</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Total BM</th>
-                                <td id="apb-total_bm" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Total PPH</th>
-                                <td id="apb-total_pph" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Tax</th>
-                                <td id="apb-ppn" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Grand total include Tax</th>
-                                <td id="apb-gTotal_ppn" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Product Price</th>
-                                <td id="apb-min_total_product" class="text-right">-</td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Total Cost (exclude CFR/CIF)</th>
-                                <td id="apb-gTotal_n_ppn" class="text-right">-</td>
-                            </tr>
-                        </tbody>
-
-                    </table>
-                </div>
-                <div class="tab-pane" id="all-in" role="tabpanel" aria-labelledby="all-in-tab">
-                    <table class="table table-sm table-bordered border">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="text-center">Item</th>
-                                <th width="200" class="text-center">Value(Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="tx-dark">
-                            <tr>
-                                <th class="tx-bold">Product Price</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">THC, Handling, undername fee and others (ALL IN)</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">SUB TOTAL</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">BM</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">PPH</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">PPN</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Grand Total Include PPN</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">Product Price</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="tx-bold">TOTAL COST (Exclude CFR/CIF)</th>
-                                <td></td>
-                            </tr>
-                        </tbody>
-
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-    </div> -->
 </div>
 <script>
     $(document).ready(function() {
@@ -703,6 +940,5 @@
             width: "100%",
             allowClear: true
         });
-
     })
 </script>

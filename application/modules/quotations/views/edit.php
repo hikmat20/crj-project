@@ -1163,9 +1163,9 @@
                     $('#fee_customer_id').val(result.fee_customer_id);
                     $('#fee_customer').val(result.fee_customer_value);
                     $('#fee_csj_value').val(result.fee_csj_value);
-                    $('#tx-fee-customer').text(result.fee_customer_value);
+                    $('#tx-fee-csj').text(result.total_fee_csj);
+                    $('#tx-fee-customer').text(result.total_fee_customer);
                     $('#total_price_lartas_0').val(result.totalFee);
-                    $('#tx-fee-csj').text(result.fee_csj_value);
                     shipping();
                     // fee_csj();
                     custom_clearance();

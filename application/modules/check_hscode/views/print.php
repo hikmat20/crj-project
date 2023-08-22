@@ -160,14 +160,14 @@
                 <th width="" class="text-center">Product Name</th>
                 <th width="200" class="text-center">Specification</th>
                 <th width="100" class="text-center">Origin HS Code</th>
-                <th width="100" class="text-center">Indonesia HS Code</th>
-                <th width="50" class="text-center">Curr</th>
-                <th width="80" class="text-center">Price</th>
+                <!-- <th width="100" class="text-center">Indonesia HS Code</th>
+                <th width="50" class="text-center">Curr</th> -->
+                <!-- <th width="80" class="text-center">Price</th> -->
                 <th width="120" class="text-center">Cost</th>
                 <th width="150">Other Cost</th>
                 <th width="150">Docs. Requirement</th>
-                <th width="50">Image</th>
                 <th width="">Remarks</th>
+                <th width="50">Image</th>
             </tr>
         </thead>
         <tbody>
@@ -181,14 +181,13 @@
                     <td style="font-family: sun-exta"><?= $dtl->product_name; ?></td>
                     <td style="font-family: sun-exta"><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class="text-center" <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td>
-                    <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : ''; ?></td>
-                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td>
-                    <!-- <td class="text-right"><?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?></td> -->
+                    <!-- <td class="text-center" <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td> -->
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
-                            <p><small>BM with ASK : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small></p>
+                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_e > 0) : ?>
+                                <p><small>BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small></p>
+                            <?php endif; ?>
                             <p><small>PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn : '0'; ?>%</small></p>
                             <p><small>PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small></p>
                         <?php endif; ?>
@@ -249,8 +248,8 @@
                             </ul>
                         <?php endif; ?>
                     </td>
-                    <td><img src="<?= $img; ?>" width="50"></td>
                     <td><?= $dtl->remarks; ?></td>
+                    <td><img src="<?= $img; ?>" width="50"></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

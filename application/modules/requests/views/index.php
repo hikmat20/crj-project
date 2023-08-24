@@ -237,24 +237,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 buttonsStyling: false
             })
 
-<<<<<<< HEAD
             formData.append('note', $('#note').html());
-=======
-            let formData = new FormData($('#data-form')[0]);
-            // formData.append('total_product', $('#tx-total-product').text());
-            // formData.append('ocean_freight', $('#tx-ocean-freight').text());
-            // formData.append('total_shipping', $('#tx-shipping').text());
-            // formData.append('fee_value', $('#tx-fee-csj').text());
-            // formData.append('total_fee_lartas', $('#tx-fee-lartas').text());
-            // formData.append('total_custom_clearance', $('#tx-custome-clearance').text());
-            // formData.append('total_trucking', $('#tx-trucking').text());
-            // formData.append('subtotal', $('#tx-fee-csj').text());
-            // formData.append('discount', $('#tx-fee-csj').text());
-            // formData.append('total_bm', $('#tx-fee-csj').text());
-            // formData.append('total_pph', $('#tx-fee-csj').text());
-            // formData.append('tax', $('#tx-fee-csj').text());
-            // formData.append('tax_value', $('#tx-fee-csj').text());
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 
             swalWithBootstrapButtons.fire({
                 title: "Confirm!",
@@ -415,7 +398,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             })
             load_price()
         })
-<<<<<<< HEAD
 
         $(document).on('input', '.qty_lartas', function() {
             let id = $(this).data('id')
@@ -424,18 +406,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             let qty = parseInt($(this).val() || 0)
             let totalPrice, currTotalPrice
 
-=======
-        $(document).on('change', '#dest_area', function() {
-            load_price()
-        })
-        $(document).on('input', '.qty_lartas', function() {
-            let id = $(this).data('id')
-            let exchange = parseInt($('#exchange').val().replace(/[\,]/g, '') || 0)
-            let price = parseFloat($('#price_lartas_' + id).val().replace(/[\,]/g, '') || 0)
-            let qty = parseInt($(this).val() || 0)
-            let totalPrice, currTotalPrice
-
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
             totalPrice = price * qty
             currTotalPrice = (totalPrice / exchange)
             $('#total_lartas_' + id).val(new Intl.NumberFormat().format(totalPrice))
@@ -470,83 +440,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             }
             load_price()
         })
-<<<<<<< HEAD
-=======
-
-        $(document).on('click', '#addOthFee', function() {
-            let n = $('#tbCosting tbody tr.othFee').length + 1
-            let curr = $('#currencySymbol').val()
-            let html
-            html = `
-            <tr class="othFee">
-                <td class="text-center p-0">
-                    <a href="javascript:void(0)" class="hover-btn delete-item p-1">
-                        <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
-                    </a>
-                </td>
-                <td><input type="text" name="costing[${n}][name]" class="tx-dark form-control form-control-sm" placeholder="Other fee Name"></td>
-                <td>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text border-0 bg-transparent">Rp.</span>
-                        </div>
-                        <input type="text" name="costing[${n}][price]" class="tx-dark form-control text-right number-format otherFeePrice" id="otherFeePrice_" data-row="${n}" placeholder="0"></td>
-                    </div>
-                <td>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text border-0 bg-transparent">Rp.</span>
-                        </div>
-                        <input type="text" name="costing[${n}][total]" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing" id="otherFeeTotal_${n}" placeholder="0"></td>
-                    </div>
-                <td>
-                <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text border-0 bg-transparent">${curr}</span>
-                        </div>
-                        <input type="text" name="costing[${n}][total_foreign_currency]" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing_foreign_currency" id="currOtherFee_${n}" placeholder="0"></td>
-                    </div>
-            </tr>`
-
-            if (n <= 3) {
-                $('#tbCosting tbody#listCosting').append(html)
-            }
-            if (n === 3) {
-                $('#addOthFee').prop('disabled', true)
-            }
-        })
-
-        $(document)
-            .on("mouseenter", '.hover-btn', function() {
-                $(this).html('<button type="button" class="btn btn-xs btn-icon btn-danger px-1"><i class="fa fa-times fa-xs" aria-hidden="true"></i></button>')
-            })
-            .on("mouseleave", '.hover-btn', function() {
-                $(this).html('<i class="fa fa-plus fa-sm" aria-hidden="true"></i>')
-            });
-
-
-        $(document).on('click', '.delete-item', function() {
-            $(this).parents('tr').remove()
-            let n = $('#tbCosting tbody tr.othFee').length
-            if (n < 3) {
-                $('#addOthFee').prop('disabled', false)
-            }
-            subtotal()
-        })
-
-        $(document).on('input', '.otherFeePrice', function() {
-            let row = $(this).data('row')
-            let exchange = parseFloat($('#exchange').val().replace(/[\,]/g, "") || 0)
-            let qty = parseFloat($('#qty_container').val() || 0)
-            let price = parseFloat($(this).val().replace(/[\,]/g, "") || 0)
-            let total = (qty * price)
-            let total_foreign_currency = (total / exchange)
-            $('#otherFeeTotal_' + row).val(new Intl.NumberFormat().format(total))
-            $('#currOtherFee_' + row).val(new Intl.NumberFormat().format(total_foreign_currency.toFixed(2)))
-            total_costing()
-        })
-    })
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 
         $(document).on('click', '#addOthFee', function() {
             let n = $('#tbCosting tbody tr.othFee').length + 1
@@ -586,81 +479,11 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 </td>
             </tr>`
 
-<<<<<<< HEAD
             if (n <= 3) {
                 $('#tbCosting tbody#listCosting').append(html)
             }
             if (n === 3) {
                 $('#addOthFee').prop('disabled', true)
-=======
-        if (price_type == 'FOB') {
-            $('.type-price-text').text('FOB')
-        } else {
-            $('.type-price-text').text('CFR/CIF')
-        }
-        // $('#tx-total-product').text(price)
-    }
-
-    function surveyor() {
-        let svy = parseInt($('#surveyor').val().replace(/[\,]/g, "") || 0)
-        $('#tx-surveyor').text(new Intl.NumberFormat().format(svy.toFixed()))
-    }
-
-    function fee_csj() {
-        let total_fee;
-        let totalProduct = parseInt($('#tx-total-product').text().replace(/[\,]/g, "") || 0)
-        let fee = parseInt($('#fee').val())
-        total_fee = totalProduct * (fee / 100)
-        $('#tx-fee-csj').text(new Intl.NumberFormat().format(total_fee.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function ocean_freight() {
-        let total;
-        let qty = parseInt($('#qty_container').val())
-        let Ofr = parseInt($('#ocean_freight').val().replace(/[\,]/g, "") || 0)
-        total = Ofr * qty
-        $('#tx-ocean-freight').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function shipping() {
-        let qty = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let thc = parseInt($('#shipping').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = qty * thc
-        $('#tx-shipping').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function custom_clearance() {
-        let cc = parseInt($('#custom_clearance').val().replace(/[\,]/g, "") || 0)
-        let qty_container = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = cc * qty_container
-        $('#tx-custome-clearance').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function storage() {
-        let days = $('#stacking_days').val()
-        let container = $('#container_id').val()
-        let cost_value = 0;
-        $.ajax({
-            url: siteurl + thisController + 'load_storage',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                days,
-                container
-            },
-            success: (result) => {
-                if (result.storage) {
-                    cost_value = new Intl.NumberFormat().format(result.storage.cost_value)
-                }
-                $('#storage').val(cost_value)
-                $('#tx-storage').text(cost_value)
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
             }
         })
 
@@ -752,10 +575,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         formData.append('qty_ls_container', $('#qty_ls_container').val() || 0);
         formData.append('exchange', $('#exchange').val().replace(/[\,]/g, "") || 0);
         formData.append('stacking_days', $('#stacking_days').val() || 0);
-<<<<<<< HEAD
-
-=======
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 
         if (formData) {
             $.ajax({
@@ -814,20 +633,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     $('#fee_customer').val(result.totalFeeCSJ.fee_customer);
                     $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
 
-<<<<<<< HEAD
-=======
-                    // $('#tx-total-product').text(result.total_price);
-                    // $('#total_price_lartas_0').val(result.totalFee);
-                    // $('#tx-fee-csj').text(result.fee_csj_value);
-                    // $('#tx-fee-customer').text(result.fee_customer_value);
-                    // shipping();
-                    // fee_csj();
-                    // custom_clearance();
-                    // storage();
-                    // trucking();
-                    // surveyor();
-                    // ocean_freight()
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
                     total_costing()
                     if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                         Lobibox.notify('warning', {
@@ -872,11 +677,8 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 contentType: false,
                 cache: false,
                 success: (result) => {
-<<<<<<< HEAD
                     $('#total_fee_lartas').val(0)
                     $('#total_fee_lartas_foreign_currency').val(0)
-=======
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
                     if (result.lartas.length > 0) {
                         $.each(result.lartas, (i, data) => {
                             $('#price_lartas_' + data.lartas_id).val(new Intl.NumberFormat().format(data.fee_value))
@@ -887,10 +689,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         $('.clear_input').val('')
                         $('.unit_text').text('')
                     }
-<<<<<<< HEAD
                     total_costing()
-=======
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
                     // load_price()
                 },
                 error: (result) => {
@@ -938,11 +737,8 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         $('#grand_total').val(new Intl.NumberFormat().format(grand_total.toFixed(2)))
         let grand_total_excl = grand_total - productPrice
         $('#grand_total_exclude_price').val(new Intl.NumberFormat().format(grand_total_excl.toFixed(2)))
-<<<<<<< HEAD
 
         payment_term()
-=======
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
     }
 
     /* SERVER SIDE */

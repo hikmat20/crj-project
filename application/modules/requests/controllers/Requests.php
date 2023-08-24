@@ -721,11 +721,7 @@ class Requests extends Admin_Controller
 			'ArrPorts' 		=> $ArrPorts,
 			'ArrLartas' 	=> $ArrLartas,
 			'itemLartas' 	=> $itemLartas,
-<<<<<<< HEAD
 			'currentTax' 	=> $currentTax,
-=======
-			// 'unitLartas' 	=> $unitLartas,
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 		];
 
 		$this->template->set($data);
@@ -939,7 +935,6 @@ class Requests extends Admin_Controller
 		$data['id'] 					= $this->Requests_model->generateIdQuotation();
 		$data['number'] 				= $this->Requests_model->generateQuotNumber();
 		$data['date'] 					= date("Y-m-d");
-<<<<<<< HEAD
 
 		$data['total_product'] 			= str_replace(",", "", $post['total_product']);
 		$data['tax'] 					= str_replace(",", "", $post['tax']);
@@ -953,46 +948,20 @@ class Requests extends Admin_Controller
 		$data['subtotal'] 				= str_replace(",", "", $post['subtotal']);
 		$data['total_costing'] 			= str_replace(",", "", $post['total_costing']);
 		$data['total_costing_foreign_currency'] = str_replace(",", "", $post['total_costing_foreign_currency']);
-=======
-		// $data['ocean_freight'] 			= str_replace(",", "", $post['ocean_freight']);
-		// $data['shipping'] 				= str_replace(",", "", $post['shipping']);
-		// $data['storage'] 				= str_replace(",", "", $post['storage']);
-		// $data['trucking'] 				= str_replace(",", "", $post['trucking']);
-		// $data['surveyor'] 				= str_replace(",", "", $post['surveyor']);
-		// $data['total_product'] 			= str_replace(",", "", $post['total_product']);
-		// $data['total_shipping'] 		= str_replace(",", "", $post['total_shipping']);
-		// $data['total_custom_clearance'] = str_replace(",", "", $post['total_custom_clearance']);
-		// $data['total_trucking'] 		= str_replace(",", "", $post['total_trucking']);
-		// $data['total_fee_lartas'] 		= str_replace(",", "", $post['total_fee_lartas']);
-		// $data['custom_clearance'] 		= str_replace(",", "", $post['custom_clearance']);
-		// $data['fee_value'] 				= str_replace(",", "", $post['fee_value']);
-		$data['fee_customer'] 			= str_replace(",", "", $post['fee_customer']);
-		$data['exchange'] 				= str_replace(",", "", $post['exchange']);
-		// $data['coordination_fee'] 		= str_replace(",", "", $post['coordination_fee']);
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 		$data['fee_customer_id'] 		= ($post['fee_customer_id']) ?: null;
 		$data['created_at']				= $data['modified_at'] = date('Y-m-d H:i:s');
 		$data['created_by']				= $data['modified_by'] = $this->auth->user_id();
 
 		$detail 						= $data['detail'];
-<<<<<<< HEAD
 		$detail_lartas 					= isset($data['detail_fee_lartas']) ? $data['detail_fee_lartas'] : "";
 		$costing 						= $data['costing'];
 		$payment_term 					= $data['payment_term'];
-=======
-		$detail_lartas 					= $data['detail_fee_lartas'];
-		$costing 						= $data['costing'];
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 
 		unset($data['detail']);
 		unset($data['detail_fee_lartas']);
 		unset($data['costing']);
-<<<<<<< HEAD
 		unset($data['deleteItem']);
 		unset($data['payment_term']);
-=======
-
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 
 		$this->db->trans_begin();
 		$this->db->insert("quotations", $data);
@@ -1004,11 +973,7 @@ class Requests extends Admin_Controller
 			foreach ($detail as $dtl) {
 				$dtlId++;
 				$dtl['quotation_id'] 	= $data['id'];
-<<<<<<< HEAD
 				$dtl['price'] 			= str_replace(",", "", $dtl['price']);
-=======
-				$dtl['price'] 		= str_replace(",", "", $dtl['price']);
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 				$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
 				$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
 				$dtl['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
@@ -1035,7 +1000,6 @@ class Requests extends Admin_Controller
 
 		if ($costing) {
 			$n = 0;
-<<<<<<< HEAD
 			foreach ($costing as $k => $cost) {
 				$n++;
 				$cost['id'] 						= $data['id'] . "-C" . sprintf("%03d", $n);
@@ -1048,14 +1012,6 @@ class Requests extends Admin_Controller
 				$cost['total'] 						= str_replace(",", "", $cost['total']);
 				$cost['currency'] 					= $data['currency'];
 				$cost['exchange'] 					= str_replace(",", "", $data['exchange']);
-=======
-			foreach ($costing as $cost) {
-				$n++;
-				$cost['id'] 						= $data['id'] . "-C" . sprintf("%03d", $n);
-				$cost['quotation_id'] 				= $data['id'];
-				$cost['price'] 						= str_replace(",", "", $cost['price']);
-				$cost['total'] 						= str_replace(",", "", $cost['total']);
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 				$cost['total_foreign_currency'] 	= str_replace(",", "", $cost['total_foreign_currency']);
 				$cost['created_at'] 				= date('Y-m-d H:i:s');
 				$cost['created_by'] 				= $this->auth->user_id();;
@@ -1063,7 +1019,6 @@ class Requests extends Admin_Controller
 			}
 		}
 
-<<<<<<< HEAD
 		if ($payment_term) {
 			$n = 0;
 			foreach ($payment_term as $pt) {
@@ -1076,8 +1031,6 @@ class Requests extends Admin_Controller
 			}
 		}
 
-=======
->>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
 		$this->db->update("check_hscodes", ['status' => 'QTT'], ['id' => $data['check_id']]);
 
 		if ($this->db->trans_status() === FALSE) {

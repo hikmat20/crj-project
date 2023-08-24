@@ -1484,6 +1484,7 @@
                         $('#total_ocean_freight').val('0');
                         $('#foreign_currency_ocean_freight').val('0');
                     }
+<<<<<<< HEAD
 
                     // Shipping
                     $('#shipping').val(result.shipping.price);
@@ -1519,6 +1520,28 @@
                     $('#fee_customer').val(result.totalFeeCSJ.fee_customer);
                     $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
                     total_costing()
+=======
+                    $('#shipping').val(result.thc);
+                    $('#custom_clearance').val(result.custom_clearance);
+                    $('#trucking').val(result.trucking);
+                    $('#trucking_id').val(result.trucking_id);
+                    $('#surveyor').val(result.surveyor);
+                    $('#tx-total-product').text(result.total_price);
+                    $('#fee').val(result.fee);
+                    $('#fee_customer_id').val(result.fee_customer_id);
+                    $('#fee_customer').val(result.fee_customer_value);
+                    $('#fee_csj_value').val(result.fee_csj_value);
+                    $('#tx-fee-csj').text(result.total_fee_csj);
+                    $('#tx-fee-customer').text(result.total_fee_customer);
+                    $('#total_price_lartas_0').val(result.totalFee);
+                    shipping();
+                    // fee_csj();
+                    custom_clearance();
+                    storage();
+                    trucking();
+                    surveyor();
+                    ocean_freight()
+>>>>>>> 4b387d8c186729695f97789abc65cf336497d3e0
                     if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                         Lobibox.notify('warning', {
                             icon: 'fa fa-exclamation',

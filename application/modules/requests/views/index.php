@@ -87,7 +87,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 <div class="modal-footer">
                     <button type="submit" class="btn btn btn-primary" name="save" id="save"><i class="fa fa-file"></i>
                         Create Quotation</button>
-                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
+                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal" onclick="$('#note').summernote('destroy')">
                         <span class="fa fa-times"></span> Close</button>
                 </div>
             </div>
@@ -135,6 +135,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
             $("#save").addClass('d-none');
         });
+
         $(document).on('click', '.cancel', function(e) {
             e.preventDefault()
             var swalWithBootstrapButtons = Swal.mixin({
@@ -161,6 +162,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 }
             })
         })
+
         $(document).on('click', 'input[name="rdio"]', function() {
             if ($(this).val() == '0') {
                 $('#cancel_reason').prop('readonly', false)
@@ -168,6 +170,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 $('#cancel_reason').prop('readonly', true)
             }
         })
+
         $(document).on('submit', '#data-form-cancel', function(e) {
             e.preventDefault()
             var swalWithBootstrapButtons = Swal.mixin({
@@ -222,8 +225,10 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 }
             })
         })
+
         $(document).on('submit', '#data-form', function(e) {
             e.preventDefault()
+            let formData = new FormData($('#data-form')[0]);
             var swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-primary mg-r-10 wd-100',
@@ -232,20 +237,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 buttonsStyling: false
             })
 
-            let formData = new FormData($('#data-form')[0]);
-            formData.append('total_product', $('#tx-total-product').text());
-            formData.append('ocean_freight', $('#tx-ocean-freight').text());
-            formData.append('total_shipping', $('#tx-shipping').text());
-            formData.append('fee_value', $('#tx-fee-csj').text());
-            formData.append('total_fee_lartas', $('#tx-fee-lartas').text());
-            formData.append('total_custom_clearance', $('#tx-custome-clearance').text());
-            formData.append('total_trucking', $('#tx-trucking').text());
-            // formData.append('subtotal', $('#tx-fee-csj').text());
-            // formData.append('discount', $('#tx-fee-csj').text());
-            // formData.append('total_bm', $('#tx-fee-csj').text());
-            // formData.append('total_pph', $('#tx-fee-csj').text());
-            // formData.append('tax', $('#tx-fee-csj').text());
-            // formData.append('tax_value', $('#tx-fee-csj').text());
+            formData.append('note', $('#note').html());
 
             swalWithBootstrapButtons.fire({
                 title: "Confirm!",
@@ -304,6 +296,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 }
             })
         })
+
         $(document).on('click', '#all', function() {
             $('button.active').each(function() {
                 $(this).removeClass('active').children('i').remove()
@@ -311,6 +304,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             $(this).addClass('active')
             loadData('');
         })
+
         $(document).on('click', '.btn-filter', function() {
             let filter = "";
             $('button#all').removeClass('active').find('i').remove()
@@ -333,6 +327,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 minimumResultsForSearch: -1
             })
         })
+
         $(document).on('click', '.quotation', function(e) {
             var id = $(this).data('id');
             $('#dialog-popup .modal-title').html("<i class='fas fa-file-invoice'></i> Create Quotation")
@@ -340,37 +335,28 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
             $("#save").removeClass('d-none');
         })
+
         $(document).on('change', 'select', function() {
             $(this).parsley().validate();
         })
+
         $(document).on('change', '#price_type', function() {
-            change_price()
+            let price_type = $(this).val()
+            if (price_type == 'FOB') {
+                $('.type-price-text').text('FOB')
+            } else {
+                $('.type-price-text').text('CFR/CIF')
+            }
+        })
+
+        $(document).on('change', '#container_id,#fee_type,#dest_area', function() {
             load_price()
         })
-        $(document).on('change', '#container_id', function() {
-            load_price()
-        })
-        $(document).on('input', '#fee', function() {
-            fee_csj();
-        })
-        $(document).on('input', '#shipping', function() {
-            shipping();
-        })
-        $(document).on('input', '#custom_clearance', function() {
-            custom_clearance();
-        })
-        $(document).on('input', '#trucking', function() {
-            trucking();
-        })
-        $(document).on('change', '#stacking_days', function() {
-            storage();
-        })
+
         $(document).on('change', '#fee_lartas_type', function() {
             load_price_lartas();
         })
-        $(document).on('change', '#fee_type', function() {
-            load_price();
-        })
+
         $(document).on('input', '#qty_container,#qty_ls_container', function() {
             let ls_type = $('#ls_type').val()
             if (ls_type == 'FULL') {
@@ -378,12 +364,10 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             }
             load_price();
         })
-        $(document).on('input', '#fee_lartas_pi,#fee_lartas_alkes,#fee_lartas_ski', function() {
-            fee_lartas();
-        })
+
         $(document).on('change', '#dest_city', function() {
             let city_id = $(this).val();
-            $('#dest_area').val('null').change()
+            // $('#dest_area').val('null').change()
             $('#dest_area').select2({
                 ajax: {
                     url: siteurl + thisController + 'getArea',
@@ -407,8 +391,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         };
                     }
                 },
-                tags: true,
-                cache: true,
                 placeholder: 'Choose one',
                 dropdownParent: $('#dialog-popup .modal-body'),
                 width: "100%",
@@ -416,25 +398,34 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             })
             load_price()
         })
-        $(document).on('change', '#dest_area', function() {
-            load_price()
-        })
-        $(document).on('input', '.qty_lartas', function() {
-            let row = $(this).data('row')
 
-            let qty = parseInt($(this).val().replace(/[\,]/g, '') || 0)
-            let price = parseInt($('#price_lartas_' + row).val().replace(/[\,]/g, '') || 0)
-            let totalPrice
+        $(document).on('input', '.qty_lartas', function() {
+            let id = $(this).data('id')
+            let exchange = parseInt($('#exchange').val().replace(/[\,]/g, '') || 0)
+            let price = parseFloat($('#price_lartas_' + id).val().replace(/[\,]/g, '') || 0)
+            let qty = parseInt($(this).val() || 0)
+            let totalPrice, currTotalPrice
+
             totalPrice = price * qty
-            totalPrice = totalPrice.toFixed(2)
-            $('#total_price_lartas_' + row).val(new Intl.NumberFormat().format(totalPrice))
-            let totalFeeLartas = 0;
-            $('.total_price_lartas').each(function() {
-                totalFeeLartas += parseInt($(this).val().replace(/[\,]/g, '') || 0)
+            currTotalPrice = (totalPrice / exchange)
+            $('#total_lartas_' + id).val(new Intl.NumberFormat().format(totalPrice))
+            $('#total_lartas_foreign_currency_' + id).val(new Intl.NumberFormat().format((currTotalPrice > 0 ? currTotalPrice : 0).toFixed(2)))
+
+            let totalLartas = 0;
+            $('.total_lartas').each(function() {
+                totalLartas += parseInt($(this).val().replace(/[\,]/g, '') || 0)
             })
-            $('#total_fee_lartas').text(new Intl.NumberFormat().format(totalFeeLartas.toFixed(2)))
-            $('#tx-fee-lartas').text(new Intl.NumberFormat().format(totalFeeLartas.toFixed(2)))
+
+            let currTotalLartas = 0;
+            $('.total_fee_lartas_foreign_currency').each(function() {
+                currTotalLartas += parseFloat($(this).val().replace(/[\,]/g, '') || 0)
+            })
+
+            $('#total_fee_lartas').val(new Intl.NumberFormat().format(totalLartas.toFixed(2)))
+            $('#total_fee_lartas_foreign_currency').val(new Intl.NumberFormat().format(currTotalLartas.toFixed(2)))
+            total_costing()
         })
+
         $(document).on('change', '#ls_type', function() {
             let qty_cnt = $('#qty_container').val()
             let type = $(this).val()
@@ -449,105 +440,128 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             }
             load_price()
         })
-    })
 
-    function change_price() {
-        let price_type = $('#price_type').val()
-        let price = 0;
-        // price = $('#totalPrice').text()
+        $(document).on('click', '#addOthFee', function() {
+            let n = $('#tbCosting tbody tr.othFee').length + 1
+            let curr = $('#currencySymbol').val()
+            let html
+            html = `
+            <tr class="othFee">
+                <td class="text-center p-0">
+                    <a href="javascript:void(0)" class="hover-btn delete-item p-1">
+                        <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td><input type="text" name="costing[${n}][name]" class="tx-dark form-control form-control-sm" placeholder="Other fee Name"></td>
+                <td>
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-transparent">Rp.</span>
+                        </div>
+                        <input type="text" name="costing[${n}][price]" class="tx-dark form-control text-right number-format otherFeePrice" id="otherFeePrice_" data-row="${n}" placeholder="0">
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-transparent">Rp.</span>
+                        </div>
+                        <input type="text" name="costing[${n}][total]" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing" id="otherFeeTotal_${n}" placeholder="0">
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-transparent">${curr}</span>
+                        </div>
+                        <input type="text" name="costing[${n}][total_foreign_currency]" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing_foreign_currency" id="currOtherFee_${n}" placeholder="0">
+                    </div>
+                </td>
+            </tr>`
 
-        if (price_type == 'FOB') {
-            $('#type-price-text').text('FOB')
-        } else {
-            $('#type-price-text').text('CFR/CIF')
-        }
-        // $('#tx-total-product').text(price)
-    }
-
-    function surveyor() {
-        let svy = parseInt($('#surveyor').val().replace(/[\,]/g, "") || 0)
-        $('#tx-surveyor').text(new Intl.NumberFormat().format(svy.toFixed()))
-    }
-
-    function fee_csj() {
-        let total_fee;
-        let totalProduct = parseInt($('#tx-total-product').text().replace(/[\,]/g, "") || 0)
-        let fee = parseInt($('#fee').val())
-        total_fee = totalProduct * (fee / 100)
-        $('#tx-fee-csj').text(new Intl.NumberFormat().format(total_fee.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function ocean_freight() {
-        let total;
-        let qty = parseInt($('#qty_container').val())
-        let Ofr = parseInt($('#ocean_freight').val().replace(/[\,]/g, "") || 0)
-        total = Ofr * qty
-        $('#tx-ocean-freight').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function shipping() {
-        let qty = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let thc = parseInt($('#shipping').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = qty * thc
-        $('#tx-shipping').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function custom_clearance() {
-        let cc = parseInt($('#custom_clearance').val().replace(/[\,]/g, "") || 0)
-        let qty_container = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = cc * qty_container
-        $('#tx-custome-clearance').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function storage() {
-        let days = $('#stacking_days').val()
-        let container = $('#container_id').val()
-        let cost_value = 0;
-        $.ajax({
-            url: siteurl + thisController + 'load_storage',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                days,
-                container
-            },
-            success: (result) => {
-                if (result.storage) {
-                    cost_value = new Intl.NumberFormat().format(result.storage.cost_value)
-                }
-                $('#storage').val(cost_value)
-                $('#tx-storage').text(cost_value)
+            if (n <= 3) {
+                $('#tbCosting tbody#listCosting').append(html)
+            }
+            if (n === 3) {
+                $('#addOthFee').prop('disabled', true)
             }
         })
-        // est_as_per_bill()
+
+        $(document)
+            .on("mouseenter", '.hover-btn', function() {
+                $(this).html('<button type="button" class="btn btn-xs btn-icon btn-danger px-1"><i class="fa fa-times fa-xs" aria-hidden="true"></i></button>')
+            })
+            .on("mouseleave", '.hover-btn', function() {
+                $(this).html('<i class="fa fa-plus fa-sm" aria-hidden="true"></i>')
+            });
+
+
+        $(document).on('click', '.delete-item', function() {
+            $(this).parents('tr').remove()
+            let n = $('#tbCosting tbody tr.othFee').length
+            if (n < 3) {
+                $('#addOthFee').prop('disabled', false)
+            }
+            total_costing()
+        })
+
+        $(document).on('input', '.otherFeePrice', function() {
+            let row = $(this).data('row')
+            let exchange = parseFloat($('#exchange').val().replace(/[\,]/g, "") || 0)
+            let qty = parseFloat($('#qty_container').val() || 0)
+            let price = parseFloat($(this).val().replace(/[\,]/g, "") || 0)
+            let total = (qty * price)
+            let total_foreign_currency = (total / exchange)
+            $('#otherFeeTotal_' + row).val(new Intl.NumberFormat().format(total))
+            $('#currOtherFee_' + row).val(new Intl.NumberFormat().format(total_foreign_currency.toFixed(2)))
+            total_costing()
+        })
+
+        $(document).on('change', '#percentage_dp1,#percentage_dp3', function() {
+            payment_term()
+        })
+    })
+
+    function payment_term() {
+        let total_product = parseFloat($('#total_product').val().replace(/\,/g, '') || 0)
+        let grand_total = parseFloat($('#grand_total').val().replace(/\,/g, '') || 0)
+
+        let percent_dp1 = parseFloat($('#percentage_dp1').val() || 0)
+        let amount1 = parseFloat((total_product * percent_dp1) / 100)
+        $('#amount_dp1').val(new Intl.NumberFormat().format(amount1.toFixed(2)))
+
+        let amount2 = parseFloat(total_product - amount1)
+        $('#amount_dp2').val(new Intl.NumberFormat().format(amount2.toFixed(2)))
+
+        let percent_dp3 = parseFloat($('#percentage_dp3').val() || 0)
+        let amount3 = parseFloat((total_product * percent_dp3) / 100)
+        $('#amount_dp3').val(new Intl.NumberFormat().format(amount3.toFixed(2)))
+
+        let amount4 = parseFloat(grand_total - (amount1 + amount2 + amount3))
+        $('#amount_dp4').val(new Intl.NumberFormat().format(amount4.toFixed(2)))
+
+        let grandTotal = (amount1 + amount2 + amount3 + amount4)
+        $('#grandTotal').text(new Intl.NumberFormat().format(grandTotal.toFixed(2)))
     }
 
-    function trucking() {
-        let truck = parseInt($('#trucking').val().replace(/[\,]/g, "") || 0)
-        let qty_container = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = truck * qty_container
-        $('#tx-trucking').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
+    function edit() {
+        $('#note').summernote({
+            focus: true
+        });
+    };
 
-    function fee_lartas() {
-        let fee_lartas_pi = parseInt($('#fee_lartas_pi').val().replace(/[\,]/g, "") || 0)
-        let fee_lartas_alkes = parseInt($('#fee_lartas_alkes').val().replace(/[\,]/g, "") || 0)
-        let fee_lartas_ski = parseInt($('#fee_lartas_ski').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = fee_lartas_pi + fee_lartas_alkes + fee_lartas_ski
-        $('#tx-fee-lartas').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
+    function save() {
+        let markup = $('#note').summernote('code');
+        $('#note').summernote('destroy');
+    };
 
     function load_price() {
+        let exc = $('#exchange')
+        if (exc.val() == '' || exc.val() <= 0) {
+            $('#exchange').parsley().validate()
+            return false;
+        }
+
         let formData = new FormData()
         formData.append('total_price', $('#totalPrice').text().replace(/[\,]/g, "") || 0);
         formData.append('total_price_non_lartas', $('#total_price_non_lartas').text().replace(/[\,]/g, "") || 0);
@@ -560,6 +574,8 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         formData.append('ls_type', $('#ls_type').val());
         formData.append('qty_ls_container', $('#qty_ls_container').val() || 0);
         formData.append('exchange', $('#exchange').val().replace(/[\,]/g, "") || 0);
+        formData.append('stacking_days', $('#stacking_days').val() || 0);
+
 
         if (formData) {
             $.ajax({
@@ -571,30 +587,54 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 contentType: false,
                 cache: false,
                 success: (result) => {
-                    $('#ocean_freight').val('0');
+                    console.log(result);
+
+                    // Ocean Freight
                     if ($('#price_type').val() == 'FOB') {
-                        $('#ocean_freight').val(result.ocean_freight);
+                        $('#ocean_freight').val((result.ocean_freight.price) ? result.ocean_freight.price : 0);
+                        $('#total_ocean_freight').val((result.ocean_freight.total) ? result.ocean_freight.total : 0);
+                        $('#foreign_currency_ocean_freight').val((result.ocean_freight.total_foreign_currency) ? result.ocean_freight.total_foreign_currency : 0);
+                    } else {
+                        $('#ocean_freight').val('0');
+                        $('#total_ocean_freight').val('0');
+                        $('#foreign_currency_ocean_freight').val('0');
                     }
-                    $('#shipping').val(result.thc);
-                    $('#custom_clearance').val(result.custom_clearance);
-                    $('#trucking').val(result.trucking);
-                    $('#trucking_id').val(result.trucking_id);
-                    $('#surveyor').val(result.surveyor);
-                    $('#tx-total-product').text(result.total_price);
-                    $('#fee').val(result.fee);
-                    $('#fee_customer_id').val(result.fee_customer_id);
-                    $('#fee_customer').val(result.fee_customer_value);
-                    $('#fee_csj_value').val(result.fee_csj_value);
-                    $('#tx-fee-customer').text(result.fee_customer_value);
-                    $('#total_price_lartas_0').val(result.totalFee);
-                    $('#tx-fee-csj').text(result.fee_csj_value);
-                    shipping();
-                    // fee_csj();
-                    custom_clearance();
-                    storage();
-                    trucking();
-                    surveyor();
-                    ocean_freight()
+
+                    // Shipping
+                    $('#shipping').val(result.shipping.price);
+                    $('#total_shipping').val(result.shipping.total);
+                    $('#foreign_currency_shipping').val(result.shipping.total_foreign_currency);
+
+                    // Custom Clearance
+                    $('#custom_clearance').val(result.custom_clearance.price);
+                    $('#total_custom_clearance').val(result.custom_clearance.total);
+                    $('#foreign_currency_custom_clearance').val(result.custom_clearance.total_foreign_currency);
+
+                    // Storage
+                    $('#storage').val(result.storage.price);
+                    $('#total_storage').val(result.storage.total);
+                    $('#foreign_currency_storage').val(result.storage.total_foreign_currency);
+
+                    // Trucking
+                    $('#trucking').val(result.trucking.price);
+                    $('#total_trucking').val(result.trucking.total);
+                    $('#foreign_currency_trucking').val(result.trucking.total_foreign_currency);
+                    $('#trucking_id').val(result.trucking.trucking_id);
+
+                    // Surveyor
+                    $('#surveyor').val(result.surveyor.price);
+                    $('#total_surveyor').val(result.surveyor.total);
+                    $('#foreign_currency_surveyor').val(result.surveyor.total_foreign_currency);
+
+                    // Fee CSJ
+                    $('#fee').val(result.totalFeeCSJ.fee);
+                    $('#fee_value').val(result.totalFeeCSJ.price);
+                    $('#total_fee_value').val(result.totalFeeCSJ.total);
+                    $('#total_fee_value_foreign_currency').val(result.totalFeeCSJ.total_foreign_currency);
+                    $('#fee_customer').val(result.totalFeeCSJ.fee_customer);
+                    $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
+
+                    total_costing()
                     if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                         Lobibox.notify('warning', {
                             icon: 'fa fa-exclamation',
@@ -632,13 +672,26 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             $.ajax({
                 url: siteurl + thisController + 'getPriceLartas',
                 type: 'POST',
+                dataType: 'JSON',
                 data: formData,
                 processData: false,
                 contentType: false,
                 cache: false,
                 success: (result) => {
-                    $('#loadLartas').html(result)
-                    load_price()
+                    $('#total_fee_lartas').val(0)
+                    $('#total_fee_lartas_foreign_currency').val(0)
+                    if (result.lartas.length > 0) {
+                        $.each(result.lartas, (i, data) => {
+                            $('#price_lartas_' + data.lartas_id).val(new Intl.NumberFormat().format(data.fee_value))
+                            $('#unit_' + data.lartas_id).text(result.unitType[data.unit])
+                            $('.unit_' + data.lartas_id).val(data.unit)
+                        })
+                    } else {
+                        $('.clear_input').val('')
+                        $('.unit_text').text('')
+                    }
+                    total_costing()
+                    // load_price()
                 },
                 error: (result) => {
                     Lobibox.notify('error', {
@@ -654,6 +707,40 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         }
     }
 
+    function total_costing() {
+        let totalCosting = 0
+        $('.total_costing').each(function() {
+            totalCosting += parseInt($(this).val().replace(/\,/g, '') || 0)
+        })
+
+        let currTotalCosting = 0
+        $('.total_costing_foreign_currency').each(function() {
+            currTotalCosting += parseFloat($(this).val().replace(/\,/g, '') || 0)
+        })
+
+        $('#total_costing').val(new Intl.NumberFormat().format(totalCosting))
+        $('#total_costing_foreign_currency').val(new Intl.NumberFormat().format(currTotalCosting.toFixed(2)))
+        $('#total_costing_and_others').val(new Intl.NumberFormat().format(currTotalCosting.toFixed(2)))
+        subtotal()
+    }
+
+    function subtotal() {
+        let productPrice = parseFloat($('#total_product').val().replace(/,/g, '') || 0)
+        let totalCosting = parseFloat($('#total_costing_and_others').val().replace(/,/g, '') || 0)
+        let subtotal = productPrice + totalCosting
+        $('#subtotal').val(new Intl.NumberFormat().format(subtotal.toFixed(2)))
+        let tax = (subtotal * 11) / 100
+
+        $('#total_tax').val(new Intl.NumberFormat().format(tax.toFixed(2)))
+        let bm = parseFloat($('#total_bm').val().replace(/,/g, '') || 0)
+        let total_pph = parseFloat($('#total_pph').val().replace(/,/g, '') || 0)
+        let grand_total = subtotal + tax + bm + total_pph
+        $('#grand_total').val(new Intl.NumberFormat().format(grand_total.toFixed(2)))
+        let grand_total_excl = grand_total - productPrice
+        $('#grand_total_exclude_price').val(new Intl.NumberFormat().format(grand_total_excl.toFixed(2)))
+
+        payment_term()
+    }
 
     /* SERVER SIDE */
     function loadData(filter = null) {
@@ -704,7 +791,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 ],
             },
             "aaSorting": [
-                [1, "asc"]
+                [8, "desc"]
             ],
             "columnDefs": [{
                     "targets": 'no-sort',

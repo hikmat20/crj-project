@@ -38,7 +38,7 @@
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery.maskedinput/jquery.mask.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-inputmask/bindings/inputmask.binding.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
-
+<script src="<?= base_url(); ?>themes/bracket/assets/lib/summernote/summernote-bs4.min.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/ResizeSensor.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/tooltip-colored.js"></script>
 <script src="<?= base_url(); ?>themes/bracket/assets/js/popover-colored.js"></script>

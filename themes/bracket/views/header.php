@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/lobiani/css/lobibox.min.css" />
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/sweetalert2/sweetalert2.css" />
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/animate/animate.css" />
+    <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/lib/summernote/summernote-bs4.css">
 
     <!-- Bracket CSS -->
     <link rel="stylesheet" href="<?= base_url(); ?>themes/bracket/assets/css/bracket.css">

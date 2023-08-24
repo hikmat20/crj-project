@@ -138,16 +138,16 @@
                         <th width="150" class="text-center" style="background-color:lightgray">SIZE CONTAINER</th>
                     </tr>
                     <tr>
-                        <td class="text-center"></td>
+                        <td class="text-center"><?= $tonase; ?> Ton</td>
                         <td class="text-center"><?= $header->qty_container; ?> x <?= $header->container_name; ?></td>
                     </tr>
                     <tr>
                         <th class="text-center" style="background-color:lightgray">CURRENCY</th>
-                        <th class="text-center" style="background-color:lightgray">EXCHANGE RATE (Rp)</th>
+                        <th class="text-center" style="background-color:lightgray">EXCHANGE RATE</th>
                     </tr>
                     <tr>
                         <td class="text-center"><?= $header->currency; ?></td>
-                        <td class="text-center"><?= number_format($header->exchange); ?></td>
+                        <td class="text-center">Rp. <?= number_format($header->exchange); ?></td>
                     </tr>
                 </table>
             </td>
@@ -156,7 +156,6 @@
 
     <!-- details -->
     <br>
-    <!-- <h3 class="tx-dark tx-bold">List Products</h3> -->
     <table class="bordered" width="100%">
         <thead>
             <tr style="background-color:lightgray">
@@ -226,103 +225,177 @@
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%</td>
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td>
                     <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
-                    <td class="text-right"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?></td>
-                    <td class="text-right"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?></td>
-                    <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?></td>
+                    <td class="text-right"><?= $currSymbol; ?> <?= ($dt->price) ? number_format($dt->price) : '0' ?></td>
+                    <td class="text-right"><?= $currSymbol; ?> <?= ($totalBM) ? number_format($totalBM) : '0' ?></td>
+                    <td class="text-right"><?= $currSymbol; ?> <?= ($totalPPH) ? number_format($totalPPH)  : '0' ?></td>
                     <td><?= $dt->remarks; ?></td>
                 </tr>
                 <!-- <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid"></td> -->
             <?php endforeach; ?>
             <tr class="bg-light" style="background-color:lightgray">
                 <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="8">Total</th>
-                <th class="text-right tx-dark font-weight-bold" id="totalPrice"><?= number_format(($totalPrice) ?: '0', 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold"><?= number_format($gtotalBM, 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold"><?= number_format(($gtotalPPH) ?: '0', 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" id="totalPrice"><?= $currSymbol; ?> <?= number_format(($totalPrice) ?: '0'); ?></th>
+                <th class="text-right tx-dark font-weight-bold"><?= $currSymbol; ?> <?= number_format($gtotalBM); ?></th>
+                <th class="text-right tx-dark font-weight-bold"><?= $currSymbol; ?> <?= number_format(($gtotalPPH) ?: '0'); ?></th>
                 <th></th>
             </tr>
         </tbody>
     </table>
     <br>
     <?php
-    $gtotalBM       = $gtotalBM * $header->exchange;
-    $gtotalPPH      = $gtotalPPH * $header->exchange;
-    $totalProduct   = ($totalPrice * $header->exchange);
-    $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer);
-    $subtotal       = ($totalAllIn + $totalProduct + $header->coordination_fee);
-    $Tax            = (($subtotal + $gtotalBM) * 11) / 100;
-    $GrandTotal     = ($subtotal + $Tax);
-    $GrandTotalEx   = ($GrandTotal - $totalProduct);
-    $fee_lartas     = ($header->fee_lartas_pi + $header->fee_lartas_alkes + $header->fee_lartas_ski);
+    // $gtotalBM       = $gtotalBM * $header->exchange;
+    // $gtotalPPH      = $gtotalPPH * $header->exchange;
+    // $totalProduct   = ($totalPrice * $header->exchange);
+    // $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer);
+    // $subtotal       = ($totalAllIn + $totalProduct + $header->coordination_fee);
+    // $Tax            = (($subtotal + $gtotalBM) * 11) / 100;
+    // $GrandTotal     = ($subtotal + $Tax);
+    // $GrandTotalEx   = ($GrandTotal - $totalProduct);
+    // $fee_lartas     = ($header->fee_lartas_pi + $header->fee_lartas_alkes + $header->fee_lartas_ski);
     ?>
     <table class="" width="100%">
         <tr>
-            <td width="50%"></td>
+            <td width="50%" style="vertical-align: top;">
+                <h4>Term of payment include ppn :</h4>
+                <br>
+                <table width="90%" class="bordered">
+                    <thead>
+                        <tr style="background-color:#eee">
+                            <th>No.</th>
+                            <th>Item</th>
+                            <th colspan="2" class="text-center">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1.</td>
+                            <td>DP1</td>
+                            <td style="border-right:none"><?= $currSymbol; ?></td>
+                            <td class="text-right"><?= $DP['dp1']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td>DP2 Before Shipment</td>
+                            <td style="border-right:none"><?= $currSymbol; ?></td>
+                            <td class="text-right"><?= $DP['dp2']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>DP3 Before ETA</td>
+                            <td style="border-right:none"><?= $currSymbol; ?></td>
+                            <td class="text-right"><?= $DP['dp3']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td>Balance Payment</td>
+                            <td style="border-right:none"><?= $currSymbol; ?></td>
+                            <td class="text-right"><?= $DP['dp4']; ?></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="background-color:#eee">
+                            <th colspan="2" class="text-center">Grand Total</th>
+                            <th style="border-right:none"><?= $currSymbol; ?></th>
+                            <th class="text-right"><?= number_format($header->grand_total); ?></th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <br>
+                <br>
+                <h4>Note: <br><br></h4>
+                <p class="border:1px solid"><?= $header->note; ?></p>
+            </td>
             <td width="50%">
                 <table class="bordered" width="100%" style="font-size: 7pt;">
                     <tr>
                         <td colspan="2" width="100">Total Product Price <span class="fontA">产品价格</span></td>
-                        <td class="text-right" width="100"><?= number_format($totalProduct, 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right" width="100"><?= number_format($header->total_product); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="word-wrap: break-word;">Ocean Freight <span class="fontA">海运费</span></td>
-                        <td class="text-right"><?= number_format(($header->ocean_freight) ?: '0', 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['ocean_freight']->total_foreign_currency) ?: 0); ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="word-wrap: break-word;">Shipping Line Cost <span class="fontA"></span></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['shipping']->total_foreign_currency) ?: 0); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="word-wrap: break-word;">Surveyor <span class="fontA">商检费</span></td>
-                        <td class="text-right"><?= number_format(($header->surveyor) ?: '0', 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['surveyor']->total_foreign_currency) ?: 0); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">Custom Clearance</td>
-                        <td class="text-right"><?= number_format($header->total_custom_clearance, 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['custom_clearance']->total_foreign_currency) ?: 0); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">Storage estimated 7days <span class="fontA">仓库费</span></td>
-                        <td class="text-right"><?= number_format($header->storage, 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['storage']->total_foreign_currency) ?: 0); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">Trucking <span class="fontA">卡车费</span></td>
-                        <td class="text-right"><?= number_format($header->total_trucking, 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['trucking']->total_foreign_currency) ?: 0); ?></td>
                     </tr>
-                    <tr>
-                        <td colspan="2">Fee Lartas <span class="fontA">配额费</span></td>
-                        <td class="text-right"><?= number_format($fee_lartas, 2); ?></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Other <span class="fontA"></span></td>
-                        <td class="text-right"><?= number_format($header->coordination_fee, 2); ?></td>
-                    </tr>
+                    <?php if ($totalLartas) : ?>
+                        <tr>
+                            <td colspan="2">Fee Lartas <span class="fontA">配额费</span></td>
+                            <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                            <td class="text-right"><?= number_format($totalLartas); ?></td>
+                        </tr>
+                    <?php endif; ?>
                     <tr>
                         <td colspan="2">Undername Fee CSJ <span class="fontA">借抬头费</span></td>
-                        <td class="text-right"><?= number_format($header->fee_value + $header->fee_customer, 2); ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= number_format(($ArrCosting['fee_csj']->total_foreign_currency) ?: 0); ?></td>
                     </tr>
+                    <?php if ($otherCost) foreach ($otherCost as $othCost) : ?>
+                        <tr>
+                            <td colspan="2"><?= str_replace("OTH-", "", $othCost->name); ?></td>
+                            <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                            <td class="text-right"><?= number_format($othCost->total_foreign_currency); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                     <tr>
                         <th colspan="2" style="background-color:lightgray">SUB TOTAL <span class="fontA">小计</span></th>
-                        <th class="text-right" style="background-color:lightgray"><?= number_format($subtotal, 2); ?></th>
+                        <td style="border-right:none;background-color:lightgray"><?= $currSymbol; ?> </td>
+                        <th class="text-right" style="background-color:lightgray"><?= number_format($header->subtotal); ?></th>
                     </tr>
                     <tr>
                         <td colspan="2">BM <span class="fontA">进口税</span></td>
-                        <td class="text-right"><?= ($gtotalBM) ? number_format($gtotalBM, 2) : 0; ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= ($header->total_bm) ? number_format($header->total_bm) : 0; ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">PPh <span class="fontA">所得税</span></td>
-                        <td class="text-right"><?= ($gtotalPPH) ? number_format($gtotalPPH, 2) : 0; ?></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= ($header->total_pph) ? number_format($header->total_pph) : 0; ?></td>
                     </tr>
                     <tr>
-                        <td>Tax (PPN)</td>
-                        <td width="10" class="text-center">11%</td>
-                        <td class="text-right"><?= ($Tax) ? number_format($Tax) : 0; ?></td>
+                        <td style="border: none;">Tax (PPN)</td>
+                        <td width="10" class="text-center"><?= $header->tax; ?>%</td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right"><?= ($header->total_tax) ? number_format($header->total_tax) : 0; ?></td>
                     </tr>
                     <tr>
-                        <th colspan="2" style="background-color:lightgray">Grand Total Include PPn <span class="fontA">合计(含PPn税)</span></th>
-                        <th class="text-right" style="background-color:lightgray"><?= ($GrandTotal) ? number_format($GrandTotal, 2) : 0; ?></th>
+                        <th colspan="2" style="background-color:lightgray">Grand Total Include Tax <span class="fontA">合计(含PPn税)</span></th>
+                        <td style="border-right:none;background-color:lightgray"><?= $currSymbol; ?> </td>
+                        <th class="text-right" style="background-color:lightgray"><?= ($header->grand_total) ? number_format($header->grand_total) : 0; ?></th>
                     </tr>
                     <tr>
-                        <td colspan="2">CFR/CIF/FOB <span class="fontA">销项成本</span></td>
-                        <td class="text-right">(<?= number_format($totalProduct, 2); ?>)</td>
+                        <td colspan="2"><?= ($header->price_type == 'FOB') ? 'FOB' : 'CFR/CIF'; ?> <span class="fontA">销项成本</span></td>
+                        <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                        <td class="text-right">(<?= number_format($header->total_product); ?>)</td>
                     </tr>
                     <tr>
-                        <th colspan="2" style="background-color:lightgray">TOTAL COST (Exclude CFR/CIF/FOB) <span class="fontA">总清关费 (不含货物)</span></th>
-                        <th class="text-right" style="background-color:lightgray"><?= ($GrandTotalEx) ? number_format($GrandTotalEx, 2) : 0; ?></th>
+                        <th colspan="2" style="background-color:lightgray">TOTAL COST (Exclude <?= ($header->price_type == 'FOB') ? 'FOB' : 'CFR/CIF'; ?>) <span class="fontA">总清关费 (不含货物)</span></th>
+                        <td style="border-right:none;background-color:lightgray"><?= $currSymbol; ?> </td>
+                        <th class="text-right" style="background-color:lightgray"><?= ($header->grand_total_exclude_price) ? number_format($header->grand_total_exclude_price) : 0; ?></th>
                     </tr>
                 </table>
                 <br><br><br><br><br>
@@ -330,7 +403,6 @@
                 <table width="100%" class="bordered">
                     <tr>
                         <th class="text-center" style="background-color:lightgray">Maked By,</th>
-                        <th class="text-center" style="background-color:lightgray">Verify By,</th>
                         <th class="text-center" style="background-color:lightgray">Approved Go,</th>
                         <th class="text-center" style="background-color:lightgray">Approved By,</th>
                     </tr>
@@ -338,20 +410,16 @@
                         <td><br><br><br><br></td>
                         <td></td>
                         <td></td>
-                        <td></td>
                     </tr>
                     <tr>
                         <th class="text-center">
-                            ELLA
+                            <?= $ArrUsers[$header->created_by]; ?>
                         </th>
                         <th class="text-center">
-                            QILA/WIDA
+                            <?= $ArrUsers[$header->approved_go]; ?>
                         </th>
                         <th class="text-center">
-                            HENDRA
-                        </th>
-                        <th class="text-center">
-                            FITRI
+                            <?= $ArrUsers[$header->approved_by]; ?>
                         </th>
                     </tr>
                 </table>

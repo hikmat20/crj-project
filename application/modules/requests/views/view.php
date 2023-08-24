@@ -125,7 +125,7 @@
                     <td><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
                     <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price) : '-'; ?></td>
                     <?php if ($request->status == 'CHK') : ?>
                         <td class="text-center"><?= $dtl->local_hscode; ?></td>
                         <td>

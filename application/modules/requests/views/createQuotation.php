@@ -257,6 +257,13 @@
                 <th class="text-center align-middle" rowspan="2">PPH</th>
                 <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>)</th>
                 <th class="text-center align-middle" rowspan="2">Image</th>
+                <!-- <th class="text-center align-middle" rowspan="2">
+                    <span class="">All</span>
+                    <label class="ckbox ckbox-indigo text-center mg-0">
+                        <input type="checkbox" checked id="masterCheck">
+                        <span class=""></span>
+                    </label>
+                </th> -->
             </tr>
             <tr>
                 <th class="text-center border border-top-0 border-right-0">
@@ -340,26 +347,33 @@
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
                     <td class="text-right"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][price]" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
+                        <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas'; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
                     </td>
                     <td class="text-right"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
+                        <input type="hidden" name="detail[<?= $n; ?>][total_bm]" class="total_bm" id="total_bm_<?= $n; ?>" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
                     </td>
                     <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
+                        <input type="hidden" name="detail[<?= $n; ?>][total_pph]" class="total_pph" id="total_pph_<?= $n; ?>" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
                     </td>
                     <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
                         <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
                     </td>
+                    <!-- <td class="text-center align-middle">
+                        <label class="ckbox ckbox-indigo text-center mg-0">
+                            <input type="checkbox" checked class="item_check" data-row="<?= $n; ?>">
+                            <span class=""></span>
+                        </label>
+                    </td> -->
                 </tr>
             <?php endforeach; ?>
             <tr class="bg-light">
                 <th class="text-right tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
                 <th></th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalPrice"><?= number_format(($totalPrice) ?: '0', 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format($gtotalBM, 2); ?></th>
-                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format(($gtotalPPH) ?: '0', 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalBM"><?= number_format($gtotalBM, 2); ?></th>
+                <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalPPH"><?= number_format(($gtotalPPH) ?: '0', 2); ?></th>
                 <th></th>
+                <!-- <th></th> -->
             </tr>
             <tr>
                 <th class="font-weight-bold tx-uppercase text-right" colspan="9">Total Non Lartas</th>
@@ -368,6 +382,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <!-- <td></td> -->
             </tr>
         </tbody>
     </table>

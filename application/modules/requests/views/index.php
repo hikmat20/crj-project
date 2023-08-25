@@ -75,8 +75,8 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 </div>
 
 <!-- Modal -->
-<div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg mx-wd-100p-force mx-wd-lg-95p-force">
+<div class="modal fade effect-scale pd-r-3 pd-l-10" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg mx-wd-100p-force mx-wd-lg-100p-force">
         <form id="data-form" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -520,6 +520,48 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         $(document).on('change', '#percentage_dp1,#percentage_dp3', function() {
             payment_term()
         })
+
+        $(document).on('click', '#masterCheck', function() {
+            let totalPrice = 0;
+            let total_bm = 0;
+            let total_pph = 0;
+            let priceNonLartas = 0;
+
+            if ($(this).is(':checked')) {
+                $('.item_check').each(function() {
+                    $(this).prop('checked', true)
+                })
+
+                $('.price').each(function() {
+                    totalPrice += parseFloat($(this).val().replace(/\,/g, '') || 0)
+                })
+                $('.total_bm').each(function() {
+                    total_bm += parseFloat($(this).val().replace(/\,/g, '') || 0)
+                })
+                $('.total_pph').each(function() {
+                    total_pph += parseFloat($(this).val().replace(/\,/g, '') || 0)
+                })
+                $('.price_non_lartas').each(function() {
+                    priceNonLartas += parseFloat($(this).val().replace(/\,/g, '') || 0)
+                })
+
+                console.log(priceNonLartas);
+
+
+                $('#totalPrice').text(new Intl.NumberFormat().format(totalPrice.toFixed(2)))
+                $('#total_price_non_lartas').text(new Intl.NumberFormat().format(priceNonLartas.toFixed(2)))
+
+                $('#totalBM').text(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+                $('#totalPPH').text(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+
+            } else {
+                $('.item_check').each(function() {
+                    $(this).prop('checked', false)
+                })
+                $('#totalPrice').text('0')
+                $('#total_price_non_lartas').text('0')
+            }
+        })
     })
 
     function payment_term() {
@@ -728,11 +770,11 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         let totalCosting = parseFloat($('#total_costing_and_others').val().replace(/,/g, '') || 0)
         let subtotal = productPrice + totalCosting
         $('#subtotal').val(new Intl.NumberFormat().format(subtotal.toFixed(2)))
-        let tax = (subtotal * 11) / 100
 
-        $('#total_tax').val(new Intl.NumberFormat().format(tax.toFixed(2)))
         let bm = parseFloat($('#total_bm').val().replace(/,/g, '') || 0)
         let total_pph = parseFloat($('#total_pph').val().replace(/,/g, '') || 0)
+        let tax = ((subtotal + total_pph + bm) * 11) / 100
+        $('#total_tax').val(new Intl.NumberFormat().format(tax.toFixed(2)))
         let grand_total = subtotal + tax + bm + total_pph
         $('#grand_total').val(new Intl.NumberFormat().format(grand_total.toFixed(2)))
         let grand_total_excl = grand_total - productPrice

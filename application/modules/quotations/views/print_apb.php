@@ -387,8 +387,7 @@
                         <th class="text-right" style="background-color:lightgray"><?= ($header->grand_total_exclude_price) ? number_format($header->grand_total_exclude_price) : 0; ?></th>
                     </tr>
                 </table>
-                <br><br><br><br><br>
-                <br>
+                <br><br><br><br>
                 <table width="100%" class="bordered">
                     <tr>
                         <th class="text-center" style="background-color:lightgray">Maked By,</th>

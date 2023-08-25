@@ -761,24 +761,45 @@ class Quotations extends Admin_Controller
 
 		// $mpdf = new \Mpdf\Mpdf();
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
-		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
-		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
-		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
 		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
 		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
 		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
-		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
-		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result_array();
-		echo '<pre>';
-		print_r($feeLartas);
-		echo '</pre>';
-		exit;
-		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$users 			= $this->db->get_where('users', ['status' => '1'])->result_array();
+		$ArrUsers 		= array_column($users, 'full_name', 'id_user');
+		$otherCost 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id, 'name like' => '%OTH%'])->result();
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
+		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result();
 
+		if ($header->grand_total > 0) {
+			$dp1 = ($header->total_product * 30) / 100;
+			$dp2 = ($header->total_product - $dp1);
+			$dp3 = ($header->total_product * 17) / 100;
+			$dp4 = $header->grand_total - ($dp1 + $dp2 + $dp3);
+			$DP = [
+				'dp1' => number_format($dp1),
+				'dp2' => number_format($dp2),
+				'dp3' => number_format($dp3),
+				'dp4' => number_format($dp4),
+			];
+		}
+
+
+		$tonase = 0;
+		$totalLartas = 0;
+		foreach ($feeLartas as $fla) {
+			if ($fla->unit == 'TNE') {
+				$tonase += $fla->qty;
+			}
+			$totalLartas += $fla->total_foreign_currency;
+		}
+
+		foreach ($this->currency as $curr) {
+			$ArrCurr[$curr->code] = $curr;
+		}
+		$currSymbol = $ArrCurr[$header->currency]->symbol;
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
 		}
@@ -791,20 +812,28 @@ class Quotations extends Admin_Controller
 			$ArrPorts[$port->country_id][] = $port;
 		}
 
+		$costing 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id])->result();
+		$ArrCosting = [];
+		foreach ($costing as $cst) {
+			$ArrCosting[$cst->name] = $cst;
+		}
+
 		$data = [
 			'header' 		=> $header,
-			'companies' 	=> $companies,
-			'ports' 		=> $ports,
-			'containers' 	=> $containers,
-			'cities' 		=> $cities,
 			'details' 		=> $details,
+			'totalLartas' 	=> $totalLartas,
 			'ArrHscode' 	=> $ArrHscode,
+			'tonase' 		=> $tonase,
+			'currSymbol' 	=> $currSymbol,
+			'ArrUsers' 		=> $ArrUsers,
 			'ArrDocs' 		=> $ArrDocs,
-			'ArrPorts' 		=> $ArrPorts,
-			'ArrLartas' 	=> $ArrLartas,
+			'ArrCosting' 	=> $ArrCosting,
+			'otherCost' 	=> $otherCost,
+			'DP' 			=> $DP,
 		];
 
 		$this->template->set($data);
+		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
 		$html = $this->template->load_view('print_all_in');
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();

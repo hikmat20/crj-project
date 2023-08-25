@@ -359,7 +359,7 @@
                         </tr>
                     <?php endforeach; ?>
                     <tr>
-                        <th colspan="2" style="background-color:lightgray">SUB TOTAL <span class="fontA">小计</span></th>
+                        <th colspan="2" style="background-color:lightgray">SUBTOTAL <span class="fontA">小计</span></th>
                         <td style="border-right:none;background-color:lightgray"><?= $currSymbol; ?> </td>
                         <th class="text-right" style="background-color:lightgray"><?= number_format($header->subtotal); ?></th>
                     </tr>
@@ -421,7 +421,6 @@
                 </table>
             </td>
         </tr>
-
     </table>
 </body>
 

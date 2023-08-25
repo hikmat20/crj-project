@@ -242,17 +242,6 @@
         </tbody>
     </table>
     <br>
-    <?php
-    // $gtotalBM       = $gtotalBM * $header->exchange;
-    // $gtotalPPH      = $gtotalPPH * $header->exchange;
-    // $totalProduct   = ($totalPrice * $header->exchange);
-    // $totalAllIn     = ($gtotalPPH + $header->total_custom_clearance + $header->fee_value + $header->fee_customer);
-    // $subtotal       = ($totalAllIn + $totalProduct + $header->coordination_fee);
-    // $Tax            = (($subtotal + $gtotalBM) * 11) / 100;
-    // $GrandTotal     = ($subtotal + $Tax);
-    // $GrandTotalEx   = ($GrandTotal - $totalProduct);
-    // $fee_lartas     = ($header->fee_lartas_pi + $header->fee_lartas_alkes + $header->fee_lartas_ski);
-    ?>
     <table class="" width="100%">
         <tr>
             <td width="50%" style="vertical-align: top;">

@@ -868,6 +868,7 @@ class Quotations extends Admin_Controller
 			'tonase' 		=> $tonase,
 			'currSymbol' 	=> $currSymbol,
 			'ArrUsers' 		=> $ArrUsers,
+			'ArrDocs' 		=> $ArrDocs,
 			'ArrCosting' 	=> $ArrCosting,
 			'otherCost' 	=> $otherCost,
 			'DP' 			=> $DP,

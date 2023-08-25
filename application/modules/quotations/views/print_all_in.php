@@ -329,7 +329,7 @@
                         <td style="border-right:none;"><?= $currSymbol; ?> </td>
                         <td class="text-right" width="100"><?= number_format($header->total_product, 2); ?></td>
                     </tr>
-                    <?php if ($freight) : ?>
+                    <?php if ($freight > 0) : ?>
                         <tr>
                             <td colspan="2" style="word-wrap: break-word;">
                                 Ocean Freight <span class="fontA">海运费</span>

@@ -344,11 +344,13 @@ class Quotations extends Admin_Controller
 		$detail_lartas 					= isset($data['detail_fee_lartas']) ? $data['detail_fee_lartas'] : '';
 		$costing 						= $data['costing'];
 		$payment_term 					= $data['payment_term'];
+		$deleteItemOth 					= $data['deleteItemOth'];
 
 		unset($data['detail']);
 		unset($data['detail_fee_lartas']);
 		unset($data['costing']);
 		unset($data['deleteItem']);
+		unset($data['deleteItemOth']);
 		unset($data['payment_term']);
 
 		$this->db->trans_begin();
@@ -401,6 +403,16 @@ class Quotations extends Admin_Controller
 				$cost['modified_by'] 				= $this->auth->user_id();;
 				$this->db->update('quotation_detail_costing', $cost, ['id' => $cost['id']]);
 			}
+		}
+
+		if ($deleteItemOth) {
+			$ArrDelete 	= explode(",", $post['deleteItemOth']);
+
+			if ($ArrDelete) :
+				foreach ($ArrDelete as $delDt) {
+					$this->db->delete('quotation_detail_costing', ['id' => $delDt]);
+				}
+			endif;
 		}
 
 		if ($payment_term) {

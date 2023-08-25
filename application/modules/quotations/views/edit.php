@@ -733,7 +733,7 @@
                                 <?php foreach ($otherCost as $n => $oth) : $n++; ?>
                                     <tr class="othFee">
                                         <td class="text-center p-0">
-                                            <a href="javascript:void(0)" class="hover-btn delete-item p-1">
+                                            <a href="javascript:void(0)" class="hover-btn delete-item p-1" data-id="<?= $oth->id; ?>">
                                                 <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
                                             </a>
                                         </td>
@@ -1014,6 +1014,7 @@
             </div>
         </div>
         <input type="hidden" name="deleteItem" id="deleteItem">
+        <input type="hidden" name="deleteItemOth" id="deleteItemOth">
         <input type="hidden" value="<?= $default['approved_go']->value; ?>" name="approved_go">
         <input type="hidden" value="<?= $default['approved_by']->value; ?>" name="approved_by">
     </form>
@@ -1348,11 +1349,24 @@
 
 
         $(document).on('click', '.delete-item', function() {
+            let id = $(this).data('id')
+            let arr = $('#deleteItemOth').val()
+
+            if ($(this).data('id') !== undefined) {
+                if (arr == '') {
+                    arr += $(this).data('id');
+                } else {
+                    arr += "," + $(this).data('id');
+                }
+                $('#deleteItemOth').val(arr)
+            }
+
             $(this).parents('tr').remove()
             let n = $('#tbCosting tbody tr.othFee').length
             if (n < 3) {
                 $('#addOthFee').prop('disabled', false)
             }
+
             total_costing()
         })
 

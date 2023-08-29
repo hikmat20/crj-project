@@ -249,6 +249,7 @@ class Trucking_containers extends Admin_Controller
 			if ($trucking->area) {
 				$AreaData = json_decode($trucking->area);
 				foreach ($AreaData as $are) {
+					$AreaDt['id'] = $trucking->id;
 					$AreaDt[] = $are;
 				}
 			}
@@ -257,7 +258,7 @@ class Trucking_containers extends Admin_Controller
 		$n = 0;
 		if (isset($post['area']) && $post['area']) {
 			foreach ($post['area'] as $a) {
-				if (in_array(strtoupper($a), $AreaDt)) {
+				if (in_array(strtoupper($a), $AreaDt) && $post['id'] !== $AreaDt['id']) {
 					$n++;
 				}
 			}

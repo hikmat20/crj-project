@@ -26,7 +26,7 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                 <thead>
                     <tr class="table-secondary">
                         <th class="text-center desktop tablet mobile align-middle" width="30">No</th>
-                        <th class="desktop tablet mobile tx-dark tx-bold align-middle">Local Code</th>
+                        <th class="desktop tablet mobile tx-dark tx-bold align-middle">Indonesia Code</th>
                         <th class="desktop tablet mobile align-middle">Origin Code</th>
                         <th class="desktop tablet align-middle">Origin</th>
                         <!-- <th class="desktop tablet">Product Name</th> -->
@@ -41,7 +41,7 @@ $ENABLE_DELETE = has_permission('HS_Code.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        <th>Local Code</th>
+                        <th>Indonesia Code</th>
                         <th>Origin Code</th>
                         <th>Origin</th>
                         <!-- <th>Product Name</th> -->

@@ -75,6 +75,7 @@ $ENABLE_DELETE  = has_permission('Companies.Delete');
 
 
 <!-- page script -->
+
 <script type="text/javascript">
     $(document).ready(function() {
         loadData()

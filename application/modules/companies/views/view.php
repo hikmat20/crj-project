@@ -373,3 +373,43 @@
         </div>
     </div>
 </div>
+
+<hr>
+<h5 class="tx-dark tx-bold"><i class="fa fa-file" aria-hidden="true"></i> Letter Head</h5>
+<div class="card">
+    <div class="card-body">
+        <div class="form-group mb-3 row">
+            <div class="col-md-2 tx-dark tx-bold">
+                <label for="longitude">Header</label>
+            </div>
+            <div class="col-md-10">
+                <div class="rounded text-center" style="border:2px solid #eee;">
+                    <?php $img = ($company->header) ? $path . $company->header : 'no-image.jpg'; ?>
+                    <img src="<?= base_url('assets/') . $img; ?>" id="preview-header" alt="no-image" class="border-0 mx-wd-100p">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-2 tx-dark tx-bold">
+                <label for="longitude">Watermark</label>
+            </div>
+            <div class="col-md-10">
+                <div class="rounded text-center wd-100p" style="border:2px solid #eee;">
+                    <?php $img = ($company->watermark) ? $path . $company->watermark : 'no-image.jpg'; ?>
+                    <img src="<?= base_url('assets/') . $img; ?>" id="preview-watermark" height="auto" alt="no-image" class="border-0 mx-wd-100p">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-2 tx-dark tx-bold">
+                <label for="longitude">Footer</label>
+            </div>
+            <div class="col-md-10">
+                <div class="rounded text-center" style="border:2px solid #eee;">
+                    <?php $img = ($company->footer) ? $path . $company->footer : 'no-image.jpg'; ?>
+                    <img src="<?= base_url('assets/') . $img; ?>" id="preview-footer" alt="no-image" class="border-0 mx-wd-100p">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

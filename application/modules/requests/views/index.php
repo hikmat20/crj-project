@@ -495,13 +495,25 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 $(this).html('<i class="fa fa-plus fa-sm" aria-hidden="true"></i>')
             });
 
-
         $(document).on('click', '.delete-item', function() {
+            let id = $(this).data('id')
+            let arr = $('#deleteItemOth').val()
+
+            if ($(this).data('id') !== undefined) {
+                if (arr == '') {
+                    arr += $(this).data('id');
+                } else {
+                    arr += "," + $(this).data('id');
+                }
+                $('#deleteItemOth').val(arr)
+            }
+
             $(this).parents('tr').remove()
             let n = $('#tbCosting tbody tr.othFee').length
             if (n < 3) {
                 $('#addOthFee').prop('disabled', false)
             }
+
             total_costing()
         })
 

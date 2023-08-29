@@ -701,16 +701,25 @@ class Requests extends Admin_Controller
 		$currency_code = $ArrCurrency[$header->currency]->code;
 
 		$lartasItems = [];
+
 		foreach ($details as $dtl) {
-			$lartasItems[] = $dtl->lartas;
+			if ($dtl->lartas) {
+				$lartasItems[] = $dtl->lartas;
+			}
 		}
 
 		$itemLartas = array_unique($lartasItems);
+
+		$default = [];
+		foreach ($configs as $conf) {
+			$default[$conf['key']] = $conf;
+		}
 
 		$data = [
 			'currency' 		=> $currency,
 			'currency_code' => $currency_code,
 			'header' 		=> $header,
+			'default' 		=> $default,
 			'companies' 	=> $companies,
 			'ports' 		=> $ports,
 			'containers' 	=> $containers,

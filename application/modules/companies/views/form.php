@@ -439,8 +439,84 @@
 	</div>
 </div>
 
+<hr>
+<h5 class="tx-dark tx-bold"><i class="fa fa-file" aria-hidden="true"></i> Letter Head</h5>
+<div class="card">
+	<div class="card-body">
+		<div class="form-group mb-3 row">
+			<div class="col-md-2 tx-dark tx-bold">
+				<label for="longitude">Header</label>
+			</div>
+			<div class="col-md-10">
+				<?php $img = ($company->header) ? $path . $company->header : 'no-image.jpg'; ?>
+				<input type="file" name="header" id="header" accept=".png,.jpg" class="inputfile">
+				<div class="rounded text-center" style="border:2px dashed #ccc;cursor:pointer;" onclick="$('#header').click()" title="Click to upload file">
+					<img src="<?= base_url($img); ?>" id="preview-header" alt="no-image" class="border-0 mx-wd-100p">
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-md-2 tx-dark tx-bold">
+				<label for="longitude">Watermark</label>
+			</div>
+			<div class="col-md-10">
+				<input type="file" name="watermark" id="watermark" accept=".png,.jpg" class="inputfile">
+				<div class="rounded text-center" style="border:2px dashed #ccc;cursor:pointer;" onclick="$('#watermark').click()" title="Click to upload file">
+					<img src="<?= base_url('assets/no-image.jpg'); ?>" id="preview-watermark" alt="no-image" class="border-0 mx-wd-100p">
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-md-2 tx-dark tx-bold">
+				<label for="longitude">Footer</label>
+			</div>
+			<div class="col-md-10">
+				<input type="file" name="footer" id="footer" accept=".png,.jpg" class="inputfile">
+				<div class="rounded text-center" style="border:2px dashed #ccc;cursor:pointer;" onclick="$('#footer').click()" title="Click to upload file">
+					<img src="<?= base_url('assets/no-image.jpg'); ?>" id="preview-footer" alt="no-image" class="border-0 mx-wd-100p">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('#header').change(function() {
+			const file = this.files[0];
+			if (file) {
+				let reader = new FileReader();
+				reader.onload = function(event) {
+					console.log(event.target.result);
+					$('#preview-header').attr('src', event.target.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		});
+
+		$('#watermark').change(function() {
+			const file = this.files[0];
+			if (file) {
+				let reader = new FileReader();
+				reader.onload = function(event) {
+					console.log(event.target.result);
+					$('#preview-watermark').attr('src', event.target.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		});
+
+		$('#footer').change(function() {
+			const file = this.files[0];
+			if (file) {
+				let reader = new FileReader();
+				reader.onload = function(event) {
+					console.log(event.target.result);
+					$('#preview-footer').attr('src', event.target.result);
+				}
+				reader.readAsDataURL(file);
+			}
+		});
 
 		$('.select').select2({
 			// minimumResultsForSearch: -1,

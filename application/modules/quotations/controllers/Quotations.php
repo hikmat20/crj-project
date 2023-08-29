@@ -111,14 +111,15 @@ class Quotations extends Admin_Controller
 			$deal 		= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-handshake text-primary"></i> Deal</a>';
 			$printAI 	= '<a href="' . base_url($this->uri->segment(1) . '/print_all_in/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print All-In" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> Print All-In</a>';
 			$printAPB 	= '<a href="' . base_url($this->uri->segment(1) . '/print_apb/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print As Per-Bill</span></a>';
+			$printDDU 	= '<a href="' . base_url($this->uri->segment(1) . '/print_ddu/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print DDU</span></a>';
 			$cancel 	= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="icon ion-minus-circled text-danger"></i> Cancel</a>';
-			$buttons 	= $view . $edit  . $deal .  $printAI . $printAPB . $cancel;
+			$buttons 	= $view . $edit  . $deal .  $printAI . $printAPB . $printDDU . $cancel;
 
 			if ($row['status'] == 'RVI') {
-				$buttons 	=  $view . $revision . $printAPB . $printAI;
+				$buttons 	=  $view . $revision . $printAPB . $printAI . $printDDU;
 			}
 			if ($row['status'] == 'DEAL') {
-				$buttons 	= $view . $printAPB . $printAI;
+				$buttons 	= $view . $printAPB . $printAI . $printDDU;
 			}
 			if ($row['status'] == 'HIS') {
 				$buttons 	= $view;
@@ -754,10 +755,11 @@ class Quotations extends Admin_Controller
 					],
 				],
 			'mode' => 'utf-8',
-			'format' => 'A4',
-			'setAutoTopMargin' => 'pad',
-			'autoMarginPadding' => 0
+			'format' => [210, 297],
+			// 'setAutoTopMargin' => 'stretch',
+			// 'autoMarginPadding' => 50
 		]);
+
 
 		// $mpdf = new \Mpdf\Mpdf();
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
@@ -786,6 +788,11 @@ class Quotations extends Admin_Controller
 			];
 		}
 
+		$comp = $this->db->get_where('companies', ['id' => $header->company_id])->row();
+		$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', true);
+		$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, 30, 5, 0, 0);
+		$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, 297, 'png', '', true, false, true);
 
 		$tonase = 0;
 		$totalLartas = 0;
@@ -832,8 +839,9 @@ class Quotations extends Admin_Controller
 			'DP' 			=> $DP,
 		];
 
+
+		// $mpdf->SetHTMLHeader(base_url('assets/img/letter-head/kop-1.png'));
 		$this->template->set($data);
-		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
 		$html = $this->template->load_view('print_all_in');
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
@@ -917,6 +925,88 @@ class Quotations extends Admin_Controller
 		$this->template->set($data);
 		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
 		$html = $this->template->load_view('print_apb');
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
+	}
+
+	function print_ddu($id)
+	{
+		$this->auth->restrict($this->viewPermission);
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4', 'setAutoTopMargin' => 'pad', 'autoMarginPadding' => 0]);
+		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
+		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
+		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$users 			= $this->db->get_where('users', ['status' => '1'])->result_array();
+		$ArrUsers 		= array_column($users, 'full_name', 'id_user');
+		$otherCost 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id, 'name like' => '%OTH%'])->result();
+		$ArrHscode 		= [];
+		$ArrDocs 		= [];
+		$ArrPorts 		= [];
+		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result();
+
+		if ($header->grand_total > 0) {
+			$dp1 = ($header->total_product * 30) / 100;
+			$dp2 = ($header->total_product - $dp1);
+			$dp3 = ($header->total_product * 17) / 100;
+			$dp4 = $header->grand_total - ($dp1 + $dp2 + $dp3);
+			$DP = [
+				'dp1' => number_format($dp1),
+				'dp2' => number_format($dp2),
+				'dp3' => number_format($dp3),
+				'dp4' => number_format($dp4),
+			];
+		}
+
+
+		$tonase = 0;
+		$totalLartas = 0;
+		foreach ($feeLartas as $fla) {
+			if ($fla->unit == 'TNE') {
+				$tonase += $fla->qty;
+			}
+			$totalLartas += $fla->total_foreign_currency;
+		}
+
+		foreach ($this->currency as $curr) {
+			$ArrCurr[$curr->code] = $curr;
+		}
+		$currSymbol = $ArrCurr[$header->currency]->symbol;
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->origin_code] = $hs;
+		}
+
+		foreach ($hscodes_doc as $doc) {
+			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		foreach ($ports as $port) {
+			$ArrPorts[$port->country_id][] = $port;
+		}
+
+		$costing 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id])->result();
+		$ArrCosting = [];
+		foreach ($costing as $cst) {
+			$ArrCosting[$cst->name] = $cst;
+		}
+
+		$data = [
+			'header' 		=> $header,
+			'details' 		=> $details,
+			'totalLartas' 	=> $totalLartas,
+			'ArrHscode' 	=> $ArrHscode,
+			'tonase' 		=> $tonase,
+			'currSymbol' 	=> $currSymbol,
+			'ArrUsers' 		=> $ArrUsers,
+			'ArrDocs' 		=> $ArrDocs,
+			'ArrCosting' 	=> $ArrCosting,
+			'otherCost' 	=> $otherCost,
+			'DP' 			=> $DP,
+		];
+		$this->template->set($data);
+		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
+		$html = $this->template->load_view('print_ddu');
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
 	}

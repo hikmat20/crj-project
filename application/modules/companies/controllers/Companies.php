@@ -161,10 +161,13 @@ class Companies extends Admin_Controller
 		$marketing 				= $this->db->get_where('employees', array('division' => 'DIV002', 'status' => 1))->result();
 		$receive_invoice_day 	= json_decode($company->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($company->invoicing_requirement);
+		$path					= 'assets/img/letter-head/';
+
 		$data = [
 			'company'					=> $company,
 			'countries' 				=> $countries,
 			'PIC' 						=> $pic,
+			'path' 						=> $path,
 			'states' 					=> $states,
 			'cities' 					=> $cities,
 			'marketing' 				=> $marketing,
@@ -187,13 +190,15 @@ class Companies extends Admin_Controller
 		$receive_invoice_day 	= json_decode($company->receive_invoice_day);
 		$invoicing_requirement 	= json_decode($company->invoicing_requirement);
 
-		$ArrCountry = array_column($countries, 'name', 'id');
-		$ArrStates = array_column($states, 'name', 'id');
-		$ArrCity = array_column($cities, 'name', 'id');
+		$ArrCountry 			= array_column($countries, 'name', 'id');
+		$ArrStates 				= array_column($states, 'name', 'id');
+		$ArrCity 				= array_column($cities, 'name', 'id');
+		$path					= 'img/letter-head/';
 
 		$data = [
 			'company'					=> $company,
 			'PIC' 						=> $pic,
+			'path' 						=> $path,
 			'ArrCountry' 				=> $ArrCountry,
 			'ArrStates' 				=> $ArrStates,
 			'ArrCity' 					=> $ArrCity,
@@ -208,6 +213,9 @@ class Companies extends Admin_Controller
 	{
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
+		$header		= $_FILES['header'];
+		$watermark	= $_FILES['watermark'];
+		$footer		= $_FILES['footer'];
 
 		$data = $post;
 		$data['id'] 						= $post['id'] ?: $this->Companies_model->generate_id();
@@ -234,11 +242,92 @@ class Companies extends Admin_Controller
 		$data['bank_account_address'] 		= ($post['bank_account_address']) ?: null;
 		$data['swift_code'] 				= ($post['swift_code']) ?: null;
 		$data['documents'] 					= ($post['documents']) ? json_encode($post['documents']) : null;
+		$dataPIC 							= $post['PIC'];
 
-		$dataPIC = $post['PIC'];
 		unset($data['PIC']);
 		unset($data['nominal_dp']);
 		unset($data['sisa_pembayaran']);
+
+		$config['upload_path'] 				= './assets/img/letter-head/';
+		$config['allowed_types'] 			= 'jpg|png';
+		$config['max_size']     			= '2048';
+		$config['max_width'] 				= '3124';
+		$config['max_height'] 				= '1124';
+
+		if ($header['name']) {
+			$path 	= $header['name'];
+			$ext 	= pathinfo($path, PATHINFO_EXTENSION);
+			$config['file_name'] = $post['id'] . "-" . 'header.' . $ext;
+
+			$this->load->library('upload', $config);
+			$this->upload->initialize($config);
+
+			$this->upload->overwrite = true;
+			if (!$this->upload->do_upload('header')) {
+				$err 	= "<b>Header</b> -" . $this->upload->display_errors();
+				$return = [
+					'status' => 0,
+					'msg' 	 => $err
+				];
+				echo json_encode($return);
+				return false;
+			} else {
+				$data_file 			= $this->upload->data();
+				$ext 				= $data_file['file_ext'];
+				$file_name 			= $data_file['file_name'] = $post['id'] . "-" . 'header' . $ext;
+				$data['header'] 	= $file_name;
+			}
+		}
+
+		if ($watermark['name']) {
+			$path 	= $watermark['name'];
+			$ext 	= pathinfo($path, PATHINFO_EXTENSION);
+			$config['file_name'] = $post['id'] . "-" . 'watermark.' . $ext;
+
+			$this->load->library('upload', $config);
+			$this->upload->initialize($config);
+
+			$this->upload->overwrite = true;
+			if (!$this->upload->do_upload('watermark')) {
+				$err 	= "watermark -" . $this->upload->display_errors();
+				$return = [
+					'status' => 0,
+					'msg' 	 => $err
+				];
+				echo json_encode($return);
+				return false;
+			} else {
+				$data_file 			= $this->upload->data();
+				$ext 				= $data_file['file_ext'];
+				$file_name 			= $data_file['file_name'] = $post['id'] . "-" . 'watermark' . $ext;
+				$data['watermark'] 	= $file_name;
+			}
+		}
+
+		if ($footer['name']) {
+			$path 	= $footer['name'];
+			$ext 	= pathinfo($path, PATHINFO_EXTENSION);
+			$config['file_name'] = $post['id'] . "-" . 'footer.' . $ext;
+
+			$this->load->library('upload', $config);
+			$this->upload->initialize($config);
+
+			$this->upload->overwrite = true;
+			if (!$this->upload->do_upload('footer')) {
+				$err 	= "<b>Footer</b> -" . $this->upload->display_errors();
+				$return = [
+					'status' => 0,
+					'msg' 	 => $err
+				];
+				echo json_encode($return);
+				return false;
+			} else {
+				$data_file 			= $this->upload->data();
+				$ext 				= $data_file['file_ext'];
+				$file_name 			= $data_file['file_name'] = $post['id'] . "-" . 'footer' . $ext;
+				$data['footer'] 	= $file_name;
+			}
+		}
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id'] == '') {

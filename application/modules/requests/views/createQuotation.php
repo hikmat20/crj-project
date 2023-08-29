@@ -386,6 +386,7 @@
             </tr>
         </tbody>
     </table>
+
 </div>
 
 <!-- END DETAIL PRODUCT -->
@@ -624,7 +625,7 @@
                             <label for="fee_lartas_type" class="col-md-3">Fee Lartas</label>
                             <div class="col-md-4">
                                 <div id="slWrFeeLartas" class="parsley-select">
-                                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control form-control-sm" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
+                                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control form-control-sm" <?= count($itemLartas) > 0 ? 'required data-parsley-inputs' : ''; ?> data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
                                         <option value="">~ Choose One ~</option>
                                         <option value="STD">Standard</option>
                                         <option value="CORP">Corporate</option>
@@ -774,13 +775,13 @@
                             </td>
                         </tr>
                         <tr class="table-secondary">
-                            <td class="align-middle tx-dark tx-bold">Subtotal</td>
+                            <td class="align-middle tx-dark tx-bold">SUBTOTAL</td>
                             <td class="align-middle">
                                 <div class="input-group input-group-sm tx-16-force">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
                                     </div>
-                                    <input type="text" name="subtotal" id="subtotal" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                    <input type="text" name="subtotal" id="subtotal" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format(($totalPrice) ?: '0', 2); ?>">
                                 </div>
                             </td>
                         </tr>
@@ -815,7 +816,9 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                     </div>
-                                    <input type="text" name="total_tax" id="total_tax" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                    <?php
+                                    $totalTax = (($totalPrice  + $gtotalBM + $gtotalPPH) * $currentTax) / 100; ?>
+                                    <input type="text" name="total_tax" id="total_tax" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format($totalTax, 2); ?>">
                                 </div>
                             </td>
                         </tr>
@@ -826,7 +829,11 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                     </div>
-                                    <input type="text" name="grand_total" id="grand_total" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                    <?php
+                                    $grandTotal = $totalPrice + $gtotalBM + $gtotalPPH + $totalTax;
+                                    $grandTotalExc = $grandTotal - $totalPrice;
+                                    ?>
+                                    <input type="text" name="grand_total" id="grand_total" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format($grandTotal, 2); ?>">
                                 </div>
                             </td>
                         </tr>
@@ -848,7 +855,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                     </div>
-                                    <input type="text" name="grand_total_exclude_price" id="grand_total_exclude_price" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                    <input type="text" name="grand_total_exclude_price" id="grand_total_exclude_price" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format($grandTotalExc, 2); ?>">
                                 </div>
                             </td>
                         </tr>
@@ -958,6 +965,11 @@
         <button type="button" class="btn btn-sm btn-primary" onclick="edit()">Edit</button>
         <button type="button" class="btn btn-sm btn-success" onclick="$('#note').summernote('destroy')">Save</button>
     </div>
+    <input type="hidden" name="deleteItem" id="deleteItem">
+    <input type="hidden" name="deleteItemOth" id="deleteItemOth">
+
+    <input type="hidden" value="<?= $default['approved_go']['value']; ?>" name="approved_go">
+    <input type="hidden" value="<?= $default['approved_by']['value']; ?>" name="approved_by">
 </div>
 
 <script>

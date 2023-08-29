@@ -396,7 +396,10 @@
 
                 <div class="row pd-x-0">
                     <div class="col-md-7">
-                        <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Costing</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Costing</h5>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="load_price()"><i class="fa fa-sync" aria-hidden="true"></i> Recalculate</button>
+                        </div>
                         <hr>
                         <table class="table table-sm table-striped" id="tbCosting">
                             <thead>

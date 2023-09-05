@@ -86,9 +86,26 @@ class Fee_customers extends Admin_Controller
 			'1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
 		];
 
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result_array();
+		$ArrCNT = array_column($containers, 'name', 'id');
+		$ArrDtlUND = [];
+		$detailUND = $this->db->get_where('fee_customer_details', ['fee_type' => 'undername'])->result();
+		foreach ($detailUND as $und) {
+			$ArrDtlUND[$und->fee_customer_id][] = $und;
+		}
+
+		$ArrDtlDDU = [];
+		$detailDDU = $this->db->get_where('fee_customer_details', ['fee_type' => 'ddu'])->result();
+		foreach ($detailDDU as $ddu) {
+			$ArrDtlDDU[$ddu->fee_customer_id][] = $ddu;
+		}
+
+
 		/* Button */
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
+			$listUND = '';
+			$listDDU = '';
 			$total_data     = $totalData;
 			$start_dari     = $start;
 			$asc_desc       = $dir;
@@ -109,13 +126,19 @@ class Fee_customers extends Admin_Controller
 			$buttons 	= $view . "&nbsp;" . $edit . "&nbsp;" . $delete;
 			$type 		= (isset($row['type']) && $row['type']) ? $this->type[$row['type']] : '-';
 
+			if (isset($ArrDtlUND[$row['id']])) foreach ($ArrDtlUND[$row['id']] as $rowUND) {
+				$listUND .= isset($ArrCNT[$rowUND->container_id]) ? "<li>" . $ArrCNT[$rowUND->container_id] . " - Rp. " . number_format($rowUND->cost_value) . "</li>" : '';
+			}
+
+			if (isset($ArrDtlDDU[$row['id']])) foreach ($ArrDtlDDU[$row['id']] as $rowDDU) {
+				$listDDU .= isset($ArrCNT[$rowDDU->container_id]) ? "<li>" . $ArrCNT[$rowDDU->container_id] . " - Rp. " . number_format($rowDDU->cost_value) . "</li>" : '';
+			}
+
 			$nestedData   = array();
 			$nestedData[]  = $nomor;
 			$nestedData[]  = $row['customer_name'];
-			$nestedData[]  = $row['employee_name'];
-			$nestedData[]  = 'Rp. ' . number_format($row['fee_value']);
-			$nestedData[]  = $type;
-			$nestedData[]  = $row['description'];
+			$nestedData[]  = "<ul class='pd-l-10 mg-b-0'>" . $listUND . "</ul>";;
+			$nestedData[]  = "<ul class='pd-l-10 mg-b-0'>" . $listDDU . "</ul>";;
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;
@@ -142,19 +165,41 @@ class Fee_customers extends Admin_Controller
 	{
 		$this->auth->restrict($this->addPermission);
 		$customers = $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result();
-		$this->template->set('customers', $customers);
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
+		$this->template->set([
+			'containers' 	=> $containers,
+			'customers' 	=> $customers
+		]);
 		$this->template->render('form');
 	}
 
 	public function edit($id)
 	{
 		$this->auth->restrict($this->managePermission);
-		$fee = $this->db->get_where('fee_customers', array('id' => $id))->row();
-		$customers = $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result();
+		$fee 					= $this->db->get_where('fee_customers', array('id' => $id))->row();
+		$customers 				= $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result();
+		$containers 			= $this->db->get_where('containers', ['status' => '1'])->result();
+		$detail_und 			= $this->db->get_where('fee_customer_details', array('fee_customer_id' => $fee->id, 'fee_type' => 'undername'))->result();
+		$detail_ddu 			= $this->db->get_where('fee_customer_details', array('fee_customer_id' => $fee->id, 'fee_type' => 'ddu'))->result();
+		$ArrDtlUND = [];
+		$ArrDtlDDU = [];
+
+		foreach ($detail_und as $cust_fee) {
+			$ArrDtlUND[$cust_fee->container_id] = $cust_fee;
+		}
+
+		foreach ($detail_ddu as $cust_fee) {
+			$ArrDtlDDU[$cust_fee->container_id] = $cust_fee;
+		}
+
 		$data = [
 			'fee' 			=> $fee,
 			'customers'	 	=> $customers,
+			'containers'	=> $containers,
+			'ArrDtlUND'		=> $ArrDtlUND,
+			'ArrDtlDDU'		=> $ArrDtlDDU,
 		];
+
 		$this->template->set($data);
 		$this->template->render('form');
 	}
@@ -162,15 +207,28 @@ class Fee_customers extends Admin_Controller
 	public function view($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$fee = $this->db->get_where('fee_customers', array('id' => $id))->row();
-		$customers = $this->db->get_where('customers', ['status !=' => 'D', 'status !=' => '0'])->result_array();
-		$ArrCustomers = array_column($customers, 'customer_name', 'id_customer');
+		$fee 					= $this->db->get_where('view_fee_customers', array('id' => $id))->row();
+		$containers 			= $this->db->get_where('containers', ['status' => '1'])->result();
+		$detail_und 			= $this->db->get_where('fee_customer_details', array('fee_customer_id' => $fee->id, 'fee_type' => 'undername'))->result();
+		$detail_ddu 			= $this->db->get_where('fee_customer_details', array('fee_customer_id' => $fee->id, 'fee_type' => 'ddu'))->result();
+		$ArrDtlUND 				= [];
+		$ArrDtlDDU 				= [];
+
+		foreach ($detail_und as $cust_fee) {
+			$ArrDtlUND[$cust_fee->container_id] = $cust_fee;
+		}
+
+		foreach ($detail_ddu as $cust_fee) {
+			$ArrDtlDDU[$cust_fee->container_id] = $cust_fee;
+		}
 
 		$data = [
 			'fee' 				=> $fee,
-			'ArrCustomers'	 	=> $ArrCustomers,
-			'type'	 			=> $this->type,
+			'containers'		=> $containers,
+			'ArrDtlUND'	 		=> $ArrDtlUND,
+			'ArrDtlDDU'	 		=> $ArrDtlDDU,
 		];
+
 		$this->template->set($data);
 		$this->template->render('view');
 	}
@@ -180,8 +238,18 @@ class Fee_customers extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
+		// echo '<pre>';
+		// print_r($data);
+		// echo '</pre>';
+		// exit;
+		$undername 	= $data['detail_undername'];
+		$ddu 		= $data['detail_ddu'];
+
+		unset($data['detail_undername']);
+		unset($data['detail_ddu']);
+
 		$data['id'] = isset($post['id']) && $post['id'] ? $post['id'] : $this->Fee_customers_model->generate_id();
-		$data['fee_value'] = str_replace(",", "", $post['fee_value']);
+		// $data['fee_value'] = str_replace(",", "", $post['fee_value']);
 
 		$this->db->trans_begin();
 		if (isset($post['id']) && $post['id']) {
@@ -191,7 +259,57 @@ class Fee_customers extends Admin_Controller
 		} else {
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
+			$checkFee = $this->db->get_where('fee_customers', ['customer_id' => $data['customer_id']])->num_rows();
+			if ($checkFee > 0) {
+				$return	= array(
+					'msg'		=> 'Customer already exist.',
+					'status'	=> 0
+				);
+				echo json_encode($return);
+				return false;
+			}
 			$this->db->insert("fee_customers", $data);
+		}
+
+		if ($undername) {
+			$new_id = $this->db->get_where('fee_customer_details', ['fee_customer_id' => $data['id'], 'fee_type' => 'undername'])->num_rows();
+			foreach ($undername as $u) {
+				$new_id++;
+				$u['id'] = (isset($u['id']) && $u['id']) ? $u['id'] : $data['id'] . "-U" . sprintf("%03d", ($new_id));
+				$u['cost_value'] = str_replace(",", "", $u['cost_value']);
+				$check_data = $this->db->get_where('fee_customer_details', ['id' => $u['id']])->num_rows();
+				if ($check_data > 0) {
+					$u['modified_by'] = $this->auth->user_id();
+					$u['modified_at'] = date('Y-m-d H:i:s');
+					$this->db->update('fee_customer_details', $u, ['id' => $u['id']]);
+				} else {
+					$u['fee_customer_id'] = $data['id'];
+					$u['fee_type'] = 'undername';
+					$u['created_by'] = $this->auth->user_id();
+					$u['created_at'] = date('Y-m-d H:i:s');
+					$this->db->insert('fee_customer_details', $u);
+				}
+			}
+		}
+		if ($ddu) {
+			$new_id = $this->db->get_where('fee_customer_details', ['fee_customer_id' => $data['id'], 'fee_type' => 'ddu'])->num_rows();
+			foreach ($ddu as $d) {
+				$new_id++;
+				$d['id'] = (isset($d['id']) && $d['id']) ? $d['id'] : $data['id'] . "-D" . sprintf("%03d", ($new_id));
+				$d['cost_value'] = str_replace(",", "", $d['cost_value']);
+				$check_data = $this->db->get_where('fee_customer_details', ['id' => $d['id']])->num_rows();
+				if ($check_data > 0) {
+					$d['modified_by'] = $this->auth->user_id();
+					$d['modified_at'] = date('Y-m-d H:i:s');
+					$this->db->update('fee_customer_details', $d, ['id' => $d['id']]);
+				} else {
+					$d['fee_customer_id'] = $data['id'];
+					$d['fee_type'] = 'ddu';
+					$d['created_by'] = $this->auth->user_id();
+					$d['created_at'] = date('Y-m-d H:i:s');
+					$this->db->insert('fee_customer_details', $d);
+				}
+			}
 		}
 
 		if ($this->db->trans_status() === FALSE) {
@@ -254,7 +372,7 @@ class Fee_customers extends Admin_Controller
 				'msg'		=> 'Success delete data Fee Customer.',
 				'status'	=> 1
 			);
-			$keterangan     = "SUCCESS delete data Fee Customer " . $fee['id'] . ", Fee Customer name : " . $fee['city_name'];
+			$keterangan     = "SUCCESS delete data Fee Customer " . $fee['id'];
 			$status         = 1;
 			$nm_hak_akses   = $this->deletePermission;
 			$kode_universal = $fee['id'];

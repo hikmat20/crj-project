@@ -144,6 +144,19 @@
                 <div id="errAmount"></div>
             </div>
         </div>
+        <div class="form-group row">
+            <label for="service_type" class="tx-dark tx-bold col-md-3 pd-x-0">Service Type <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-7 px-0">
+                <div id="slWrService" class="parsley-select">
+                    <select name="service_type" id="service_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrService" data-parsley-errors-container="#errService">
+                        <option value=""></option>
+                        <option value="undername">Undername</option>
+                        <option value="ddu">DDU</option>
+                    </select>
+                </div>
+                <div id="errService"></div>
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <div class="mg-b-10 row">
@@ -641,7 +654,7 @@
                                     <th width="140">Name</th>
                                     <th>Price (Rp)</th>
                                     <th>Unit</th>
-                                    <th width="100">Qty</th>
+                                    <th width="120">Qty</th>
                                     <th>Total (Rp)</th>
                                     <th>Total (<?= $currency_code; ?>)</th>
                                 </tr>
@@ -667,7 +680,7 @@
                                                     <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][unit]" class="h-0 p-1 unit unit_<?= $lts; ?>">
                                                 </th>
                                                 <td>
-                                                    <input type="number" name="detail_fee_lartas[<?= $n; ?>][qty]" data-id="<?= $lts; ?>" autocomplete="off" min="0" class="form-control text-right bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas<?= $lts; ?>" id="qty_lartas<?= $lts; ?>" placeholder="0">
+                                                    <input type="text" name="detail_fee_lartas[<?= $n; ?>][qty]" data-id="<?= $lts; ?>" autocomplete="off" min="0" class="form-control text-center bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas<?= $lts; ?>" id="qty_lartas<?= $lts; ?>" placeholder="0">
                                                 </td>
                                                 <td>
                                                     <div class="input-group input-group-sm">
@@ -690,7 +703,7 @@
                                     endforeach;
                                 else : ?>
                                     <tr>
-                                        <td colspan="3" class="text-center">~ Non Lartas ~</td>
+                                        <td colspan="6" class="text-center">~ Non Lartas ~</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -957,8 +970,8 @@
     <h6 class="tx-dark tx-bold">Note :</h6>
     <div id="note" class="mg-b-10">
         <ol>
-            <li>All price is estimate only, will be charge as per actual bill.</li>
-            <li>Using normal handling, for demurrage, SPTNP (Notul) and additional&nbsp; cost will be charge as per actual cost.</li>
+            <li>All price is estimate only, will be charge as per actual bill 报价为预估费用，实际费用按实报.</li>
+            <li>Using normal handling, for demurrage, SPTNP (Notul) and additional&nbsp; cost will be charge as per actual cost 报价费用为正清预估，产生的带期费，海关罚款以及其他额外费按实报.</li>
         </ol>
     </div>
     <div class="mg-t-10">
@@ -966,8 +979,6 @@
         <button type="button" class="btn btn-sm btn-success" onclick="$('#note').summernote('destroy')">Save</button>
     </div>
     <input type="hidden" name="deleteItem" id="deleteItem">
-    <input type="hidden" name="deleteItemOth" id="deleteItemOth">
-
     <input type="hidden" value="<?= $default['approved_go']['value']; ?>" name="approved_go">
     <input type="hidden" value="<?= $default['approved_by']['value']; ?>" name="approved_by">
 </div>

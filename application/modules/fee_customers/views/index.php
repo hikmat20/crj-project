@@ -28,10 +28,10 @@ $ENABLE_DELETE  = has_permission('Fee_customers.Delete');
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
                         <th class="desktop tablet tx-bold tx-dark">Customer Name</th>
-                        <th class="desktop tablet text-center">Marketing</th>
-                        <th class="desktop tablet text-center" width="100">Fee SJT</th>
-                        <th class="desktop tablet text-center" width="150">Type</th>
-                        <th class="desktop no-sort">Description</th>
+                        <th class="desktop tablet">Undername</th>
+                        <th class="desktop tablet" width="">DDU</th>
+                        <!-- <th class="desktop tablet text-center" width="150">Type</th> -->
+                        <!-- <th class="desktop no-sort">Description</th> -->
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="100">Opsi</th>
                         <?php endif; ?>
@@ -42,10 +42,10 @@ $ENABLE_DELETE  = has_permission('Fee_customers.Delete');
                     <tr>
                         <th>No</th>
                         <th>Customer Name</th>
-                        <th>Marketing</th>
-                        <th>Fee SJT</th>
-                        <th>Type</th>
-                        <th>Description</th>
+                        <th>Undername</th>
+                        <th>DDU</th>
+                        <!-- <th>Type</th> -->
+                        <!-- <th>Description</th> -->
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>

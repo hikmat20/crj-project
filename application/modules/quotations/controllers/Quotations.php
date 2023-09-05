@@ -113,16 +113,22 @@ class Quotations extends Admin_Controller
 			$printAPB 	= '<a href="' . base_url($this->uri->segment(1) . '/print_apb/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print As Per-Bill</span></a>';
 			$printDDU 	= '<a href="' . base_url($this->uri->segment(1) . '/print_ddu/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print DDU</span></a>';
 			$cancel 	= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="icon ion-minus-circled text-danger"></i> Cancel</a>';
-			$buttons 	= $view . $edit  . $deal .  $printAI . $printAPB . $printDDU . $cancel;
+			$printBTN 	= '';
+
+			if ($row['service_type'] == 'undername') {
+				$printBTN = $printAI . $printAPB;
+			} else if ($row['service_type'] == 'ddu') {
+				$printBTN = $printDDU;
+			}
 
 			if ($row['status'] == 'RVI') {
-				$buttons 	=  $view . $revision . $printAPB . $printAI . $printDDU;
-			}
-			if ($row['status'] == 'DEAL') {
-				$buttons 	= $view . $printAPB . $printAI . $printDDU;
-			}
-			if ($row['status'] == 'HIS') {
+				$buttons 	=  $view . $revision  . $printBTN;
+			} else if ($row['status'] == 'DEAL') {
+				$buttons 	= $view . $printBTN;
+			} else if ($row['status'] == 'HIS') {
 				$buttons 	= $view;
+			} else {
+				$buttons 	= $view . $edit  . $deal . $printBTN . $cancel;
 			}
 
 			$nestedData   = array();
@@ -338,6 +344,8 @@ class Quotations extends Admin_Controller
 		$data['total_costing'] 			= str_replace(",", "", $post['total_costing']);
 		$data['total_costing_foreign_currency'] = str_replace(",", "", $post['total_costing_foreign_currency']);
 		$data['fee_customer_id'] 		= ($post['fee_customer_id']) ?: null;
+		// $data['fee_value'] 				= str_replace(",", "", $post['fee_value']) ?: null;
+		$data['fee_customer'] 			= str_replace(",", "", $post['fee_customer']) ?: null;
 		$data['modified_at'] 			= date('Y-m-d H:i:s');
 		$data['modified_by'] 			= $this->auth->user_id();
 
@@ -539,11 +547,9 @@ class Quotations extends Admin_Controller
 	{
 		$city_id 	= $_GET['city_id'];
 		$areas 		= [];
-
 		if (isset($city_id) && $city_id) {
 			$areas = $this->db->where(['city_id' => $city_id])->get('areas')->result_array();
 		}
-
 		echo json_encode($areas);
 	}
 
@@ -554,6 +560,7 @@ class Quotations extends Admin_Controller
 		$dest_area 				= $post['dest_area'];
 		$src_city 				= $post['src_city'];
 		$fee_type 				= $post['fee_type'];
+		$service_type 			= $post['service_type'];
 		$customer 				= $post['customer_id'];
 		$qty_container 			= $post['qty'];
 		$qty_ls_container 		= $post['qty_ls_container'];
@@ -602,11 +609,12 @@ class Quotations extends Admin_Controller
 				$totalFee = $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
 			} else if (isset($fee_type) && $fee_type == 'C') {
 				$err_fee_customer 		= 'Fee Customer not available in this Customer.';
-				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer, 'status' => '1'])->row();
 
-				if ($feeCust) {
+				if ($feeCust && $container) {
+					$feeDetail 			= $this->db->get_where('fee_customer_details', ['fee_customer_id' => $feeCust->id, 'fee_type' => $service_type, 'container_id' => $container])->row();
 					$fee_customer_id 	= $feeCust->id;
-					$fee_customer_value = ($feeCust->fee_value);
+					$fee_customer_value = ($feeDetail->cost_value);
 					$err_fee_customer 	= '';
 				}
 				$totalFee = $fee_customer_value;
@@ -742,7 +750,7 @@ class Quotations extends Admin_Controller
 
 		$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
 		$fontData = $defaultFontConfig['fontdata'];
-
+		$hMargin = 35;
 		$mpdf = new \Mpdf\Mpdf([
 			'fontDir' => array_merge($fontDirs, [__DIR__]),
 			'fontdata' => $fontData +
@@ -789,10 +797,19 @@ class Quotations extends Admin_Controller
 		}
 
 		$comp = $this->db->get_where('companies', ['id' => $header->company_id])->row();
-		$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', true);
-		$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
-		$mpdf->AddPage('P', '', '', '', '', 0, 0, 30, 5, 0, 0);
-		$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, 297, 'png', '', true, false, true);
+		$hMgn = ($comp->header_margin) ?: $hMargin;
+
+		if ($comp->header) {
+			$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', true);
+		}
+		if ($comp->footer) {
+			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
+		}
+
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		if ($comp->watermark) {
+			$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, '', 'png', '', true, false, true);
+		}
 
 		$tonase = 0;
 		$totalLartas = 0;
@@ -840,7 +857,6 @@ class Quotations extends Admin_Controller
 		];
 
 
-		// $mpdf->SetHTMLHeader(base_url('assets/img/letter-head/kop-1.png'));
 		$this->template->set($data);
 		$html = $this->template->load_view('print_all_in');
 		$mpdf->WriteHTML($html);
@@ -850,7 +866,7 @@ class Quotations extends Admin_Controller
 	function print_apb($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4', 'setAutoTopMargin' => 'pad', 'autoMarginPadding' => 0]);
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4']);
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
 		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
@@ -863,7 +879,7 @@ class Quotations extends Admin_Controller
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
 		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result();
-
+		$hMargin = 35;
 		if ($header->grand_total > 0) {
 			$dp1 = ($header->total_product * 30) / 100;
 			$dp2 = ($header->total_product - $dp1);
@@ -877,6 +893,19 @@ class Quotations extends Admin_Controller
 			];
 		}
 
+		$comp = $this->db->get_where('companies', ['id' => $header->company_id])->row();
+		$hMgn = ($comp->header_margin) ?: $hMargin;
+
+		if ($comp->header) {
+			$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', true);
+		}
+		if ($comp->footer) {
+			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
+		}
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		if ($comp->watermark) {
+			$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, '', 'png', '', true, false, true);
+		}
 
 		$tonase = 0;
 		$totalLartas = 0;
@@ -923,7 +952,6 @@ class Quotations extends Admin_Controller
 			'DP' 			=> $DP,
 		];
 		$this->template->set($data);
-		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
 		$html = $this->template->load_view('print_apb');
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
@@ -932,7 +960,7 @@ class Quotations extends Admin_Controller
 	function print_ddu($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4', 'setAutoTopMargin' => 'pad', 'autoMarginPadding' => 0]);
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4']);
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
 		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
@@ -945,7 +973,7 @@ class Quotations extends Admin_Controller
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
 		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result();
-
+		$hMargin = 35;
 		if ($header->grand_total > 0) {
 			$dp1 = ($header->total_product * 30) / 100;
 			$dp2 = ($header->total_product - $dp1);
@@ -959,6 +987,18 @@ class Quotations extends Admin_Controller
 			];
 		}
 
+		$comp = $this->db->get_where('companies', ['id' => $header->company_id])->row();
+		$hMgn = ($comp->header_margin) ?: $hMargin;
+		if ($comp->header) {
+			$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', true);
+		}
+		if ($comp->footer) {
+			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
+		}
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		if ($comp->watermark) {
+			$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, '', 'png', '', true, false, true);
+		}
 
 		$tonase = 0;
 		$totalLartas = 0;
@@ -1005,9 +1045,11 @@ class Quotations extends Admin_Controller
 			'DP' 			=> $DP,
 		];
 		$this->template->set($data);
-		$mpdf->SetFooter("Page {PAGENO} of {nbpg}");
 		$html = $this->template->load_view('print_ddu');
 		$mpdf->WriteHTML($html);
+		// $mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		// $html2 = $this->template->load_view('print_detail_cost');
+		// $mpdf->WriteHTML($html2);
 		$mpdf->Output();
 	}
 }

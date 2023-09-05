@@ -94,7 +94,10 @@ class Requests_model extends BF_Model
     {
         $y = date('y');
         $count = 1;
-        $maxID = $this->db->select("MAX(LEFT(number,5)) as number")->from('check_hscodes')->where(['RIGHT(number,2)' => date('y')])->get()->row()->number;
+        $maxID = $this->db->select("MAX(LEFT(number,5)) as number")
+            ->from('check_hscodes')
+            ->where(['RIGHT(number,2)' => date('y')])
+            ->get()->row()->number;
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;
         }
@@ -108,7 +111,10 @@ class Requests_model extends BF_Model
         $y = date('y');
         $m = date('m');
         $count = 1;
-        $maxID = $this->db->select("MAX(LEFT(number,5)) as number")->from('quotations')->where(['SUBSTR(RIGHT(number, 5), 1, 2)' => $m])->get()->row()->number;
+        $maxID = $this->db->select("MAX(LEFT(number,5)) as number")
+            ->from('quotations')
+            ->where(["SUBSTR(RIGHT(number, 5), 1, 2) =" => date('m')])
+            ->get()->row()->number;
         // SUBSTR(RIGHT(number, 5), 1, 2) = MONTH("2023-09-10")
         if ($maxID || $maxID > 0) {
             $count = $maxID + 1;

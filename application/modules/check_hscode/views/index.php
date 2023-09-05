@@ -29,7 +29,7 @@
                         <th class="desktop text-center" width="100">Last Checked</th>
                         <th class="desktop text-center no-sort" width="50">Rev</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="">Opsi</th>
+                            <th class="desktop text-center no-sort" width="70">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>

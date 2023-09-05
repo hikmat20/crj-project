@@ -310,7 +310,7 @@
 
                                     $img = '';
                                     if ($dt->image) {
-                                        $img = 'assets/uploads/' . $header->id . "/" . $dt->image;
+                                        $img = 'assets/uploads/' . $header->check_id . "/" . $dt->image;
                                     }
 
                                     if (!$dt->lartas) {
@@ -381,9 +381,7 @@
                                         <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?>
                                             <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
                                         </td>
-                                        <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
-                                            <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
-                                        </td>
+                                        <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid"></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr class="bg-light">

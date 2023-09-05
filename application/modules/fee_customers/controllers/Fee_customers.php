@@ -101,6 +101,21 @@ class Fee_customers extends Admin_Controller
 		}
 
 
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result_array();
+		$ArrCNT = array_column($containers, 'name', 'id');
+		$ArrDtlUND = [];
+		$detailUND = $this->db->get_where('fee_customer_details', ['fee_type' => 'undername'])->result();
+		foreach ($detailUND as $und) {
+			$ArrDtlUND[$und->fee_customer_id][] = $und;
+		}
+
+		$ArrDtlDDU = [];
+		$detailDDU = $this->db->get_where('fee_customer_details', ['fee_type' => 'ddu'])->result();
+		foreach ($detailDDU as $ddu) {
+			$ArrDtlDDU[$ddu->fee_customer_id][] = $ddu;
+		}
+
+
 		/* Button */
 		foreach ($query->result_array() as $row) {
 			$buttons = '';
@@ -200,6 +215,7 @@ class Fee_customers extends Admin_Controller
 			'ArrDtlDDU'		=> $ArrDtlDDU,
 		];
 
+
 		$this->template->set($data);
 		$this->template->render('form');
 	}
@@ -228,6 +244,7 @@ class Fee_customers extends Admin_Controller
 			'ArrDtlUND'	 		=> $ArrDtlUND,
 			'ArrDtlDDU'	 		=> $ArrDtlDDU,
 		];
+
 
 		$this->template->set($data);
 		$this->template->render('view');

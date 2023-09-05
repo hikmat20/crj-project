@@ -193,7 +193,7 @@ class Companies extends Admin_Controller
 		$ArrCountry 			= array_column($countries, 'name', 'id');
 		$ArrStates 				= array_column($states, 'name', 'id');
 		$ArrCity 				= array_column($cities, 'name', 'id');
-		$path					= 'img/letter-head/';
+		$path					= 'assets/img/letter-head/';
 
 		$data = [
 			'company'					=> $company,
@@ -247,12 +247,20 @@ class Companies extends Admin_Controller
 		unset($data['PIC']);
 		unset($data['nominal_dp']);
 		unset($data['sisa_pembayaran']);
+		unset($data['remove_lh']);
 
 		$config['upload_path'] 				= './assets/img/letter-head/';
 		$config['allowed_types'] 			= 'jpg|png';
 		$config['max_size']     			= '2048';
 		$config['max_width'] 				= '3124';
-		$config['max_height'] 				= '1124';
+		$config['max_height'] 				= '712';
+
+		if ($post['remove_lh']) {
+			$remove = array_unique(explode(",", $post['remove_lh']));
+			foreach ($remove as $rm) {
+				$this->db->update('companies', ["$rm" => null], ['id' => $data['id']]);
+			}
+		}
 
 		if ($header['name']) {
 			$path 	= $header['name'];
@@ -280,6 +288,7 @@ class Companies extends Admin_Controller
 		}
 
 		if ($watermark['name']) {
+			$config['max_height'] 			= '4212';
 			$path 	= $watermark['name'];
 			$ext 	= pathinfo($path, PATHINFO_EXTENSION);
 			$config['file_name'] = $post['id'] . "-" . 'watermark.' . $ext;

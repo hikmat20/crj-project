@@ -448,10 +448,13 @@
 				<label for="longitude">Header</label>
 			</div>
 			<div class="col-md-10">
-				<?php $img = ($company->header) ? $path . $company->header : 'no-image.jpg'; ?>
+				<?php $no_image = 'assets/no-image.jpg'; ?>
 				<input type="file" name="header" id="header" accept=".png,.jpg" class="inputfile">
 				<div class="rounded text-center" style="border:2px dashed #ccc;cursor:pointer;" onclick="$('#header').click()" title="Click to upload file">
-					<img src="<?= base_url($img); ?>" id="preview-header" alt="no-image" class="border-0 mx-wd-100p">
+					<img src="<?= base_url($company->header ? $path . $company->header : $no_image); ?>" id="preview-header" alt="no-image" class="border-0 mx-wd-100p">
+				</div>
+				<div class="mg-t-10">
+					<button type="button" id="removeHeader" class="btn btn-sm btn-danger <?= ($company->header) ? '' : 'd-none'; ?>">Delete Header <i class="fa fa-trash" aria-hidden="true"></i></button>
 				</div>
 			</div>
 		</div>
@@ -462,7 +465,10 @@
 			<div class="col-md-10">
 				<input type="file" name="watermark" id="watermark" accept=".png,.jpg" class="inputfile">
 				<div class="rounded text-center" style="border:2px dashed #ccc;cursor:pointer;" onclick="$('#watermark').click()" title="Click to upload file">
-					<img src="<?= base_url('assets/no-image.jpg'); ?>" id="preview-watermark" alt="no-image" class="border-0 mx-wd-100p">
+					<img src="<?= base_url($company->watermark ? $path . $company->watermark : $no_image); ?>" id="preview-watermark" alt="no-image" class="border-0 mx-wd-100p">
+				</div>
+				<div class="mg-t-10">
+					<button type="button" id="removeWatermark" class="btn btn-sm btn-danger <?= ($company->watermark) ? '' : 'd-none'; ?>">Delete Watermark <i class="fa fa-trash" aria-hidden="true"></i></button>
 				</div>
 			</div>
 		</div>
@@ -473,15 +479,59 @@
 			<div class="col-md-10">
 				<input type="file" name="footer" id="footer" accept=".png,.jpg" class="inputfile">
 				<div class="rounded text-center" style="border:2px dashed #ccc;cursor:pointer;" onclick="$('#footer').click()" title="Click to upload file">
-					<img src="<?= base_url('assets/no-image.jpg'); ?>" id="preview-footer" alt="no-image" class="border-0 mx-wd-100p">
+					<img src="<?= base_url($company->footer ? $path . $company->footer : $no_image); ?>" id="preview-footer" alt="no-image" class="border-0 mx-wd-100p">
+				</div>
+				<div class="mg-t-10">
+					<button type="button" id="removeFooter" class="btn btn-sm btn-danger <?= ($company->footer) ? '' : 'd-none'; ?>">Delete Footer <i class="fa fa-trash" aria-hidden="true"></i></button>
 				</div>
 			</div>
 		</div>
+		<input type="hidden" name="remove_lh" id="remove_lh">
 	</div>
 </div>
 
 <script type="text/javascript">
 	$(document).ready(function() {
+
+		$(document).on('click', '#removeHeader', function() {
+			let lhRemove = 'header'
+			$(this).addClass('d-none');
+			$('#preview-header').attr('src', siteurl + 'assets/no-image.jpg')
+			$('#header').val('')
+			let lh = $('#remove_lh').val();
+			if (lh) {
+				lhRemove = lhRemove + "," + lh
+			}
+			console.log(lhRemove);
+			$('#remove_lh').val(lhRemove)
+		})
+
+		$(document).on('click', '#removeFooter', function() {
+			let lhRemove = 'footer'
+			$(this).addClass('d-none');
+			$('#preview-footer').attr('src', siteurl + 'assets/no-image.jpg')
+			$('#footer').val('')
+			let lh = $('#remove_lh').val();
+			if (lh) {
+				lhRemove = lhRemove + "," + lh
+			}
+			console.log(lhRemove);
+			$('#remove_lh').val(lhRemove)
+		})
+
+		$(document).on('click', '#removeWatermark', function() {
+			let lhRemove = 'watermark'
+			$(this).addClass('d-none');
+			$('#preview-watermark').attr('src', siteurl + 'assets/no-image.jpg')
+			$('#watermark').val('')
+			let lh = $('#remove_lh').val();
+			if (lh) {
+				lhRemove = lhRemove + "," + lh
+			}
+			console.log(lhRemove);
+			$('#remove_lh').val(lhRemove)
+		})
+
 		$('#header').change(function() {
 			const file = this.files[0];
 			if (file) {
@@ -489,6 +539,7 @@
 				reader.onload = function(event) {
 					console.log(event.target.result);
 					$('#preview-header').attr('src', event.target.result);
+					$('#removeHeader').removeClass('d-none')
 				}
 				reader.readAsDataURL(file);
 			}
@@ -501,6 +552,7 @@
 				reader.onload = function(event) {
 					console.log(event.target.result);
 					$('#preview-watermark').attr('src', event.target.result);
+					$('#removeWatermark').removeClass('d-none')
 				}
 				reader.readAsDataURL(file);
 			}
@@ -513,6 +565,7 @@
 				reader.onload = function(event) {
 					console.log(event.target.result);
 					$('#preview-footer').attr('src', event.target.result);
+					$('#removeWatermark').removeClass('d-none')
 				}
 				reader.readAsDataURL(file);
 			}

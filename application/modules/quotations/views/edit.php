@@ -164,6 +164,19 @@
                                 <div id="errAmount"></div>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="service_type" class="tx-dark tx-bold col-md-3 pd-x-0">Service Type <span class="text-danger tx-bold">*</span></label>
+                            <div class="col-md-7 px-0">
+                                <div id="slWrService" class="parsley-select">
+                                    <select name="service_type" id="service_type" class="form-control select" required data-parsley-inputs data-parsley-class-handler="#slWrService" data-parsley-errors-container="#errService">
+                                        <option value=""></option>
+                                        <option value="undername" <?= ($header && $header->service_type == 'undername') ? 'selected' : ''; ?>>Undername</option>
+                                        <option value="ddu" <?= ($header && $header->service_type == 'ddu') ? 'selected' : ''; ?>>DDU</option>
+                                    </select>
+                                </div>
+                                <div id="errService"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mg-b-10 row">
@@ -185,14 +198,14 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Standard</span>
                                     </div>
-                                    <input type="text" name="fee" id="fee" readonly autocomplete="off" min="0" class="form-control text-right" placeholder="0">
+                                    <input type="text" name="fee" id="fee" readonly autocomplete="off" value="<?= number_format($header->fee_value); ?>" min="0" class="form-control text-right" placeholder="0">
                                 </div>
                                 <div class="input-group input-group-sm mg-t-10">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Customer</span>
                                     </div>
-                                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
-                                    <input type="text" name="fee_customer" id="fee_customer" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                                    <input type="hidden" name="fee_customer_id" id="fee_customer_id" value="<?= ($header->fee_customer_id); ?>" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
+                                    <input type="text" name="fee_customer" id="fee_customer" value="<?= number_format($header->fee_customer); ?>" readonly autocomplete="off" class="form-control number-format text-right" placeholder="0">
                                 </div>
                             </div>
                         </div>
@@ -636,7 +649,7 @@
                                             <label for="fee_lartas_type" class="col-md-3">Fee Lartas</label>
                                             <div class="col-md-4">
                                                 <div id="slWrFeeLartas" class="parsley-select">
-                                                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control form-control-sm" required data-parsley-inputs data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
+                                                    <select name="fee_lartas_type" id="fee_lartas_type" class="form-control form-control-sm" <?= count($fee_lartas) > 0 ? 'required data-parsley-inputs' : ''; ?> data-parsley-class-handler="#slWrFeeLartas" data-parsley-errors-container="#errFeeLartas">
                                                         <option value="">~ Choose One ~</option>
                                                         <option value="STD" <?= ($header->fee_lartas_type == 'STD') ? 'selected' : ''; ?>>Standard</option>
                                                         <option value="CORP" <?= ($header->fee_lartas_type == 'CORP') ? 'selected' : ''; ?>>Corporate</option>
@@ -652,7 +665,7 @@
                                                     <th width="140">Name</th>
                                                     <th>Price (Rp)</th>
                                                     <th>Unit</th>
-                                                    <th width="70">Qty</th>
+                                                    <th width="90">Qty</th>
                                                     <th>Total (Rp)</th>
                                                     <th>Total (<?= $currency_code; ?>)</th>
                                                 </tr>
@@ -681,7 +694,7 @@
                                                                 <input type="hidden" name="detail_fee_lartas[<?= $n; ?>][unit]" class="h-0 p-1 unit unit_<?= $lts->lartas_id; ?>" value="<?= $lts->unit; ?>">
                                                             </th>
                                                             <td>
-                                                                <input type="number" name="detail_fee_lartas[<?= $n; ?>][qty]" value="<?= $lts->qty; ?>" data-id="<?= $lts->lartas_id; ?>" autocomplete="off" min="0" class="form-control text-right bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas_<?= $lts->lartas_id; ?>" id="qty_lartas_<?= $lts->lartas_id; ?>" placeholder="0">
+                                                                <input type="text" name="detail_fee_lartas[<?= $n; ?>][qty]" value="<?= $lts->qty; ?>" data-id="<?= $lts->lartas_id; ?>" autocomplete="off" min="0" class="form-control text-center bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas_<?= $lts->lartas_id; ?>" id="qty_lartas_<?= $lts->lartas_id; ?>" placeholder="0">
                                                             </td>
                                                             <td>
                                                                 <div class="input-group input-group-sm">
@@ -703,7 +716,7 @@
                                                     <?php endforeach;
                                                 else : ?>
                                                     <tr>
-                                                        <td colspan="3" class="text-center">~ Non Lartas ~</td>
+                                                        <td colspan="6" class="text-center">~ Non Lartas ~</td>
                                                     </tr>
                                                 <?php endif; ?>
                                             </tbody>
@@ -804,7 +817,7 @@
                                     <tbody class="tx-dark">
                                         <tr>
                                             <th class="align-middle">Product Price</th>
-                                            <td class="align-middle">
+                                            <td class="align-middle wd-lg-35p">
                                                 <div class="input-group input-group-sm tx-16-force">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
@@ -848,7 +861,7 @@
                                         </tr>
                                         <tr>
                                             <th class="align-middle">Total PPH</th>
-                                            <td class="align-middle wd-lg-30p">
+                                            <td class="align-middle">
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
@@ -861,7 +874,7 @@
                                             <th class="align-middle">Tax (<?= $header->tax; ?>%)
                                                 <input type="hidden" name="tax" value="<?= $header->tax; ?>">
                                             </th>
-                                            <td class="align-middle wd-lg-30p">
+                                            <td class="align-middle">
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
@@ -872,7 +885,7 @@
                                         </tr>
                                         <tr class="table-secondary">
                                             <td class="align-middle tx-dark tx-bold">GRAND TOTAL</td>
-                                            <td class="align-middle wd-lg-30p">
+                                            <td class="align-middle">
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
@@ -883,7 +896,7 @@
                                         </tr>
                                         <tr>
                                             <th class="align-middle"><span class="type-price-text"><?= ($header->price_type == 'FOB') ? 'FOB' : 'CRF/CIF'; ?></span></th>
-                                            <td class="align-middle wd-lg-30p">
+                                            <td class="align-middle">
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
@@ -894,7 +907,7 @@
                                         </tr>
                                         <tr class="table-secondary">
                                             <td class="align-middle tx-dark tx-bold">GRAND TOTAL Exclude <?= ($header->price_type == 'FOB') ? 'FOB' : 'CRF/CIF'; ?></td>
-                                            <td class="align-middle wd-lg-30p">
+                                            <td class="align-middle">
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
@@ -1026,7 +1039,7 @@
 <script>
     $(document).ready(function() {
         $(document).on('input', '.number-format', function() {
-            $(this).mask('#,##0', {
+            $(this).mask('#,##0.00', {
                 reverse: true
             })
         })
@@ -1218,6 +1231,7 @@
 
         $(document).on('change', '#dest_city', function() {
             let city_id = $(this).val();
+            // alert(city_id)
             $('#dest_area').val('null').trigger('change')
             $('#dest_area').select2({
                 ajax: {
@@ -1226,12 +1240,14 @@
                     type: 'GET',
                     delay: 100,
                     data: function(params) {
+                        // console.log(params);
                         return {
                             q: params.term, // search term
                             city_id: city_id, // search term
                         };
                     },
                     processResults: function(res) {
+                        console.log(res);
                         return {
                             results: $.map(res, function(item) {
                                 return {
@@ -1245,7 +1261,7 @@
                 tags: true,
                 cache: true,
                 placeholder: 'Choose one',
-                dropdownParent: $('.modal-body'),
+                // dropdownParent: $('.modal-body'),
                 width: "100%",
                 allowClear: true
             })
@@ -1254,11 +1270,10 @@
 
         $(document).on('input', '.qty_lartas', function() {
             let id = $(this).data('id')
-            let exchange = parseInt($('#exchange').val().replace(/[\,]/g, '') || 0)
+            let exchange = parseFloat($('#exchange').val().replace(/[\,]/g, '') || 0)
             let price = parseFloat($('#price_lartas_' + id).val().replace(/[\,]/g, '') || 0)
-            let qty = parseInt($(this).val() || 0)
+            let qty = parseFloat($(this).val() || 0)
             let totalPrice, currTotalPrice
-
             totalPrice = price * qty
             currTotalPrice = (totalPrice / exchange)
             $('#total_lartas_' + id).val(new Intl.NumberFormat().format(totalPrice))
@@ -1266,7 +1281,7 @@
 
             let totalLartas = 0;
             $('.total_lartas').each(function() {
-                totalLartas += parseInt($(this).val().replace(/[\,]/g, '') || 0)
+                totalLartas += parseFloat($(this).val().replace(/[\,]/g, '') || 0)
             })
 
             let currTotalLartas = 0;
@@ -1467,6 +1482,7 @@
         formData.append('qty', $('#qty_container').val() || 0);
         formData.append('container', $('#container_id').val() || 0);
         formData.append('fee_type', $('#fee_type').val());
+        formData.append('service_type', $('#service_type').val());
         formData.append('customer_id', $('#customer_id').val());
         formData.append('ls_type', $('#ls_type').val());
         formData.append('qty_ls_container', $('#qty_ls_container').val() || 0);

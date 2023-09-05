@@ -338,7 +338,7 @@
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
 								<td class="text-center"><span class="symbol">` + arr[currency] + `</span></td>
-								<td><input type="text" class="form-control border-0 number-format text-right" name="detail[` + n + `][price]" class="form-control" value="` + vl.price + `" placholder="0"></td>
+								<td><input type="text" class="form-control border-0 -number-format text-right" name="detail[` + n + `][price]" class="form-control" value="` + vl.price + `" placholder="0"></td>
 								<td class="text-center">
 									<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
 									<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="` + img + `">
@@ -496,8 +496,8 @@
 	})
 
 	$(document).ready(function() {
-		$(document).on('input', '.number-format', function() {
-			$(this).mask("#,##0.00", {
+		$(document).on('change', '.-number-format', function() {
+			$(this).mask("#,##0", {
 				reverse: true
 			})
 		});

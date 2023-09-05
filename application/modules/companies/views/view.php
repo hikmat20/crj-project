@@ -384,8 +384,8 @@
             </div>
             <div class="col-md-10">
                 <div class="rounded text-center" style="border:2px solid #eee;">
-                    <?php $img = ($company->header) ? $path . $company->header : 'no-image.jpg'; ?>
-                    <img src="<?= base_url('assets/') . $img; ?>" id="preview-header" alt="no-image" class="border-0 mx-wd-100p">
+                    <?php $no_image = 'assets/no-image.jpg'; ?>
+                    <img src="<?= base_url($company->header ? $path . $company->header : $no_image); ?>" id="preview-header" alt="no-image" class="border-0 mx-wd-100p">
                 </div>
             </div>
         </div>
@@ -395,8 +395,7 @@
             </div>
             <div class="col-md-10">
                 <div class="rounded text-center wd-100p" style="border:2px solid #eee;">
-                    <?php $img = ($company->watermark) ? $path . $company->watermark : 'no-image.jpg'; ?>
-                    <img src="<?= base_url('assets/') . $img; ?>" id="preview-watermark" height="auto" alt="no-image" class="border-0 mx-wd-100p">
+                    <img src="<?= base_url($company->watermark ? $path . $company->watermark : $no_image); ?>" id="preview-watermark" height="auto" alt="no-image" class="border-0 mx-wd-100p">
                 </div>
             </div>
         </div>
@@ -406,8 +405,7 @@
             </div>
             <div class="col-md-10">
                 <div class="rounded text-center" style="border:2px solid #eee;">
-                    <?php $img = ($company->footer) ? $path . $company->footer : 'no-image.jpg'; ?>
-                    <img src="<?= base_url('assets/') . $img; ?>" id="preview-footer" alt="no-image" class="border-0 mx-wd-100p">
+                    <img src="<?= base_url($company->footer ? $path . $company->footer : $no_image); ?>" id="preview-footer" alt="no-image" class="border-0 mx-wd-100p">
                 </div>
             </div>
         </div>

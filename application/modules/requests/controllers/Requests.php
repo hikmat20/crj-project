@@ -752,10 +752,12 @@ class Requests extends Admin_Controller
 	function load_price()
 	{
 		$post 					= $this->input->post();
+
 		$container 				= $post['container'];
 		$dest_area 				= $post['dest_area'];
 		$src_city 				= $post['src_city'];
 		$fee_type 				= $post['fee_type'];
+		$service_type 			= $post['service_type'];
 		$customer 				= $post['customer_id'];
 		$qty_container 			= $post['qty'];
 		$qty_ls_container 		= $post['qty_ls_container'];
@@ -804,11 +806,12 @@ class Requests extends Admin_Controller
 				$totalFee = $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
 			} else if (isset($fee_type) && $fee_type == 'C') {
 				$err_fee_customer 		= 'Fee Customer not available in this Customer.';
-				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer])->row();
+				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer, 'status' => '1'])->row();
 
-				if ($feeCust) {
+				if ($feeCust && $container) {
+					$feeDetail 			= $this->db->get_where('fee_customer_details', ['fee_customer_id' => $feeCust->id, 'fee_type' => $service_type, 'container_id' => $container])->row();
 					$fee_customer_id 	= $feeCust->id;
-					$fee_customer_value = ($feeCust->fee_value);
+					$fee_customer_value = ($feeDetail->cost_value);
 					$err_fee_customer 	= '';
 				}
 				$totalFee = $fee_customer_value;
@@ -958,6 +961,8 @@ class Requests extends Admin_Controller
 		$data['total_costing'] 			= str_replace(",", "", $post['total_costing']);
 		$data['total_costing_foreign_currency'] = str_replace(",", "", $post['total_costing_foreign_currency']);
 		$data['fee_customer_id'] 		= ($post['fee_customer_id']) ?: null;
+		// $data['fee_value'] 				= str_replace(",", "", $post['fee_value']) ?: null;
+		$data['fee_customer'] 			= str_replace(",", "", $post['fee_customer']) ?: null;
 		$data['created_at']				= $data['modified_at'] = date('Y-m-d H:i:s');
 		$data['created_by']				= $data['modified_by'] = $this->auth->user_id();
 
@@ -975,8 +980,6 @@ class Requests extends Admin_Controller
 		$this->db->trans_begin();
 		$this->db->insert("quotations", $data);
 
-
-
 		if ($detail) {
 			$dtlId =  ($this->Requests_model->getDetailQuotId($data['id']));
 			foreach ($detail as $dtl) {
@@ -990,7 +993,6 @@ class Requests extends Admin_Controller
 			}
 		}
 
-
 		if ($detail_lartas) {
 			$dtlId = 0;
 			foreach ($detail_lartas as $dtla) {
@@ -1002,7 +1004,6 @@ class Requests extends Admin_Controller
 				$dtla['total_foreign_currency'] 	= str_replace(",", "", $dtla['total_foreign_currency']);
 				$dtla['created_at'] 				= date('Y-m-d H:i:s');
 				$dtla['created_by'] 				= $this->auth->user_id();;
-
 				$this->db->insert('quotation_detail_lartas', $dtla);
 			}
 		}

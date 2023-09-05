@@ -401,9 +401,9 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 
         $(document).on('input', '.qty_lartas', function() {
             let id = $(this).data('id')
-            let exchange = parseInt($('#exchange').val().replace(/[\,]/g, '') || 0)
+            let exchange = parseFloat($('#exchange').val().replace(/[\,]/g, '') || 0)
             let price = parseFloat($('#price_lartas_' + id).val().replace(/[\,]/g, '') || 0)
-            let qty = parseInt($(this).val() || 0)
+            let qty = parseFloat($(this).val() || 0)
             let totalPrice, currTotalPrice
 
             totalPrice = price * qty
@@ -413,7 +413,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
 
             let totalLartas = 0;
             $('.total_lartas').each(function() {
-                totalLartas += parseInt($(this).val().replace(/[\,]/g, '') || 0)
+                totalLartas += parseFloat($(this).val().replace(/[\,]/g, '') || 0)
             })
 
             let currTotalLartas = 0;
@@ -626,6 +626,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         formData.append('fee_type', $('#fee_type').val());
         formData.append('customer_id', $('#customer_id').val());
         formData.append('ls_type', $('#ls_type').val());
+        formData.append('service_type', $('#service_type').val());
         formData.append('qty_ls_container', $('#qty_ls_container').val() || 0);
         formData.append('exchange', $('#exchange').val().replace(/[\,]/g, "") || 0);
         formData.append('stacking_days', $('#stacking_days').val() || 0);
@@ -763,7 +764,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
     function total_costing() {
         let totalCosting = 0
         $('.total_costing').each(function() {
-            totalCosting += parseInt($(this).val().replace(/\,/g, '') || 0)
+            totalCosting += parseFloat($(this).val().replace(/\,/g, '') || 0)
         })
 
         let currTotalCosting = 0

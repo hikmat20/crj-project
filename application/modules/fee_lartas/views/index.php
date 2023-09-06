@@ -273,6 +273,7 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
             },
             buttonsStyling: false
         })
+
         let id = $(this).data('id');
         swalWithBootstrapButtons.fire({
             title: "Confirm!",
@@ -316,9 +317,9 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                         soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
                         msg: val.value.msg
                     });
+                    loadData($('#dataTable'));
+                    loadData2($('#dataTable2'));
                     $('#dialog-popup').modal('hide')
-                    loadData($('#dataTable'))
-
                 } else {
                     Lobibox.notify('warning', {
                         title: 'Warning',

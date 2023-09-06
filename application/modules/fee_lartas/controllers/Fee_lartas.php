@@ -465,4 +465,46 @@ class Fee_lartas extends Admin_Controller
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
 	}
+
+	public function delete2()
+	{
+		$this->auth->restrict($this->deletePermission);
+		$id = $this->input->post('id');
+		$fee = $this->db->get_where('fee_lartas_customers')->row_array();
+		$data = [
+			'status' => '0',
+			'deleted_by' => $this->auth->user_id(),
+			'deleted_at' => date('Y-m-d H:i:s'),
+		];
+		$this->db->trans_begin();
+		$this->db->update('fee_lartas_customers', $data, ['id' => $id]);
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$return	= array(
+				'msg'		=> 'Failed delete data Fee Lartas.  Please try again.',
+				'status'	=> 0
+			);
+			$keterangan     = "FAILD delete data Fee Lartas " . $fee['id'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $fee['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		} else {
+			$this->db->trans_commit();
+			$return	= array(
+				'msg'		=> 'Success delete data Fee Lartas.',
+				'status'	=> 1
+			);
+			$keterangan     = "SUCCESS delete data Fee Lartas " . $fee['id'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $fee['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		}
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
+	}
 }

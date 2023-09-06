@@ -306,7 +306,7 @@ class Customers extends Admin_Controller
 		$data = $this->db->get_where('customers', ['id_customer' => $id])->row_array();
 
 		$this->db->trans_begin();
-		$sql = $this->db->update('customers', ['status' => 'D', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id_customer' => $id]);
+		$sql = $this->db->update('customers', ['status' => 'X', 'deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->auth->user_id()], ['id_customer' => $id]);
 		$errMsg = $this->db->error()['message'];
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

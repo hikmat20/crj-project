@@ -446,7 +446,7 @@ $ENABLE_DELETE  = has_permission('Customers.Delete');
                 url: siteurl + thisController + 'getData',
                 type: "post",
                 data: function(d) {
-                    d.status = 'D'
+                    d.status = 'X'
                 },
                 cache: false,
                 error: function() {

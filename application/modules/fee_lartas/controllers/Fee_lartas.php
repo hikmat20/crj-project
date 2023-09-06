@@ -261,7 +261,7 @@ class Fee_lartas extends Admin_Controller
 			$axisting = array_column($fee_lartas, 'lartas_id');
 		}
 		$this->template->set([
-			'data' 		=> $fee,
+			'fee' 		=> $fee,
 			'lartas' 	=> $lartas,
 			'axisting' 	=> $axisting,
 			'units' 	=> $this->unit,

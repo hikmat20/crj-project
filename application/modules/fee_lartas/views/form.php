@@ -15,7 +15,7 @@
             <select type="text" required class="form-control select-not-search" id="lartas_id" name="lartas_id">
                 <option value=""></option>
                 <?php if ($lartas) foreach ($lartas as $la) : ?>
-                    <option value="<?= $la->id; ?>" <?= (isset($data->lartas_id) && $data->lartas_id == $la->id) ? 'selected' : (in_array($la->id, $axisting) ? 'disabled' : 'tx-dark'); ?>><?= $la->name; ?></option>
+                    <option value="<?= $la->id; ?>" <?= (isset($fee->lartas_id) && $fee->lartas_id == $la->id) ? 'selected' : (in_array($la->id, $axisting) ? 'disabled' : 'tx-dark'); ?>><?= $la->name; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -28,7 +28,7 @@
             <select type="text" required class="form-control select-not-search" id="unit" name="unit">
                 <option value=""></option>
                 <?php foreach ($units as $k => $unit) : ?>
-                    <option value="<?= $k; ?>" <?= (isset($data->unit) && $data->unit == $k) ? 'selected' : ''; ?>><?= $unit; ?></option>
+                    <option value="<?= $k; ?>" <?= (isset($fee->unit) && $fee->unit == $k) ? 'selected' : ''; ?>><?= $unit; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

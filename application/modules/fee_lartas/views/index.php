@@ -378,7 +378,6 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
             },
             allowOutsideClick: true
         }).then((val) => {
-            console.log(val);
             if (val.isConfirmed) {
                 if (val.value.status == '1') {
                     Lobibox.notify('success', {
@@ -389,8 +388,9 @@ $ENABLE_DELETE  = has_permission('Fee_lartas.Delete');
                         hideClass: 'zoomOut',
                         soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
                     });
-                    $("#dialog-popup").modal('hide');
+                    loadData2($('#dataTable2'))
                     loadData($('#dataTable'))
+                    $("#dialog-popup").modal('hide');
                     $('.dataTables_length select').select2({
                         minimumResultsForSearch: -1
                     })

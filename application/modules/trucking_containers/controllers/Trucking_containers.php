@@ -223,6 +223,7 @@ class Trucking_containers extends Admin_Controller
 	{
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
+
 		$data = $post;
 		$data['id'] 	= isset($post['id']) && $post['id'] ? $post['id'] : $this->Trucking_containers_model->generate_id();
 		if (isset($post['area'])) foreach ($post['area'] as $k => $va) {
@@ -248,9 +249,9 @@ class Trucking_containers extends Admin_Controller
 		if ($check_exits) foreach ($check_exits as $k => $trucking) {
 			if ($trucking->area) {
 				$AreaData = json_decode($trucking->area);
-				foreach ($AreaData as $are) {
-					$AreaDt['id'] = $trucking->id;
-					$AreaDt[] = $are;
+				foreach ($AreaData as $y => $are) {
+					// $AreaDt[$trucking->id] = $trucking->id;
+					$AreaDt[$trucking->id] = $are;
 				}
 			}
 		}
@@ -258,7 +259,7 @@ class Trucking_containers extends Admin_Controller
 		$n = 0;
 		if (isset($post['area']) && $post['area']) {
 			foreach ($post['area'] as $a) {
-				if (in_array(strtoupper($a), $AreaDt) && $post['id'] !== $AreaDt['id']) {
+				if (in_array(strtoupper($a), $AreaDt) && !$post['id']) {
 					$n++;
 				}
 			}

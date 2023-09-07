@@ -4,118 +4,118 @@
 <head>
     <title><?= $header->customer_name; ?>[<?= $header->id; ?>]</title>
     <style>
-    body {
-        width: 100%;
-        font-family: Arial;
-        font-size: 8pt;
-        margin: 0;
-        padding: 0;
-    }
+        body {
+            width: 100%;
+            font-family: Arial;
+            font-size: 8pt;
+            margin: 0;
+            padding: 0;
+        }
 
-    p {
-        margin: 0;
-        padding: 0;
-    }
+        p {
+            margin: 0;
+            padding: 0;
+        }
 
-    .page {
-        height: 297mm;
-        width: 210mm;
-        page-break-after: always;
-    }
+        .page {
+            height: 297mm;
+            width: 210mm;
+            page-break-after: always;
+        }
 
-    table.bordered {
-        border: 1px solid #aaa;
-        border-spacing: 0;
-        border-collapse: collapse;
+        table.bordered {
+            border: 1px solid #aaa;
+            border-spacing: 0;
+            border-collapse: collapse;
 
-    }
+        }
 
-    table.bordered td,
-    table.bordered th {
-        border-right: 1px solid #aaa;
-        border-bottom: 1px solid #aaa;
-        padding: 2px;
-    }
+        table.bordered td,
+        table.bordered th {
+            border-right: 1px solid #aaa;
+            border-bottom: 1px solid #aaa;
+            padding: 2px;
+        }
 
-    table.colored tr:nth-child(even) {
-        background-color: #eee;
-    }
+        table.colored tr:nth-child(even) {
+            background-color: #eee;
+        }
 
-    th {
-        text-align: left;
-        text-transform: uppercase;
-        font-size: 9.5px;
-    }
+        th {
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 9.5px;
+        }
 
-    table.heading {
-        height: 20mm;
-    }
+        table.heading {
+            height: 20mm;
+        }
 
-    h1.heading {
-        font-size: 14pt;
-        color: #000;
-        font-weight: normal;
-    }
+        h1.heading {
+            font-size: 14pt;
+            color: #000;
+            font-weight: normal;
+        }
 
-    h2.heading {
-        font-size: 9pt;
-        color: #000;
-        font-weight: normal;
-    }
+        h2.heading {
+            font-size: 9pt;
+            color: #000;
+            font-weight: normal;
+        }
 
-    hr {
-        color: #ccc;
-        background: #ccc;
-    }
+        hr {
+            color: #ccc;
+            background: #ccc;
+        }
 
-    .text-center {
-        text-align: center;
-    }
+        .text-center {
+            text-align: center;
+        }
 
-    .text-right {
-        text-align: right;
-    }
+        .text-right {
+            text-align: right;
+        }
 
-    #footer {
-        /*width:180mm;*/
-        margin: 0 15mm;
-        padding-bottom: 3mm;
-    }
+        #footer {
+            /*width:180mm;*/
+            margin: 0 15mm;
+            padding-bottom: 3mm;
+        }
 
-    #footer table {
-        width: 100%;
-        border-left: 1px solid #ccc;
-        border-top: 1px solid #ccc;
+        #footer table {
+            width: 100%;
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
 
-        background: #eee;
+            background: #eee;
 
-        border-spacing: 0;
-        border-collapse: collapse;
-    }
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
 
-    #footer table td {
-        width: 25%;
-        text-align: center;
-        border-right: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-    }
+        #footer table td {
+            width: 25%;
+            text-align: center;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
 
-    img.resize {
-        max-width: 12%;
-        max-height: 12%;
-    }
+        img.resize {
+            max-width: 12%;
+            max-height: 12%;
+        }
 
-    .fontA {
-        font-family: "Sun-ExtA";
-    }
+        .fontA {
+            font-family: "Sun-ExtA";
+        }
 
-    .fontB {
-        font-family: "Sun-ExtB";
-    }
+        .fontB {
+            font-family: "Sun-ExtB";
+        }
 
-    .font-normal {
-        font-weight: normal;
-    }
+        .font-normal {
+            font-weight: normal;
+        }
     </style>
 </head>
 
@@ -197,50 +197,50 @@
                         $img = $dt->image;
                     }
                 ?>
-                <tr class="tx-dark">
-                    <td class="text-center"><?= $n; ?></td>
-                    <td class="fontA"><?= $dt->product_name; ?></td>
-                    <td class="fontA"><?= $dt->specification; ?></td>
-                    <td class="text-center"><?= $dt->origin_hscode; ?></td>
-                    <td style="font-size: 7pt;">
-                        <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
+                    <tr class="tx-dark">
+                        <td class="text-center"><?= $n; ?></td>
+                        <td class="fontA"><?= $dt->product_name; ?></td>
+                        <td class="fontA"><?= $dt->specification; ?></td>
+                        <td class="text-center"><?= $dt->origin_hscode; ?></td>
+                        <td style="font-size: 7pt;">
+                            <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
                                 $idHs = $ArrHscode[$dt->origin_hscode]->id;
                             ?>
-                        <ul class="pd-l-15">
-                            <?php if (isset($ArrDocs[$idHs])) : ?>
-                            <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
-                            <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
+                                <ul class="pd-l-15">
+                                    <?php if (isset($ArrDocs[$idHs])) : ?>
+                                        <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
+                                            <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
+                                                <li class="tx-sm"><small class="fontA"><?= $d->name ?></small></li>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
 
-                            <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
-                            <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
-                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
+                                        <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
+                                            <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
+                                                <li class="tx-sm"><small class="fontA"><?= $d->name ?></small></li>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
 
-                            <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
-                            <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
-                            <li class="tx-sm"><small><?= $d->name ?></small></li>
-                            <?php endforeach; ?>
+                                        <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
+                                            <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
+                                                <li class="tx-sm"><small class="fontA"><?= $d->name ?></small></li>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </ul>
                             <?php endif; ?>
-                            <?php endif; ?>
-                        </ul>
-                        <?php endif; ?>
-                    </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%</td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
-                    <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <td class="text-right"><?= ($dt->price) ? number_format($dt->price) : '0' ?></td>
-                    <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <td class="text-right"><?= ($totalBM) ? number_format($totalBM) : '0' ?></td>
-                    <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH)  : '0' ?></td>
-                    <td><?= $dt->remarks; ?></td>
-                </tr>
-                <!-- <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid"></td> -->
+                        </td>
+                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%</td>
+                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td>
+                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
+                        <td style="border-right:none"><?= $currSymbol; ?></td>
+                        <td class="text-right"><?= ($dt->price) ? number_format($dt->price) : '0' ?></td>
+                        <td style="border-right:none"><?= $currSymbol; ?></td>
+                        <td class="text-right"><?= ($totalBM) ? number_format($totalBM) : '0' ?></td>
+                        <td style="border-right:none"><?= $currSymbol; ?></td>
+                        <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH)  : '0' ?></td>
+                        <td><?= $dt->remarks; ?></td>
+                    </tr>
+                    <!-- <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid"></td> -->
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
@@ -337,13 +337,13 @@
                             <td class="text-right" width="100"><?= number_format($header->total_product); ?></td>
                         </tr>
                         <?php if ($freight > 0) : ?>
-                        <tr>
-                            <td colspan="2" style="word-wrap: break-word;">
-                                Ocean Freight <span class="fontA">海运费</span>
-                            </td>
-                            <td style="border-right:none;"><?= $currSymbol; ?> </td>
-                            <td class="text-right"><?= number_format($freight); ?></td>
-                        </tr>
+                            <tr>
+                                <td colspan="2" style="word-wrap: break-word;">
+                                    Ocean Freight <span class="fontA">海运费</span>
+                                </td>
+                                <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                                <td class="text-right"><?= number_format($freight); ?></td>
+                            </tr>
                         <?php endif; ?>
                         <tr>
                             <td colspan="2" style="word-wrap: break-word;">THC, Handling, undername fee and others (ALL IN)

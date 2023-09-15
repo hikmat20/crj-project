@@ -184,12 +184,8 @@
                     <!-- <td class="text-center" <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td> -->
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
-                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_mfn > 0) : ?>
-                                <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
-                            <?php endif; ?>
-                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_e > 0) : ?>
-                                <p><small>BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small></p>
-                            <?php endif; ?>
+                            <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
+                            <p><small>BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small></p>
                             <p><small>PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn . "%" : 'NO'; ?></small></p>
                             <?php if ($ArrHscode[$dtl->origin_hscode]->pph_api > 0) : ?>
                                 <p><small>PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small></p>

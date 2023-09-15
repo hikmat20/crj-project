@@ -98,6 +98,18 @@
             max-width: 12%;
             max-height: 12%;
         }
+
+        .fontA {
+            font-family: "Sun-ExtA";
+        }
+
+        .fontB {
+            font-family: "Sun-ExtB";
+        }
+
+        .font-normal {
+            font-weight: normal;
+        }
     </style>
 </head>
 
@@ -229,19 +241,19 @@
                                 <?php if (isset($ArrDocs[$idHs])) : ?>
                                     <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
                                         <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                            <li class="tx-sm"><small class="fontA"><?= $d->name ?></small></li>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
 
                                     <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
                                         <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                            <li class="tx-sm"><small class="fontA"><?= $d->name ?></small></li>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
 
                                     <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
                                         <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
-                                            <li class="tx-sm"><small><?= $d->name ?></small></li>
+                                            <li class="tx-sm"><small class="fontA"><?= $d->name ?></small></li>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 <?php endif; ?>

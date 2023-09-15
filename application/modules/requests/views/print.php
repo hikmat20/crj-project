@@ -116,7 +116,7 @@
 </head>
 
 <body>
-    <!-- Header -->)
+    <!-- Header -->
     <table width="100%" style="font-size: 7pt;">
         <tr>
             <th width="200">Checking Number</th>
@@ -173,12 +173,11 @@
                 <th width="50" class="text-center">No</th>
                 <th width="" class="text-center">Product Name</th>
                 <th width="" class="text-center">Specification</th>
-                <th width="100" class="text-center">Origin<br>HS Code</th>
-                <th width="30" class="text-center">Curr</th>
-                <th width="100" class="text-center">Price</th>
-                <th width="100" class="text-center">Indonesia<br>HS Code</th>
+                <th width="80" class="text-center">Origin<br>HS Code</th>
+                <th width="80" class="text-center">Indonesia<br>HS Code</th>
+                <th width="90" class="text-center" colspan="2">Price</th>
                 <th width="120" class="text-center">Cost</th>
-                <th width="130">Other Cost</th>
+                <th width="130" class="text-center">Other Cost</th>
                 <th width="150">Docs. Requirement</th>
                 <th width="">Remarks</th>
                 <th width="50">Image</th>
@@ -194,9 +193,9 @@
                     <td style="font-family: sun-exta"><?= $dtl->product_name; ?></td>
                     <td style="font-family: sun-exta"><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price) : '-'; ?></td>
                     <td class="text-center"><?= $dtl->local_hscode; ?></td>
+                    <td class="" style="border-right:none"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price) : '-'; ?></td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>

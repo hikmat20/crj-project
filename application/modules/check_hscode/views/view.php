@@ -121,16 +121,10 @@
                     <!-- <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td> -->
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
-                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_mfn > 0) : ?>
-                                <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
-                            <?php endif; ?>
-                            <?php if ($ArrHscode[$dtl->origin_hscode]->bm_e > 0) : ?>
-                                <small class="d-block">BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small>
-                            <?php endif; ?>
+                            <small class="d-block">BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small>
+                            <small class="d-block">BM with SKA : <?= ($ArrHscode[$dtl->origin_hscode]->bm_e) ?: '0'; ?>%</small>
                             <small class="d-block">PPn : <?= ($ArrHscode[$dtl->origin_hscode]->ppn == 'Y') ? $current_ppn . "%" : 'NO'; ?></small>
-                            <?php if ($ArrHscode[$dtl->origin_hscode]->pph_api > 0) : ?>
-                                <small class="d-block">PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small>
-                            <?php endif; ?>
+                            <small class="d-block">PPH API : <?= ($ArrHscode[$dtl->origin_hscode]->pph_api) ?: '0'; ?>%</small>
                         <?php endif; ?>
                     </td>
                     <td>

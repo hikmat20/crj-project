@@ -335,7 +335,7 @@
                             <td class="text-right"><?= number_format(($ArrCosting['surveyor']->total_foreign_currency) ?: 0); ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2">Custom Clearance <span class="fontA">清关和装卸费</span></td>
+                            <td colspan="2">Custom Clearance <span class="fontA">货代资质代理费</span></td>
                             <td style="border-right:none;"><?= $currSymbol; ?> </td>
                             <td class="text-right"><?= number_format(($ArrCosting['custom_clearance']->total_foreign_currency) ?: 0); ?></td>
                         </tr>

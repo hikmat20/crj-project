@@ -803,18 +803,31 @@ class Requests extends Admin_Controller
 						break;
 					}
 				}
-				$totalFee = $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
+				$totalFee 	= $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
+				$feePrice 	= $totalFee;
+				$feeTotal	= $totalFee;
+				$feeTotal_foreign_currency = $totalFee / $exchange;
 			} else if (isset($fee_type) && $fee_type == 'C') {
 				$err_fee_customer 		= 'Fee Customer not available in this Customer.';
 				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer, 'status' => '1'])->row();
 
-				if ($feeCust && $container) {
-					$feeDetail 			= $this->db->get_where('fee_customer_details', ['fee_customer_id' => $feeCust->id, 'fee_type' => $service_type, 'container_id' => $container])->row();
-					$fee_customer_id 	= $feeCust->id;
-					$fee_customer_value = ($feeDetail->cost_value);
-					$err_fee_customer 	= '';
+				if ($feeCust) {
+					if ($container) {
+						$feeDetail 			= $this->db->get_where('fee_customer_details', ['fee_customer_id' => $feeCust->id, 'fee_type' => $service_type, 'container_id' => $container])->row();
+						if ($feeDetail) {
+							$fee_customer_id 	= $feeCust->id;
+							$fee_customer_value = $feeDetail->cost_value;
+							$err_fee_customer 	= '';
+						}
+					} else {
+						$err_fee_customer 	= 'Container type has not been selected.';
+					}
 				}
+
 				$totalFee = $fee_customer_value;
+				$feePrice 	= $totalFee;
+				$feeTotal	= $totalFee * $qty_container;
+				$feeTotal_foreign_currency = $totalFee / $exchange;
 			}
 		}
 
@@ -856,9 +869,9 @@ class Requests extends Admin_Controller
 		];
 
 		$totalFeeCSJ = [
-			'price' 						=> isset($totalFee) ? number_format($totalFee, 2) : 0,
-			'total' 						=> isset($totalFee) ? number_format($totalFee * $qty_container, 2) : 0,
-			'total_foreign_currency' 		=> isset($totalFee) ? number_format(($totalFee * $qty_container) / $exchange, 2) : 0,
+			'price' 						=> isset($feePrice) ? number_format($feePrice, 2) : 0,
+			'total' 						=> isset($feeTotal) ? number_format($feeTotal, 2) : 0,
+			'total_foreign_currency' 		=> isset($feeTotal_foreign_currency) ? number_format($feeTotal_foreign_currency, 2) : 0,
 			'fee' 							=> $fee,
 			'fee_value' 					=> isset($fee_value) ? number_format($fee_value, 2) : 0,
 			'fee_customer' 					=> isset($fee_customer_value) ? number_format($fee_customer_value, 2) : 0,
@@ -944,6 +957,12 @@ class Requests extends Admin_Controller
 		$this->auth->restrict($this->managePermission);
 		$post = $this->input->post();
 		$data = $post;
+
+		// echo '<pre>';
+		// print_r($data);
+		// echo '</pre>';
+		// exit;
+
 		$data['id'] 					= $this->Requests_model->generateIdQuotation();
 		$data['number'] 				= $this->Requests_model->generateQuotNumber();
 		$data['date'] 					= date("Y-m-d");
@@ -970,42 +989,56 @@ class Requests extends Admin_Controller
 		$detail_lartas 					= isset($data['detail_fee_lartas']) ? $data['detail_fee_lartas'] : "";
 		$costing 						= $data['costing'];
 		$payment_term 					= $data['payment_term'];
+		$checked_item 					= $data['checked_item'];
 
 		unset($data['detail']);
 		unset($data['detail_fee_lartas']);
 		unset($data['costing']);
 		unset($data['deleteItem']);
 		unset($data['payment_term']);
+		unset($data['checked_item']);
 
 		$this->db->trans_begin();
-		$this->db->insert("quotations", $data);
-
 		if ($detail) {
 			$dtlId =  ($this->Requests_model->getDetailQuotId($data['id']));
-			foreach ($detail as $dtl) {
-				$dtlId++;
-				$dtl['quotation_id'] 	= $data['id'];
-				$dtl['price'] 			= str_replace(",", "", $dtl['price']);
-				$dtl['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
-				$dtl['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
-				$dtl['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
-				$this->db->insert('quotation_details', $dtl);
+			$ArrDetail = [];
+			// $ArrDetailNotChecked = [];
+			foreach ($detail as $k => $dtl) {
+				if (in_array($k, $checked_item)) {
+					$dtlId++;
+					$ArrDetail[$k] = $dtl;
+					$ArrDetail[$k]['id'] 				= $data['id'] . "-" . sprintf("%04d", $dtlId);
+					$ArrDetail[$k]['quotation_id'] 		= $data['id'];
+					$ArrDetail[$k]['price'] 			= str_replace(",", "", $dtl['price']);
+					$ArrDetail[$k]['unit_price'] 		= str_replace(",", "", $dtl['unit_price']);
+					$ArrDetail[$k]['bm_type'] 			= explode("-", $dtl['bm_type'])[0];
+					$ArrDetail[$k]['bm_value'] 			= explode("-", $dtl['bm_type'])[1];
+					$ArrDetail[$k]['created_at'] 		= $dtl['modified_at'] = date('Y-m-d H:i:s');
+					$ArrDetail[$k]['created_by'] 		= $dtl['modified_by'] = $this->auth->user_id();
+				}
 			}
 		}
 
+		$ArrDtlLartas = [];
 		if ($detail_lartas) {
 			$dtlId = 0;
-			foreach ($detail_lartas as $dtla) {
+			foreach ($detail_lartas as $k => $dtla) {
 				$dtlId++;
-				$dtla['id'] 						= $data['id'] . "-L" . sprintf("%03d", $dtlId);
-				$dtla['quotation_id'] 				= $data['id'];
-				$dtla['price'] 						= str_replace(",", "", $dtla['price']);
-				$dtla['total'] 						= str_replace(",", "", $dtla['total']);
-				$dtla['total_foreign_currency'] 	= str_replace(",", "", $dtla['total_foreign_currency']);
-				$dtla['created_at'] 				= date('Y-m-d H:i:s');
-				$dtla['created_by'] 				= $this->auth->user_id();;
-				$this->db->insert('quotation_detail_lartas', $dtla);
+				$ArrDtlLartas[$k] = $dtla;
+				$ArrDtlLartas[$k]['id'] 						= $data['id'] . "-L" . sprintf("%03d", $dtlId);
+				$ArrDtlLartas[$k]['quotation_id'] 				= $data['id'];
+				$ArrDtlLartas[$k]['price'] 						= str_replace(",", "", $dtla['price']);
+				$ArrDtlLartas[$k]['total'] 						= str_replace(",", "", $dtla['total']);
+				$ArrDtlLartas[$k]['total_foreign_currency'] 	= str_replace(",", "", $dtla['total_foreign_currency']);
+				$ArrDtlLartas[$k]['created_at'] 				= date('Y-m-d H:i:s');
+				$ArrDtlLartas[$k]['created_by'] 				= $this->auth->user_id();;
 			}
+		}
+
+		$this->db->insert("quotations", $data);
+		$this->db->insert_batch('quotation_details', $ArrDetail);
+		if ($ArrDtlLartas) {
+			$this->db->insert_batch('quotation_detail_lartas', $ArrDtlLartas);
 		}
 
 		if ($costing) {
@@ -1071,5 +1104,56 @@ class Requests extends Admin_Controller
 		}
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
+	}
+
+	function getItemLartas()
+	{
+		$check_id 		= $this->input->post('check_id');
+		$data 			= $this->input->post('data');
+		$lartas_type 	= $this->input->post('lartas_type');
+		$customer_id 	= $this->input->post('customer_id');
+
+		if ($check_id) {
+			$header 		= $this->db->get_where('check_hscodes', ['id' => $check_id])->row();
+		}
+		$details 		= $this->db->where_in('id', $data)->get_where('view_check_hscode_details', ['check_hscode_id' => $check_id])->result();
+		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$lartasItems 	= [];
+
+		foreach ($details as $dtl) {
+			if ($dtl->lartas) {
+				$lartasItems[] = $dtl->lartas;
+			}
+		}
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
+
+		if ($lartas_type == 'STD') {
+			$lartas = $this->db->where_in('lartas_id', $lartasItems)->get_where('view_fee_lartas', ['status' => '1'])->result();
+		} else if ($lartas_type == 'CORP') {
+			$feeLartas = $this->db->get_where('fee_lartas_customers', ['customer_id' => $customer_id, 'status' => '1'])->row();
+			if ($feeLartas) {
+				$lartas = $this->db->where_in('lartas_id', $lartasItems)->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $feeLartas->id])->result();
+			}
+		}
+
+		$unitType 	= [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+		];
+
+		$Data = [
+			'itemLartas' 	=> array_unique($lartasItems),
+			'ArrLartas' 	=> $ArrLartas,
+			'currency' 		=> isset($header) ? $ArrCurrency[$header->currency]->symbol : '',
+			// 'unitType' 		=> $unitType,
+			// 'lartas' 		=> $lartas,
+		];
+
+		echo json_encode($Data);
 	}
 }

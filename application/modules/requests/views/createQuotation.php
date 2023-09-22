@@ -258,28 +258,32 @@
     <table class="table table-sm border table-hover table-condensed table-bordered ">
         <thead class="bg-light">
             <tr>
-                <th class="text-center align-middle" rowspan="2">No</th>
+                <th class="text-center align-middle" rowspan="2" width="2%">No</th>
                 <th class="text-center align-middle" rowspan="2">Product Name</th>
                 <th class="text-center align-middle" rowspan="2">Specification</th>
-                <th class="text-center align-middle" rowspan="2">Origin HS Code</th>
-                <th class="text-center align-middle" rowspan="2">Indonesia HS Code</th>
-                <th class="text-center align-middle" rowspan="2">Add Doc.</th>
-                <th class="text-center align-middle" rowspan="2">Lartas</th>
-                <th class="text-center align-middle" rowspan="2">BM without<br>form E</th>
-                <th class="text-center align-middle" rowspan="2">BM with<br>form E</th>
-                <th class="text-center align-middle" rowspan="2">PPH</th>
-                <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>)</th>
-                <th class="text-center align-middle" rowspan="2">Image</th>
-                <!-- <th class="text-center align-middle" rowspan="2">
+                <th class="text-center align-middle" rowspan="2" width="7%">Origin HS Code</th>
+                <th class="text-center align-middle" rowspan="2" width="7%">Indonesia HS Code</th>
+                <th class="text-center align-middle" rowspan="2" width="8%">Add Doc.</th>
+                <th class="text-center align-middle" rowspan="2" width="6%">Lartas</th>
+                <th class="text-center align-middle" rowspan="2" width="12%">BM Type</th>
+                <!-- <th class="text-center align-middle" rowspan="2" width="5%">BM without<br>form E</th> -->
+                <!-- <th class="text-center align-middle" rowspan="2" width="5%">BM with<br>form E</th> -->
+                <th class="text-center align-middle" rowspan="2" width="4%">PPH</th>
+                <th class="text-center align-middle" colspan="6">Amount (<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>)</th>
+                <th class="text-center align-middle" rowspan="2" width="50px">Image</th>
+                <th class="text-center align-middle" rowspan="2" width="10px">
                     <span class="">All</span>
                     <label class="ckbox ckbox-indigo text-center mg-0">
                         <input type="checkbox" checked id="masterCheck">
                         <span class=""></span>
                     </label>
-                </th> -->
+                </th>
             </tr>
             <tr>
-                <th class="text-center border border-top-0 border-right-0">
+                <th class="text-center align-middle border border-top-0 border-right-0" width="5%">QTY</th>
+                <th class="text-center align-middle" width="6%">Unit</th>
+                <th class="text-center align-middle" width="6%">Unit Price</th>
+                <th class="text-center align-middle">
                     Price (<span class="type-price-text"></span>)
                 </th>
                 <th class="text-center align-middle">BM</th>
@@ -306,7 +310,7 @@
                 }
             ?>
                 <tr class="tx-dark">
-                    <td><?= $n; ?></td>
+                    <td class="text-center"><?= $n; ?></td>
                     <td><?= $dt->product_name; ?>
                         <input type="hidden" name="detail[<?= $n; ?>][product_name]" value="<?= $dt->product_name; ?>">
                     </td>
@@ -350,52 +354,69 @@
                         <?= ($dt->lartas) ? $ArrLartas[$dt->lartas] : 'Non Lartas'; ?>
                         <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($dt->lartas) ?: null; ?>">
                     </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
-                        <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
+                    <td class="text-">
+                        <label class="rdiobox rdiobox-primary d-inline-block">
+                            <input type="radio" checked class="bm_e" id="bm_e_<?= $n; ?>" name="detail[<?= $n; ?>][bm_type]" value="bm_e-<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>" data-value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>" data-row="<?= $n; ?>">
+                            <span class="pl-0">with Form E (<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%)</span>
+                        </label>
+                        <label class="rdiobox rdiobox-primary d-inline-block">
+                            <input type="radio" class="bm_mfn" id="bm_mfn_<?= $n; ?>" name="detail[<?= $n; ?>][bm_type]" value="bm_mfn-<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>" data-value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>" data-row="<?= $n; ?>">
+                            <span class="pl-0">without Form E (<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%)</span>
+                        </label>
                     </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%
-                        <input type="hidden" name="detail[<?= $n; ?>][bm_e]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>">
-                    </td>
-                    <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
+                    <td class="text-center" id="pph_api_<?= $n; ?>" data-value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
-                    <td class="text-right"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?>
-                        <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas'; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
+                    <td class="text-right">
+                        <input type="number" name="detail[<?= $n; ?>][qty]" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0" required>
                     </td>
-                    <td class="text-right"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?>
+                    <td class="text-right">
+                        <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="unit" required>
+                    </td>
+                    <td class="text-right">
+                        <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0" required>
+                    </td>
+                    <td class="text-right"><span id="total_price_text_<?= $n; ?>"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?></span>
+                        <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas price_non_lartas_' . $n; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
+                    </td>
+                    <td class="text-right"><span id="total_bm_text_<?= $n; ?>"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?></span>
                         <input type="hidden" name="detail[<?= $n; ?>][total_bm]" class="total_bm" id="total_bm_<?= $n; ?>" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
                     </td>
-                    <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?>
+                    <td class="text-right"><span id="total_pph_text_<?= $n; ?>"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?></span>
                         <input type="hidden" name="detail[<?= $n; ?>][total_pph]" class="total_pph" id="total_pph_<?= $n; ?>" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
                     </td>
                     <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
                         <input type="hidden" name="detail[<?= $n; ?>][image]" value="<?= $img ?: null; ?>">
                     </td>
-                    <!-- <td class="text-center align-middle">
+                    <td class="text-center align-middle">
                         <label class="ckbox ckbox-indigo text-center mg-0">
-                            <input type="checkbox" checked class="item_check" data-row="<?= $n; ?>">
+                            <input type="checkbox" name="checked_item[]" checked class="item_check" data-check_id="<?= $dt->check_hscode_id; ?>" data-id="<?= $dt->id; ?>" data-row="<?= $n; ?>" value="<?= ($n); ?>">
                             <span class=""></span>
                         </label>
-                    </td> -->
+                    </td>
                 </tr>
             <?php endforeach; ?>
             <tr class="bg-light">
                 <th class="text-right tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
                 <th></th>
+                <th></th>
+                <th></th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalPrice"><?= number_format(($totalPrice) ?: '0', 2); ?></th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalBM"><?= number_format($gtotalBM, 2); ?></th>
                 <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalPPH"><?= number_format(($gtotalPPH) ?: '0', 2); ?></th>
                 <th></th>
-                <!-- <th></th> -->
+                <th></th>
             </tr>
             <tr>
                 <th class="font-weight-bold tx-uppercase text-right" colspan="9">Total Non Lartas</th>
+                <td></td>
+                <td></td>
                 <td></td>
                 <th class="text-right" id="total_price_non_lartas"><?= number_format($totalNonLartas, 2); ?></th>
                 <td></td>
                 <td></td>
                 <td></td>
-                <!-- <td></td> -->
+                <td></td>
             </tr>
         </tbody>
     </table>
@@ -648,7 +669,7 @@
                             </div>
                         </div>
                         <hr class="mg-y-5">
-                        <table class="table table-sm table-striped mb-0">
+                        <table id="tbl_lartas" class="table table-sm table-striped mb-0">
                             <thead class="bg-light">
                                 <tr>
                                     <th width="140">Name</th>
@@ -857,9 +878,20 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                     </div>
-                                    <input type="text" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="(<?= number_format(($totalPrice) ?: '0', 2); ?>)">
+                                    <input type="text" id="min_total_product" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="(<?= number_format(($totalPrice) ?: '0', 2); ?>)">
                                 </div>
                             </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">Discount</th>
+                            <th class="align-middle">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border-0 bg-white tx-16-force"><?= $currency; ?></span>
+                                    </div>
+                                    <input type="text" name="discount_value" id="discount_value" class="number-format form-control border-0 text-right tx-16-force tx-dark tx-bold" placeholder="0" autocomplete="off">
+                                </div>
+                            </th>
                         </tr>
                         <tr class="table-secondary">
                             <td class="align-middle tx-dark tx-bold">GRAND TOTAL Exclude (<span class="type-price-text"></span>)</td>

@@ -14,3 +14,4 @@ application/config/development/*
 /vendor/
 /assets/temp/*
 /assets/uploads/*
+assets/img/letter-head/*

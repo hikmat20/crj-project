@@ -533,48 +533,219 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             payment_term()
         })
 
-        $(document).on('click', '#masterCheck', function() {
-            let totalPrice = 0;
-            let total_bm = 0;
-            let total_pph = 0;
-            let priceNonLartas = 0;
-
+        $(document).on('change', '#masterCheck', function() {
             if ($(this).is(':checked')) {
                 $('.item_check').each(function() {
                     $(this).prop('checked', true)
                 })
-
-                $('.price').each(function() {
-                    totalPrice += parseFloat($(this).val().replace(/\,/g, '') || 0)
-                })
-                $('.total_bm').each(function() {
-                    total_bm += parseFloat($(this).val().replace(/\,/g, '') || 0)
-                })
-                $('.total_pph').each(function() {
-                    total_pph += parseFloat($(this).val().replace(/\,/g, '') || 0)
-                })
-                $('.price_non_lartas').each(function() {
-                    priceNonLartas += parseFloat($(this).val().replace(/\,/g, '') || 0)
-                })
-
-                console.log(priceNonLartas);
-
-
-                $('#totalPrice').text(new Intl.NumberFormat().format(totalPrice.toFixed(2)))
-                $('#total_price_non_lartas').text(new Intl.NumberFormat().format(priceNonLartas.toFixed(2)))
-
-                $('#totalBM').text(new Intl.NumberFormat().format(total_bm.toFixed(2)))
-                $('#totalPPH').text(new Intl.NumberFormat().format(total_pph.toFixed(2)))
-
             } else {
                 $('.item_check').each(function() {
                     $(this).prop('checked', false)
                 })
                 $('#totalPrice').text('0')
+                $('#totalPPH').text('0')
+                $('#totalBM').text('0')
                 $('#total_price_non_lartas').text('0')
             }
+            getProductPrice()
+            getItemLartas()
+        })
+
+        $(document).on('change', '.item_check', function() {
+            getProductPrice()
+            getItemLartas()
+        })
+
+        $(document).on('input', '#discount_value', function() {
+            getDiscount()
+        })
+
+        $(document).on('input', '.qty,.unit_price', function() {
+            let row = $(this).data('row')
+            let qty = parseFloat($('#qty_' + row).val() || 0)
+            let unit_price = parseFloat($('#unit_price_' + row).val().replace(/[\,]/g, '') || 0)
+
+            let total_price = qty * unit_price
+            $('#price_' + row).val(total_price.toFixed(2))
+            $('#total_price_text_' + row).text(new Intl.NumberFormat().format(total_price.toFixed(2)))
+
+            let pph = parseFloat($('#pph_api_' + row).text() || 0)
+            let total_pph = (total_price * pph) / 100
+            $('#total_pph_' + row).val(total_pph.toFixed(2))
+            $('#total_pph_text_' + row).text(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+
+            let val = 0;
+            if ($('#bm_mfn_' + row).is(':checked') == true) {
+                val = parseFloat($('#bm_mfn_' + row).data('value'));
+            } else {
+                val = parseFloat($('#bm_e_' + row).data(':checked'));
+            }
+            getItemLartas()
+            getProductPrice()
+            getTotalBM(val, row, total_price)
+
+        })
+
+        $(document).on('input', '.bm_mfn', function() {
+            let row = $(this).data('row')
+            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let total_price = parseFloat($('#price_' + row).val() || 0)
+            $('#bm_e_' + row).prop('checked', false)
+
+            getTotalBM(val, row, total_price)
+        })
+
+        $(document).on('input', '.bm_e', function() {
+            let row = $(this).data('row')
+            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let total_price = parseFloat($('#price_' + row).val() || 0)
+            $('#bm_mfn_' + row).prop('checked', false)
+            getTotalBM(val, row, total_price)
         })
     })
+
+    function getTotalBM(val, row, total_price) {
+        let total_bm = (total_price * val) / 100
+        $('#total_bm').val(total_bm.toFixed(2))
+        $('#total_bm_' + row).val(total_bm.toFixed(2))
+        $('#total_bm_text_' + row).text(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+        getProductPrice()
+    }
+
+    function getItemLartas() {
+        let formData = new FormData()
+        formData.append('customer_id', $('#customer_id').val());
+        formData.append('lartas_type', $('#fee_lartas_type').val());
+        $('.item_check:checked').each(function() {
+            formData.append('check_id', $(this).data('check_id'));
+            formData.append('data[]', $(this).data('id'));
+        })
+
+        $.ajax({
+            url: siteurl + thisController + 'getItemLartas',
+            type: 'POST',
+            dataType: 'JSON',
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: (result) => {
+                let html = '';
+                $('#fee_lartas_type').val('').change();
+                $('#tbl_lartas tbody').html('')
+                if (result) {
+                    $.each(result.itemLartas, function(i, item) {
+                        html += `<tr class="bg-white">
+                            <th>` + result.ArrLartas[item] + `
+                                <input type="hidden" name="detail_fee_lartas[` + i + `][lartas_id]" value="` + item + `">
+                                <input type="hidden" name="detail_fee_lartas[` + i + `][name]" value="` + result.ArrLartas[item] + `">
+                            </th>
+                            <th>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-0">Rp.</span>
+                                    </div>
+                                    <input type="text" name="detail_fee_lartas[` + i + `][price]" data-id="` + i + `" id="price_lartas_` + item + `" readonly autocomplete="off" class="form-control bg-white border-0 text-right form-control-sm clear_input price_lartas_` + item + `" placeholder="0">
+                                </div>
+                            </th>
+                            <th class="align-middle">/<span id="unit_` + item + `" class="unit_text"></span>
+                                <input type="hidden" name="detail_fee_lartas[` + i + `][unit]" class="h-0 p-1 unit unit_` + item + `">
+                            </th>
+                            <td>
+                                <input type="text" name="detail_fee_lartas[` + i + `][qty]" data-id="` + item + `" autocomplete="off" min="0" class="form-control text-center bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas` + item + `" id="qty_lartas` + item + `" placeholder="0">
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-0">Rp.</span>
+                                    </div>
+                                    <input type="text" name="detail_fee_lartas[` + i + `][total]" readonly class="form-control form-control-sm bg-white text-right border-0 h-0 p-1 clear_input total_lartas total_lartas_` + item + `" id="total_lartas_` + item + `" placeholder="0">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-0">` + result.currency + `</span>
+                                    </div>
+                                    <input type="text" name="detail_fee_lartas[` + i + `][total_foreign_currency]" readonly class="form-control form-control-sm bg-white text-right border-0 h-0 p-1 clear_input total_fee_lartas_foreign_currency" id="total_lartas_foreign_currency_` + item + `" placeholder="0">
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+
+                    // $('#total_fee_lartas').val(0)
+                    // $('#total_fee_lartas_foreign_currency').val(0)
+
+                    // if (result.lartas.length > 0) {
+                    //     $.each(result.lartas, (i, data) => {
+                    //         $('#price_lartas_' + data.lartas_id).val(new Intl.NumberFormat().format(data.fee_value))
+                    //         $('#unit_' + data.lartas_id).text(result.unitType[data.unit])
+                    //         $('.unit_' + data.lartas_id).val(data.unit)
+                    //     })
+                    // } else {
+                    //     $('.clear_input').val('')
+                    //     $('.unit_text').text('')
+                    // }
+                    load_price_lartas()
+                    total_costing()
+                    $('#tbl_lartas tbody').html(html)
+                }
+
+            },
+            error: (result) => {
+                Lobibox.notify('error', {
+                    icon: 'fa fa-times',
+                    msg: 'Error!! Server timeout.',
+                    position: 'top right',
+                    showClass: 'zoomIn',
+                    hideClass: 'zoomOut',
+                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                });
+            }
+        })
+    }
+
+    function getProductPrice() {
+        let totalPrice = 0;
+        let total_bm = 0;
+        let total_pph = 0;
+        let priceNonLartas = 0;
+
+        $('.item_check').each(function() {
+            if ($(this).is(':checked', true)) {
+                let row = $(this).data('row')
+                totalPrice += parseFloat($('#price_' + row).val().replace(/\,/g, '') || 0);
+                total_bm += parseFloat($('#total_bm_' + row).val().replace(/\,/g, '') || 0);
+                total_pph += parseFloat($('#total_pph_' + row).val().replace(/\,/g, '') || 0);
+                if ($('.price_non_lartas').val() != undefined) {
+                    priceNonLartas += parseFloat($('.price_non_lartas').val().replace(/\,/g, '') || 0);
+                }
+            }
+        })
+
+        $('#totalPrice').text(new Intl.NumberFormat().format(totalPrice.toFixed(2)))
+        $('#total_price_non_lartas').text(new Intl.NumberFormat().format(priceNonLartas.toFixed(2)))
+
+        $('#totalBM').text(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+        $('#totalPPH').text(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+        $('#total_pph').val(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+
+        $('#total_bm').val(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+        $('#total_product').val(new Intl.NumberFormat().format(totalPrice.toFixed(2)));
+        $('#min_total_product').val("(" + new Intl.NumberFormat().format(totalPrice.toFixed(2)) + ")");
+
+        subtotal()
+        load_price()
+    }
+
+    function getDiscount() {
+        let disc = parseFloat($('#discount_value').val().replace(/[\,]/g, "") || 0)
+        let grand_total = parseFloat($('#grand_total').val().replace(/[\,]/g, "") || 0)
+        let total_product = parseFloat($('#total_product').val().replace(/[\,]/g, "") || 0)
+        let gTotalAftDisc = grand_total - total_product - disc;
+
+        $('#grand_total_exclude_price').val(new Intl.NumberFormat().format(gTotalAftDisc.toFixed(2)))
+    }
 
     function payment_term() {
         let total_product = parseFloat($('#total_product').val().replace(/\,/g, '') || 0)
@@ -641,8 +812,6 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                 contentType: false,
                 cache: false,
                 success: (result) => {
-                    console.log(result);
-
                     // Ocean Freight
                     if ($('#price_type').val() == 'FOB') {
                         $('#ocean_freight').val((result.ocean_freight.price) ? result.ocean_freight.price : 0);
@@ -689,6 +858,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                     $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
 
                     total_costing()
+                    getDiscount()
                     if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                         Lobibox.notify('warning', {
                             icon: 'fa fa-exclamation',

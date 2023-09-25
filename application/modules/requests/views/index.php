@@ -43,7 +43,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         <th class="desktop mobile tablet tx-dark tx-center">Number</th>
                         <th class="desktop mobile tablet tx-dark tx-center">Project Name</th>
                         <th class="desktop mobile tablet text-center" width="110">Date Request</th>
-                        <th class="desktop tablet text-center">Origin</th>
+                        <th class="desktop tablet text-center">Description</th>
                         <th class="desktop text-center" width="100">Marketing</th>
                         <th class="desktop tablet text-center" width="50">Rev.</th>
                         <th class="desktop text-center no-sort" width="60">Status</th>
@@ -578,24 +578,25 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             if ($('#bm_mfn_' + row).is(':checked') == true) {
                 val = parseFloat($('#bm_mfn_' + row).data('value'));
             } else {
-                val = parseFloat($('#bm_e_' + row).data(':checked'));
+                val = parseFloat($('#bm_e_' + row).data('value'));
             }
+            console.log(val);
             getItemLartas()
             getProductPrice()
             getTotalBM(val, row, total_price)
 
         })
 
-        $(document).on('input', '.bm_mfn', function() {
+        $(document).on('change', '.bm_mfn', function() {
             let row = $(this).data('row')
-            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let val = parseFloat($(this).data('value') || 0)
             let total_price = parseFloat($('#price_' + row).val() || 0)
             $('#bm_e_' + row).prop('checked', false)
 
             getTotalBM(val, row, total_price)
         })
 
-        $(document).on('input', '.bm_e', function() {
+        $(document).on('change', '.bm_e', function() {
             let row = $(this).data('row')
             let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
             let total_price = parseFloat($('#price_' + row).val() || 0)

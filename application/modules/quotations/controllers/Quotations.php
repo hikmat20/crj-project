@@ -19,6 +19,7 @@ class Quotations extends Admin_Controller
 	protected $managePermission = 'Quotations.Manage';
 	protected $deletePermission = 'Quotations.Delete';
 	protected $currency;
+	protected $ls;
 	public function __construct()
 	{
 		parent::__construct();
@@ -32,6 +33,10 @@ class Quotations extends Admin_Controller
 		$this->template->title('Quotations');
 		$this->template->page_icon('far fa-list-alt');
 		$this->currency = $this->db->get('currency')->result();
+		$this->ls = [
+			'Y' => 'Yes',
+			'N' => 'No',
+		];
 		date_default_timezone_set('Asia/Bangkok');
 	}
 
@@ -85,7 +90,8 @@ class Quotations extends Admin_Controller
 			'DEAL' => '<span class="bg-success tx-white pd-5 tx-11 tx-bold rounded-5">Deal</span>',
 			'LOSE' => '<span class="bg-light tx-white pd-5 tx-11 tx-bold rounded-5">Lose</span>',
 			'RVI' => '<span class="bg-warning tx-white pd-5 tx-11 tx-bold rounded-5">Revision</span>',
-			'HIS' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">History</span>',
+			'HIS' => '<span class="bg-light pd-5 tx-11 tx-bold rounded-5">History</span>',
+			'CNL' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
 		];
 
 		/* Button */
@@ -108,11 +114,11 @@ class Quotations extends Admin_Controller
 			$view 		= '<a href="javascript:void(0)" class="nav-link view" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '" data-number="' . $row['number'] . '"><i class="fa fa-eye text-primary"></i> View</a>';
 			$edit 		= '<a href="' . base_url($this->uri->segment(1) . '/edit/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="icon ion-edit text-success"></i> Edit</a>';
 			$revision 	= '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="icon ion-edit text-warning"></i> Revison</a>';
-			$deal 		= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-handshake text-primary"></i> Deal</a>';
+			$deal 		= '<a href="javascript:void(0)" class="nav-link deal" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-handshake text-primary"></i> Deal</a>';
 			$printAI 	= '<a href="' . base_url($this->uri->segment(1) . '/print_all_in/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print All-In" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> Print All-In</a>';
 			$printAPB 	= '<a href="' . base_url($this->uri->segment(1) . '/print_apb/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print As Per-Bill</span></a>';
 			$printDDU 	= '<a href="' . base_url($this->uri->segment(1) . '/print_ddu/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print DDU</span></a>';
-			$cancel 	= '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="icon ion-minus-circled text-danger"></i> Cancel</a>';
+			$cancel 	= '<a href="javascript:void(0)" class="nav-link cancel" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="icon ion-minus-circled text-danger"></i> Cancel</a>';
 			$printBTN 	= '';
 
 			if ($row['service_type'] == 'undername') {
@@ -126,6 +132,8 @@ class Quotations extends Admin_Controller
 			} else if ($row['status'] == 'DEAL') {
 				$buttons 	= $view . $printBTN;
 			} else if ($row['status'] == 'HIS') {
+				$buttons 	= $view;
+			} else if ($row['status'] == 'CNL') {
 				$buttons 	= $view;
 			} else {
 				$buttons 	= $view . $edit  . $deal . $printBTN . $cancel;
@@ -142,7 +150,7 @@ class Quotations extends Admin_Controller
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = '<div class="dropdown">
 								<a href="#" class="btn btn-primary btn-sm" data-toggle="dropdown">
-									<span class="tx- h6">Opsi</span> <i class="fa fa-cog mg-l-5"></i>
+									<i class="fa fa-cog"></i>
 								</a>
 								<div class="dropdown-menu dropdown-menu-right wd-100">
 									<nav class="nav nav-style-2 flex-column">
@@ -174,6 +182,180 @@ class Quotations extends Admin_Controller
 	public function edit($id)
 	{
 		$this->auth->restrict($this->addPermission);
+		$configs 		= $this->db->get('configs')->result();
+		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
+		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
+		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
+		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
+		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
+		$areas 			= $this->db->get_where('areas', ['city_id' => $header->dest_city])->result();
+		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$costing 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id])->result();
+		$fee_lartas 	= $this->db->get_where('view_quotation_detail_lartas', ['quotation_id' => $id])->result();
+		$otherCost 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id, 'name like' => '%OTH%'])->result();
+		$payment_term 	= $this->db->get_where('quotation_payment_term', ['quotation_id' => $id])->result();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$ArrHscode 		= [];
+		$ArrDocs 		= [];
+		$ArrPorts 		= [];
+		$ArrCurrency 	= [];
+
+		$unitLartas 	= [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+			'ITM' => 'Item',
+		];
+
+		$default = [];
+		foreach ($configs as $conf) {
+			$default[$conf->key] = $conf;
+		}
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
+
+		$currency = $ArrCurrency[$header->currency]->symbol;
+		$currency_code = $ArrCurrency[$header->currency]->code;
+
+		$ArrPayTerm = [];
+		foreach ($payment_term as $pt) {
+			$ArrPayTerm[$pt->name] = $pt;
+		}
+
+		foreach ($hscodes as $hs) {
+			$ArrHscode[$hs->local_code] = $hs;
+		}
+
+		foreach ($hscodes_doc as $doc) {
+			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
+		}
+
+		foreach ($ports as $port) {
+			$ArrPorts[$port->country_id][] = $port;
+		}
+
+		$ArrCosting = [];
+		foreach ($costing as $cst) {
+			$ArrCosting[$cst->name] = $cst;
+		}
+
+		$data = [
+			'default' 			=> $default,
+			'currency' 			=> $currency,
+			'currency_code' 	=> $currency_code,
+			'header' 			=> $header,
+			'companies' 		=> $companies,
+			'costing' 			=> $costing,
+			'ports' 			=> $ports,
+			'areas' 			=> $areas,
+			'containers' 		=> $containers,
+			'cities' 			=> $cities,
+			'details' 			=> $details,
+			'ArrHscode' 		=> $ArrHscode,
+			'ArrDocs' 			=> $ArrDocs,
+			'ArrPorts' 			=> $ArrPorts,
+			'ArrLartas' 		=> $ArrLartas,
+			'fee_lartas' 		=> $fee_lartas,
+			'ArrCosting' 		=> $ArrCosting,
+			'unitLartas' 		=> $unitLartas,
+			'otherCost' 		=> $otherCost,
+			'ArrPayTerm' 		=> $ArrPayTerm,
+		];
+
+		$this->template->set($data);
+		$this->template->render('edit');
+	}
+
+	function cancelForm($id)
+	{
+		$this->auth->restrict($this->deletePermission);
+		$this->template->set('id', $id);
+		$this->template->render('cancelForm');
+	}
+
+	public function cancel()
+	{
+		$this->auth->restrict($this->deletePermission);
+		$post = $this->input->post();
+		$reason = [
+			'0' => $post['cancel_reason'],
+			'1' => "Incorrect data entry",
+			'2' => "Cancellation Quotation from customers",
+			'3' => "Data change",
+			'4' => "User error",
+			'5' => "Dummy data only",
+		];
+
+		$data = [
+			'status' 		=> 'CNL',
+			'canceled_by' 	=> $this->auth->user_id(),
+			'canceled_at' 	=> date('Y-m-d H:i:s'),
+			'reason_id' 	=> $post['rdio'],
+			'cancel_reason' => $reason[$post['rdio']],
+		];
+
+		$this->db->trans_begin();
+		$this->db->update('quotations', $data, ['id' => $post['id']]);
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$return	= array(
+				'msg'		=> 'Failed Cancel data Quotation.  Please try again.',
+				'status'	=> 0
+			);
+			$keterangan     = "FAILD Cancel data Quotation ";
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $post['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		} else {
+			$this->db->trans_commit();
+			$return	= array(
+				'msg'		=> 'Success cancel data Quotation.',
+				'status'	=> 1
+			);
+			$keterangan     = "SUCCESS cancel data Quotation " . $post['id'];
+			$status         = 1;
+			$nm_hak_akses   = $this->deletePermission;
+			$kode_universal = $post['id'];
+			$jumlah         = 1;
+			$sql            = $this->db->last_query();
+		}
+
+		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+		echo json_encode($return);
+	}
+
+
+	public function revision($id)
+	{
+		$this->auth->restrict($this->managePermission);
+		$request 			= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
+		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
+		$customers 			= $this->db->get_where('customers', ['status' => '1'])->result();
+		$countries 			= $this->db->get_where('countries')->result();
+		$flag_revision 		= true;
+		$data = [
+			'subtitle' 		=> 'Revision Check HS Code',
+			'request' 		=> $request,
+			'customers' 	=> $customers,
+			'countries' 	=> $countries,
+			'dtlRequest' 	=> $dtlRequest,
+			'flag_revision' => $flag_revision,
+		];
+		$this->template->set($data);
+		$this->template->render('form');
+	}
+
+	public function view($id)
+	{
+		$this->auth->restrict($this->viewPermission);
 		$configs 		= $this->db->get('configs')->result();
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
 		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
@@ -260,47 +442,56 @@ class Quotations extends Admin_Controller
 		];
 
 		$this->template->set($data);
-		$this->template->render('edit');
+		$this->template->render('view');
 	}
 
-	public function revision($id)
-	{
-		$this->auth->restrict($this->managePermission);
-		$request 			= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
-		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$customers 			= $this->db->get_where('customers', ['status' => '1'])->result();
-		$countries 			= $this->db->get_where('countries')->result();
-		$flag_revision 		= true;
-		$data = [
-			'subtitle' 		=> 'Revision Check HS Code',
-			'request' 		=> $request,
-			'customers' 	=> $customers,
-			'countries' 	=> $countries,
-			'dtlRequest' 	=> $dtlRequest,
-			'flag_revision' => $flag_revision,
-		];
-		$this->template->set($data);
-		$this->template->render('form');
-	}
-
-	public function view($id)
+	public function reviewQuotation($id)
 	{
 		$this->auth->restrict($this->viewPermission);
-		$request 			= $this->db->get_where('view_check_hscodes', array('id' => $id))->row();
-		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$customers 			= $this->db->get_where('customers')->result_array();
-		$countries 			= $this->db->get_where('countries')->result_array();
-		$details 			= $this->db->get_where('check_hscode_detail', array('check_hscode_id' => $id))->result();
-		$hscodes 			= $this->db->get_where('hscodes', array('status' => '1'))->result();
-		$hscodes_doc 		= $this->db->get_where('hscode_requirements')->result();
-		$current_ppn 		= $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
-		$employee 			= $this->db->get_where('employees')->result_array();
-		$ArrHscode 			= [];
-		$ArrDocs 			= [];
-		$ArrCountry 		= array_column($countries, 'name', 'id');
-		$ArrCountryCode 	= array_column($countries, 'country_code', 'id');
-		$ArrCustomer 		= array_column($customers, 'customer_name', 'id_customer');
-		$ArrEmpl 			= array_column($employee, 'name', 'id');
+		$configs 		= $this->db->get('configs')->result();
+		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
+		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
+		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
+		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
+		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
+		$areas 			= $this->db->get_where('areas', ['city_id' => $header->dest_city])->result();
+		$details 		= $this->db->get_where('quotation_details', ['quotation_id' => $id])->result();
+		$hscodes 		= $this->db->get_where('hscodes', array('status' => '1'))->result();
+		$hscodes_doc 	= $this->db->get_where('hscode_requirements')->result();
+		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$costing 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id])->result();
+		$fee_lartas 	= $this->db->get_where('view_quotation_detail_lartas', ['quotation_id' => $id])->result();
+		$otherCost 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id, 'name like' => '%OTH%'])->result();
+		$payment_term 	= $this->db->get_where('quotation_payment_term', ['quotation_id' => $id])->result();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$ArrHscode 		= [];
+		$ArrDocs 		= [];
+		$ArrPorts 		= [];
+		$ArrCurrency 	= [];
+
+		$unitLartas 	= [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+			'ITM' => 'Item',
+		];
+
+		$default = [];
+		foreach ($configs as $conf) {
+			$default[$conf->key] = $conf;
+		}
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
+
+		$currency = $ArrCurrency[$header->currency]->symbol;
+		$currency_code = $ArrCurrency[$header->currency]->code;
+
+		$ArrPayTerm = [];
+		foreach ($payment_term as $pt) {
+			$ArrPayTerm[$pt->name] = $pt;
+		}
 
 		foreach ($hscodes as $hs) {
 			$ArrHscode[$hs->origin_code] = $hs;
@@ -310,19 +501,40 @@ class Quotations extends Admin_Controller
 			$ArrDocs[$doc->hscode_id][$doc->type][] = $doc;
 		}
 
-		$this->template->set([
-			'request' 			=> $request,
-			'dtlRequest' 		=> $dtlRequest,
-			'ArrEmpl' 			=> $ArrEmpl,
+		foreach ($ports as $port) {
+			$ArrPorts[$port->country_id][] = $port;
+		}
+
+		$ArrCosting = [];
+		foreach ($costing as $cst) {
+			$ArrCosting[$cst->name] = $cst;
+		}
+
+		$data = [
+			'default' 			=> $default,
+			'currency' 			=> $currency,
+			'currency_code' 	=> $currency_code,
+			'header' 			=> $header,
+			'companies' 		=> $companies,
+			'costing' 			=> $costing,
+			'ports' 			=> $ports,
+			'areas' 			=> $areas,
+			'containers' 		=> $containers,
+			'cities' 			=> $cities,
 			'details' 			=> $details,
 			'ArrHscode' 		=> $ArrHscode,
-			'current_ppn' 		=> $current_ppn,
 			'ArrDocs' 			=> $ArrDocs,
-			'ArrCountry' 		=> $ArrCountry,
-			'ArrCountryCode' 	=> $ArrCountryCode,
-			'ArrCustomer' 		=> $ArrCustomer,
-		]);
-		$this->template->render('view');
+			'ArrPorts' 			=> $ArrPorts,
+			'ArrLartas' 		=> $ArrLartas,
+			'fee_lartas' 		=> $fee_lartas,
+			'ArrCosting' 		=> $ArrCosting,
+			'unitLartas' 		=> $unitLartas,
+			'otherCost' 		=> $otherCost,
+			'ArrPayTerm' 		=> $ArrPayTerm,
+		];
+
+		$this->template->set($data);
+		$this->template->render('reviewQuotation');
 	}
 
 	public function save()
@@ -337,6 +549,7 @@ class Quotations extends Admin_Controller
 		$data['total_bm'] 				= str_replace(",", "", $post['total_bm']);
 		$data['total_pph'] 				= str_replace(",", "", $post['total_pph']);
 		$data['grand_total'] 			= str_replace(",", "", $post['grand_total']);
+		$data['discount_value'] 		= str_replace(",", "", $post['discount_value']);
 		$data['grand_total_exclude_price'] 			= 	str_replace(",", "", $post['grand_total_exclude_price']);
 
 		$data['exchange'] 				= str_replace(",", "", $post['exchange']);
@@ -349,10 +562,11 @@ class Quotations extends Admin_Controller
 		$data['modified_at'] 			= date('Y-m-d H:i:s');
 		$data['modified_by'] 			= $this->auth->user_id();
 
-		$detail 						= $data['detail'];
+		$detail 						= isset($data['detail']) ? $data['detail'] : '';
 		$detail_lartas 					= isset($data['detail_fee_lartas']) ? $data['detail_fee_lartas'] : '';
 		$costing 						= $data['costing'];
 		$payment_term 					= $data['payment_term'];
+		$deleteItem 					= $data['deleteItem'];
 		$deleteItemOth 					= $data['deleteItemOth'];
 
 		unset($data['detail']);
@@ -361,37 +575,70 @@ class Quotations extends Admin_Controller
 		unset($data['deleteItem']);
 		unset($data['deleteItemOth']);
 		unset($data['payment_term']);
+		unset($data['checked_item']);
 
 		$this->db->trans_begin();
 		$this->db->update("quotations", $data, ['id' => $post['id']]);
 
 		if ($detail) {
-			$n =  ($this->Requests_model->getDetailQuotId($data['id']));
-			foreach ($detail as $dtl) {
-				$dtlID 					= ($dtl['id']) ?: $data['id'] . "-" . sprintf("%04d", $n++);
+			$ID =  ($this->Requests_model->getDetailQuotId($data['id']));
+			foreach ($detail as $k => $dtl) {
+				// $ID++;
+				$bm_type 				= $dtl['bm_type'];
+				$dtlID 					= ($dtl['id']) ?: $data['id'] . "-" . sprintf("%04d", $k++);
 				$dtl['id'] 				= $dtlID;
-				$dtl['bm_mfn'] 			= str_replace(",", "", $dtl['bm_mfn']);
-				$dtl['bm_e'] 			= str_replace(",", "", $dtl['bm_e']);
+				$dtl['quotation_id'] 	= $data['id'];
+				$dtl['bm_type'] 		= explode("-", $bm_type)[0];
+				$dtl['bm_value'] 		= explode("-", $bm_type)[1];
 				$dtl['pph_api'] 		= str_replace(",", "", $dtl['pph_api']);
 				$dtl['price'] 			= str_replace(",", "", $dtl['price']);
 				$dtl['total_bm'] 		= str_replace(",", "", $dtl['total_bm']);
 				$dtl['total_pph'] 		= str_replace(",", "", $dtl['total_pph']);
 				$dtl['modified_at'] 	= date('Y-m-d H:i:s');
 				$dtl['modified_by'] 	= $this->auth->user_id();
-				$this->db->update('quotation_details', $dtl, ['id' => $dtlID]);
+				$check_axist = $this->db->get_where('quotation_details', ['id' => $dtlID])->num_rows();
+				if ($check_axist > 0) {
+					$this->db->update('quotation_details', $dtl, ['id' => $dtlID]);
+				} else {
+					$this->db->insert('quotation_details', $dtl);
+				}
 			}
+		} else {
+			$return	= array(
+				'msg'		=> 'Failed save data Quotation.  Detail item not availabel.',
+				'status'	=> 0
+			);
+			echo json_encode($return);
+			return false;
 		}
 
 		if ($detail_lartas) {
 			$dtlId = 0;
 			foreach ($detail_lartas as $dtla) {
 				$dtlId++;
-				$dtla['price'] 					= str_replace(",", "", $dtla['price']);
-				$dtla['total'] 					= str_replace(",", "", $dtla['total']);
-				$dtla['total_foreign_currency'] = str_replace(",", "", $dtla['total_foreign_currency']);
-				$this->db->update('quotation_detail_lartas', $dtla, ['id' => $dtla['id']]);
+				// QU23-CSJ-00032-L001
+				$lartasID 							= $post['id'] . "-L" . sprintf("%04d", $dtlId);
+				$axist_data 						= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $post['id']])->num_rows();
+				$this->db->delete('quotation_detail_lartas', ['quotation_id' => $post['id']]);
+				$dtla['quotation_id'] 				= $post['id'];
+				$dtla['price'] 						= str_replace(",", "", $dtla['price']);
+				$dtla['total'] 						= str_replace(",", "", $dtla['total']);
+				$dtla['total_foreign_currency'] 	= str_replace(",", "", $dtla['total_foreign_currency']);
+
+				// if (isset($dtla['id']) && $dtla['id']) {
+				// 	$dtla['modified_at'] 			= date('Y-m-d H:i:s');
+				// 	$dtla['modified_by'] 			= $this->auth->user_id();
+				// 	$this->db->update('quotation_detail_lartas', $dtla, ['id' => $dtla['id']]);
+				// } else {
+				// }
+
+				$dtla['id'] 					= $lartasID;
+				$dtla['created_at'] 			= date('Y-m-d H:i:s');
+				$dtla['created_by'] 			= $this->auth->user_id();
+				$this->db->insert('quotation_detail_lartas', $dtla);
 			}
 		}
+
 
 		if ($costing) {
 			$n = 0;
@@ -416,10 +663,18 @@ class Quotations extends Admin_Controller
 
 		if ($deleteItemOth) {
 			$ArrDelete 	= explode(",", $post['deleteItemOth']);
-
 			if ($ArrDelete) :
 				foreach ($ArrDelete as $delDt) {
 					$this->db->delete('quotation_detail_costing', ['id' => $delDt]);
+				}
+			endif;
+		}
+
+		if ($deleteItem) {
+			$ArrDelete 	= explode(",", $deleteItem);
+			if ($ArrDelete) :
+				foreach ($ArrDelete as $delDt) {
+					$this->db->delete('quotation_details', ['id' => $delDt]);
 				}
 			endif;
 		}
@@ -556,6 +811,7 @@ class Quotations extends Admin_Controller
 	function load_price()
 	{
 		$post 					= $this->input->post();
+
 		$container 				= $post['container'];
 		$dest_area 				= $post['dest_area'];
 		$src_city 				= $post['src_city'];
@@ -688,25 +944,26 @@ class Quotations extends Admin_Controller
 	function getPriceLartas()
 	{
 		$post 				= $this->input->post();
-		$id 				= $post['id'];
+
+		// $localCode 			= $post['local_code'];
 		$fee_lartas_type 	= $post['fee_lartas_type'];
 		$customer_id 		= $post['customer_id'];
+		$lartasItems 		= [];
 		$lartas 			= [];
 
-		$details 			= $this->db->get_where('view_check_hscode_details', ['check_hscode_id' => $id])->result();
-		$lartasItems 		= [];
-		foreach ($details as $dtl) {
-			$lartasItems[] = $dtl->lartas;
-		}
+		// $details 			= $this->db->where_in('local_code', $localCode)->get_where('hscodes')->result();
+		// foreach ($details as $dtl) {
+		// 	$lartasItems[] = $dtl->lartas;
+		// }
 
-		$itemLartas = array_unique($lartasItems);
+		// $itemLartas = array_unique($lartasItems);
 
 		if ($fee_lartas_type == 'STD') {
-			$lartas = $this->db->where_in('lartas_id', $itemLartas)->get_where('view_fee_lartas', ['status' => '1'])->result();
+			$lartas = $this->db->get_where('view_fee_lartas', ['status' => '1'])->result();
 		} else if ($fee_lartas_type == 'CORP') {
 			$header = $this->db->get_where('fee_lartas_customers', ['customer_id' => $customer_id, 'status' => '1'])->row();
 			if ($header) {
-				$lartas = $this->db->where_in('lartas_id', $itemLartas)->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id])->result();
+				$lartas = $this->db->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $header->id])->result();
 			}
 		}
 
@@ -716,9 +973,14 @@ class Quotations extends Admin_Controller
 			'CNT' => 'Container',
 		];
 
+		foreach ($lartas as $lts) {
+			$lartasItems[$lts->id] = $lts;
+		}
+
 		$data = [
 			'lartas' 		=> $lartas,
-			'unitType' 	=> $unitType,
+			'unitType' 		=> $unitType,
+			'lartasItems' 	=> $lartasItems,
 		];
 		echo json_encode($data);
 	}
@@ -740,6 +1002,334 @@ class Quotations extends Admin_Controller
 		];
 		echo json_encode($data);
 	}
+
+	function getItemLartas()
+	{
+		$quotation_id 	= $this->input->post('quotation_id');
+		$data 			= $this->input->post('data');
+		$lartas_type 	= $this->input->post('lartas_type');
+		$customer_id 	= $this->input->post('customer_id');
+
+		$header 		= $this->db->get_where('quotations', ['id' => $quotation_id])->row();
+		$details 		= $this->db->where_in('local_code', $data)->get_where('hscodes')->result();
+		$lartas 		= $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$ArrLartas 		= array_column($lartas, 'name', 'id');
+		$lartasItems 	= [];
+
+		foreach ($details as $dtl) {
+			if ($dtl->lartas) {
+				$lartasItems[] = $dtl->lartas;
+			}
+		}
+
+		foreach ($this->currency as $cur) {
+			$ArrCurrency[$cur->code] = $cur;
+		}
+
+		if ($lartas_type == 'STD') {
+			$lartas = $this->db->where_in('lartas_id', $lartasItems)->get_where('view_fee_lartas', ['status' => '1'])->result();
+		} else if ($lartas_type == 'CORP') {
+			$feeLartas = $this->db->get_where('fee_lartas_customers', ['customer_id' => $customer_id, 'status' => '1'])->row();
+			if ($feeLartas) {
+				$lartas = $this->db->where_in('lartas_id', $lartasItems)->get_where('view_fee_lartas_customer_details', ['fee_lartas_customer_id' => $feeLartas->id])->result();
+			}
+		}
+
+		$unitType 	= [
+			'TNE' => 'Tonase',
+			'SPM' => 'Shipment',
+			'CNT' => 'Container',
+		];
+
+		$Data = [
+			'itemLartas' 	=> array_unique($lartasItems),
+			'ArrLartas' 	=> $ArrLartas,
+			'currency' 		=> isset($header) ? $ArrCurrency[$header->currency]->symbol : '',
+			// 'unitType' 		=> $unitType,
+			// 'lartas' 		=> $lartas,
+		];
+
+		echo json_encode($Data);
+	}
+
+	function add_item($row)
+	{
+		$this->template->set('row', $row);
+		$this->template->render('form-add-item');
+	}
+
+	function select_hscode()
+	{
+		// $this->template->set('row', $row);
+		$this->template->render('list-item');
+	}
+
+	function getDataItem()
+	{
+		$requestData = $_REQUEST;
+		$status = $requestData['status'];
+		$search = $requestData['search']['value'];
+		$column = $requestData['order'][0]['column'];
+		$dir = $requestData['order'][0]['dir'];
+		$start = $requestData['start'];
+		$length = $requestData['length'];
+
+		$where = '';
+		$where = " AND `status` = '$status'";
+
+		$string = $this->db->escape_like_str($search);
+
+		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
+        FROM view_hscodes, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
+        AND (local_code LIKE '%$string%'
+        OR origin_code LIKE '%$string%'
+        OR `country_code` LIKE '%$string%'
+        OR `country_name` LIKE '%$string%'
+        -- OR `product_name` LIKE '%$string%'
+        OR `brand` LIKE '%$string%'
+        OR `description` LIKE '%$string%'
+        OR `status` LIKE '%$string%'
+            )";
+
+		$totalData = $this->db->query($sql)->num_rows();
+		$totalFiltered = $this->db->query($sql)->num_rows();
+
+		$columns_order_by = [
+			0 => 'num',
+			1 => 'local_code',
+			2 => 'origin_code',
+			3 => 'country_code',
+			4 => 'description',
+			5 => 'brand',
+			6 => 'status',
+			7 => 'modified_at',
+		];
+
+		$sql .= ' ORDER BY ' . $columns_order_by[$column] . ' ' . $dir . ' ';
+		$sql .= ' LIMIT ' . $start . ' ,' . $length . ' ';
+		$query = $this->db->query($sql);
+
+		$data = [];
+		$urut1 = 1;
+		$urut2 = 0;
+
+		$status = [
+			'0' => '<span class="bg-danger tx-white pd-5 tx-11 tx-bold rounded-5">Inactive</span>',
+			'1' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">Active</span>',
+		];
+
+		/* Button */
+		foreach ($query->result_array() as $row) {
+			$buttons = '';
+			$total_data = $totalData;
+			$start_dari = $start;
+			$asc_desc = $dir;
+			if (
+				$asc_desc == 'asc'
+			) {
+				$nomor = $urut1 + $start_dari;
+			}
+			if (
+				$asc_desc == 'desc'
+			) {
+				$nomor = ($total_data - $start_dari) - $urut2;
+			}
+
+			$view = '<button type="button" class="btn btn-primary btn-sm view-hscode" data-toggle="tooltip" title="View" data-id="' . $row['id'] . '"><i class="fa fa-eye"></i></button>';
+			$edit = ' <button type="button" class="btn btn-success btn-sm select-item" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="fa fa-arrow-right"></i></button>';
+			$delete = ' <button type="button" class="btn btn-danger btn-sm delete" data-toggle="tooltip" title="Delete" data-id="' . $row['id'] . '"><i class="fa fa-trash"></i></button>';
+			$buttons = $view . $edit;
+
+			$nestedData = [];
+			$nestedData[] = $nomor;
+			$nestedData[] = $row['local_code'];
+			$nestedData[] = $row['description'];
+			$nestedData[] = $row['brand'];
+			$nestedData[] = $buttons;
+			$data[] = $nestedData;
+			++$urut1;
+			++$urut2;
+		}
+
+		$json_data = [
+			'draw' => intval($requestData['draw']),
+			'recordsTotal' => intval($totalData),
+			'recordsFiltered' => intval($totalFiltered),
+			'data' => $data,
+		];
+
+		echo json_encode($json_data);
+	}
+
+	public function view_hscode($id)
+	{
+		$hs             = $this->db->get_where('hscodes', ['id' => $id])->row();
+		$countries      = $this->db->get('countries')->result_array();
+		$def_ppn        = $this->db->get_where('configs', ['key' => 'ppn'])->row()->value;
+		$requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+		$lartas         = $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$ArrLartas      = array_column($lartas, 'name', 'id');
+		$unit = [
+			'rp'        => '(Rp)',
+			'm'         => 'Meter',
+			'percent'   => '%',
+			'kg'        => 'Kg',
+		];
+		$ArrRQ          = [];
+		foreach ($requirements as $rq) {
+			$ArrRQ[$rq['type']][] = $rq;
+		}
+
+		$ArrCountries = array_column($countries, 'name', 'id');
+		$this->template->set([
+			'hs'            => $hs,
+			'def_ppn'       => $def_ppn,
+			'ArrCountries'  => $ArrCountries,
+			'ArrRQ'         => $ArrRQ,
+			'ArrLartas'     => $ArrLartas,
+			'unit'          => $unit,
+			'LS'            => $this->ls,
+		]);
+		$this->template->render('view-hscode');
+	}
+
+	function getDataHscode($id)
+	{
+		$hs             = $this->db->get_where('hscodes', ['id' => $id])->row();
+		$requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+		$ArrRQ          = [];
+
+		$lartas         = $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$ArrLartas      = array_column($lartas, 'name', 'id');
+
+		foreach ($requirements as $rq) {
+			$ArrRQ[$rq['type']][] = $rq;
+		}
+
+		$html = '';
+		if ($hs) {
+			$html .= '
+			<div class="card border-0 shadow-sm">
+				<div class="card-body">
+					<table class="table table-sm table-condensed border tx-dark tx-bold">
+						<tbody>
+							<tr class="tx-dark tx-bold">
+								<th>Local HS Code</th>
+								<td>:</td>
+								<td>' . $hs->local_code . '
+								<input type="hidden" id="local_hscode_item" name="local_hscode" value="' . $hs->local_code . '">
+								</td>
+							</tr>
+							<tr class="tx-dark tx-bold">
+								<th class="align-middle">Add Doc.</th>
+								<td>:</td>
+								<td class=""><ul class="pl-3 m-0">';
+			if (isset($ArrRQ['RQ1']) && $ArrRQ['RQ1']) {
+				foreach ($ArrRQ['RQ1'] as $r1) {
+					$html .= '<li>' . $r1['name'] . '</li>';
+				}
+			}
+
+			if (isset($ArrRQ['RQ2']) && $ArrRQ['RQ2']) {
+				foreach ($ArrRQ['RQ2'] as $r2) {
+					$html .= '<li>' . $r2['name'] . '</li>';
+				}
+			}
+
+			if (isset($ArrRQ['RQ3']) && $ArrRQ['RQ3']) {
+				foreach ($ArrRQ['RQ3'] as $r3) {
+					$html .= '<li>' . $r3['name'] . '</li>';
+				}
+			}
+
+			$html .= '</ul>
+								</td>
+							</tr>
+							<tr class="tx-dark tx-bold">
+								<th>Lartas</th>
+								<td>:</td>
+								<td>' . (($hs->lartas) ? $ArrLartas[$hs->lartas] : "") . '</td>
+							</tr>
+							<tr class="tx-dark tx-bold">
+								<th>BM Type</th>
+								<td>:</td>
+								<td>
+									<span class="tx-bold">BM without Form E</span> : ' . $hs->bm_mfn . '%<br> 
+									<span class="tx-bold">BM Form E</span> : ' . $hs->bm_e . '%
+								</td>
+							</tr>
+							<tr class="tx-dark tx-bold">
+								<th>PPH</th>
+								<td>:</td>
+								<td>' . $hs->pph_api . '%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		';
+		}
+
+		echo $html;
+	}
+
+	function addItemProcess()
+	{
+		$post 			= $this->input->post();
+		$hs             = $this->db->get_where('hscodes', ['local_code' => $post['local_hscode']])->row();
+		$requirements   = $this->db->get_where('hscode_requirements', ['hscode_id' => $hs->id])->result_array();
+		$ArrRQ          = [];
+
+		$lartas         = $this->db->get_where('lartas', ['status' => '1'])->result_array();
+		$ArrLartas      = array_column($lartas, 'name', 'id');
+
+		foreach ($requirements as $rq) {
+			$ArrRQ[$rq['type']][] = $rq;
+		}
+
+		$data = [
+			'name' 			=> $post['product_name'],
+			'spac' 			=> $post['specification'],
+			'origin_hscode' => $post['origin_hscode'],
+			'hs' 			=> $hs,
+			'ArrRQ' 		=> $ArrRQ,
+			'ArrLartas' 	=> $ArrLartas,
+		];
+
+		echo json_encode($data);
+	}
+
+	public function dealProcess()
+	{
+		$this->auth->restrict($this->addPermission);
+		$this->Quotations_model->getSOProcess();
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$return	= array(
+				'msg'		=> 'Failed save Deal Quotation.  Please try again.',
+				'status'	=> 0
+			);
+		} else {
+			$this->db->trans_commit();
+			$return	= array(
+				'msg'		=> 'Deal Quotation process successfully',
+				'status'	=> 1
+			);
+		}
+		echo json_encode($return);
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	/* PRINT QUOTATION */
 	function print_all_in($id)
@@ -973,6 +1563,7 @@ class Quotations extends Admin_Controller
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
 		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result();
+
 		$hMargin = 35;
 		if ($header->grand_total > 0) {
 			$dp1 = ($header->total_product * 30) / 100;
@@ -990,7 +1581,7 @@ class Quotations extends Admin_Controller
 		$comp = $this->db->get_where('companies', ['id' => $header->company_id])->row();
 		$hMgn = ($comp->header_margin) ?: $hMargin;
 		if ($comp->header) {
-			$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', true);
+			$mpdf->SetHTMLHeader('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->header . '" width="100%"></div></html>', 'O', true);
 		}
 		if ($comp->footer) {
 			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
@@ -1047,9 +1638,12 @@ class Quotations extends Admin_Controller
 		$this->template->set($data);
 		$html = $this->template->load_view('print_ddu');
 		$mpdf->WriteHTML($html);
-		// $mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
-		// $html2 = $this->template->load_view('print_detail_cost');
-		// $mpdf->WriteHTML($html2);
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		$mpdf->SetHTMLHeader('');
+		$mpdf->SetHTMLFooter('');
+
+		$html2 = $this->template->load_view('print_detail_cost');
+		$mpdf->WriteHTML($html2);
 		$mpdf->Output();
 	}
 }

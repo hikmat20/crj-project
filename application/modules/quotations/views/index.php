@@ -18,17 +18,17 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
     </div>
 <?php endif; ?>
 
-<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-between align-items-center">
+<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-start align-items-center">
     <?php if ($ENABLE_ADD) : ?>
-        <div class=""></div>
+        <div class="tx-dark">Status : &nbsp;</div>
         <!-- <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a> -->
         <div class="right">
             <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="DEAL" title="Checked">Deal</button>
             <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="LOSE" title="Cancel">Lose</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button>
+            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
+            <!-- <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button> -->
         </div>
     <?php endif; ?>
 </div>
@@ -49,7 +49,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                         <th class="desktop tablet text-center" width="50">Rev.</th>
                         <th class="desktop text-center no-sort" width="60">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="80">Opsi</th>
+                            <th class="desktop text-center no-sort" width="30">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -95,6 +95,41 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
     </div>
 </div>
 
+<div class="modal fade effect-scale" id="dialog-cancel" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="data-form-cancel" data-parsley-validate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
+                    <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
+                        <span class="fa fa-times"></span> Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade effect-scale" id="dialog-deal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg mx-wd-100p-force">
+        <form id="data-form-deal" data-parsley-validate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
+                    <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
+                        <span class="fa fa-times"></span> Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- page script -->
 <script type="text/javascript">
@@ -120,7 +155,8 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             $("#save").addClass('d-none');
         });
 
-        $(document).on('click', '.delete', function(e) {
+
+        $(document).on('click', '.cancel', function(e) {
             e.preventDefault()
             var swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -132,62 +168,83 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             let id = $(this).data('id');
             swalWithBootstrapButtons.fire({
                 title: "Confirm!",
-                text: "Are you sure to delete this data?",
+                text: "Are you sure to Cancel this Quotation?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "<i class='fa fa-check'></i> Yes",
                 cancelButtonText: "<i class='fa fa-ban'></i> No",
                 showLoaderOnConfirm: true,
-                preConfirm: () => {
-                    return $.ajax({
-                        type: 'POST',
-                        url: siteurl + thisController + 'delete',
-                        dataType: "JSON",
-                        data: {
-                            'id': id
-                        },
-                        error: function() {
-                            Lobibox.notify('error', {
-                                title: 'Error!!!',
-                                icon: 'fa fa-times',
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                                msg: 'Internal server error. Ajax process failed.'
-                            });
-                        }
-                    })
-                },
                 allowOutsideClick: true
             }).then((val) => {
                 if (val.isConfirmed) {
-                    if (val.value.status == '1') {
+                    $('#dialog-cancel').modal('show')
+                    $('#dialog-cancel .modal-body').load(siteurl + thisController + 'cancelForm/' + id)
+                }
+            })
+        })
+
+        $(document).on('click', 'input[name="rdio"]', function() {
+            if ($(this).val() == '0') {
+                $('#cancel_reason').prop('readonly', false).attr('required', true)
+            } else {
+                $('#cancel_reason').prop('readonly', true).val('').attr('required', false)
+            }
+        })
+
+        $(document).on('submit', '#data-form-cancel', function(e) {
+            e.preventDefault()
+            var swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                    cancelButton: 'btn btn-danger wd-100'
+                },
+                buttonsStyling: false
+            })
+
+            let formData = new FormData($('#data-form-cancel')[0]);
+            $.ajax({
+                type: 'POST',
+                url: siteurl + thisController + 'cancel',
+                dataType: "JSON",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                error: function() {
+                    Lobibox.notify('error', {
+                        title: 'Error!!!',
+                        icon: 'fa fa-times',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                        msg: 'Internal server error. Ajax process failed.'
+                    });
+                },
+                success: (result) => {
+                    if (result.status == '1') {
                         Lobibox.notify('success', {
-                            title: 'Success',
                             icon: 'fa fa-check',
+                            msg: result.msg,
                             position: 'top right',
                             showClass: 'zoomIn',
                             hideClass: 'zoomOut',
                             soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: val.value.msg
                         });
-                        $('#dialog-popup').modal('hide')
+                        $("#dialog-cancel").modal('hide');
                         loadData('')
                     } else {
                         Lobibox.notify('warning', {
-                            title: 'Warning',
                             icon: 'fa fa-ban',
+                            msg: result.msg,
                             position: 'top right',
                             showClass: 'zoomIn',
                             hideClass: 'zoomOut',
                             soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: val.value.msg
                         });
                     };
                 }
             })
-
         })
 
         $(document).on('submit', '#data-form', function(e) {
@@ -345,6 +402,102 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             load_price();
         })
 
+
+        // data-form-deal
+        $(document).on('click', '.deal', function(e) {
+            e.preventDefault()
+            var swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                    cancelButton: 'btn btn-danger wd-100'
+                },
+                buttonsStyling: false
+            })
+            let id = $(this).data('id');
+            swalWithBootstrapButtons.fire({
+                title: "Confirm!",
+                text: "Are you sure for this Offer Deal?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "<i class='fa fa-check'></i> Yes",
+                cancelButtonText: "<i class='fa fa-ban'></i> No",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: true
+            }).then((val) => {
+                if (val.isConfirmed) {
+                    $('#dialog-deal').modal('show')
+                    $('#dialog-deal .modal-body').load(siteurl + thisController + 'reviewQuotation/' + id)
+                }
+            })
+        })
+
+        $(document).on('submit', '#data-form-deal', function(e) {
+            e.preventDefault()
+            var swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-primary mg-r-10 wd-100',
+                    cancelButton: 'btn btn-danger wd-100'
+                },
+                buttonsStyling: false
+            })
+            swalWithBootstrapButtons.fire({
+                title: "Confirm!",
+                text: "Are you sure you want to process this data?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "<i class='fa fa-check'></i> Yes",
+                cancelButtonText: "<i class='fa fa-ban'></i> No",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: true
+            }).then((val) => {
+                if (val.isConfirmed) {
+                    let formData = new FormData($('#data-form-deal')[0]);
+                    $.ajax({
+                        type: 'POST',
+                        url: siteurl + thisController + 'dealProcess',
+                        dataType: "JSON",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        error: function() {
+                            Lobibox.notify('error', {
+                                title: 'Error!!!',
+                                icon: 'fa fa-times',
+                                position: 'top right',
+                                showClass: 'zoomIn',
+                                hideClass: 'zoomOut',
+                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                                msg: 'Internal server error. Ajax process failed.'
+                            });
+                        },
+                        success: (result) => {
+                            if (result.status == '1') {
+                                Lobibox.notify('success', {
+                                    icon: 'fa fa-check',
+                                    msg: result.msg,
+                                    position: 'top right',
+                                    showClass: 'zoomIn',
+                                    hideClass: 'zoomOut',
+                                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                                });
+                                $("#dialog-deal").modal('toggle');
+                                // loadData('')
+                            } else {
+                                Lobibox.notify('warning', {
+                                    icon: 'fa fa-ban',
+                                    msg: result.msg,
+                                    position: 'top right',
+                                    showClass: 'zoomIn',
+                                    hideClass: 'zoomOut',
+                                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                                });
+                            };
+                        }
+                    })
+                }
+            })
+        })
     })
 
 
@@ -583,39 +736,4 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             })
         }
     }
-
-    // function est_as_per_bill() {
-    //     let total_product = $('#tx-total-product').text()
-    //     let ocean_freight = $('#tx-ocean-freight').text()
-    //     let thc = $('#tx-shipping').text()
-    //     let surveyor = $('#tx-surveyor').text()
-    //     let handling = $('#tx-handling').text()
-    //     let storage = $('#tx-cc-storage').text()
-    //     let trucking = $('#tx-trucking').text()
-    //     let fee_lartas = $('#tx-fee-lartas').text()
-    //     let fee_undername = $('#tx-fee-csj').text()
-
-    //     let subtotal = $('#tx-').text()
-    //     let total_bm = $('#tx-').text()
-    //     let total_pph = $('#tx-').text()
-    //     let ppn = $('#tx-').text()
-    //     let gTotal_ppn = $('#tx-').text()
-    //     let gTotal_n_ppn = $('#tx-').text()
-
-    //     $('#apb-total_product').text(total_product)
-    //     $('#apb-ocean_freight').text(ocean_freight)
-    //     $('#apb-thc').text(thc)
-    //     $('#apb-surveyor').text(surveyor)
-    //     $('#apb-handling').text(handling)
-    //     $('#apb-storage').text(storage)
-    //     $('#apb-trucking').text(trucking)
-    //     $('#apb-fee_lartas').text(fee_lartas)
-    //     $('#apb-fee_undername').text(fee_undername)
-    //     $('#apb-subtotal').text(subtotal)
-    //     $('#apb-total_bm').text(total_bm)
-    //     $('#apb-total_pph').text(total_pph)
-    //     $('#apb-ppn').text(ppn)
-    //     $('#apb-gTotal_ppn').text(gTotal_ppn)
-    //     $('#apb-gTotal_n_ppn').text(gTotal_n_ppn)
-    // }
 </script>

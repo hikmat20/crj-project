@@ -62,6 +62,7 @@
                         </div>
                     </div>
                 </div>
+
                 <hr>
                 <div class="row pd-x-20">
                     <div class="col-md-6">
@@ -273,8 +274,8 @@
                 <!-- Detail Product -->
                 <h5 class="tx-dark tx-bold"><i class="fa fa-list" aria-hidden="true"></i> Detail Product</h5>
                 <div class="table- mg-b-10">
-                    <div class="table-responsive mg-b-10">
-                        <table class="table table-sm border table-hover table-condensed table-bordered ">
+                    <div class="mg-b-10">
+                        <table id="table-detail" class="table table-sm border table-hover table-condensed table-bordered ">
                             <thead class="bg-light">
                                 <tr>
                                     <th class="text-center align-middle" rowspan="2">No</th>
@@ -284,14 +285,17 @@
                                     <th class="text-center align-middle" rowspan="2">Indonesia HS Code</th>
                                     <th class="text-center align-middle" rowspan="2">Add Doc.</th>
                                     <th class="text-center align-middle" rowspan="2">Lartas</th>
-                                    <th class="text-center align-middle" rowspan="2">BM without<br>form E</th>
-                                    <th class="text-center align-middle" rowspan="2">BM with<br>form E</th>
+                                    <th class="text-center align-middle" rowspan="2">BM Type</th>
                                     <th class="text-center align-middle" rowspan="2">PPH</th>
-                                    <th class="text-center align-middle" colspan="3">Amount (<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>)</th>
+                                    <th class="text-center align-middle" colspan="6">Amount (<?= (isset($header->currency) && $header->currency) ? $currency : ''; ?>)</th>
                                     <th class="text-center align-middle" rowspan="2">Image</th>
+                                    <th class="text-center align-middle" rowspan="2">Act</th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center border border-top-0 border-right-0">
+                                    <th class="text-center align-middle border border-top-0 border-right-0">QTY</th>
+                                    <th class="text-center align-middle">UNIT</th>
+                                    <th class="text-center align-middle">UNIT PRICE</th>
+                                    <th class="text-center align-middle">
                                         Price (<span class="type-price-text"><?= ($header->price_type == 'FOB') ? 'FOB' : 'CFR/CIF'; ?></span>)
                                     </th>
                                     <th class="text-center align-middle">BM</th>
@@ -301,10 +305,12 @@
                             <tbody class="tx-dark">
                                 <?php $n = $totalPrice = $totalBM = $totalPPH = $gtotalBM = $gtotalPPH = $totalNonLartas = 0;
                                 $no_image = base_url('assets/no-image.jpg');
+
+                                // exit;
                                 if ($details) foreach ($details as $dt) : $n++;
                                     $totalPrice  += $dt->price;
-                                    $totalBM     = $dt->price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                                    $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+                                    $totalBM     = ($dt->price * $dt->bm_value) / 100;
+                                    $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->local_hscode]->pph_api / 100);
                                     $gtotalBM   += $totalBM;
                                     $gtotalPPH  += $totalPPH;
 
@@ -318,7 +324,9 @@
                                     }
                                 ?>
                                     <tr class="tx-dark">
-                                        <td><?= $n; ?></td>
+                                        <td data-row="<?= $n; ?>">
+                                            <span><?= $n; ?></span>
+                                        </td>
                                         <td><?= $dt->product_name; ?>
                                             <input type="hidden" name="detail[<?= $n; ?>][id]" value="<?= $dt->id; ?>">
                                             <input type="hidden" name="detail[<?= $n; ?>][product_name]" value="<?= $dt->product_name; ?>">
@@ -333,8 +341,8 @@
                                             <input type="hidden" name="detail[<?= $n; ?>][local_hscode]" value="<?= $dt->local_hscode; ?>">
                                         </td>
                                         <td class="">
-                                            <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
-                                                $idHs = $ArrHscode[$dt->origin_hscode]->id;
+                                            <?php if (isset($ArrHscode[$dt->local_hscode]->id)) :
+                                                $idHs = $ArrHscode[$dt->local_hscode]->id;
                                             ?>
                                                 <ul class="pd-l-15 mg-b-0">
                                                     <?php if (isset($ArrDocs[$idHs])) : ?>
@@ -359,50 +367,80 @@
                                                 </ul>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text">
                                             <?= ($dt->lartas) ? $ArrLartas[$dt->lartas] : 'Non Lartas'; ?>
                                             <input type="hidden" name="detail[<?= $n; ?>][lartas]" value="<?= ($dt->lartas) ?: null; ?>">
                                         </td>
-                                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%
-                                            <input type="hidden" name="detail[<?= $n; ?>][bm_mfn]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>">
+                                        <td class="text-">
+                                            <label class="rdiobox rdiobox-primary d-inline-block">
+                                                <input type="radio" <?= ($dt->bm_type == 'bm_e') ? 'checked' : ''; ?> class="bm_e" id="bm_e_<?= $n; ?>" name="detail[<?= $n; ?>][bm_type]" value="bm_e-<?= ($ArrHscode[$dt->local_hscode]->bm_e) ?: 0; ?>" data-value="<?= ($ArrHscode[$dt->local_hscode]->bm_e) ?: 0; ?>" data-row="<?= $n; ?>">
+                                                <span class="pl-0">with Form E (<?= ($ArrHscode[$dt->local_hscode]->bm_e) ?: 0; ?>%)</span>
+                                            </label>
+                                            <label class="rdiobox rdiobox-primary d-inline-block">
+                                                <input type="radio" <?= ($dt->bm_type == 'bm_mfn') ? 'checked' : ''; ?> class="bm_mfn" id="bm_mfn_<?= $n; ?>" name="detail[<?= $n; ?>][bm_type]" value="bm_mfn-<?= ($ArrHscode[$dt->local_hscode]->bm_mfn) ?: 0; ?>" data-value="<?= ($ArrHscode[$dt->local_hscode]->bm_mfn) ?: 0; ?>" data-row="<?= $n; ?>">
+                                                <span class="pl-0">without Form E (<?= ($ArrHscode[$dt->local_hscode]->bm_mfn) ?: 0; ?>%)</span>
+                                            </label>
                                         </td>
-                                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%
-                                            <input type="hidden" name="detail[<?= $n; ?>][bm_e]" value="<?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>">
+                                        <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>%
+                                            <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>" id="pph_api_<?= $n; ?>">
                                         </td>
-                                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%
-                                            <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
+                                        <td class="text-right">
+                                            <input type="number" name="detail[<?= $n; ?>][qty]" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->qty; ?>" placeholder="0" required>
                                         </td>
-                                        <td class="text-right"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?>
-                                            <input type="hidden" name="detail[<?= $n; ?>][price]" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
+                                        <td class="text-right">
+                                            <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit; ?>" placeholder="unit" required>
                                         </td>
-                                        <td class="text-right"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?>
-                                            <input type="hidden" name="detail[<?= $n; ?>][total_bm]" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
+                                        <td class="text-right">
+                                            <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit_price; ?>" placeholder="0" required>
                                         </td>
-                                        <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?>
-                                            <input type="hidden" name="detail[<?= $n; ?>][total_pph]" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
+                                        <td class="text-right"><span id="total_price_text_<?= $n; ?>"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?></span>
+                                            <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas price_non_lartas_' . $n; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
                                         </td>
-                                        <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid"></td>
+                                        <td class="text-right"><span id="total_bm_text_<?= $n; ?>"><?= ($totalBM) ? number_format($totalBM, 2) : '0' ?></span>
+                                            <input type="hidden" name="detail[<?= $n; ?>][total_bm]" class="total_bm" id="total_bm_<?= $n; ?>" value="<?= ($totalBM) ? $totalBM : '0'; ?>">
+                                        </td>
+                                        <td class="text-right"><span id="total_pph_text_<?= $n; ?>"><?= ($totalPPH) ? number_format($totalPPH, 2)  : '0' ?></span>
+                                            <input type="hidden" name="detail[<?= $n; ?>][total_pph]" class="total_pph" id="total_pph_<?= $n; ?>" value="<?= ($totalPPH) ? $totalPPH : '0'; ?>">
+                                        </td>
+                                        <td class="text-center">
+                                            <img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
+                                        </td>
+                                        <td class="text-center d-none align-middle">
+                                            <label class="ckbox ckbox-indigo text-center mg-0">
+                                                <input type="checkbox" name="checked_item[]" checked class="item_check" data-quotation_id="<?= $header->id; ?>" data-id="<?= $dt->local_hscode; ?>" data-row="<?= $n; ?>" value="<?= $n; ?>">
+                                                <span class=""></span>
+                                            </label>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <button type="button" data-id="<?= $dt->id; ?>" class="remove-item px-1 btn btn-icon btn-sm btn-danger">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
-                                <tr class="bg-light">
-                                    <th class="text-right tx-dark font-weight-bold tx-uppercase" colspan="9">Total</th>
-                                    <th></th>
-                                    <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;" id="totalPrice"><?= number_format(($totalPrice) ?: '0', 2); ?></th>
-                                    <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format($gtotalBM, 2); ?></th>
-                                    <th class="text-right tx-dark font-weight-bold" style="background-color: #fff5c6;"><?= number_format(($gtotalPPH) ?: '0', 2); ?></th>
-                                    <th></th>
-                                </tr>
-                                <tr>
-                                    <th class="font-weight-bold tx-uppercase text-right" colspan="9">Total Non Lartas</th>
-                                    <td></td>
-                                    <th class="text-right" id="total_price_non_lartas"><?= number_format($totalNonLartas, 2); ?></th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
                             </tbody>
+                            <tfoot class="bg-light tx-dark">
+                                <tr class="font-weight-bold tx-uppercase">
+                                    <td class="text-right" colspan="12">Total</td>
+                                    <td class="text-right" id="totalPrice"><?= number_format(($totalPrice) ?: '0', 2); ?></td>
+                                    <td class="text-right" id="totalBM"><?= number_format($gtotalBM, 2); ?></td>
+                                    <td class="text-right" id="totalPPH"><?= number_format(($gtotalPPH) ?: '0', 2); ?></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="font-weight-bold tx-uppercase ">
+                                    <td class="text-right" colspan="12">Total Non Lartas</td>
+                                    <td class="text-right" id="total_price_non_lartas"><?= number_format($totalNonLartas, 2); ?></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
                         </table>
+                        <button type="button" id="add-item" class="btn btn-sm btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Add Item</button>
                     </div>
+                    <hr>
                 </div>
 
                 <div class="row pd-x-0">
@@ -657,7 +695,7 @@
                                             </div>
                                         </div>
                                         <hr class="mg-y-5">
-                                        <table class="table table-sm table-striped mb-0">
+                                        <table id="tbl_lartas" class="table table-sm table-striped mb-0">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th width="140">Name</th>
@@ -842,7 +880,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
                                                     </div>
-                                                    <input type="text" name="subtotal" id="subtotal" value="<?= number_format($header->subtotal, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                                    <input type="text" name="subtotal" id="subtotal" value="<?= number_format($header->subtotal, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off">
                                                 </div>
                                             </td>
                                         </tr>
@@ -853,7 +891,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                                     </div>
-                                                    <input type="text" name="total_bm" id="total_bm" value="<?= number_format($header->total_bm, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format($gtotalBM, 2); ?>">
+                                                    <input type="text" name="total_bm" id="total_bm" value="<?= number_format($gtotalBM, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off">
                                                 </div>
                                             </td>
                                         </tr>
@@ -864,7 +902,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                                     </div>
-                                                    <input type="text" name="total_pph" id="total_pph" value="<?= number_format($header->total_pph, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="<?= number_format(($gtotalPPH) ?: '0', 2); ?>">
+                                                    <input type="text" name="total_pph" id="total_pph" value="<?= number_format($header->total_pph, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off">
                                                 </div>
                                             </td>
                                         </tr>
@@ -877,7 +915,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                                     </div>
-                                                    <input type="text" name="total_tax" id="total_tax" value="<?= number_format($header->total_tax, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                                    <input type="text" name="total_tax" id="total_tax" value="<?= number_format($header->total_tax, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off">
                                                 </div>
                                             </td>
                                         </tr>
@@ -888,7 +926,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                                     </div>
-                                                    <input type="text" name="grand_total" id="grand_total" value="<?= number_format($header->grand_total, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                                    <input type="text" name="grand_total" id="grand_total" value="<?= number_format($header->grand_total, 2); ?>" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off">
                                                 </div>
                                             </td>
                                         </tr>
@@ -903,6 +941,17 @@
                                                 </div>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <th class="align-middle">Discount</th>
+                                            <th class="align-middle">
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text border-0 bg-white tx-16-force"><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" name="discount_value" id="discount_value" value="<?= number_format($header->discount_value); ?>" class="number-format form-control border-0 text-right tx-16-force tx-dark tx-bold" placeholder="0" autocomplete="off">
+                                                </div>
+                                            </th>
+                                        </tr>
                                         <tr class="table-secondary">
                                             <td class="align-middle tx-dark tx-bold">GRAND TOTAL Exclude <?= ($header->price_type == 'FOB') ? 'FOB' : 'CRF/CIF'; ?></td>
                                             <td class="align-middle">
@@ -910,7 +959,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
                                                     </div>
-                                                    <input type="text" name="grand_total_exclude_price" value="<?= number_format($header->grand_total_exclude_price, 2); ?>" id="grand_total_exclude_price" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off" value="">
+                                                    <input type="text" name="grand_total_exclude_price" value="<?= number_format($header->grand_total_exclude_price, 2); ?>" id="grand_total_exclude_price" class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold" placeholder="0" readonly autocomplete="off">
                                                 </div>
                                             </td>
                                         </tr>
@@ -1007,15 +1056,18 @@
                         </table>
                     </div>
                 </div>
+
                 <hr>
                 <div class="form-group">
                     <h6 class="tx-dark tx-bold">Note :</h6>
                     <div id="note"><?= $header->note; ?></div>
                 </div>
+
                 <div class="mg-t-10">
                     <button type="button" class="btn btn-sm btn-primary" onclick="edit()">Edit</button>
                     <button type="button" class="btn btn-sm btn-success" onclick="$('#note').summernote('destroy')">Save</button>
                 </div>
+
                 <hr>
                 <div class="md-10 text-center">
                     <button type="submit" class="btn btn-primary wd-100-force">
@@ -1034,10 +1086,68 @@
     </form>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="modalID" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form id="add-item-form" data-parsley-validate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save</button> -->
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSelect" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog mx-wd-95p-force" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetail" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog mx-wd-75p-force shadow" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Item HS Code</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
         $(document).on('input', '.number-format', function() {
-            $(this).mask('#,##0.00', {
+            $(this).mask('#,##0', {
                 reverse: true
             })
         })
@@ -1386,6 +1496,24 @@
             total_costing()
         })
 
+        $(document).on('click', '.remove-item', function() {
+            let id = $(this).data('id')
+            let arr = $('#deleteItem').val()
+
+            if ($(this).data('id') !== undefined) {
+                if (arr == '') {
+                    arr += $(this).data('id');
+                } else {
+                    arr += "," + $(this).data('id');
+                }
+                $('#deleteItem').val(arr)
+            }
+
+            $(this).parents('tr').remove()
+            getProductPrice()
+            getItemLartas()
+        })
+
         $(document).on('input', '.otherFeePrice', function() {
             let row = $(this).data('row')
             let exchange = parseFloat($('#exchange').val().replace(/[\,]/g, "") || 0)
@@ -1402,7 +1530,436 @@
             payment_term()
         })
 
+        $(document).on('input', '#discount_value', function() {
+            getDiscount()
+        })
+
+        $(document).on('change', '#masterCheck', function() {
+            if ($(this).is(':checked')) {
+                $('.item_check').each(function() {
+                    $(this).prop('checked', true)
+                })
+            } else {
+                $('.item_check').each(function() {
+                    $(this).prop('checked', false)
+                })
+                $('#totalPrice').text('0')
+                $('#totalPPH').text('0')
+                $('#totalBM').text('0')
+                $('#total_price_non_lartas').text('0')
+            }
+            getProductPrice()
+            getItemLartas()
+        })
+
+        $(document).on('change', '.item_check', function() {
+            getProductPrice()
+            getItemLartas()
+        })
+
+        $(document).on('input', '.qty,.unit_price', function() {
+            let row = $(this).data('row')
+            let qty = parseFloat($('#qty_' + row).val() || 0)
+            let unit_price = parseFloat($('#unit_price_' + row).val().replace(/[\,]/g, '') || 0)
+
+            let total_price = qty * unit_price
+            $('#price_' + row).val(total_price.toFixed(2))
+            $('#total_price_text_' + row).text(new Intl.NumberFormat().format(total_price.toFixed(2)))
+
+            let pph = parseFloat($('#pph_api_' + row).val() || 0)
+            let total_pph = (total_price * pph) / 100
+            $('#total_pph_' + row).val(total_pph.toFixed(2))
+            $('#total_pph_text_' + row).text(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+
+            let val = 0;
+            if ($('#bm_mfn_' + row).is(':checked') == true) {
+                val = parseFloat($('#bm_mfn_' + row).data('value'));
+            } else {
+                val = parseFloat($('#bm_e_' + row).data(':checked'));
+            }
+            getItemLartas()
+            getProductPrice()
+            getTotalBM(val, row, total_price)
+
+        })
+
+        $(document).on('change', '.bm_mfn', function() {
+            let row = $(this).data('row')
+            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let total_price = parseFloat($('#price_' + row).val() || 0)
+            $('#bm_e_' + row).prop('checked', false)
+
+            getTotalBM(val, row, total_price)
+        })
+
+        $(document).on('change', '.bm_e', function() {
+            let row = $(this).data('row')
+            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let total_price = parseFloat($('#price_' + row).val() || 0)
+            $('#bm_mfn_' + row).prop('checked', false)
+            getTotalBM(val, row, total_price)
+        })
+
+        $(document).on('click', '#add-itemx', function() {
+            let n = $('table#table-detail tbody tr:last td:first-child').data('row');
+            let html = `<tr>
+                <td data-row="` + n + `">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </td>
+                <td>
+                    <input type="hidden" name="detail[` + n + `][id]">
+                    <textarea type="text" name="detail[` + n + `][product_name]" class="form-control"></textarea>
+                </td>
+                <td>
+                    <textarea type="text" name="detail[` + n + `][specification]" class="form-control form-control-sm"></textarea>
+                </td>
+                <td class="text-center">
+                    <input type="text" name="detail[` + n + `][origin_hscode]" placeholder="HS Code" class="form-control form-control-sm">
+                </td>
+                <td class="text-center">
+                    <div class="input-group input-group-sm">
+                        <input type="text" readonly name="detail[` + n + `][local_hscode]" placeholder="HS Code" class="form-control">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" aria-pressed="false" autocomplete="off"><i class="fa fa-grip-horizontal"></i></button>
+                            </div>
+                    </div>
+                </td>
+                <td class=""></td>
+                <td class="text-center"></td>
+                <td class=""></td>
+                <td class="text-center"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-center"></td>
+                <td class="text-center align-middle">
+                    <label class="ckbox ckbox-indigo text-center mg-0">
+                        <input type="checkbox" name="checked_item[]" checked class="item_check" data-check_id="<?= $dt->quotation_id; ?>" data-id="<?= $dt->id; ?>" data-row="` + n + `" value="<?= ($n); ?>">
+                        <span class=""></span>
+                    </label>
+                </td>
+                </tr>
+            `;
+
+            $('#table-detail tbody').append(html)
+        })
+
+        $(document).on('click', '#add-item', function() {
+            let n = $('table#table-detail tbody tr:last td:first-child').data('row');
+            $('#modalID').modal('show')
+            $('#modalID .modal-body').load(siteurl + thisController + 'add_item/' + n);
+        })
+
+        $(document).on('click', '#select-hscode', function() {
+            $('#modalSelect').modal('show')
+            $('#modalSelect .modal-body').load(siteurl + thisController + 'select_hscode/');
+        })
+
+        $(document).on('click', '.view-hscode', function() {
+            let id = $(this).data('id');
+            $("#modalDetail").modal();
+            if (id) {
+                $("#modalDetail .modal-body").load(siteurl + thisController + 'view_hscode/' + id);
+                $("#modalDetail .modal-title").html('<i class="<?php echo $template['page_icon']; ?>" aria-hidden="true"></i> View HS Code');
+            } else {
+                $("#modalDetail .modal-body").html("<h5 class='text-center'>Data tidak valid</h5>");
+            }
+        })
+
+        $(document).on('click', '.select-item', function() {
+            let id = $(this).data('id');
+            $("#modalSelect").modal("hide");
+            $.ajax({
+                url: siteurl + thisController + 'getDataHscode/' + id,
+                type: 'POST',
+                data: {
+                    id
+                },
+                success: (result) => {
+                    $("#modalID .modal-body #hscode-data").html(result);
+                },
+                error: (result) => {
+                    alert('Error ajax!')
+                }
+            })
+
+        })
+
+        $(document).on('submit', '#add-item-form', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let formData = new FormData($('#add-item-form')[0])
+            let local_hscode_item = $('#local_hscode_item').val()
+
+            if (local_hscode_item == '' || local_hscode_item == undefined) {
+                alert('HS Code Belum di pilih!');
+                return false;
+            }
+
+            $("#modalSelect").modal("hide");
+            $.ajax({
+                url: siteurl + thisController + 'addItemProcess',
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                cache: false,
+                data: formData,
+                dataType: 'JSON',
+                success: (result) => {
+                    console.log(result);
+                    console.log(result.ArrRQ);
+                    $('#modalID').modal('hide')
+                    let n = $('table#table-detail tbody tr:last td:first-child').data('row') + 1;
+                    let html = `<tr>
+                        <td data-row="` + n + `">
+                            <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
+                        </td>
+                        <td>
+                            <input type="hidden" name="detail[` + n + `][id]">
+                            <input type="text" name="detail[` + n + `][product_name]" class="form-control" value="` + result.name + `">
+                        </td>
+                        <td>
+                            <input type="text" name="detail[` + n + `][specification]" class="form-control form-control-sm" value="` + result.spac + `">
+                        </td>
+                        <td class="text-center">
+                            <input type="text" name="detail[` + n + `][origin_hscode]" placeholder="HS Code" class="form-control form-control-sm" value="` + result.origin_hscode + `">
+                        </td>
+                        <td class="text-center">` + result.hs.local_code + `
+                            <input type="hidden" readonly name="detail[` + n + `][local_hscode]" placeholder="HS Code" class="form-control" value="` + result.hs.local_code + `">
+                        </td>
+                        <td class="">
+                            <ul class="pd-l-15 mg-b-0">`;
+                    if (result.ArrRQ['RQ1']) {
+                        $.each(result.ArrRQ['RQ1'], (i, item) => {
+                            html += `<li class="tx-sm"><small>` + item.name + `</small></li>`
+                        });
+                    }
+                    if (result.ArrRQ['RQ2']) {
+                        $.each(result.ArrRQ['RQ2'], (i, item) => {
+                            html += `<li class="tx-sm"><small>` + item.name + `</small></li>`
+                        });
+                    }
+                    if (result.ArrRQ['RQ3']) {
+                        $.each(result.ArrRQ['RQ3'], (i, item) => {
+                            html += `<li class="tx-sm"><small>` + item.name + `</small></li></ul>`
+                        });
+                    }
+                    let lartas = result.hs.lartas ? result.ArrLartas[result.hs.lartas] : 'Non Lartas'
+                    let lts = result.hs.lartas ? 'price_lartas' : 'price_non_lartas price_non_lartas_' + n;
+                    let valLartas = result.hs.lartas ? result.hs.lartas : '';
+                    html += `
+                        </td>
+                        <td class=""><small>` + lartas + `</small>
+                            <input type="hidden" name="detail[` + n + `][lartas]" value="` + valLartas + `">
+                        </td>
+                        <td class="text-">
+                            <label class="rdiobox rdiobox-primary d-inline-block">
+                                <input type="radio" checked class="bm_e" id="bm_e_` + n + `" name="detail[` + n + `][bm_type]" value="bm_e-` + result.hs.bm_e + `" data-value="` + (result.hs.bm_e) + `" data-row="` + n + `">
+                                <span class="pl-0">with Form E (` + (result.hs.bm_e) + `%)</span>
+                            </label>
+                            <label class="rdiobox rdiobox-primary d-inline-block">
+                                <input type="radio" class="bm_mfn" id="bm_mfn_` + n + `" name="detail[` + n + `][bm_type]" value="bm_mfn-` + (result.hs.bm_mfn) + `" data-value="` + (result.hs.bm_mfn) + `" data-row="` + n + `">
+                                <span class="pl-0">without Form E (` + (result.hs.bm_mfn) + `%)</span>
+                            </label>
+                        </td>
+                        <td class="text-center">` + result.hs.pph_api + `%
+                          <input type="hidden" name="detail[` + n + `][pph_api]" value="` + result.hs.pph_api + `" id="pph_api_` + n + `">
+                        </td>
+                        <td class="text-right">
+                          <input type="number" name="detail[` + n + `][qty]" class="form-control form-control-sm text-center qty" id="qty_` + n + `" data-row="` + n + `" value="" placeholder="0" required>
+                        </td>
+                        <td class="text-right">
+                          <input type="text" name="detail[` + n + `][unit]" class="form-control form-control-sm unit text-center" id="unit_` + n + `" data-row="` + n + `" value="" placeholder="unit" required>
+                        </td>
+                        <td class="text-right">
+                          <input type="text" name="detail[` + n + `][unit_price]" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_` + n + ` text-right" id="unit_price_` + n + `" data-row="` + n + `" placeholder="0" required>
+                        </td>
+                        <td class="text-right"><span id="total_price_text_` + n + `"></span>
+                            <input type="hidden" name="detail[` + n + `][price]" class="price ` + lts + `" id="price_` + n + `">
+                        </td>
+                        <td class="text-right"><span id="total_bm_text_` + n + `"></span>
+                            <input type="hidden" name="detail[` + n + `][total_bm]" class="total_bm" id="total_bm_` + n + `">
+                        </td>
+                        <td class="text-right"><span id="total_pph_text_` + n + `"></span>
+                            <input type="hidden" name="detail[` + n + `][total_pph]" class="total_pph" id="total_pph_` + n + `">
+                        </td>
+                        <td class="text-center">
+                            <img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid">
+                        </td>
+                        <td class="text-center d-none align-middle">
+                            <label class="ckbox ckbox-indigo text-center mg-0">
+                                <input type="checkbox" name="checked_item[]" checked class="item_check" data-quotation_id="<?= $header->id; ?>" data-id="` + result.hs.local_code + `" data-row="` + n + `" value="` + n + `">
+                                <span class=""></span>
+                            </label>
+                        </td>
+                        <td>
+                             <button type="button" class="remove-item p-1 btn-icon btn-sm btn-danger">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                             </button>
+                        </td>
+                        </tr>
+                    `;
+
+                    $('#table-detail tbody').append(html)
+                    getProductPrice()
+                    getItemLartas()
+                },
+                error: (result) => {
+                    alert('Error ajax!')
+                }
+            })
+
+        })
+
+        $('.modal').on("hidden.bs.modal", function(e) {
+            if ($('.modal:visible').length) {
+                $('body').addClass('modal-open');
+            }
+        });
     })
+
+    function getTotalBM(val, row, total_price) {
+        let total_bm = 0;
+        if (val > 0) {
+            total_bm = (total_price * val) / 100
+        }
+        $('#total_bm').val(total_bm.toFixed(2))
+        $('#total_bm_' + row).val(total_bm.toFixed(2))
+        $('#total_bm_text_' + row).text(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+        getProductPrice()
+    }
+
+    function getItemLartas() {
+        let formData = new FormData()
+        formData.append('customer_id', $('#customer_id').val());
+        formData.append('lartas_type', $('#fee_lartas_type').val());
+        $('.item_check:checked').each(function() {
+            formData.append('quotation_id', $(this).data('quotation_id'));
+            formData.append('data[]', $(this).data('id'));
+        })
+
+        let item = $('#table-detail tbody tr').length
+        if (item <= 0) {
+            $('#tbl_lartas tbody').html('')
+        } else {
+            $.ajax({
+                url: siteurl + thisController + 'getItemLartas',
+                type: 'POST',
+                dataType: 'JSON',
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: (result) => {
+                    let html = '';
+                    $('#fee_lartas_type').val('').change();
+                    $('#tbl_lartas tbody').html('')
+                    if (result.itemLartas) {
+                        $.each(result.itemLartas, function(i, item) {
+                            html += `<tr class="bg-white">
+                                <th>` + result.ArrLartas[item] + `
+                                    <input type="hidden" name="detail_fee_lartas[` + i + `][lartas_id]" value="` + item + `">
+                                    <input type="hidden" name="detail_fee_lartas[` + i + `][name]" value="` + result.ArrLartas[item] + `">
+                                </th>
+                                <th>
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white border-0">Rp.</span>
+                                        </div>
+                                        <input type="text" name="detail_fee_lartas[` + i + `][price]" data-id="` + i + `" id="price_lartas_` + item + `" readonly autocomplete="off" class="form-control bg-white border-0 text-right form-control-sm clear_input price_lartas_` + item + `" placeholder="0">
+                                    </div>
+                                </th>
+                                <th class="align-middle">/<span id="unit_` + item + `" class="unit_text"></span>
+                                    <input type="hidden" name="detail_fee_lartas[` + i + `][unit]" class="h-0 p-1 unit unit_` + item + `">
+                                </th>
+                                <td>
+                                    <input type="text" name="detail_fee_lartas[` + i + `][qty]" data-id="` + item + `" autocomplete="off" min="0" class="form-control text-center bg-white form-control-sm p-1 clear_input qty_lartas qty_lartas` + item + `" id="qty_lartas` + item + `" placeholder="0">
+                                </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white border-0">Rp.</span>
+                                        </div>
+                                        <input type="text" name="detail_fee_lartas[` + i + `][total]" readonly class="form-control form-control-sm bg-white text-right border-0 h-0 p-1 clear_input total_lartas total_lartas_` + item + `" id="total_lartas_` + item + `" placeholder="0">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white border-0">` + result.currency + `</span>
+                                        </div>
+                                        <input type="text" name="detail_fee_lartas[` + i + `][total_foreign_currency]" readonly class="form-control form-control-sm bg-white text-right border-0 h-0 p-1 clear_input total_fee_lartas_foreign_currency" id="total_lartas_foreign_currency_` + item + `" placeholder="0">
+                                    </div>
+                                </td>
+                            </tr>`;
+                        });
+
+                        $('#tbl_lartas tbody').html(html)
+                        load_price_lartas()
+                        total_costing()
+                    }
+
+                },
+                error: (result) => {
+                    Lobibox.notify('error', {
+                        icon: 'fa fa-times',
+                        msg: 'Error!! Server timeout.',
+                        position: 'top right',
+                        showClass: 'zoomIn',
+                        hideClass: 'zoomOut',
+                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                    });
+                }
+            })
+        }
+
+
+    }
+
+    function getProductPrice() {
+        let totalPrice = 0;
+        let total_bm = 0;
+        let total_pph = 0;
+        let priceNonLartas = 0;
+
+        $('.item_check').each(function() {
+            if ($(this).is(':checked', true)) {
+                let row = $(this).data('row')
+                totalPrice += parseFloat($('#price_' + row).val().replace(/\,/g, '') || 0);
+                total_bm += parseFloat($('#total_bm_' + row).val().replace(/\,/g, '') || 0);
+                total_pph += parseFloat($('#total_pph_' + row).val().replace(/\,/g, '') || 0);
+                if ($('.price_non_lartas').val() != undefined) {
+                    priceNonLartas += parseFloat($('.price_non_lartas').val().replace(/\,/g, '') || 0);
+                }
+            }
+        })
+
+        $('#totalPrice').text(new Intl.NumberFormat().format(totalPrice.toFixed(2)))
+        $('#total_price_non_lartas').text(new Intl.NumberFormat().format(priceNonLartas.toFixed(2)))
+
+        $('#totalBM').text(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+        $('#totalPPH').text(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+        $('#total_pph').val(new Intl.NumberFormat().format(total_pph.toFixed(2)))
+
+        $('#total_bm').val(new Intl.NumberFormat().format(total_bm.toFixed(2)))
+        $('#total_product').val(new Intl.NumberFormat().format(totalPrice.toFixed(2)));
+        $('#min_total_product').val("(" + new Intl.NumberFormat().format(totalPrice.toFixed(2)) + ")");
+
+        subtotal()
+        load_price()
+    }
+
+    function getDiscount() {
+        let disc = parseFloat($('#discount_value').val().replace(/[\,]/g, "") || 0)
+        let grand_total = parseFloat($('#grand_total').val().replace(/[\,]/g, "") || 0)
+        let total_product = parseFloat($('#total_product').val().replace(/[\,]/g, "") || 0)
+
+        let gTotalAftDisc = grand_total - total_product - disc;
+        $('#grand_total_exclude_price').val(new Intl.NumberFormat().format(gTotalAftDisc.toFixed(2)))
+    }
 
     function payment_term() {
         let total_product = parseFloat($('#total_product').val().replace(/\,/g, '') || 0)
@@ -1545,6 +2102,8 @@
                     $('#fee_customer').val(result.totalFeeCSJ.fee_customer);
                     $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
                     total_costing()
+                    getDiscount()
+
                     if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                         Lobibox.notify('warning', {
                             icon: 'fa fa-exclamation',
@@ -1573,7 +2132,7 @@
 
     function load_price_lartas() {
         let formData = new FormData()
-        formData.append('id', $('#check_id').val());
+        formData.append('id', $('#local_code').val());
         formData.append('fee_lartas_type', $('#fee_lartas_type').val());
         formData.append('customer_id', $('#customer_id').val());
         formData.append('exchange', $('#exchange').val());
@@ -1588,6 +2147,7 @@
                 contentType: false,
                 cache: false,
                 success: (result) => {
+                    console.log(result);
                     $('#total_fee_lartas').val(0)
                     $('#total_fee_lartas_foreign_currency').val(0)
                     if (result.lartas.length > 0) {

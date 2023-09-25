@@ -67,6 +67,7 @@ class Requests extends Admin_Controller
         OR `country_name` LIKE '%$string%'
         OR `country_code` LIKE '%$string%'
         OR `employee_name` LIKE '%$string%'
+        OR `description` LIKE '%$string%'
         OR `status` LIKE '%$string%')";
 
 		$totalData = $this->db->query($sql)->num_rows();
@@ -78,7 +79,7 @@ class Requests extends Admin_Controller
 			2 => 'number',
 			3 => 'project_name',
 			4 => 'date',
-			5 => 'country_name',
+			5 => 'description',
 			6 => 'employee_name',
 			7 => 'revision_count',
 			8 => 'modified_at',
@@ -141,7 +142,7 @@ class Requests extends Admin_Controller
 			$nestedData[]  = $row['number'];
 			$nestedData[]  = $row['project_name'];
 			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
-			$nestedData[]  = $row['country_code'] . " - " . $row['country_name'];
+			$nestedData[]  = $row['description'];
 			$nestedData[]  = $row['employee_name'];
 			$nestedData[]  = $row['revision_count'];
 			$nestedData[]  = $status[$row['status']];

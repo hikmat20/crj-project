@@ -122,99 +122,150 @@
 </head>
 
 <body>
-    <div style="padding: 0px 25px;">
+    <div style="padding: 20px 25px;">
         <table class="bordered colored" width="100%">
             <thead>
-                <tr style="background-color:lightgray;">
-                    <th class="text-center align-middle" rowspan="2">No. <span class="fontA">序号</span></th>
-                    <th class="text-center align-middle" rowspan="2">Items<br><span style="font-family: sun-exta">货物品名</span></th>
-                    <th class="text-center align-middle" rowspan="2">Specification<br><span class="fontA">规格</span></th>
-                    <th class="text-center align-middle" rowspan="2">HS Code<br><span style="font-family: sun-exta">海关编码</span></th>
-                    <th class="text-center align-middle" rowspan="2">Add Doc.<br><span class="fontA">清关文件</span>
-                    </th>
-                    <th class="text-center align-middle" rowspan="2">BM without<br>form E<br><span class="fontA">进口税率</span></th>
-                    <th class="text-center align-middle" rowspan="2">BM with<br>form E<br><span class="fontA">产地证税优惠</span></th>
-                    <th class="text-center align-middle" rowspan="2">PPH<br><span class="fontA">所得税率</span></th>
-                    <th class="text-center align-middle" colspan="6">AMOUNT <span style="font-family: sun-exta">总价</span></th>
-                    <th class="text-center align-middle" rowspan="2">Remark<br><span class="fontA">备注</span>
-                    </th>
-                </tr>
-                <tr style="background-color:lightgray">
-                    <th colspan="2" class="text-center border border-top-0 border-right-0">Price (<?= ($header->price_type == 'FOB') ? 'FOB' : 'CFR/CIF'; ?>)</th>
-                    <th colspan="2" class="text-center align-middle">BM<br><span style="font-family: sun-exta">进口税</span></th>
-                    <th colspan="2" class="text-center align-middle">PPh<br><span style="font-family: sun-exta">预付税</span></th>
+                <tr style="background-color:#FFE699;">
+                    <th class="text-center align-middle">UNDERNAME WITH CUSTOM <span class="fontA">操作费</span></th>
+                    <th class="text-center align-middle">QTY</th>
+                    <th class="text-center align-middle">UM</th>
+                    <th class="text-center align-middle" colspan="2">UNIT PRICE</th>
+                    <th class="text-center align-middle" colspan="2">TOTAL (RUPIAH)</th>
+                    <th class="text-center align-middle" colspan="2">TOTAL (CNY)</th>
                 </tr>
             </thead>
             <tbody>
-                <?php $n = $totalPrice = $totalPPH = $totalBM = $gtotalBM = $gtotalPPH = 0;
-                $no_image = base_url('assets/no-image.jpg');
-                if ($details) foreach ($details as $dt) : $n++;
-                    $totalPrice   += $dt->price;
-                    $totalBM    = $dt->price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                    $totalPPH   = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
-                    $gtotalBM   += $totalBM;
-                    $gtotalPPH  += $totalPPH;
-                    $img = '';
-                    if ($dt->image) {
-                        $img = $dt->image;
-                    }
-                ?>
-                    <tr class="tx-dark">
-                        <td class="text-center"><?= $n; ?></td>
-                        <td class="fontA"><?= $dt->product_name; ?></td>
-                        <td class="fontA"><?= $dt->specification; ?></td>
-                        <td class="text-center"><?= $dt->origin_hscode; ?></td>
-                        <td class="" style="font-size: 5pt;">
-                            <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
-                                $idHs = $ArrHscode[$dt->origin_hscode]->id;
-                            ?>
-                                <ul class="pd-l-15">
-                                    <?php if (isset($ArrDocs[$idHs])) : ?>
-                                        <?php if (isset($ArrDocs[$idHs]['RQ1'])) : ?>
-                                            <?php foreach ($ArrDocs[$idHs]['RQ1'] as $d) : ?>
-                                                <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
+                <!-- ocean_freight -->
 
-                                        <?php if (isset($ArrDocs[$idHs]['RQ2'])) : ?>
-                                            <?php foreach ($ArrDocs[$idHs]['RQ2'] as $d) : ?>
-                                                <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
 
-                                        <?php if (isset($ArrDocs[$idHs]['RQ3'])) : ?>
-                                            <?php foreach ($ArrDocs[$idHs]['RQ3'] as $d) : ?>
-                                                <li class="tx-sm"><small><?= $d->name ?></small></li>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-                                </ul>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%</td>
-                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td>
-                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
+
+
+
+
+                <tr class="tx-dark">
+                    <td class="">OCEAN FREIGHT <span class="fontA"></span></td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['ocean_freight']->price) ? number_format(($ArrCosting['ocean_freight']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['ocean_freight']->total)) ? number_format(($ArrCosting['ocean_freight']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['ocean_freight']->total_foreign_currency)) ? number_format(($ArrCosting['ocean_freight']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr class="tx-dark">
+                    <td class="">THC <span class="fontA">码头作业费</span></td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['shipping']->price) ? number_format(($ArrCosting['shipping']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['shipping']->total)) ? number_format(($ArrCosting['shipping']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['shipping']->total_foreign_currency)) ? number_format(($ArrCosting['shipping']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr>
+                    <td class="">CUSTOM CLEARANCE + LIFT ON/OFF <span class="fontA">清关和装卸费</span></td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['custom_clearance']->price) ? number_format(($ArrCosting['custom_clearance']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['custom_clearance']->total)) ? number_format(($ArrCosting['custom_clearance']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['custom_clearance']->total_foreign_currency)) ? number_format(($ArrCosting['custom_clearance']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr>
+                    <td class="text-">STORAGE ESTIMATED 7DAYS <span class="fontA">仓储费 (预计7天)</span></td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['storage']->price) ? number_format(($ArrCosting['storage']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['storage']->total)) ? number_format(($ArrCosting['storage']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['storage']->total_foreign_currency)) ? number_format(($ArrCosting['storage']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr>
+                    <td class="text-">LAPORAN SURVEYOR <span class="fontA">商检费</span>
+                    </td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['surveyor']->price) ? number_format(($ArrCosting['surveyor']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['surveyor']->total)) ? number_format(($ArrCosting['surveyor']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['surveyor']->total_foreign_currency)) ? number_format(($ArrCosting['surveyor']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr>
+                    <td class="text-">TRUCKING <span class="fontA">雅加达区域派送费</span>
+                    </td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['trucking']->price) ? number_format(($ArrCosting['trucking']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['trucking']->total)) ? number_format(($ArrCosting['trucking']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['trucking']->total_foreign_currency)) ? number_format(($ArrCosting['trucking']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr>
+                    <td class="text-">Fee CSJ <span class="fontA">操作费</span></td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['fee_csj']->price) ? number_format(($ArrCosting['fee_csj']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['fee_csj']->total)) ? number_format(($ArrCosting['fee_csj']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['fee_csj']->total_foreign_currency)) ? number_format(($ArrCosting['fee_csj']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <tr>
+                    <td class="text-">Fee Lartas <span class="fontA">配额费</span></td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['ocean_freight']->price) ? number_format(($ArrCosting['ocean_freight']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['ocean_freight']->total)) ? number_format(($ArrCosting['ocean_freight']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['ocean_freight']->total_foreign_currency)) ? number_format(($ArrCosting['ocean_freight']->total_foreign_currency))  : '0' ?></td>
+                </tr>
+                <!-- <tr>
+                    <td class="text- fontA">SPJM 查验费</td>
+                    <td class="text-center"><?= $header->qty_container; ?></td>
+                    <td class="text-center">Container</td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= ($ArrCosting['ocean_freight']->price) ? number_format(($ArrCosting['ocean_freight']->price)) : '0' ?></td>
+                    <td style="border-right:none">Rp. </td>
+                    <td class="text-right"><?= (($ArrCosting['ocean_freight']->total)) ? number_format(($ArrCosting['ocean_freight']->total)) : '0' ?></td>
+                    <td style="border-right:none"><?= $currSymbol; ?></td>
+                    <td class="text-right"><?= (($ArrCosting['ocean_freight']->total_foreign_currency)) ? number_format(($ArrCosting['ocean_freight']->total_foreign_currency))  : '0' ?></td>
+                </tr> -->
+                <?php foreach ($otherCost as $n => $oth) : $n++; ?>
+                    <tr class="othFee">
+                        <td><span class="fontA"><?= str_replace("OTH-", "", $oth->name); ?></span></td>
+                        <td class="text-center"><?= $header->qty_container; ?></td>
+                        <td class="text-center">Container</td>
+                        <td style="border-right:none">Rp. </td>
+                        <td><?= number_format($oth->price); ?></td>
+                        <td style="border-right:none">Rp. </td>
+                        <td><?= number_format($oth->total); ?></td>
                         <td style="border-right:none"><?= $currSymbol; ?></td>
-                        <td class="text-right"><?= ($dt->price) ? number_format($dt->price) : '0' ?></td>
-                        <td style="border-right:none"><?= $currSymbol; ?></td>
-                        <td class="text-right"><?= ($totalBM) ? number_format($totalBM) : '0' ?></td>
-                        <td style="border-right:none"><?= $currSymbol; ?></td>
-                        <td class="text-right"><?= ($totalPPH) ? number_format($totalPPH)  : '0' ?></td>
-                        <td><?= $dt->remarks; ?></td>
+                        <td><?= number_format($oth->total_foreign_currency, 2); ?></td>
                     </tr>
-                    <!-- <td class="text-center"><img src="<?= ($img) ? base_url($img) : $no_image; ?>" alt="<?= ($dt->image) ?: 'no-image'; ?>" width="50px" class="img-fluid"></td> -->
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
-                <tr class="bg-light" style="background-color:lightgray">
-                    <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="8">Total</th>
+                <tr class="bg-light" style="background-color:yellow">
+                    <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="3">Total</th>
+                    <td style="border-right:none"></td>
+                    <th class="text-right tx-dark font-weight-bold" id="totalPrice"></th>
                     <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <th class="text-right tx-dark font-weight-bold" id="totalPrice"><?= number_format(($totalPrice) ?: '0'); ?></th>
+                    <th class="text-right tx-dark font-weight-bold"><?= $header->qty_container; ?></th>
                     <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <th class="text-right tx-dark font-weight-bold"><?= number_format($gtotalBM); ?></th>
-                    <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <th class="text-right tx-dark font-weight-bold"><?= number_format(($gtotalPPH) ?: '0'); ?></th>
-                    <th></th>
+                    <th class="text-right tx-dark font-weight-bold"><?= $header->qty_container; ?></th>
                 </tr>
             </tfoot>
         </table>

@@ -384,6 +384,11 @@
                             <td style="border-right:none;"><?= $currSymbol; ?> </td>
                             <td class="text-right">(<?= number_format($header->total_product); ?>)</td>
                         </tr>
+                        <tr>
+                            <td colspan="2">Discount <span class="fontA"></span></td>
+                            <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                            <td class="text-right">(<?= number_format($header->discount_value); ?>)</td>
+                        </tr>
                         <tr style="background-color:#fff30f">
                             <th colspan="2">TOTAL COST (Exclude <?= ($header->price_type == 'FOB') ? 'FOB' : 'CFR/CIF'; ?>) <span class="fontA">总清关费 (不含货物)</span></th>
                             <td style="border-right:none;"><?= $currSymbol; ?> </td>

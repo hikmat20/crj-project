@@ -119,7 +119,7 @@
         <tr>
             <th width="200">Checking Number</th>
             <td width="20">:</td>
-            <td><?= (isset($request)) ? $request->id : null; ?></td>
+            <td><?= (isset($request)) ? $request->number : null; ?></td>
             <td></td>
             <th width="200">Marketing</th>
             <td width="20">:</td>

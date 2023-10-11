@@ -829,7 +829,7 @@ class Requests extends Admin_Controller
 				$totalFee = $fee_customer_value;
 				$feePrice 	= $totalFee;
 				$feeTotal	= $totalFee * $qty_container;
-				$feeTotal_foreign_currency = $totalFee / $exchange;
+				$feeTotal_foreign_currency = $feeTotal / $exchange;
 			}
 		}
 

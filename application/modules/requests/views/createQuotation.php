@@ -368,13 +368,13 @@
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
                     <td class="text-right">
-                        <input type="number" name="detail[<?= $n; ?>][qty]" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0">
+                        <input type="number" name="detail[<?= $n; ?>][qty]" step=".01" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0">
                     </td>
                     <td class="text-right">
                         <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="unit">
                     </td>
                     <td class="text-right">
-                        <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0">
+                        <input type="text" name="detail[<?= $n; ?>][unit_price]" step=".01" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0">
                     </td>
                     <td class="text-right"><span id="total_price_text_<?= $n; ?>"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?></span>
                         <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas price_non_lartas_' . $n; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">

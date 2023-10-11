@@ -191,8 +191,8 @@
                 $no_image = base_url('assets/no-image.jpg');
                 if ($details) foreach ($details as $dt) : $n++;
                     $totalPrice   += $dt->price;
-                    $totalBM    = $dt->price * ($ArrHscode[$dt->origin_hscode]->bm_e / 100);
-                    $totalPPH   = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+                    $totalBM    = $dt->price * ($ArrHscode[$dt->local_hscode]->bm_e / 100);
+                    $totalPPH   = ($dt->price + $totalBM) * ($ArrHscode[$dt->local_hscode]->pph_api / 100);
                     $gtotalBM   += $totalBM;
                     $gtotalPPH  += $totalPPH;
                     $img = '';
@@ -206,8 +206,8 @@
                         <td class="fontA"><?= $dt->specification; ?></td>
                         <td class="text-center"><?= $dt->origin_hscode; ?></td>
                         <td class="" style="font-size: 5pt;">
-                            <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
-                                $idHs = $ArrHscode[$dt->origin_hscode]->id;
+                            <?php if (isset($ArrHscode[$dt->local_hscode]->id)) :
+                                $idHs = $ArrHscode[$dt->local_hscode]->id;
                             ?>
                                 <ul class="pd-l-15">
                                     <?php if (isset($ArrDocs[$idHs])) : ?>
@@ -232,9 +232,9 @@
                                 </ul>
                             <?php endif; ?>
                         </td>
-                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_mfn) ?: 0; ?>%</td>
-                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td>
-                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
+                        <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->bm_mfn) ?: 0; ?>%</td>
+                        <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->bm_e) ?: 0; ?>%</td>
+                        <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>%</td>
                         <td style="border-right:none"><?= $currSymbol; ?></td>
                         <td class="text-right"><?= ($dt->price) ? number_format($dt->price) : '0' ?></td>
                         <td style="border-right:none"><?= $currSymbol; ?></td>

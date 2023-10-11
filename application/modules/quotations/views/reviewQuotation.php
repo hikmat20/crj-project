@@ -1,25 +1,70 @@
 <div class="alert alert-bordered alert-info mg-t-15" role="alert">
-    <div class="form-group row">
-        <label for="" class="col-md-2">SO Type</label>
-        <div class="col-md-2">
-            <select name="so_type" id="so_type" class="select form-control" required>
-                <option value="">~ Choose one ~</option>
-                <?php if ($header->service_type == 'undername') : ?>
-                    <option value="AS_PER_BILL">As per Bill</option>
-                    <option value="ALL_IN">All In</option>
-                <?php elseif ($header->service_type == 'ddu') : ?>
-                    <option value="DDU" selected>DDU</option>
-                <?php endif; ?>
-            </select>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group row">
+                <label for="" class="col-md-3 tx-bold">SO Type</label>
+                <div class="col-md-4">
+                    <div id="errSOType" class="parsley-select">
+                        <select name="so_type" id="so_type" class="select form-control" required data-parsley-inputs data-parsley-class-handler="#errSOType" data-parsley-errors-container="#errContainerSOType">
+                            <option value="">~ Choose one ~</option>
+                            <?php if ($header->service_type == 'undername') : ?>
+                                <option value="AS_PER_BILL">As per Bill</option>
+                                <option value="ALL_IN">All In</option>
+                            <?php elseif ($header->service_type == 'ddu') : ?>
+                                <option value="DDU" selected>DDU</option>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                    <div id="errContainerSOType"></div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="" class="col-md-3 tx-bold">Supplier</label>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <div id="errSupplier" class="parsley-select">
+                            <select name="supplier_id" id="supplier_id" class="select form-control" required data-parsley-inputs data-parsley-class-handler="#errSupplier" data-parsley-errors-container="#errContainerSupplier">
+                                <option value="">~ Choose one ~</option>
+                                <?php if ($suppliers) foreach ($suppliers as $sup) : ?>
+                                    <option value="<?= $sup->id; ?>"><?= $sup->supplier_name; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div id="errContainerSupplier"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="supplier_name" id="supplier-name" class="form-control" placeholder="Supplier Name"></input>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="supplier_address" id="supplier-address" class="form-control" placeholder="Supplier Address"></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group row">
+                <label for="" class="col-md-3 tx-bold">Consignee</label>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <div id="errCompany" class="parsley-select">
+                            <input type="hidden" readonly class="form-control" value="<?= $header->company_id; ?>">
+                            <input type="text" name="company_name" id="company-name" class="form-control form-control" placeholder="Company Name" value="<?= $company->company_name; ?>">
+                        </div>
+                        <div id="errContainerCompany"></div>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="company_address" id="company-address" class="form-control" placeholder="Company Address"><?= $company->address; ?></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label for="" class="col-md-2"></label>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary getDeal">
-                <i class="fas fa-handshake"></i>
-                DEAL QUOTATION</button>
-        </div>
+
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary getDeal">
+            <i class="fas fa-handshake"></i>
+            DEAL QUOTATION</button>
     </div>
 </div>
 
@@ -59,19 +104,19 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <label for="date-request" class="tx-dark tx-bold col-md-4 pd-x-0">Date Request</label>:
+                            <label for="date-request" class="tx-dark tx-bold col-md-9 pd-x-0">Date Request</label>:
                             <?= $header->date; ?>
                         </div>
                         <div class="row">
-                            <label for="marketing_name" class="tx-dark tx-bold col-md-4 pd-x-0">Marketing</label>:
+                            <label for="marketing_name" class="tx-dark tx-bold col-md-9 pd-x-0">Marketing</label>:
                             <?= $header->employee_name; ?>
                         </div>
                         <div class="row">
-                            <label for="desc" class="tx-dark tx-bold col-md-4 pd-x-0">Description</label>:
+                            <label for="desc" class="tx-dark tx-bold col-md-9 pd-x-0">Description</label>:
                             <?= $header->description; ?>
                         </div>
                         <div class="row">
-                            <label for="currency" class="tx-dark tx-bold col-md-4 pd-x-0">Currency</label>:
+                            <label for="currency" class="tx-dark tx-bold col-md-9 pd-x-0">Currency</label>:
                             <?= (isset($currency) && $currency) ? $currency_code . " - " . $currency : ''; ?>
                         </div>
                     </div>
@@ -88,7 +133,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <label for="exchange" class="tx-dark tx-bold col-md-4 pd-x-0">Exchange Rate (Kurs)</label>
+                            <label for="exchange" class="tx-dark tx-bold col-md-9 pd-x-0">Exchange Rate (Kurs)</label>
                             <div class="col-md-7 px-0">: Rp. <?= (isset($header->exchange) && $header->exchange) ? number_format($header->exchange, 2) : ''; ?>
                             </div>
                         </div>
@@ -135,13 +180,13 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mg-b-0 row">
-                            <label for="fee_type" class="tx-dark tx-bold col-md-4 pd-x-0">Fee Type</label>
+                            <label for="fee_type" class="tx-dark tx-bold col-md-9 pd-x-0">Fee Type</label>
                             <div class="col-md-7 px-0">:
                                 <?= ($header->fee_type == 'V') ? 'Fee Standard (CSJ)' : 'Fee Coporate (Customer)'; ?>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-7 offset-md-4 px-0 mg-b-5">
+                            <div class="col-md-7 offset-md-9 px-0 mg-b-5">
                                 <div class="d-flex justify-content-start">
                                     &nbsp;&nbsp;&nbsp;<span class="">Standard :&nbsp;</span>
                                     <?= number_format($header->fee_value) . "%"; ?>
@@ -153,7 +198,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="container_id" class="tx-dark tx-bold col-md-4 pd-x-0">Container</label>
+                            <label for="container_id" class="tx-dark tx-bold col-md-9 pd-x-0">Container</label>
                             <div class="col-md-7 px-0">
                                 <div class="row">
                                     <div class="col-sm-3">:
@@ -168,11 +213,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="stacking_days" class="tx-dark tx-bold col-md-4 pd-x-0">Days stacking est.</label>
+                            <label for="stacking_days" class="tx-dark tx-bold col-md-9 pd-x-0">Days stacking est.</label>
                             <div class="col-md-7 px-0">: <?= $header->stacking_days; ?>&nbsp;Days</div>
                         </div>
                         <div class="row">
-                            <label for="ls_type" class="tx-dark tx-bold col-md-4 pd-x-0">LS Type</label>
+                            <label for="ls_type" class="tx-dark tx-bold col-md-9 pd-x-0">LS Type</label>
                             <div class="col-md-7 px-0">
                                 <div class="row">
                                     <div class="col-sm-3">:
@@ -225,7 +270,7 @@
                                 if ($details) foreach ($details as $dt) : $n++;
                                     $totalPrice  += $dt->price;
                                     $totalBM     = ($dt->price * $dt->bm_value) / 100;
-                                    $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
+                                    $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->local_hscode]->pph_api / 100);
                                     $gtotalBM   += $totalBM;
                                     $gtotalPPH  += $totalPPH;
 
@@ -245,8 +290,8 @@
                                         <td class="text-center"><?= $dt->origin_hscode; ?></td>
                                         <td class="text-center"><?= $dt->local_hscode; ?></td>
                                         <td class="">
-                                            <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
-                                                $idHs = $ArrHscode[$dt->origin_hscode]->id;
+                                            <?php if (isset($ArrHscode[$dt->local_hscode]->id)) :
+                                                $idHs = $ArrHscode[$dt->local_hscode]->id;
                                             ?>
                                                 <ul class="pd-l-15 mg-b-0">
                                                     <?php if (isset($ArrDocs[$idHs])) : ?>
@@ -275,8 +320,8 @@
                                         <td class="text-center">
                                             <?= ($dt->bm_type == 'bm_mfn') ? 'without Form E<br>(' . $dt->bm_value . '%)' : 'with Form E<br>(' . $dt->bm_value . '%)' ?>
                                         </td>
-                                        <!-- <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->bm_e) ?: 0; ?>%</td> -->
-                                        <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
+                                        <!-- <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->bm_e) ?: 0; ?>%</td> -->
+                                        <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>%</td>
                                         <td class="text-right"><?= ($dt->qty) ? number_format($dt->qty, 2) : '0' ?></td>
                                         <td class="text-center"><?= ($dt->unit) ? ($dt->unit) : '0' ?></td>
                                         <td class="text-right"><?= ($dt->unit_price) ? number_format($dt->unit_price, 2) : '0' ?></td>
@@ -486,7 +531,7 @@
                                     <th colspan="4">
                                         <div class="form-group row mg-b-0">
                                             <label for="fee_lartas_type" class="col-md-3">Fee Lartas</label>
-                                            <div class="col-md-4"> :
+                                            <div class="col-md-9"> :
                                                 <?= (isset($header->fee_lartas_type) && $header->fee_lartas_type == 'STD') ? 'Standard' : 'Corporate'; ?>
                                             </div>
                                         </div>
@@ -796,3 +841,14 @@
         </div>
     </div>
 </div><!-- card -->
+
+<script>
+    $(document).ready(function() {
+        $('.select').select2({
+            placeholder: 'Choose one',
+            dropdownParent: $('#dialog-deal .modal-body'),
+            width: "100%",
+            allowClear: true
+        });
+    })
+</script>

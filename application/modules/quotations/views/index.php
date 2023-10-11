@@ -482,7 +482,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                                     soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
                                 });
                                 $("#dialog-deal").modal('toggle');
-                                // loadData('')
+                                loadData('')
                             } else {
                                 Lobibox.notify('warning', {
                                     icon: 'fa fa-ban',
@@ -497,6 +497,75 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                     })
                 }
             })
+        })
+
+        $(document).on('change', '#supplier_id', function() {
+            let supplier_id = $(this).val()
+            $('#supplier-name').val('')
+            $('#supplier-address').val('')
+            if (supplier_id) {
+                $.ajax({
+                    url: siteurl + thisController + 'getSupplier',
+                    dataType: 'JSON',
+                    data: {
+                        supplier_id
+                    },
+                    success: function(result) {
+                        console.log(result);
+                        if (result.supplier) {
+                            let supplier = result.supplier
+                            $('#supplier-name').val(supplier.supplier_name)
+                            $('#supplier-address').val(supplier.address)
+                        }
+                    },
+                    error: function(result) {
+                        Lobibox.notify('error', {
+                            title: 'Error!!!',
+                            icon: 'fa fa-times',
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            msg: 'Internal server error. Ajax process failed.'
+                        });
+                    }
+                })
+            }
+        })
+
+        $(document).on('change', '#company_id', function() {
+            let company_id = $(this).val()
+            $('#company-name').val('')
+            $('#company-address').val('')
+
+            if (company_id) {
+                $.ajax({
+                    url: siteurl + thisController + 'getCompany',
+                    dataType: 'JSON',
+                    data: {
+                        company_id
+                    },
+                    success: function(result) {
+                        console.log(result);
+                        if (result.company) {
+                            let company = result.company
+                            $('#company-name').val(company.company_name)
+                            $('#company-address').val(company.address)
+                        }
+                    },
+                    error: function(result) {
+                        Lobibox.notify('error', {
+                            title: 'Error!!!',
+                            icon: 'fa fa-times',
+                            position: 'top right',
+                            showClass: 'zoomIn',
+                            hideClass: 'zoomOut',
+                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                            msg: 'Internal server error. Ajax process failed.'
+                        });
+                    }
+                })
+            }
         })
     })
 

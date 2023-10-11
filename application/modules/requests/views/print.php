@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title><?= $request->customer_name; ?>[<?= $request->id; ?>]</title>
+    <title><?= $request->customer_name; ?>[<?= $request->number; ?>]</title>
     <style>
         body {
             width: 100%;

@@ -42,8 +42,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label for="date-request" class="tx-dark tx-bold col-md-4 pd-x-0">Date Request</label>
-                            <input type="text" id="date-request" value="<?= $header->date; ?>" readonly class="form-control form-control-sm col-md-7" placeholder="-">
+                            <label for="date-request" class="tx-dark tx-bold col-md-4 pd-x-0">Date Quotation</label>
+                            <input type="date" id="date-quotation" name="date" value="<?= $header->date; ?>" class="form-control form-control-sm col-md-7" placeholder="-">
                         </div>
                         <div class="form-group row">
                             <label for="marketing_name" class="tx-dark tx-bold col-md-4 pd-x-0">Marketing</label>
@@ -199,7 +199,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Standard</span>
                                     </div>
-                                    <input type="text" name="fee" id="fee" readonly autocomplete="off" value="<?= number_format($header->fee_value); ?>" min="0" class="form-control text-right" placeholder="0">
+                                    <input type="text" name="fee" id="fee" readonly autocomplete="off" value="<?= number_format($header->fee); ?>" min="0" class="form-control text-right" placeholder="0">
                                 </div>
                                 <div class="input-group input-group-sm mg-t-10">
                                     <div class="input-group-prepend">
@@ -385,13 +385,16 @@
                                             <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>" id="pph_api_<?= $n; ?>">
                                         </td>
                                         <td class="text-right">
-                                            <input type="number" name="detail[<?= $n; ?>][qty]" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->qty; ?>" placeholder="0" required>
+                                            <input type="number" name="detail[<?= $n; ?>][qty]" data-parsley-inputs step=".01" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->qty; ?>" placeholder="0" required>
                                         </td>
                                         <td class="text-right">
                                             <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit; ?>" placeholder="unit" required>
                                         </td>
                                         <td class="text-right">
-                                            <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit_price; ?>" placeholder="0" required>
+                                            <div id="unitPrice" class="">
+                                                <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-inputs step=".01" data-parsley-type="number" data-parsley-class-handler="#unitPrice" data-parsley-errors-container="#errUnitPrice" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit_price; ?>" placeholder="0" required>
+                                            </div>
+                                            <div id="errUnitPrice"></div>
                                         </td>
                                         <td class="text-right"><span id="total_price_text_<?= $n; ?>"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?></span>
                                             <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas price_non_lartas_' . $n; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
@@ -1585,7 +1588,7 @@
 
         $(document).on('change', '.bm_mfn', function() {
             let row = $(this).data('row')
-            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let val = parseFloat($(this).data('value'))
             let total_price = parseFloat($('#price_' + row).val() || 0)
             $('#bm_e_' + row).prop('checked', false)
 
@@ -1594,7 +1597,7 @@
 
         $(document).on('change', '.bm_e', function() {
             let row = $(this).data('row')
-            let val = parseFloat($(this).data('value').replace(/[\,]/g, '') || 0)
+            let val = parseFloat($(this).data('value'))
             let total_price = parseFloat($('#price_' + row).val() || 0)
             $('#bm_mfn_' + row).prop('checked', false)
             getTotalBM(val, row, total_price)

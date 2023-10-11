@@ -487,6 +487,7 @@ class Check_hscode extends Admin_Controller
 		]);
 		$html = $this->template->load_view('print');
 		$mpdf->WriteHTML($html);
-		$mpdf->Output();
+		$name = $request->customer_name . " " . $request->number;
+		$mpdf->Output(str_replace("/", "-", $name), 'I');
 	}
 }

@@ -174,7 +174,6 @@ class Quotations_model extends BF_Model
         $this->db->update("quotations", ['status' => 'DEAL'], ['id' => $post['quotation_id']]);
         simpan_aktifitas('1', $post['quotation_id'], 'Update quotation to deal', '1', $this->db->last_query(), '1');
 
-
         /* header SO */
         $result = $this->db->get_where('quotations', ['id' => $post['quotation_id']])->row();
         $dataSO = [
@@ -182,6 +181,9 @@ class Quotations_model extends BF_Model
             'quotation_id'                   => $post['quotation_id'],
             'number'                         => $this->getSONumber(),
             'date'                           => date('Y-m-d'),
+            'supplier_id'                    => $post['supplier_id'],
+            'supplier_name'                  => $post['supplier_name'],
+            'supplier_address'               => $post['supplier_address'],
             'currency'                       => $result->currency,
             'description'                    => $result->description,
             'exchange'                       => $result->exchange,
@@ -190,6 +192,8 @@ class Quotations_model extends BF_Model
             'project_name'                   => $result->project_name,
             'marketing_id'                   => $result->marketing_id,
             'company_id'                     => $result->company_id,
+            'company_name'                   => $post['company_name'],
+            'company_address'                => $post['company_address'],
             'port_loading'                   => $result->port_loading,
             'port_discharge'                 => $result->port_discharge,
             'dest_city'                      => $result->dest_city,
@@ -233,98 +237,105 @@ class Quotations_model extends BF_Model
 
         /* Detail SO */
         $resultDtl      = $this->db->get_where('quotation_details', ['quotation_id' => $post['quotation_id']])->result();
-        if ($resultDtl) foreach ($resultDtl as $k => $dtl) {
-            $k++;
-            $dataSODtl[$k] = [
-                'id'                => $dataSO['id'] . "-" . sprintf("%04d", $k),
-                'so_id'             => $dataSO['id'],
-                'product_name'      => $dtl->product_name,
-                'specification'     => $dtl->specification,
-                'origin_hscode'     => $dtl->origin_hscode,
-                'local_hscode'      => $dtl->local_hscode,
-                'remarks'           => $dtl->remarks,
-                'lartas'            => $dtl->lartas,
-                'qty'               => $dtl->qty,
-                'unit'              => $dtl->unit,
-                'unit_price'        => $dtl->unit_price,
-                'bm_type'           => $dtl->bm_type,
-                'bm_value'          => $dtl->bm_value,
-                'pph_api'           => $dtl->pph_api,
-                'total_price'       => $dtl->price,
-                'total_bm'          => $dtl->total_bm,
-                'total_pph'         => $dtl->total_pph,
-                'image'             => $dtl->image,
-                'created_at'        => date('Y-m-d H:i:s'),
-                'created_by'        => $this->auth->user_id(),
-            ];
+        if ($resultDtl) {
+            foreach ($resultDtl as $k => $dtl) {
+                $k++;
+                $dataSODtl[$k] = [
+                    'id'                => $dataSO['id'] . "-" . sprintf("%04d", $k),
+                    'so_id'             => $dataSO['id'],
+                    'product_name'      => $dtl->product_name,
+                    'specification'     => $dtl->specification,
+                    'origin_hscode'     => $dtl->origin_hscode,
+                    'local_hscode'      => $dtl->local_hscode,
+                    'remarks'           => $dtl->remarks,
+                    'lartas'            => $dtl->lartas,
+                    'qty'               => $dtl->qty,
+                    'unit'              => $dtl->unit,
+                    'unit_price'        => $dtl->unit_price,
+                    'bm_type'           => $dtl->bm_type,
+                    'bm_value'          => $dtl->bm_value,
+                    'pph_api'           => $dtl->pph_api,
+                    'total_price'       => $dtl->price,
+                    'total_bm'          => $dtl->total_bm,
+                    'total_pph'         => $dtl->total_pph,
+                    'image'             => $dtl->image,
+                    'created_at'        => date('Y-m-d H:i:s'),
+                    'created_by'        => $this->auth->user_id(),
+                ];
+            }
+            $this->db->insert_batch('sales_order_details', $dataSODtl);
+            simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Detail', '1', $this->db->last_query(), '1');
         }
 
-        $this->db->insert_batch('sales_order_details', $dataSODtl);
-        simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Detail', '1', $this->db->last_query(), '1');
 
 
         /* Costing */
         $resultCosting      = $this->db->get_where('quotation_detail_costing', ['quotation_id' => $post['quotation_id']])->result();
-        if ($resultCosting) foreach ($resultCosting as $k => $cost) {
-            $k++;
-            $dataSOCosting[$k] = [
-                'id'                      => $dataSO['id'] . "-" . sprintf("%02d", $k),
-                'so_id'                   => $dataSO['id'],
-                "name"                    => $cost->name,
-                "currency"                => $cost->currency,
-                "exchange"                => $cost->exchange,
-                "price"                   => $cost->price,
-                "total"                   => $cost->total,
-                "total_foreign_currency"  => $cost->total_foreign_currency,
-                'created_at'              => date('Y-m-d H:i:s'),
-                'created_by'              => $this->auth->user_id(),
-            ];
+        if ($resultCosting) {
+            foreach ($resultCosting as $k => $cost) {
+                $k++;
+                $dataSOCosting[$k] = [
+                    'id'                      => $dataSO['id'] . "-" . sprintf("%02d", $k),
+                    'so_id'                   => $dataSO['id'],
+                    "name"                    => $cost->name,
+                    "currency"                => $cost->currency,
+                    "exchange"                => $cost->exchange,
+                    "price"                   => $cost->price,
+                    "total"                   => $cost->total,
+                    "total_foreign_currency"  => $cost->total_foreign_currency,
+                    'created_at'              => date('Y-m-d H:i:s'),
+                    'created_by'              => $this->auth->user_id(),
+                ];
+            }
+            $this->db->insert_batch('sales_order_costing', $dataSOCosting);
+            simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Costing', '1', $this->db->last_query(), '1');
         }
 
-        $this->db->insert_batch('sales_order_costing', $dataSOCosting);
-        simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Costing', '1', $this->db->last_query(), '1');
 
 
         /* Payment Term */
         $resultPayTerm      = $this->db->get_where('quotation_payment_term', ['quotation_id' => $post['quotation_id']])->result();
 
-        if ($resultPayTerm) foreach ($resultPayTerm as $k => $term) {
-            $k++;
-            $dataSOPayTerm[$k] = [
-                'id'                  => $dataSO['id'] . "-" . sprintf("%02d", $k),
-                'so_id'               => $dataSO['id'],
-                "name"                => $term->name,
-                "percentage"          => $term->percentage,
-                "amount"              => $term->amount,
-                "last_update"         => $term->last_update,
-                "description"         => $term->description,
-            ];
+        if ($resultPayTerm) {
+            foreach ($resultPayTerm as $k => $term) {
+                $k++;
+                $dataSOPayTerm[$k] = [
+                    'id'                  => $dataSO['id'] . "-" . sprintf("%02d", $k),
+                    'so_id'               => $dataSO['id'],
+                    "name"                => $term->name,
+                    "percentage"          => $term->percentage,
+                    "amount"              => $term->amount,
+                    "last_update"         => $term->last_update,
+                    "description"         => $term->description,
+                ];
+            }
+            $this->db->insert_batch('sales_order_pay_term', $dataSOPayTerm);
+            simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Costing', '1', $this->db->last_query(), '1');
         }
 
-        $this->db->insert_batch('sales_order_pay_term', $dataSOPayTerm);
-        simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Costing', '1', $this->db->last_query(), '1');
 
         /* Lartas */
         $resultLartas      = $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $post['quotation_id']])->result();
 
-        if ($resultLartas) foreach ($resultLartas as $k => $lts) {
-            $k++;
-            $dataSOLartas[$k] = [
-                'id'                        => $dataSO['id'] . "-" . sprintf("%02d", $k),
-                'so_id'                     => $dataSO['id'],
-                "name"                      => $lts->name,
-                "lartas_id"                 => $lts->lartas_id,
-                "qty"                       => $lts->qty,
-                "unit"                      => $lts->unit,
-                "price"                     => $lts->price,
-                "total"                     => $lts->total,
-                "total_foreign_currency"    => $lts->total_foreign_currency,
-                "created_at"                => date('Y-m-d H:i:s'),
-                "created_by"                => $this->auth->user_id(),
-            ];
+        if ($resultLartas) {
+            foreach ($resultLartas as $k => $lts) {
+                $k++;
+                $dataSOLartas[$k] = [
+                    'id'                        => $dataSO['id'] . "-" . sprintf("%02d", $k),
+                    'so_id'                     => $dataSO['id'],
+                    "name"                      => $lts->name,
+                    "lartas_id"                 => $lts->lartas_id,
+                    "qty"                       => $lts->qty,
+                    "unit"                      => $lts->unit,
+                    "price"                     => $lts->price,
+                    "total"                     => $lts->total,
+                    "total_foreign_currency"    => $lts->total_foreign_currency,
+                    "created_at"                => date('Y-m-d H:i:s'),
+                    "created_by"                => $this->auth->user_id(),
+                ];
+            }
+            $this->db->insert_batch('sales_order_lartas', $dataSOLartas);
+            simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Lartas', '1', $this->db->last_query(), '1');
         }
-
-        $this->db->insert_batch('sales_order_lartas', $dataSOLartas);
-        simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Lartas', '1', $this->db->last_query(), '1');
     }
 }

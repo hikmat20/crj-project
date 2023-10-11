@@ -450,7 +450,6 @@ class Quotations extends Admin_Controller
 		$this->auth->restrict($this->viewPermission);
 		$configs 		= $this->db->get('configs')->result();
 		$header 		= $this->db->get_where('view_quotations', ['id' => $id])->row();
-		$companies 		= $this->db->get_where('companies', ['status' => '1'])->result();
 		$ports 			= $this->db->get_where('harbours', ['status' => '1'])->result();
 		$containers 	= $this->db->get_where('containers', ['status' => '1'])->result();
 		$cities 		= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
@@ -463,6 +462,10 @@ class Quotations extends Admin_Controller
 		$fee_lartas 	= $this->db->get_where('view_quotation_detail_lartas', ['quotation_id' => $id])->result();
 		$otherCost 		= $this->db->get_where('quotation_detail_costing', ['quotation_id' => $id, 'name like' => '%OTH%'])->result();
 		$payment_term 	= $this->db->get_where('quotation_payment_term', ['quotation_id' => $id])->result();
+		$suppliers 		= $this->db->get_where('suppliers', ['status' => '1'])->result();
+		$company 		= $this->db->get_where('companies', ['id' => $header->company_id])->row();
+
+
 		$ArrLartas 		= array_column($lartas, 'name', 'id');
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
@@ -515,7 +518,7 @@ class Quotations extends Admin_Controller
 			'currency' 			=> $currency,
 			'currency_code' 	=> $currency_code,
 			'header' 			=> $header,
-			'companies' 		=> $companies,
+			'company' 			=> $company,
 			'costing' 			=> $costing,
 			'ports' 			=> $ports,
 			'areas' 			=> $areas,
@@ -531,10 +534,32 @@ class Quotations extends Admin_Controller
 			'unitLartas' 		=> $unitLartas,
 			'otherCost' 		=> $otherCost,
 			'ArrPayTerm' 		=> $ArrPayTerm,
+			'suppliers' 		=> $suppliers,
 		];
 
 		$this->template->set($data);
 		$this->template->render('reviewQuotation');
+	}
+
+	function getSupplier()
+	{
+		$supplier_id 	= $this->input->get('supplier_id');
+		$data = [];
+		if ($supplier_id) {
+			$data['supplier'] = $this->db->get_where('suppliers', ['id' => $supplier_id])->row();
+		}
+
+		echo json_encode($data);
+	}
+	function getCompany()
+	{
+		$company_id 	= $this->input->get('company_id');
+		$data = [];
+		if ($company_id) {
+			$data['company'] = $this->db->get_where('companies', ['id' => $company_id])->row();
+		}
+
+		echo json_encode($data);
 	}
 
 	public function save()
@@ -873,7 +898,7 @@ class Quotations extends Admin_Controller
 					$fee_customer_value = ($feeDetail->cost_value);
 					$err_fee_customer 	= '';
 				}
-				$totalFee = $fee_customer_value;
+				$totalFee = $fee_customer_value * $qty_container;
 			}
 		}
 
@@ -916,8 +941,8 @@ class Quotations extends Admin_Controller
 
 		$totalFeeCSJ = [
 			'price' 						=> isset($totalFee) ? number_format($totalFee, 2) : 0,
-			'total' 						=> isset($totalFee) ? number_format($totalFee * $qty_container, 2) : 0,
-			'total_foreign_currency' 		=> isset($totalFee) ? number_format(($totalFee * $qty_container) / $exchange, 2) : 0,
+			'total' 						=> isset($totalFee) ? number_format($totalFee, 2) : 0,
+			'total_foreign_currency' 		=> isset($totalFee) ? number_format($totalFee / $exchange, 2) : 0,
 			'fee' 							=> $fee,
 			'fee_value' 					=> isset($fee_value) ? number_format($fee_value, 2) : 0,
 			'fee_customer' 					=> isset($fee_customer_value) ? number_format($fee_customer_value, 2) : 0,
@@ -1322,15 +1347,6 @@ class Quotations extends Admin_Controller
 
 
 
-
-
-
-
-
-
-
-
-
 	/* PRINT QUOTATION */
 	function print_all_in($id)
 	{
@@ -1450,7 +1466,8 @@ class Quotations extends Admin_Controller
 		$this->template->set($data);
 		$html = $this->template->load_view('print_all_in');
 		$mpdf->WriteHTML($html);
-		$mpdf->Output();
+		$name = $header->customer_name . " " . str_replace("/", "-", $header->number);
+		$mpdf->Output($name, 'I');
 	}
 
 	function print_apb($id)
@@ -1544,7 +1561,8 @@ class Quotations extends Admin_Controller
 		$this->template->set($data);
 		$html = $this->template->load_view('print_apb');
 		$mpdf->WriteHTML($html);
-		$mpdf->Output();
+		$name = $header->customer_name . " " . str_replace("/", "-", $header->number);
+		$mpdf->Output($name, 'I');
 	}
 
 	function print_ddu($id)
@@ -1644,6 +1662,7 @@ class Quotations extends Admin_Controller
 
 		$html2 = $this->template->load_view('print_detail_cost');
 		$mpdf->WriteHTML($html2);
-		$mpdf->Output();
+		$name = $header->customer_name . " " . str_replace("/", "-", $header->number);
+		$mpdf->Output($name, 'I');
 	}
 }

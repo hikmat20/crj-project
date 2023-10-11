@@ -385,14 +385,14 @@
                                             <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>" id="pph_api_<?= $n; ?>">
                                         </td>
                                         <td class="text-right">
-                                            <input type="number" name="detail[<?= $n; ?>][qty]" data-parsley-inputs step=".01" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->qty; ?>" placeholder="0" required>
+                                            <input type="number" name="detail[<?= $n; ?>][qty]" data-parsley-inputs step=".01" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= ($dt->qty > 0) ?: ''; ?>" placeholder="0" required>
                                         </td>
                                         <td class="text-right">
                                             <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit; ?>" placeholder="unit" required>
                                         </td>
                                         <td class="text-right">
                                             <div id="unitPrice" class="">
-                                                <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-inputs step=".01" data-parsley-type="number" data-parsley-class-handler="#unitPrice" data-parsley-errors-container="#errUnitPrice" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit_price; ?>" placeholder="0" required>
+                                                <input type="text" name="detail[<?= $n; ?>][unit_price]" data-parsley-inputs step=".01" data-parsley-type="number" data-parsley-class-handler="#unitPrice" data-parsley-errors-container="#errUnitPrice" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= ($dt->unit_price > 0) ?: ''; ?>" placeholder="0" required>
                                             </div>
                                             <div id="errUnitPrice"></div>
                                         </td>

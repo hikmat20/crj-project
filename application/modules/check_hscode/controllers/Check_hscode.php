@@ -59,7 +59,7 @@ class Check_hscode extends Admin_Controller
 		$length         = $requestData['length'];
 
 		$where = "";
-		$where = " AND `status` = '$status'";
+		$where = " AND `status` = '$status' OR `status` = 'QTT'";
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
@@ -99,6 +99,7 @@ class Check_hscode extends Admin_Controller
 			'OPN' => '<span class="bg-info tx-white pd-5 tx-11 tx-bold rounded-5">New</span>',
 			'CHK' => '<span class="bg-success tx-white pd-5 tx-11 tx-bold rounded-5">Checked</span>',
 			'CNL' => '<span class="bg-light tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
+			'QTT' => '<span class="bg-purple tx-white pd-5 tx-11 tx-bold rounded-5">Quotation</span>',
 		];
 
 		/* Button */
@@ -124,7 +125,7 @@ class Check_hscode extends Admin_Controller
 			$buttons 	= $view . "&nbsp;"  . $print;
 
 			if ($row['status'] == 'QTT') {
-				$buttons 	= $view;
+				$buttons 	= $view . "&nbsp;"  . $print;
 			}
 
 			$nestedData   = array();
@@ -137,6 +138,7 @@ class Check_hscode extends Admin_Controller
 			$nestedData[]  = $row['employee_name'];
 			$nestedData[]  = $row['last_checked_at'];
 			$nestedData[]  = $row['revision_count'];
+			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = $buttons;
 			$data[] = $nestedData;
 			$urut1++;

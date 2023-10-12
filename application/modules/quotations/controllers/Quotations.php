@@ -298,9 +298,10 @@ class Quotations extends Admin_Controller
 			'reason_id' 	=> $post['rdio'],
 			'cancel_reason' => $reason[$post['rdio']],
 		];
-
+		$check_id = $this->db->get_where('quotations', ['id' => $post['id']])->row()->check_id;
 		$this->db->trans_begin();
 		$this->db->update('quotations', $data, ['id' => $post['id']]);
+		$this->db->update('check_hscodes', ['status' => 'CHK'], $data, ['id' => $check_id]);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

@@ -28,6 +28,7 @@
                         <th class="desktop text-center" width="80">MKT</th>
                         <th class="desktop text-center" width="100">Last Checked</th>
                         <th class="desktop text-center no-sort" width="50">Rev</th>
+                        <th class="desktop text-center no-sort" width="50">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="70">Opsi</th>
                         <?php endif; ?>
@@ -45,6 +46,7 @@
                         <th>MKT</th>
                         <th>Last Checked</th>
                         <th>Rev</th>
+                        <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
                         <?php endif; ?>

@@ -7,7 +7,7 @@
         body {
             width: 100%;
             font-family: Arial;
-            font-size: 8pt;
+            font-size: 7pt;
             margin: 0;
             padding: 0;
         }
@@ -127,7 +127,9 @@
         <table width="100%">
             <tr>
                 <td width="55%" style="vertical-align: top;">
-                    <h3>To <br><span class="fontA">客户</span>: <?= $header->customer_name; ?></h3>
+                    <h3>To <span class="fontA">客户</span> : <?= $header->customer_name; ?></h3>
+                    <h3>ADDRESS <span class="fontA">地址</span> : <?= $header->customer_address; ?></h3>
+                    <h3>ATTENTION <span class="fontA">客户名称</span> : <?= $header->attention; ?></h3>
                 </td>
                 <td class="text-right">
                     <table class="bordered">
@@ -356,11 +358,13 @@
                                 <td class="text-right"><?= number_format($totalLartas); ?></td>
                             </tr>
                         <?php endif; ?>
-                        <tr>
-                            <td colspan="2">Undername Fee CSJ <span class="fontA">借抬头费</span></td>
-                            <td style="border-right:none;"><?= $currSymbol; ?> </td>
-                            <td class="text-right"><?= number_format(($ArrCosting['fee_csj']->total_foreign_currency) ?: 0); ?></td>
-                        </tr>
+                        <?php if ($ArrCosting['fee_csj']->hide_fee == 'N') : ?>
+                            <tr>
+                                <td colspan="2">Undername Fee CSJ <span class="fontA">借抬头费</span></td>
+                                <td style="border-right:none;"><?= $currSymbol; ?> </td>
+                                <td class="text-right"><?= number_format(($ArrCosting['fee_csj']->total_foreign_currency) ?: 0); ?></td>
+                            </tr>
+                        <?php endif; ?>
                         <?php if ($otherCost) foreach ($otherCost as $othCost) : ?>
                             <tr>
                                 <td colspan="2"><?= str_replace("OTH-", "", $othCost->name); ?></td>

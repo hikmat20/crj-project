@@ -262,10 +262,10 @@
                     <th class="text-center tx-dark font-weight-bold tx-uppercase" colspan="3">Total</th>
                     <td style="border-right:none"></td>
                     <th class="text-right tx-dark font-weight-bold" id="totalPrice"></th>
+                    <td style="border-right:none">Rp.</td>
+                    <th class="text-right tx-dark font-weight-bold"><?= number_format($header->total_costing); ?></th>
                     <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <th class="text-right tx-dark font-weight-bold"><?= $header->qty_container; ?></th>
-                    <td style="border-right:none"><?= $currSymbol; ?></td>
-                    <th class="text-right tx-dark font-weight-bold"><?= $header->qty_container; ?></th>
+                    <th class="text-right tx-dark font-weight-bold"><?= number_format($header->total_costing_foreign_currency); ?></th>
                 </tr>
             </tfoot>
         </table>

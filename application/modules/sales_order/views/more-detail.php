@@ -18,7 +18,6 @@
                     <label for="customer_name" class="tx-dark tx-bold col-md-3 pd-x-0">Customer</label>:
                     <?= $header->customer_name; ?>
                 </div>
-
                 <div class="row">
                     <label for="project_name" class="tx-dark tx-bold col-md-3 pd-x-0">Project Name</label>:
                     <?= $header->project_name; ?>
@@ -30,7 +29,7 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <label for="date-request" class="tx-dark tx-bold col-md-4 pd-x-0">Date Quotation</label>:
+                    <label for="date-request" class="tx-dark tx-bold col-md-4 pd-x-0">Date Request</label>:
                     <?= $header->date; ?>
                 </div>
                 <div class="row">
@@ -156,18 +155,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <label for="ls_type" class="tx-dark tx-bold col-md-4 pd-x-0">Attn.</label>
-                    <div class="col-md-7 px-0">:
-                        <?= $header->attention; ?>
-                    </div>
-                </div>
             </div>
         </div>
         <hr>
 
         <!-- Detail Product -->
-        <h5 class="tx-dark tx-bold"><i class="fa fa-list" aria-hidden="true"></i> Detail Product</h5>
+        <!-- <h5 class="tx-dark tx-bold"><i class="fa fa-list" aria-hidden="true"></i> Detail Product</h5>
         <div class="table- mg-b-10">
             <div class="table-responsive mg-b-10">
                 <table class="table table-sm border table-hover table-condensed table-bordered ">
@@ -202,7 +195,7 @@
                         if ($details) foreach ($details as $dt) : $n++;
                             $totalPrice  += $dt->price;
                             $totalBM     = ($dt->price * $dt->bm_value) / 100;
-                            $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->local_hscode]->pph_api / 100);
+                            $totalPPH    = ($dt->price + $totalBM) * ($ArrHscode[$dt->origin_hscode]->pph_api / 100);
                             $gtotalBM   += $totalBM;
                             $gtotalPPH  += $totalPPH;
 
@@ -222,8 +215,8 @@
                                 <td class="text-center"><?= $dt->origin_hscode; ?></td>
                                 <td class="text-center"><?= $dt->local_hscode; ?></td>
                                 <td class="">
-                                    <?php if (isset($ArrHscode[$dt->local_hscode]->id)) :
-                                        $idHs = $ArrHscode[$dt->local_hscode]->id;
+                                    <?php if (isset($ArrHscode[$dt->origin_hscode]->id)) :
+                                        $idHs = $ArrHscode[$dt->origin_hscode]->id;
                                     ?>
                                         <ul class="pd-l-15 mg-b-0">
                                             <?php if (isset($ArrDocs[$idHs])) : ?>
@@ -252,8 +245,7 @@
                                 <td class="text-center">
                                     <?= ($dt->bm_type == 'bm_mfn') ? 'without Form E<br>(' . $dt->bm_value . '%)' : 'with Form E<br>(' . $dt->bm_value . '%)' ?>
                                 </td>
-                                <!-- <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->bm_e) ?: 0; ?>%</td> -->
-                                <td class="text-center"><?= ($ArrHscode[$dt->local_hscode]->pph_api) ?: 0; ?>%</td>
+                                <td class="text-center"><?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>%</td>
                                 <td class="text-right"><?= ($dt->qty) ? number_format($dt->qty, 2) : '0' ?></td>
                                 <td class="text-center"><?= ($dt->unit) ? ($dt->unit) : '0' ?></td>
                                 <td class="text-right"><?= ($dt->unit_price) ? number_format($dt->unit_price, 2) : '0' ?></td>
@@ -280,9 +272,9 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
 
-        <div class="row pd-x-0">
+        <!-- <div class="row pd-x-0">
             <div class="col-md-7">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="tx-dark tx-bold mg-b-15"><i class="fas fa-list-alt"></i> Costing</h5>
@@ -295,7 +287,6 @@
                             <th class="text-right align-middle">UNIT PRICE</th>
                             <th class="text-right align-middle">TOTAL (Rp)</th>
                             <th class="text-right align-middle">TOTAL (<?= $currency_code; ?>)</th>
-                            <th class="text-center align-middle">NOT INCL.</th>
                         </tr>
                     </thead>
                     <tbody class="tx-dark" id="listCosting">
@@ -320,11 +311,11 @@
                                     <?= number_format($ArrCosting['ocean_freight']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <th class="text-right">2.</th>
-                            <th>Shipping Line Cost</th>
+                            <th>Shipping Line Cost
+                            </th>
                             <td>
                                 <div class="d-flex justify-content-between">
                                     <span class="">Rp.</span>
@@ -343,7 +334,6 @@
                                     <?= number_format($ArrCosting['shipping']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <th class="text-right">3.</th>
@@ -367,7 +357,6 @@
                                     <?= number_format($ArrCosting['custom_clearance']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <th class="text-right">4.</th>
@@ -391,7 +380,6 @@
                                     <?= number_format($ArrCosting['storage']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <th class="text-right">5.</th>
@@ -415,7 +403,6 @@
                                     <?= number_format($ArrCosting['trucking']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <th class="text-right">6.</th>
@@ -439,7 +426,6 @@
                                     <?= number_format($ArrCosting['surveyor']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <th class="text-right">7.</th>
@@ -463,7 +449,6 @@
                                     <?= number_format($ArrCosting['fee_csj']->total_foreign_currency, 2); ?>
                                 </div>
                             </td>
-                            <td class="text-center"><?= ($ArrCosting['fee_csj']->hide_fee == 'Y') ? '<i class="fa fa-check-circle" aria-hidden="true"></i>' : ''; ?></td>
                         </tr>
                         <tr>
                             <th class="text-right">8.</th>
@@ -498,8 +483,7 @@
                                                     <th class="align-middle">/<?= ($unitLartas[$lts->unit]); ?> </th>
                                                     <td class="text-center align-middle"><?= $lts->qty; ?></td>
                                                     <td class="text-right align-middle">Rp. <?= number_format($lts->total); ?></td>
-                                                    <td class="text-right align-middle">
-                                                        <?= $currency; ?><?= number_format($lts->total_foreign_currency, 2); ?></td>
+                                                    <td class="text-right align-middle"><?= $currency; ?> <?= number_format($lts->total_foreign_currency, 2); ?></td>
                                                 </tr>
                                             <?php endforeach;
                                         else : ?>
@@ -513,9 +497,9 @@
                                         <th class="text-right align-middle">
                                             <div class="input-group input-group-sm">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text tx-bold border-0 bg-transparent">Rp.</span>
+                                                    <span class="input-group-text border-0 bg-transparent">Rp.</span>
                                                 </div>
-                                                <input type="text" id="total_fee_lartas" value="<?= number_format($totalLartas); ?>" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right total_costing tx-14" placeholder="0">
+                                                <input type="text" id="total_fee_lartas" value="<?= number_format($totalLartas); ?>" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right total_costing" placeholder="0">
                                             </div>
                                         </th>
                                         <th class="text-right align-middle">
@@ -564,11 +548,11 @@
                     <tfoot class="p-0">
                         <tr>
                             <th class="text-right tx-dark tx-bold align-middle" colspan="3">Total Costing</th>
-                            <th class="align-middle text-right">
+                            <th class="align-middle">
                                 <span>Rp.</span>
                                 <?= number_format($header->total_costing); ?>
                             </th>
-                            <th class="align-middle text-right">
+                            <th class="align-middle">
                                 <?= $currency; ?>
                                 <?= number_format($header->total_costing_foreign_currency, 2); ?>
                             </th>
@@ -792,7 +776,7 @@
         <div class="form-group">
             <h6 class="tx-dark tx-bold">Note :</h6>
             <div id="note"><?= $header->note; ?></div>
-        </div>
+        </div> -->
 
     </div>
 </div>

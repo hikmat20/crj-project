@@ -469,7 +469,7 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
                         <input type="text" name="costing[${n}][total]" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing" id="otherFeeTotal_${n}" placeholder="0">
                     </div>
                 </td>
-                <td>
+                <td colspan="2">
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
                             <span class="input-group-text border-0 bg-transparent">${curr}</span>
@@ -602,6 +602,25 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
             let total_price = parseFloat($('#price_' + row).val() || 0)
             $('#bm_mfn_' + row).prop('checked', false)
             getTotalBM(val, row, total_price)
+        })
+
+        $(document).on('change', '#hide_fee_csj', function() {
+            let total_costing = $('#total_costing').val().replace(/\,/g, '') || 0
+            let total_costing_foreign_currency = $('#total_costing_foreign_currency').val().replace(/\,/g, '') || 0
+            let total_fee_value = $('#total_fee_value').val().replace(/\,/g, '') || 0
+            let total_fee_value_foreign_currency = $('#total_fee_value_foreign_currency').val().replace(/\,/g, '') || 0
+            let hide_fee = $('#hide_fee_csj').is(':checked')
+            if (hide_fee == true) {
+                total_costing = parseFloat(total_costing) - parseFloat(total_fee_value);
+                total_costing_foreign_currency = parseFloat(total_costing_foreign_currency) - parseFloat(total_fee_value_foreign_currency);
+            } else {
+                total_costing = parseFloat(total_costing) + parseFloat(total_fee_value);
+                total_costing_foreign_currency = parseFloat(total_costing_foreign_currency) + parseFloat(total_fee_value_foreign_currency);
+            }
+
+            $('#total_costing').val(new Intl.NumberFormat().format(total_costing))
+            $('#total_costing_foreign_currency').val(new Intl.NumberFormat().format(total_costing_foreign_currency.toFixed(2)))
+            subtotal()
         })
     })
 
@@ -942,6 +961,15 @@ $ENABLE_DELETE  = has_permission('Requests.Delete');
         $('.total_costing_foreign_currency').each(function() {
             currTotalCosting += parseFloat($(this).val().replace(/\,/g, '') || 0)
         })
+
+        let total_fee_value = $('#total_fee_value').val().replace(/\,/g, '') || 0
+        let total_fee_value_foreign_currency = $('#total_fee_value_foreign_currency').val().replace(/\,/g, '') || 0
+        let hide_fee = $('#hide_fee_csj').is(':checked')
+        if (hide_fee == true) {
+            totalCosting = totalCosting - total_fee_value;
+            currTotalCosting = currTotalCosting - total_fee_value_foreign_currency;
+        }
+
 
         $('#total_costing').val(new Intl.NumberFormat().format(totalCosting))
         $('#total_costing_foreign_currency').val(new Intl.NumberFormat().format(currTotalCosting.toFixed(2)))

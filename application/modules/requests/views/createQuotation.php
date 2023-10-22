@@ -23,8 +23,8 @@
     </div>
     <div class="col-md-6">
         <div class="form-group row">
-            <label for="date-request" class="tx-dark tx-bold col-md-3 pd-x-0">Date Request</label>
-            <input type="text" id="date-request" value="<?= $header->date; ?>" readonly class="form-control form-control-sm col-md-6" placeholder="-">
+            <label for="date-request" class="tx-dark tx-bold col-md-3 pd-x-0">Date Quotation</label>
+            <input type="date" id="date-request" value="<?= $header->date; ?>" required max="<?= date('Y-m-d'); ?>" class="form-control form-control-sm col-md-6" placeholder="-">
         </div>
         <div class="form-group row">
             <label for="marketing_name" class="tx-dark tx-bold col-md-3 pd-x-0">Marketing</label>
@@ -246,6 +246,12 @@
                 <div id="errLS"></div>
             </div>
         </div>
+        <div class="form-group row">
+            <label for="attention" class="tx-dark tx-bold col-md-3 pd-x-0">Attn. <span class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <input type="text" name="attention" id="attention" required data-parsley-errors-container="#errAttns" data-parsley-class-handler="#cntAttn" placeholder="Attn." class="form-control">
+            </div>
+        </div>
     </div>
 </div>
 <hr>
@@ -368,13 +374,13 @@
                         <input type="hidden" name="detail[<?= $n; ?>][pph_api]" value="<?= ($ArrHscode[$dt->origin_hscode]->pph_api) ?: 0; ?>">
                     </td>
                     <td class="text-right">
-                        <input type="number" name="detail[<?= $n; ?>][qty]" step=".01" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0">
+                        <input type="number" name="detail[<?= $n; ?>][qty]" step=".01" class="form-control form-control-sm text-center qty" id="qty_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->qty; ?>" placeholder="0">
                     </td>
                     <td class="text-right">
-                        <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="unit">
+                        <input type="text" name="detail[<?= $n; ?>][unit]" class="form-control form-control-sm unit text-center" id="unit_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit; ?>" placeholder="unit">
                     </td>
                     <td class="text-right">
-                        <input type="text" name="detail[<?= $n; ?>][unit_price]" step=".01" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="" placeholder="0">
+                        <input type="text" name="detail[<?= $n; ?>][unit_price]" step=".01" data-parsley-type="number" class="form-control form-control-sm unit_price unit_price_<?= $n; ?> text-right" id="unit_price_<?= $n; ?>" data-row="<?= $n; ?>" value="<?= $dt->unit_price; ?>" placeholder="0">
                     </td>
                     <td class="text-right"><span id="total_price_text_<?= $n; ?>"><?= ($dt->price) ? number_format($dt->price, 2) : '0' ?></span>
                         <input type="hidden" name="detail[<?= $n; ?>][price]" class="price <?= ($dt->lartas) ? 'price_lartas' : 'price_non_lartas price_non_lartas_' . $n; ?>" id="price_<?= $n; ?>" value="<?= ($dt->price) ? $dt->price : '0'; ?>">
@@ -436,6 +442,7 @@
                     <th class="text-center align-middle">UNIT PRICE</th>
                     <th class="text-center align-middle">TOTAL (Rp)</th>
                     <th class="text-center align-middle">TOTAL (<?= $currency_code; ?>)</th>
+                    <th>NOT INCL.</th>
                 </tr>
             </thead>
             <tbody class="tx-dark" id="listCosting">
@@ -468,6 +475,7 @@
                             <input type="text" name="costing[ocean_freight][total_foreign_currency]" id="foreign_currency_ocean_freight" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th class="text-right">2.</th>
@@ -498,6 +506,7 @@
                             <input type="text" name="costing[shipping][total_foreign_currency]" id="foreign_currency_shipping" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th class="text-right">3.</th>
@@ -529,6 +538,7 @@
                             <input type="text" name="costing[custom_clearance][total_foreign_currency]" id="foreign_currency_custom_clearance" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th class="text-right">4.</th>
@@ -560,6 +570,7 @@
                             <input type="text" name="costing[storage][total_foreign_currency]" id="foreign_currency_storage" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th class="text-right">5.</th>
@@ -591,6 +602,7 @@
                             <input type="hidden" name="trucking_id" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th class="text-right">6.</th>
@@ -621,6 +633,7 @@
                             <input type="text" name="costing[surveyor][total_foreign_currency]" id="foreign_currency_surveyor" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                         </div>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th class="text-right">7.</th>
@@ -651,10 +664,16 @@
                             <input type="text" name="costing[fee_csj][total_foreign_currency]" id="total_fee_value_foreign_currency" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                         </div>
                     </td>
+                    <td>
+                        <label class="ckbox ckbox-primary">
+                            <input type="checkbox" name="costing[fee_csj][hide_fee]" id="hide_fee_csj" value="Y">
+                            <span></span>
+                        </label>
+                    </td>
                 </tr>
                 <tr>
                     <th class="text-right">8.</th>
-                    <th colspan="4">
+                    <th colspan="5">
                         <div class="form-group row mg-b-0">
                             <label for="fee_lartas_type" class="col-md-3">Fee Lartas</label>
                             <div class="col-md-4">
@@ -752,7 +771,7 @@
                 </tr>
                 <tr>
                     <th class="text-right">9.</th>
-                    <th colspan="4">Others</th>
+                    <th colspan="5">Others</th>
                 </tr>
             </tbody>
             <tfoot class="p-0">
@@ -766,7 +785,7 @@
                             <input type="text" name="total_costing" id="total_costing" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right" placeholder="0">
                         </div>
                     </th>
-                    <th class="align-middle">
+                    <th class="align-middle" colspan="2">
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <span class="input-group-text border-0 bg-transparent"><?= $currency; ?></span>
@@ -1017,12 +1036,34 @@
 
 <script>
     $(document).ready(function() {
+        $(document).on('focus', '.number-format', function() {
+            let val = $(this).val()
+            if (val.substr(-2, 2) == 0) {
+                val = val.substring(0, val.length - 3);
+                $(this).val(val);
+                $(this).unmask();
+            }
+            if (val.indexOf('.') > -1) {
+                // val = val.substring(0, val.length - 2);
+                $(this).unmask();
+                $(this).val(val);
+            }
+        })
 
-        $(document).on('input', '.number-format', function() {
-            $(this).mask('#,##0', {
+        $(document).on('blur', '.number-format', function() {
+            let val = $(this).val()
+            let have_dot = val.indexOf('.')
+            if (have_dot == -1) {
+                asd = val + "00"
+                $(this).val(asd)
+            } else {
+                $(this).val(val)
+            }
+            $(this).mask('##,#00.00', {
                 reverse: true
             })
         })
+
 
         $('.select').select2({
             // minimumResultsForSearch: -1,

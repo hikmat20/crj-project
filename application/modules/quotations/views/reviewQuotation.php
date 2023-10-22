@@ -56,6 +56,13 @@
                     <div class="form-group">
                         <textarea name="company_address" id="company-address" class="form-control" placeholder="Company Address"><?= $company->address; ?></textarea>
                     </div>
+                    <div class="form-group">
+                        <input type="text" name="vat" required id="vat" data-mask-selectonfocus="true" data-mask="00.000.000.0-000.000" class="form-control form-controlsm vat-mask" placeholder="VAT/NPWP" value="<?= $company->npwp_number; ?>">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" required id="email" class="form-control form-controlsm" placeholder="Email" value="<?= strtolower('MUSYSJT09@GMAIL.COM'); ?>">
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -363,6 +370,7 @@
                                     <th class="text-right align-middle">UNIT PRICE</th>
                                     <th class="text-right align-middle">TOTAL (Rp)</th>
                                     <th class="text-right align-middle">TOTAL (<?= $currency_code; ?>)</th>
+                                    <th class="text-center align-middle">NOT INCL.</th>
                                 </tr>
                             </thead>
                             <tbody class="tx-dark" id="listCosting">
@@ -387,6 +395,7 @@
                                             <?= number_format($ArrCosting['ocean_freight']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">2.</th>
@@ -410,6 +419,7 @@
                                             <?= number_format($ArrCosting['shipping']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">3.</th>
@@ -433,6 +443,7 @@
                                             <?= number_format($ArrCosting['custom_clearance']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">4.</th>
@@ -456,6 +467,7 @@
                                             <?= number_format($ArrCosting['storage']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">5.</th>
@@ -479,6 +491,7 @@
                                             <?= number_format($ArrCosting['trucking']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">6.</th>
@@ -502,6 +515,7 @@
                                             <?= number_format($ArrCosting['surveyor']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">7.</th>
@@ -525,6 +539,7 @@
                                             <?= number_format($ArrCosting['fee_csj']->total_foreign_currency, 2); ?>
                                         </div>
                                     </td>
+                                    <td class="text-center"><?= ($ArrCosting['fee_csj']->hide_fee == 'Y') ? '<i class="fa fa-check-circle" aria-hidden="true"></i>' : ''; ?></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">8.</th>
@@ -844,6 +859,8 @@
 
 <script>
     $(document).ready(function() {
+        $('.vat-mask').mask("00.000.000.0-000.000")
+
         $('.select').select2({
             placeholder: 'Choose one',
             dropdownParent: $('#dialog-deal .modal-body'),

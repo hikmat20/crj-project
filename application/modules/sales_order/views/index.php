@@ -1,10 +1,3 @@
-<?php
-$ENABLE_ADD     = has_permission('Quotations.Add');
-$ENABLE_MANAGE  = has_permission('Quotations.Manage');
-$ENABLE_VIEW    = has_permission('Quotations.View');
-$ENABLE_DELETE  = has_permission('Quotations.Delete');
-?>
-
 <div class="br-pagetitle">
     <i class="tx-primary fa-4x <?= $template['page_icon']; ?>"></i>
     <div>
@@ -17,36 +10,18 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
         <?php echo Template::message(); ?>
     </div>
 <?php endif; ?>
-
-<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-start align-items-center">
-    <?php if ($ENABLE_ADD) : ?>
-        <div class="tx-dark">Status : &nbsp;</div>
-        <!-- <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a> -->
-        <div class="right">
-            <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="DEAL" title="Checked">Deal</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="RVI" title="Revision">Revision</button>
-            <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
-            <!-- <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button> -->
-        </div>
-    <?php endif; ?>
-</div>
-
-<div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
+<div class="br-pagebody pd-x-20 pd-sm-x-30 mg-t-30">
     <div class="card bd-gray-400">
         <div class="table-wrapper">
             <table id="dataTable" width="100%" class="table display table-bordered table-hover table-striped">
                 <thead>
                     <tr>
                         <th class="text-center desktop mobile tablet" width="30">No</th>
+                        <th class="desktop mobile tablet tx-bold tx-dark tx-center">SO Number</th>
                         <th class="desktop mobile tablet tx-bold tx-dark">Customer Name</th>
-                        <th class="desktop mobile tablet tx-bold tx-dark tx-center">Number</th>
                         <th class="desktop mobile tablet tx-dark tx-center">Project Name</th>
                         <th class="desktop mobile tablet text-center" width="110">Date</th>
-
                         <th class="desktop text-center" width="100">Marketing</th>
-                        <th class="desktop tablet text-center" width="50">Rev.</th>
                         <th class="desktop text-center no-sort" width="60">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th class="desktop text-center no-sort" width="30">Opsi</th>
@@ -57,12 +32,11 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                 <tfoot>
                     <tr>
                         <th>No</th>
+                        <th>SO Number</th>
                         <th>Customer Name</th>
                         <th>Project Name</th>
-                        <th>Number</th>
                         <th>Date</th>
                         <th>Marketing</th>
-                        <th>Rev.</th>
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                             <th>Opsi</th>
@@ -83,14 +57,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                     <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
                     <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 </div>
-                <div class="modal-body">
-                    <div class="sk-three-bounce">
-                        <div class="sk-child sk-bounce1 bg-danger"></div>
-                        <div class="sk-child sk-bounce2 bg-warning"></div>
-                        <div class="sk-child sk-bounce3 bg-primary"></div>
-                        <label class="tx-dark tx-bold">Loading...</label>
-                    </div>
-                </div>
+                <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn btn-primary" name="save" id="save"><i class="fa fa-file"></i>
                         Create Quotation</button>
@@ -120,26 +87,6 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
     </div>
 </div>
 
-<div class="modal fade effect-scale" id="dialog-deal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg mx-wd-100p-force">
-        <form id="data-form-deal" data-parsley-validate>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
-                    <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
-                        <span class="fa fa-times"></span> Close</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
 <!-- page script -->
 <script type="text/javascript">
     $(document).ready(function() {
@@ -160,13 +107,6 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             var number = $(this).data('number');
             $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Quotation [" + number + "]")
             $("#dialog-popup").modal();
-            $("#dialog-popup .modal-body").html(`
-                <div class="sk-three-bounce">
-                    <div class="sk-child sk-bounce1 bg-danger"></div>
-                    <div class="sk-child sk-bounce2 bg-warning"></div>
-                    <div class="sk-child sk-bounce3 bg-primary"></div>
-                    <label class="tx-dark tx-bold">Loading...</label>
-                </div>`);
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
             $("#save").addClass('d-none');
         });
@@ -201,9 +141,9 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
 
         $(document).on('click', 'input[name="rdio"]', function() {
             if ($(this).val() == '0') {
-                $('#cancel_reason').prop('readonly', false).attr('required', true)
+                $('#cancel_reason').prop('readonly', false)
             } else {
-                $('#cancel_reason').prop('readonly', true).val('').attr('required', false)
+                $('#cancel_reason').prop('readonly', true).val('')
             }
         })
 
@@ -216,7 +156,6 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                 },
                 buttonsStyling: false
             })
-
             let formData = new FormData($('#data-form-cancel')[0]);
             $.ajax({
                 type: 'POST',
@@ -384,13 +323,6 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             var id = $(this).data('id');
             $('#dialog-popup .modal-title').html("<i class='fas fa-file-invoice'></i> Create Quotation")
             $("#dialog-popup").modal();
-            $("#dialog-popup .modal-body").html(`
-                <div class="sk-three-bounce">
-                    <div class="sk-child sk-bounce1 bg-danger"></div>
-                    <div class="sk-child sk-bounce2 bg-warning"></div>
-                    <div class="sk-child sk-bounce3 bg-primary"></div>
-                    <label class="tx-dark tx-bold">Loading...</label>
-                </div>`);
             $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
             $("#save").removeClass('d-none');
         });
@@ -423,172 +355,6 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
         $(document).on('input change', '#qty_container,#fee_type', function() {
             storage();
             load_price();
-        })
-
-
-        // data-form-deal
-        $(document).on('click', '.deal', function(e) {
-            e.preventDefault()
-            var swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-primary mg-r-10 wd-100',
-                    cancelButton: 'btn btn-danger wd-100'
-                },
-                buttonsStyling: false
-            })
-            let id = $(this).data('id');
-            swalWithBootstrapButtons.fire({
-                title: "Confirm!",
-                text: "Are you sure for this Offer Deal?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "<i class='fa fa-check'></i> Yes",
-                cancelButtonText: "<i class='fa fa-ban'></i> No",
-                showLoaderOnConfirm: true,
-                allowOutsideClick: true
-            }).then((val) => {
-                if (val.isConfirmed) {
-                    $('#dialog-deal').modal('show')
-                    $('#dialog-deal .modal-body').load(siteurl + thisController + 'reviewQuotation/' + id)
-                }
-            })
-        })
-
-        $(document).on('submit', '#data-form-deal', function(e) {
-            e.preventDefault()
-            var swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-primary mg-r-10 wd-100',
-                    cancelButton: 'btn btn-danger wd-100'
-                },
-                buttonsStyling: false
-            })
-            swalWithBootstrapButtons.fire({
-                title: "Confirm!",
-                text: "Are you sure you want to process this data?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "<i class='fa fa-check'></i> Yes",
-                cancelButtonText: "<i class='fa fa-ban'></i> No",
-                showLoaderOnConfirm: true,
-                allowOutsideClick: true
-            }).then((val) => {
-                if (val.isConfirmed) {
-                    let formData = new FormData($('#data-form-deal')[0]);
-                    $.ajax({
-                        type: 'POST',
-                        url: siteurl + thisController + 'dealProcess',
-                        dataType: "JSON",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        cache: false,
-                        error: function() {
-                            Lobibox.notify('error', {
-                                title: 'Error!!!',
-                                icon: 'fa fa-times',
-                                position: 'top right',
-                                showClass: 'zoomIn',
-                                hideClass: 'zoomOut',
-                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                                msg: 'Internal server error. Ajax process failed.'
-                            });
-                        },
-                        success: (result) => {
-                            if (result.status == '1') {
-                                Lobibox.notify('success', {
-                                    icon: 'fa fa-check',
-                                    msg: result.msg,
-                                    position: 'top right',
-                                    showClass: 'zoomIn',
-                                    hideClass: 'zoomOut',
-                                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                                });
-                                $("#dialog-deal").modal('toggle');
-                                loadData('')
-                            } else {
-                                Lobibox.notify('warning', {
-                                    icon: 'fa fa-ban',
-                                    msg: result.msg,
-                                    position: 'top right',
-                                    showClass: 'zoomIn',
-                                    hideClass: 'zoomOut',
-                                    soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                                });
-                            };
-                        }
-                    })
-                }
-            })
-        })
-
-        $(document).on('change', '#supplier_id', function() {
-            let supplier_id = $(this).val()
-            $('#supplier-name').val('')
-            $('#supplier-address').val('')
-            if (supplier_id) {
-                $.ajax({
-                    url: siteurl + thisController + 'getSupplier',
-                    dataType: 'JSON',
-                    data: {
-                        supplier_id
-                    },
-                    success: function(result) {
-                        console.log(result);
-                        if (result.supplier) {
-                            let supplier = result.supplier
-                            $('#supplier-name').val(supplier.supplier_name)
-                            $('#supplier-address').val(supplier.address)
-                        }
-                    },
-                    error: function(result) {
-                        Lobibox.notify('error', {
-                            title: 'Error!!!',
-                            icon: 'fa fa-times',
-                            position: 'top right',
-                            showClass: 'zoomIn',
-                            hideClass: 'zoomOut',
-                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: 'Internal server error. Ajax process failed.'
-                        });
-                    }
-                })
-            }
-        })
-
-        $(document).on('change', '#company_id', function() {
-            let company_id = $(this).val()
-            $('#company-name').val('')
-            $('#company-address').val('')
-
-            if (company_id) {
-                $.ajax({
-                    url: siteurl + thisController + 'getCompany',
-                    dataType: 'JSON',
-                    data: {
-                        company_id
-                    },
-                    success: function(result) {
-                        console.log(result);
-                        if (result.company) {
-                            let company = result.company
-                            $('#company-name').val(company.company_name)
-                            $('#company-address').val(company.address)
-                        }
-                    },
-                    error: function(result) {
-                        Lobibox.notify('error', {
-                            title: 'Error!!!',
-                            icon: 'fa fa-times',
-                            position: 'top right',
-                            showClass: 'zoomIn',
-                            hideClass: 'zoomOut',
-                            soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                            msg: 'Internal server error. Ajax process failed.'
-                        });
-                    }
-                })
-            }
         })
 
     })
@@ -829,4 +595,39 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
             })
         }
     }
+
+    // function est_as_per_bill() {
+    //     let total_product = $('#tx-total-product').text()
+    //     let ocean_freight = $('#tx-ocean-freight').text()
+    //     let thc = $('#tx-shipping').text()
+    //     let surveyor = $('#tx-surveyor').text()
+    //     let handling = $('#tx-handling').text()
+    //     let storage = $('#tx-cc-storage').text()
+    //     let trucking = $('#tx-trucking').text()
+    //     let fee_lartas = $('#tx-fee-lartas').text()
+    //     let fee_undername = $('#tx-fee-csj').text()
+
+    //     let subtotal = $('#tx-').text()
+    //     let total_bm = $('#tx-').text()
+    //     let total_pph = $('#tx-').text()
+    //     let ppn = $('#tx-').text()
+    //     let gTotal_ppn = $('#tx-').text()
+    //     let gTotal_n_ppn = $('#tx-').text()
+
+    //     $('#apb-total_product').text(total_product)
+    //     $('#apb-ocean_freight').text(ocean_freight)
+    //     $('#apb-thc').text(thc)
+    //     $('#apb-surveyor').text(surveyor)
+    //     $('#apb-handling').text(handling)
+    //     $('#apb-storage').text(storage)
+    //     $('#apb-trucking').text(trucking)
+    //     $('#apb-fee_lartas').text(fee_lartas)
+    //     $('#apb-fee_undername').text(fee_undername)
+    //     $('#apb-subtotal').text(subtotal)
+    //     $('#apb-total_bm').text(total_bm)
+    //     $('#apb-total_pph').text(total_pph)
+    //     $('#apb-ppn').text(ppn)
+    //     $('#apb-gTotal_ppn').text(gTotal_ppn)
+    //     $('#apb-gTotal_n_ppn').text(gTotal_n_ppn)
+    // }
 </script>

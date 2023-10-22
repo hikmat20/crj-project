@@ -7,7 +7,7 @@
         body {
             width: 100%;
             font-family: Arial;
-            font-size: 8pt;
+            font-size: 7pt;
             margin: 0;
             padding: 0;
         }
@@ -126,7 +126,9 @@
         <table width="100%">
             <tr>
                 <td width="55%" style="vertical-align: top;">
-                    <h3>To <br><span class="fontA">客户</span>: <?= $header->customer_name; ?></h3>
+                    <h3>To <span class="fontA">客户</span> : <?= $header->customer_name; ?></h3>
+                    <h3>ADDRESS <span class="fontA">地址</span> : <?= $header->customer_address; ?></h3>
+                    <h3>ATTENTION <span class="fontA">客户名称</span> : <?= $header->attention; ?></h3>
                 </td>
                 <td class="text-right">
                     <table class="bordered">
@@ -319,7 +321,7 @@
                     $surveyor   = $ArrCosting['surveyor']->total_foreign_currency;
                     $trucking   = $ArrCosting['trucking']->total_foreign_currency;
                     $custome_clearance   = $ArrCosting['custom_clearance']->total_foreign_currency;
-                    $fee_csj   = $ArrCosting['fee_csj']->total_foreign_currency;
+                    $fee_csj   = ($ArrCosting['fee_csj']->hide_fee == 'Y') ? 0 : $ArrCosting['fee_csj']->total_foreign_currency;
 
                     $othFee = 0;
                     if ($otherCost) foreach ($otherCost as $othCost) :
@@ -395,7 +397,7 @@
                             <th class="text-right"><?= ($header->grand_total_exclude_price) ? number_format($header->grand_total_exclude_price) : 0; ?></th>
                         </tr>
                     </table>
-                    <br><br><br><br><br>
+                    <br><br><br>
                     <table width="100%" class="bordered">
                         <tr>
                             <th class="text-center" style="background-color:#eee">Maked By,</th>

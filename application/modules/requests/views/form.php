@@ -160,9 +160,11 @@
 									<th class="text-center">No</th>
 									<th width="">Product Name</th>
 									<th class="text-center">Specification</th>
-									<th class="text-center" width="150">Origin HS Code</th>
-									<th class="text-center" width="50">Curr ency</th>
-									<th class="text-center" width="140">FOB/CFR/CIF Price</th>
+									<th class="text-center" width="">Origin HS Code</th>
+									<th class="text-center" width="100">QTY</th>
+									<th class="text-center" width="100">Unit</th>
+									<th class="text-center" width="100">Unit Price</th>
+									<th class="text-center" colspan="2">Total Price</th>
 									<th class="text-center" width="80">Photo</th>
 									<th class="text-center" width="30">Opsi</th>
 								</tr>
@@ -179,9 +181,11 @@
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][product_name]" value="<?= $dtl->product_name; ?>" placeholder="Product Name"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][specification]" value="<?= $dtl->specification; ?>" placeholder="Specification"></td>
 										<td><input type="text" class="form-control border-0" name="detail[<?= $n; ?>][origin_hscode]" value="<?= $dtl->origin_hscode; ?>" placeholder="Origin HS Code"></td>
+										<td><input type="number" step=".01" class="form-control border-0 text-center qty" name="detail[<?= $n; ?>][qty]" data-row="<?= $n; ?>" id="qty_<?= $n; ?>" min="0" value="<?= isset($dtl->qty) ? number_format($dtl->qty, 2) : '-'; ?>" placeholder="0"></td>
+										<td><input type="text" class="form-control border-0 text-center unit" name="detail[<?= $n; ?>][unit]" value="<?= isset($dtl->unit) ? ($dtl->unit) : ''; ?>" maxlength="10" placeholder="Unit"></td>
+										<td><input type="number" step=".01" class="form-control border-0 text-right unit-price" data-row="<?= $n; ?>" id="unit-price_<?= $n; ?>" name="detail[<?= $n; ?>][unit_price]" min="0" value="<?= isset($dtl->unit_price) ? ($dtl->unit_price) : '-'; ?>" placeholder="0"></td>
 										<td class="text-center"><span class="symbol"><?= (isset($request->currency) && $request->currency) ? $symbol[$request->currency] : '-'; ?></span></td>
-										<td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][price]" value="<?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?>" placeholder="0"></td>
-										<!-- <td><input type="text" class="form-control border-0 number-format text-right" name="detail[<?= $n; ?>][cif_price]" value="<?= isset($dtl->cif_price) ? number_format($dtl->cif_price, 2) : '-'; ?>" placeholder="0"></td> -->
+										<td width="130"><input type="number" readonly step=".01" data-row="<?= $n; ?>" id="total-price_<?= $n; ?>" class="form-control border-0 number-format text-right total-price" name="detail[<?= $n; ?>][price]" min="0" value="<?= isset($dtl->price) ? ($dtl->price) : ''; ?>" placeholder="0"></td>
 										<td class="text-center">
 											<img id="preview_<?= $n; ?>" src="<?= $image; ?>" ondblclick="$('#image_<?= $n; ?>').click()" data-row="<?= $n; ?>" width="80" class="img-fluid rounded" alt="<?= $image; ?>">
 											<input type="hidden" id="img_<?= $n; ?>" name="detail[<?= $n; ?>][image]" value="<?= $img; ?>">
@@ -192,6 +196,7 @@
 								<?php endforeach; ?>
 							</tbody>
 						</table>
+
 						<div class="d-flex justify-content-between">
 							<button type="button" class="btn btn-teal btn-sm" id="addItem" title="Add HS Code" data-toggle="tooltip"><i class="fa fa-plus" aria-hidden="true"></i> Add HS Code</button>
 							<button type="button" class="btn btn-sm" id="removeAll" title="Remove All" data-toggle="tooltip"><i class="fa fa-trash" aria-hidden="true"></i></button>
@@ -337,8 +342,11 @@
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control" value="` + vl.product_name + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control" value="` + vl.specification + `"></td>
 								<td><input type="text" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control" value="` + vl.origin_hscode + `"></td>
+								<td><input type="number" step=".01" class="form-control border-0 text-center qty" data-row="` + n + `" id="qty_` + n + `" name="detail[` + n + `][qty]" min="0" placeholder="0" value="` + vl.qty + `"></td>
+								<td><input type="text" class="form-control border-0 text-center" name="detail[` + n + `][unit]" maxlength="10" placeholder="Unit" value="` + vl.unit + `"></td>
+								<td><input type="number" step=".01" class="form-control border-0 text-right unit-price" data-row="` + n + `" id="unit-price_` + n + `" name="detail[` + n + `][unit_price]" min="0" placeholder="0" value="` + vl.unit_price + `"></td>
 								<td class="text-center"><span class="symbol">` + arr[currency] + `</span></td>
-								<td><input type="text" class="form-control border-0 -number-format text-right" name="detail[` + n + `][price]" class="form-control" value="` + vl.price + `" placholder="0"></td>
+								<td><input type="number" step=".01" min="0" value="` + vl.price + `"  readonly placeholder="0" data-row="` + n + `" id="total-price_` + n + `" class="form-control border-0 text-right number-format total-price" name="detail[` + n + `][price]" class="form-control"></td>
 								<td class="text-center">
 									<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
 									<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="` + img + `">
@@ -370,8 +378,11 @@
 		<td><input type="text" placeholder="Product Name" class="form-control border-0" name="detail[` + n + `][product_name]" class="form-control"></td>
 		<td><input type="text" placeholder="Specification" class="form-control border-0" name="detail[` + n + `][specification]" class="form-control"></td>
 		<td><input type="text" placeholder="HS Code" class="form-control border-0" name="detail[` + n + `][origin_hscode]" class="form-control"></td>
+		<td><input type="number" step=".01" class="form-control border-0 text-center qty" data-row="` + n + `" id="qty_` + n + `" name="detail[` + n + `][qty]" min="0" placeholder="0"></td>
+		<td><input type="text" class="form-control border-0 text-center" name="detail[` + n + `][unit]" maxlength="10" placeholder="Unit"></td>
+		<td><input type="number" step=".01" class="form-control border-0 text-right unit-price" data-row="` + n + `" id="unit-price_` + n + `" name="detail[` + n + `][unit_price]" min="0" placeholder="0"></td>
 		<td class="text-center "><span class="symbol">` + arr[currency] + `</span></td>
-		<td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][price]" class="form-control"></td>
+		<td><input type="number" step=".01" min="0" data-row="` + n + `" id="total-price_` + n + `" readonly placeholder="0" class="form-control border-0 text-right number-format total-price" name="detail[` + n + `][price]" class="form-control"></td>
 		<td class="text-center">
 		<img id="preview_` + n + `"  src="` + image + `" ondblclick="$('#image_` + n + `').click()" data-row="` + n + `" width="80" class="img-fluid rounded" alt="` + image + `">
 		<input type="hidden" id="img_` + n + `" name="detail[` + n + `][image]" value="">
@@ -379,7 +390,6 @@
 		</td>
 		<td class="text-center"><button type="button" data-row="` + n + `" class="btn btn-sm btn-danger delHscode"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 		</tr>`)
-		// <td><input type="text" placeholder="0" class="form-control border-0 text-right number-format" name="detail[` + n + `][cif_price]" class="form-control"></td>
 	})
 
 	$(document).on('change', '#currency', function() {
@@ -493,6 +503,17 @@
 				}
 			},
 		});
+	})
+
+	$(document).on('input', '.qty,.unit-price', function() {
+		let row = $(this).data('row')
+
+		let qty = parseFloat($('#qty_' + row).val() || 0)
+		let unit_price = parseFloat($('#unit-price_' + row).val() || 0)
+
+		let total_price = qty * unit_price
+		$('#total-price_' + row).val(total_price.toFixed(2))
+		console.log(total_price);
 	})
 
 	$(document).ready(function() {

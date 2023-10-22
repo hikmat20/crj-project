@@ -267,6 +267,12 @@
                                 <div id="errLS"></div>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="attention" class="tx-dark tx-bold col-md-4 pd-x-0">Attn. <span class="text-danger tx-bold">*</span></label>
+                            <div class="col-md-7 px-0">
+                                <input type="text" name="attention" id="attention" value="<?= $header->attention; ?>" required data-parsley-errors-container="#errAttns" data-parsley-class-handler="#cntAttn" placeholder="Attn." class="form-control">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -460,6 +466,7 @@
                                     <th class="text-center align-middle">UNIT PRICE</th>
                                     <th class="text-center align-middle">TOTAL (Rp)</th>
                                     <th class="text-center align-middle">TOTAL (<?= $currency_code; ?>)</th>
+                                    <th class="text-center align-middle">NOT INCL.</th>
                                 </tr>
                             </thead>
                             <tbody class="tx-dark" id="listCosting">
@@ -493,6 +500,7 @@
                                             <input type="text" name="costing[ocean_freight][total_foreign_currency]" value="<?= number_format($ArrCosting['ocean_freight']->total_foreign_currency, 2); ?>" id="foreign_currency_ocean_freight" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">2.</th>
@@ -524,6 +532,7 @@
                                             <input type="text" name="costing[shipping][total_foreign_currency]" value="<?= number_format($ArrCosting['shipping']->total_foreign_currency, 2); ?>" id="foreign_currency_shipping" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">3.</th>
@@ -555,6 +564,7 @@
                                             <input type="text" name="costing[custom_clearance][total_foreign_currency]" value="<?= number_format($ArrCosting['custom_clearance']->total_foreign_currency, 2); ?>" id="foreign_currency_custom_clearance" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">4.</th>
@@ -586,6 +596,7 @@
                                             <input type="text" name="costing[storage][total_foreign_currency]" value="<?= number_format($ArrCosting['storage']->total_foreign_currency, 2); ?>" id="foreign_currency_storage" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">5.</th>
@@ -618,6 +629,7 @@
                                             <input type="hidden" name="trucking_id" value="<?= $header->trucking_id; ?>" id="trucking_id" readonly autocomplete="off" class="form-control" placeholder="0">
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">6.</th>
@@ -649,6 +661,7 @@
                                             <input type="text" name="costing[surveyor][total_foreign_currency]" value="<?= number_format($ArrCosting['surveyor']->total_foreign_currency, 2); ?>" id="foreign_currency_surveyor" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                                         </div>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">7.</th>
@@ -680,10 +693,16 @@
                                             <input type="text" name="costing[fee_csj][total_foreign_currency]" value="<?= number_format($ArrCosting['fee_csj']->total_foreign_currency, 2); ?>" id="total_fee_value_foreign_currency" readonly autocomplete="off" class="form-control bg-transparent border-0 number-format text-right total_costing_foreign_currency" placeholder="0">
                                         </div>
                                     </td>
+                                    <td>
+                                        <label class="ckbox ckbox-primary">
+                                            <input type="checkbox" name="costing[fee_csj][hide_fee]" id="hide_fee_csj" value="Y" <?= ($ArrCosting['fee_csj']->hide_fee == 'Y') ? 'checked' : ''; ?>>
+                                            <span></span>
+                                        </label>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">8.</th>
-                                    <th colspan="4">
+                                    <th colspan="5">
                                         <div class="form-group row mg-b-0">
                                             <label for="fee_lartas_type" class="col-md-3">Fee Lartas</label>
                                             <div class="col-md-4">
@@ -783,7 +802,7 @@
                                 </tr>
                                 <tr>
                                     <th class="text-right">9.</th>
-                                    <th colspan="4">Others</th>
+                                    <th colspan="5">Others</th>
                                 </tr>
                                 <?php foreach ($otherCost as $n => $oth) : $n++; ?>
                                     <tr class="othFee">
@@ -812,7 +831,7 @@
                                                 <input type="text" name="costing[<?= $n; ?>][total]" value="<?= number_format($oth->total); ?>" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing" id="otherFeeTotal_<?= $n; ?>" placeholder="0">
                                             </div>
                                         </td>
-                                        <td>
+                                        <td colspan="2">
                                             <div class="input-group input-group-sm">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text border-0 bg-transparent"><?= $currency; ?></span>
@@ -834,7 +853,7 @@
                                             <input type="text" name="total_costing" id="total_costing" value="<?= number_format($header->total_costing); ?>" readonly class="form-control tx-dark tx-bold border-0 bg-transparent text-right" placeholder="0">
                                         </div>
                                     </th>
-                                    <th class="align-middle">
+                                    <th class="align-middle" colspan="2">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text border-0 bg-transparent"><?= $currency; ?></span>
@@ -1449,7 +1468,7 @@
                         <input type="text" name="costing[${n}][total]" readonly class="bg-transparent tx-dark border-0 form-control text-right total_costing" id="otherFeeTotal_${n}" placeholder="0">
                     </div>
                 </td>
-                <td>
+                <td colspan="2">
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
                             <span class="input-group-text border-0 bg-transparent">${curr}</span>
@@ -1822,6 +1841,27 @@
                 $('body').addClass('modal-open');
             }
         });
+
+        $(document).on('change', '#hide_fee_csj', function() {
+            let total_costing = $('#total_costing').val().replace(/\,/g, '') || 0
+            let total_costing_foreign_currency = $('#total_costing_foreign_currency').val().replace(/\,/g, '') || 0
+            let total_fee_value = $('#total_fee_value').val().replace(/\,/g, '') || 0
+            let total_fee_value_foreign_currency = $('#total_fee_value_foreign_currency').val().replace(/\,/g, '') || 0
+            let hide_fee = $('#hide_fee_csj').is(':checked')
+            if (hide_fee == true) {
+                total_costing = parseFloat(total_costing) - parseFloat(total_fee_value);
+                total_costing_foreign_currency = parseFloat(total_costing_foreign_currency) - parseFloat(total_fee_value_foreign_currency);
+            } else {
+                total_costing = parseFloat(total_costing) + parseFloat(total_fee_value);
+                total_costing_foreign_currency = parseFloat(total_costing_foreign_currency) + parseFloat(total_fee_value_foreign_currency);
+            }
+
+            $('#total_costing').val(new Intl.NumberFormat().format(total_costing))
+            $('#total_costing_foreign_currency').val(new Intl.NumberFormat().format(total_costing_foreign_currency.toFixed(2)))
+            $('#total_costing_and_others').val(new Intl.NumberFormat().format(total_costing_foreign_currency.toFixed(2)))
+
+            subtotal()
+        })
     })
 
     function getTotalBM(val, row, total_price) {
@@ -2189,6 +2229,14 @@
         $('.total_costing_foreign_currency').each(function() {
             currTotalCosting += parseFloat($(this).val().replace(/\,/g, '') || 0)
         })
+
+        let total_fee_value = $('#total_fee_value').val().replace(/\,/g, '') || 0
+        let total_fee_value_foreign_currency = $('#total_fee_value_foreign_currency').val().replace(/\,/g, '') || 0
+        let hide_fee = $('#hide_fee_csj').is(':checked')
+        if (hide_fee == true) {
+            totalCosting = totalCosting - total_fee_value;
+            currTotalCosting = currTotalCosting - total_fee_value_foreign_currency;
+        }
 
         $('#total_costing').val(new Intl.NumberFormat().format(totalCosting))
         $('#total_costing_foreign_currency').val(new Intl.NumberFormat().format(currTotalCosting.toFixed(2)))

@@ -62,6 +62,7 @@ class Requests extends Admin_Controller
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM view_check_hscodes, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`customer_name` LIKE '%$string%'
+        OR `number` LIKE '%$string%'
         OR `project_name` LIKE '%$string%'
         OR `date` LIKE '%$string%'
         OR `country_name` LIKE '%$string%'
@@ -317,6 +318,17 @@ class Requests extends Admin_Controller
 			}
 			$data['created_at']		= $data['modified_at'] = date('Y-m-d H:i:s');
 			$data['created_by']		= $data['modified_by'] = $this->auth->user_id();
+
+			$check = $this->db->get_where("check_hscodes", ['id' => $data['id']])->row();
+			if ($check > 0) {
+				$return	= array(
+					'msg'		=> 'Data Requests HS Code already created.',
+					'status'	=> 0
+				);
+				$this->db->trans_rollback();
+				echo json_encode($return);
+				return false;
+			}
 			$this->db->insert("check_hscodes", $data);
 		}
 
@@ -580,13 +592,14 @@ class Requests extends Admin_Controller
 			} else {
 				$dataArray = $objWorksheet->toArray();
 				for ($i = 1; $i < count($dataArray); $i++) {
-
 					$data[$i] = [
-						'product_name' 	=> $dataArray[$i]['1'],
-						'specification' => $dataArray[$i]['2'],
-						'origin_hscode' => trim(str_replace(['-', '.'], "", $dataArray[$i]['3'])),
-						'price' => trim($dataArray[$i]['4']),
-						// 'cif_price' => trim($dataArray[$i]['5']),
+						'product_name' 	=> ($dataArray[$i]['1']) ?: '',
+						'specification' => ($dataArray[$i]['2']) ?: '',
+						'origin_hscode' => ($dataArray[$i]['3']) ? (trim(str_replace(['-', '.'], "", $dataArray[$i]['3']))) : '',
+						'qty' 			=> ($dataArray[$i]['4']) ?: '',
+						'unit' 			=> ($dataArray[$i]['5']) ?: '',
+						'unit_price' 	=> ($dataArray[$i]['6']) ?: '',
+						'price' 		=> trim($dataArray[$i]['7']),
 					];
 
 					foreach ($objWorksheet->getDrawingCollection() as $n => $drawing) {
@@ -796,16 +809,17 @@ class Requests extends Admin_Controller
 		$convertRate 		= $total_price * $exchange;
 		$total_price_non_lartas_convert = $total_price_non_lartas * $exchange;
 
-		if ($total_price_non_lartas > 0) {
+		if ($convertRate > 0) {
 			if ((isset($fee_type) && $fee_type == 'V')) {
 				$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
 				foreach ($fees as $f) {
-					if ($f->max_value >= $total_price_non_lartas_convert) {
+					if ($f->max_value >= $convertRate) {
 						$fee 	= $f->fee;
 						break;
 					}
 				}
-				$totalFee 	= $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
+
+				$totalFee 	= $fee_value =  ($convertRate * $fee) / 100;
 				$feePrice 	= $totalFee;
 				$feeTotal	= $totalFee;
 				$feeTotal_foreign_currency = $totalFee / $exchange;
@@ -960,11 +974,6 @@ class Requests extends Admin_Controller
 		$post = $this->input->post();
 		$data = $post;
 
-		// echo '<pre>';
-		// print_r($data);
-		// echo '</pre>';
-		// exit;
-
 		$data['id'] 					= $this->Requests_model->generateIdQuotation();
 		$data['number'] 				= $this->Requests_model->generateQuotNumber();
 		$data['date'] 					= date("Y-m-d");
@@ -1037,6 +1046,7 @@ class Requests extends Admin_Controller
 			}
 		}
 
+		// $check = $this->db->get_where('quotations')->row();
 		$this->db->insert("quotations", $data);
 		$this->db->insert_batch('quotation_details', $ArrDetail);
 		if ($ArrDtlLartas) {

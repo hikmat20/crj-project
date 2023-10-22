@@ -103,7 +103,10 @@
                 <th class="text-center">Specification</th>
                 <th class="text-center">Origin HS Code</th>
                 <th class="text-center" width="30">Curr</th>
-                <th class="text-right">Price</th>
+                <th class="text-center">Qty</th>
+                <th class="text-center">Unit</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-right">Total Price</th>
                 <?php if ($request->status == 'CHK') : ?>
                     <th class="text-center" width="100">Indonesia HS Code</th>
                     <th width="120">Cost</th>
@@ -125,7 +128,10 @@
                     <td><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
                     <td class="text-center"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price) : '-'; ?></td>
+                    <td class="text-center"><?= isset($dtl->qty) ? ($dtl->qty) : ''; ?></td>
+                    <td class="text-cente"><?= isset($dtl->unit) ? ($dtl->unit) : ''; ?></td>
+                    <td class="text-right"><?= isset($dtl->unit_price) ? number_format($dtl->unit_price, 2) : ''; ?></td>
+                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : ''; ?></td>
                     <?php if ($request->status == 'CHK') : ?>
                         <td class="text-center"><?= $dtl->local_hscode; ?></td>
                         <td>

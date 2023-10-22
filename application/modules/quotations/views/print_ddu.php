@@ -7,7 +7,7 @@
         body {
             width: 100%;
             font-family: Arial;
-            font-size: 8pt;
+            font-size: 7pt;
             margin: 0;
             padding: 0;
         }
@@ -128,7 +128,9 @@
         <table width="100%">
             <tr>
                 <td width="55%" style="vertical-align: top;">
-                    <h3>To <br><span class="fontA">客户</span>: <?= $header->customer_name; ?></h3>
+                    <h3>To <span class="fontA">客户</span> : <?= $header->customer_name; ?></h3>
+                    <h3>ADDRESS <span class="fontA">地址</span> : <?= $header->customer_address; ?></h3>
+                    <h3>ATTENTION <span class="fontA">客户名称</span> : <?= $header->attention; ?></h3>
                 </td>
                 <td class="text-right">
                     <table class="bordered">

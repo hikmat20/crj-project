@@ -59,14 +59,14 @@ class Check_hscode extends Admin_Controller
 		$length         = $requestData['length'];
 
 		$where = "";
-		$where = " AND `status` = '$status' OR `status` = 'QTT'";
+		$where = " AND `status` = '$status'";
 
 		$string = $this->db->escape_like_str($search);
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM view_check_hscodes, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`customer_name` LIKE '%$string%'
-        OR `project_name` LIKE '%$string%'
         OR `number` LIKE '%$string%'
+        OR `project_name` LIKE '%$string%'
         OR `date` LIKE '%$string%'
         OR `employee_name` LIKE '%$string%'
         OR `revision_count` LIKE '%$string%'

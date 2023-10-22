@@ -172,9 +172,10 @@
                 <th width="" class="text-center">Product Name</th>
                 <th width="200" class="text-center">Specification</th>
                 <th width="100" class="text-center">Origin HS Code</th>
-                <!-- <th width="100" class="text-center">Indonesia HS Code</th>
-                <th width="50" class="text-center">Curr</th> -->
-                <!-- <th width="80" class="text-center">Price</th> -->
+                <th width="50" class="text-center">Qty</th>
+                <th width="80" class="text-center">Unit</th>
+                <th width="100" class="text-center" colspan="2">Unit Price</th>
+                <th width="100" class="text-center" colspan="2">Price</th>
                 <th width="120" class="text-center">Cost</th>
                 <th width="150">Other Cost</th>
                 <th width="150">Docs. Requirement</th>
@@ -193,7 +194,12 @@
                     <td style="font-family: sun-exta"><?= $dtl->product_name; ?></td>
                     <td style="font-family: sun-exta"><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
-                    <!-- <td class="text-center" <?= isset($ArrHscode[$dtl->origin_hscode]) ? '' : 'bg-danger tx-white'; ?>><?= isset($ArrHscode[$dtl->origin_hscode]) ? $ArrHscode[$dtl->origin_hscode]->local_code : 'N/A'; ?></td> -->
+                    <td class="text-center"><?= ($dtl->qty); ?></td>
+                    <td class="text-center"><?= $dtl->unit; ?></td>
+                    <td class="" style="border-right:none"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
+                    <td class="text-right"><?= number_format($dtl->unit_price, 2); ?></td>
+                    <td class="" style="border-right:none"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
+                    <td class="text-right"><?= number_format($dtl->price, 2); ?></td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
@@ -269,42 +275,3 @@
 </body>
 
 </html>
-
-
-<div class="card-body">
-
-
-    <table id="table-detail" class="table table-sm table-bordered border table-hover" width="100%">
-
-
-    </table>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.select').select2({
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
-            width: "100%",
-            allowClear: true
-        });
-
-        $('.select.not-search').select2({
-            minimumResultsForSearch: -1,
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
-            width: "100%",
-            allowClear: true,
-        });
-
-        $('.cost_value').mask('#,##0', {
-            reverse: true
-        });
-
-        window.Parsley.on('form:validated', function() {
-            $('select').on('select2:select', function(evt) {
-                $("#city_id").parsley().validate();
-            });
-        });
-    });
-</script>

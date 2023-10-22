@@ -61,6 +61,7 @@ class Quotations extends Admin_Controller
 		$sql = "SELECT *,(@row_number:=@row_number + 1) AS num
         FROM view_quotations, (SELECT @row_number:=0) as temp WHERE 1=1 $where  
         AND (`customer_name` LIKE '%$string%'
+		OR `number` LIKE '%$string%'
         OR `project_name` LIKE '%$string%'
         OR `date` LIKE '%$string%'
         OR `employee_name` LIKE '%$string%'
@@ -665,7 +666,6 @@ class Quotations extends Admin_Controller
 			}
 		}
 
-
 		if ($costing) {
 			$n = 0;
 			foreach ($costing as $k => $cost) {
@@ -681,6 +681,7 @@ class Quotations extends Admin_Controller
 				$cost['currency'] 					= $data['currency'];
 				$cost['exchange'] 					= str_replace(",", "", $data['exchange']);
 				$cost['total_foreign_currency'] 	= str_replace(",", "", $cost['total_foreign_currency']);
+				$cost['hide_fee'] 					= isset($cost['hide_fee']) && $cost['hide_fee'] ? $cost['hide_fee'] : 'N';
 				$cost['modified_at'] 				= date('Y-m-d H:i:s');
 				$cost['modified_by'] 				= $this->auth->user_id();;
 				$this->db->update('quotation_detail_costing', $cost, ['id' => $cost['id']]);
@@ -879,16 +880,16 @@ class Quotations extends Admin_Controller
 		$convertRate 		= $total_price * $exchange;
 		$total_price_non_lartas_convert = $total_price_non_lartas * $exchange;
 
-		if ($total_price_non_lartas > 0) {
+		if ($convertRate > 0) {
 			if ((isset($fee_type) && $fee_type == 'V')) {
 				$fees			= $this->db->get_where('fee_values', ['status' => '1'])->result();
 				foreach ($fees as $f) {
-					if ($f->max_value >= $total_price_non_lartas_convert) {
+					if ($f->max_value >= $convertRate) {
 						$fee 	= $f->fee;
 						break;
 					}
 				}
-				$totalFee = $fee_value =  ($total_price_non_lartas_convert * $fee) / 100;
+				$totalFee = $fee_value =  ($convertRate * $fee) / 100;
 			} else if (isset($fee_type) && $fee_type == 'C') {
 				$err_fee_customer 		= 'Fee Customer not available in this Customer.';
 				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer, 'status' => '1'])->row();
@@ -1413,7 +1414,7 @@ class Quotations extends Admin_Controller
 			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
 		}
 
-		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 20, 0, 0);
 		if ($comp->watermark) {
 			$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, '', 'png', '', true, false, true);
 		}
@@ -1510,7 +1511,7 @@ class Quotations extends Admin_Controller
 		if ($comp->footer) {
 			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
 		}
-		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 10, 0, 0);
 		if ($comp->watermark) {
 			$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, '', 'png', '', true, false, true);
 		}
@@ -1605,7 +1606,7 @@ class Quotations extends Admin_Controller
 		if ($comp->footer) {
 			$mpdf->SetHTMLFooter('<html><div><img src="' . base_url('assets/img/letter-head/') . $comp->footer . '" width="100%"></div></html>', true);
 		}
-		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 5, 0, 0);
+		$mpdf->AddPage('P', '', '', '', '', 0, 0, $hMgn, 10, 0, 0);
 		if ($comp->watermark) {
 			$mpdf->Image(base_url("assets/img/letter-head/") . $comp->watermark, 0, 0, 210, '', 'png', '', true, false, true);
 		}

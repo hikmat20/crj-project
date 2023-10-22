@@ -175,6 +175,9 @@
                 <th width="" class="text-center">Specification</th>
                 <th width="80" class="text-center">Origin<br>HS Code</th>
                 <th width="80" class="text-center">Indonesia<br>HS Code</th>
+                <th width="80" class="text-center">Qty</th>
+                <th width="80" class="text-center">Unit</th>
+                <th width="90" class="text-center" colspan="2">Unit Price</th>
                 <th width="90" class="text-center" colspan="2">Price</th>
                 <th width="120" class="text-center">Cost</th>
                 <th width="130" class="text-center">Other Cost</th>
@@ -194,8 +197,12 @@
                     <td style="font-family: sun-exta"><?= $dtl->specification; ?></td>
                     <td class="text-center"><?= $dtl->origin_hscode; ?></td>
                     <td class="text-center"><?= $dtl->local_hscode; ?></td>
+                    <td class="text-center"><?= $dtl->qty; ?></td>
+                    <td class="text-center"><?= $dtl->unit; ?></td>
                     <td class="" style="border-right:none"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
-                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price) : '-'; ?></td>
+                    <td class="text-center"><?= $dtl->unit_price; ?></td>
+                    <td class="" style="border-right:none"><?= isset($request->currency) ? $currency[$request->currency]->symbol : '-'; ?></td>
+                    <td class="text-right"><?= isset($dtl->price) ? number_format($dtl->price, 2) : '-'; ?></td>
                     <td>
                         <?php if (isset($ArrHscode[$dtl->origin_hscode])) : ?>
                             <p><small>BM MFN : <?= ($ArrHscode[$dtl->origin_hscode]->bm_mfn) ?: '0'; ?>%</small></p>
@@ -269,42 +276,3 @@
 </body>
 
 </html>
-
-
-<div class="card-body">
-
-
-    <table id="table-detail" class="table table-sm table-bordered border table-hover" width="100%">
-
-
-    </table>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.select').select2({
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
-            width: "100%",
-            allowClear: true
-        });
-
-        $('.select.not-search').select2({
-            minimumResultsForSearch: -1,
-            placeholder: 'Choose one',
-            dropdownParent: $('#dialog-popup'),
-            width: "100%",
-            allowClear: true,
-        });
-
-        $('.cost_value').mask('#,##0', {
-            reverse: true
-        });
-
-        window.Parsley.on('form:validated', function() {
-            $('select').on('select2:select', function(evt) {
-                $("#city_id").parsley().validate();
-            });
-        });
-    });
-</script>

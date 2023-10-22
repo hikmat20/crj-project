@@ -225,10 +225,13 @@ class Quotations_model extends BF_Model
             'grand_total'                    => $result->grand_total,
             'grand_total_exclude_price'      => $result->grand_total_exclude_price,
             'so_type'                        => $post['so_type'],
+            'vat'                            => $post['vat'],
+            'email'                          => $post['email'],
             'created_by'                     => $this->auth->user_id(),
             'created_at'                     => date('Y-m-d H:i:s'),
             'total_costing'                  => $result->total_costing,
-            'total_costing_foreign_currency' => $result->total_costing_foreign_currency
+            'total_costing_foreign_currency' => $result->total_costing_foreign_currency,
+            'attention'                      => $result->attention
         ];
 
         $this->db->insert('sales_order', $dataSO);
@@ -267,10 +270,8 @@ class Quotations_model extends BF_Model
             simpan_aktifitas('', $dataSO['id'], 'Insert Sales Order Detail', '1', $this->db->last_query(), '1');
         }
 
-
-
         /* Costing */
-        $resultCosting      = $this->db->get_where('quotation_detail_costing', ['quotation_id' => $post['quotation_id']])->result();
+        $resultCosting      = $this->db->get_where('quotation_detail_costing', ['quotation_id' => $post['quotation_id'], 'hide_fee' => 'N'])->result();
         if ($resultCosting) {
             foreach ($resultCosting as $k => $cost) {
                 $k++;

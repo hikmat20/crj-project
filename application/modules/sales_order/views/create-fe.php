@@ -17,7 +17,7 @@
                         <label for="" class="tx-bold tx-dark">2. Goods consigned to (consignee’s name, address, country) <span class="tx-danger">*</span></label>
                         <input type="text" name="company_name" required id="company_name" class="form-control form-controlsm" placeholder="Company Name" value="<?= $dataSO->company_name; ?>">
                         <textarea name="company_address" required id="company_address" rows="3" class="mt-2 form-control form-controlsm mb-2" placeholder="Address"><?= $dataSO->company_address; ?></textarea>
-                        <label for="">NPWP</label>
+                        <label for="" class="text-uppercase tx-dark tx-bold">NPWP</label>
                         <input type="text" name="vat" required id="vat" class="form-control form-controlsm" placeholder="VAT/NPWP" value="<?= $dataSO->vat; ?>">
                     </div>
 

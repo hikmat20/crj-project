@@ -38,7 +38,7 @@
                             <p>
                                 <?= $dataSO->company_address; ?> <br>
                                 NPWP : <?= $dataSO->vat; ?> <br>
-                                Email : <?= strtoupper($dataSO->email); ?>
+                                EMAIL : <?= strtoupper($dataSO->email); ?>
 
                             </p>
                         </div>

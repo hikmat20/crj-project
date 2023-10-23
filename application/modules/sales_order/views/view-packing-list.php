@@ -17,7 +17,9 @@
                 </div>
                 <div class="mb-4 row">
                     <label for="" class="tx-bold tx-dark col-md-3">Address</label>
-                    <div class="col-md-9">: <?= $data->company_address; ?> <br> NPWP : <?= $data->vat; ?></div>
+                    <div class="col-md-9">:
+                        <?= $data->company_address; ?> <br>
+                        NPWP:<?= $data->vat; ?></div>
                 </div>
             </div>
             <div class="col-md-6">

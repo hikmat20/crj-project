@@ -23,7 +23,7 @@
                         <div class="col-md-9">:
                             <?= $data->company_address; ?>
                             <br>
-                            NWPW : <?= $data->vat; ?> <br>
+                            NWPW:<?= $data->vat; ?> <br>
 
                         </div>
                     </div>

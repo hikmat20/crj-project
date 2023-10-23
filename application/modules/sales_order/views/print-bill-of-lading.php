@@ -162,7 +162,7 @@
                 <p><?= ($data->qq == 'Y') ? $data->company_name . " QQ " . $data->qq_company_name : $data->company_name; ?></p>
                 <p><?= $data->company_address; ?> <br>
                     NPWP : <?= ($data->vat); ?> <br>
-                    Email : <?= strtoupper($data->email); ?> <br>
+                    EMAIL : <?= strtoupper($data->email); ?> <br>
                 </p>
                 <br>
                 <br>

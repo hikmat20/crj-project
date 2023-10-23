@@ -44,7 +44,7 @@
                         <textarea name="company_address" required id="company_address" rows="3" class="form-control form-controlsm" placeholder="Address"><?= $dataSO->company_address; ?></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="">NPWP</label>
+                        <label for="" class="text-uppercase tx-dark tx-bold">NPWP</label>
                         <input type="text" name="vat" required id="vat" class="form-control form-controlsm" placeholder="VAT/NPWP" value="<?= $dataSO->vat; ?>">
                     </div>
                 </div>

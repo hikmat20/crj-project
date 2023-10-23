@@ -19,7 +19,7 @@
                         <textarea type="text" name="company_address" class="form-control form-control-sm" placeholder="Company Address" aria-describedby="helpId"><?= $dataSO->company_address; ?></textarea>
                     </div>
                     <div class="form-group mb-2">
-                        <label for="">NPWP</label>
+                        <label for="" class="text-uppercase tx-dark tx-bold">NPWP</label>
                         <input type="text" name="vat" required id="vat" class="form-control form-controlsm" placeholder="VAT/NPWP" value="<?= $dataSO->vat; ?>">
                     </div>
                     <div class="form-group">

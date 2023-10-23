@@ -19,13 +19,12 @@
                             <br>
                             <?= $data->company_address; ?>
                             <br>
-                            NPWP : <?= $data->vat; ?> <br>
+                            NPWP:<?= $data->vat; ?> <br>
                         </p>
                     </div>
 
                     <div class="form-group">
                         <label for="" class="tx-bold tx-dark">3. Means of transport and route (as for as known) <span class="tx-danger">*</span></label>
-
                         <div class="pl-md-3">
                             <div class="mb-2 row">
                                 <div class="col-md-4">

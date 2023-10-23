@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group">
                         <?= $dataSO->company_address; ?> <br>
-                        NPWP : <?= $dataSO->vat; ?>
+                        NPWP:<?= $dataSO->vat; ?>
                     </div>
                 </div>
                 <div class="col-md-6">

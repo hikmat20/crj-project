@@ -268,9 +268,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="attention" class="tx-dark tx-bold col-md-4 pd-x-0">Attn. <span class="text-danger tx-bold">*</span></label>
+                            <label for="attention" class="tx-dark tx-bold col-md-4 pd-x-0">Attn. <span class="text-danger tx-bold"></span></label>
                             <div class="col-md-7 px-0">
-                                <input type="text" name="attention" id="attention" value="<?= $header->attention; ?>" required data-parsley-errors-container="#errAttns" data-parsley-class-handler="#cntAttn" placeholder="Attn." class="form-control">
+                                <input type="text" name="attention" id="attention" value="<?= $header->attention; ?>" data-parsley-errors-container="#errAttns" data-parsley-class-handler="#cntAttn" placeholder="Attn." class="form-control">
                             </div>
                         </div>
                     </div>

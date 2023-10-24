@@ -5,7 +5,8 @@
                 <div class="col-md-6">
                     <!-- <hr class="border-dark"> -->
                     <div class="form-group">
-                        <label for="" class="tx-dark tx-bold">1. Goods consigned from (exporter’s business name, address, country)<span class="tx-danger">*</span></label>
+                        <label for="" class="tx-dark tx-bold">1. Goods consigned from (exporter’s business name,
+                            address, country)<span class="tx-danger">*</span></label>
                         <p class="pl-3">
                             <?= $data->supplier_name; ?>
                             <br>
@@ -13,7 +14,8 @@
                         </p>
                     </div>
                     <div class="form-group">
-                        <label for="" class="tx-bold tx-dark">2. Goods consigned to (consignee’s name, address, country) <span class="tx-danger">*</span></label>
+                        <label for="" class="tx-bold tx-dark">2. Goods consigned to (consignee’s name, address, country)
+                            <span class="tx-danger">*</span></label>
                         <p class="pl-3">
                             <?= $data->company_name; ?>
                             <br>
@@ -24,7 +26,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="tx-bold tx-dark">3. Means of transport and route (as for as known) <span class="tx-danger">*</span></label>
+                        <label for="" class="tx-bold tx-dark">3. Means of transport and route (as for as known) <span
+                                class="tx-danger">*</span></label>
                         <div class="pl-md-3">
                             <div class="mb-2 row">
                                 <div class="col-md-4">
@@ -90,9 +93,11 @@
                     <tr>
                         <td class="text-center align-top" style="width:50px">Item Number</td>
                         <td class="text-center align-top" style="width:120px">Marks and numbers on packages</td>
-                        <td class="text-center align-top" style="width:120px">Number and type of packages, description of goods (including quantity where appropriate and HS number in six digit code)</td>
+                        <td class="text-center align-top" style="width:120px">Number and type of packages, description
+                            of goods (including quantity where appropriate and HS number in six digit code)</td>
                         <td class="text-center align-top" style="width:100px">Origin criterion (see Notes overleaf)</td>
-                        <td class="text-center align-top" style="width:100px">Gross weight or net weight or other quantity and value (FOB) only when RVC criterion is applied</td>
+                        <td class="text-center align-top" style="width:100px">Gross weight or net weight or other
+                            quantity and value (FOB) only when RVC criterion is applied</td>
                         <td class="text-center align-top" style="width:100px">Number and date of invoices </td>
                     </tr>
                 </thead>
@@ -101,37 +106,42 @@
                     if ($details) foreach ($details as $dt) :
                         $n++;
                         $totalPkg += $dt->package; ?>
-                        <tr class="">
-                            <td class="text-center border-bottom-0"><?= $n; ?></td>
-                            <?php if ($n == '1' || $n > count($details)) : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase">
-                                    N/M
-                                </td>
-                            <?php else : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase"></td>
-                            <?php endif; ?>
-                            <td class="text- border-bottom-0">
-                                <div class="tx-uppercase">
-                                    <?= numberTowords(number_format($dt->package, 0, '', '')); ?> <?= ($dt->package) ? '(' . number_format($dt->package, 0) . ') ' . $data->package . " OF" : ''; ?>
-                                    <?= $dt->product_name; ?> <?= (strtolower($dt->specification) != 'null') ? (($dt->hide_spec == 'N') ? $dt->specification : '') : ''; ?><br>
-                                    HS CODE: <?= substr(substr_replace($dt->local_hscode, ".", 4, 0), 0, 7); ?>
-                                </div>
-                            </td>
-                            <td class="text-center border-bottom-0">"PE"</td>
-                            <td class="text-center tx-uppercase border-bottom-0">
-                                <?= ($dt->hide_qty == 'Y') ? '' : (number_format($dt->qty, 0, '', '') . " " . strtoupper($dt->unit) . '<br>'); ?>
-                                <?= ($dt->hide_nw == 'Y') ? '' : (number_format($dt->gross_weight, 0, '', '') . " KGS N.W <br>"); ?>
-                                <?= ($dt->hide_gw == 'Y') ? '' : (number_format($dt->nett_weight, 0, '', '') . " KGS G.W <br>"); ?>
-                            </td>
-                            <?php if ($n == '1' || $n > count($details)) : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase">
-                                    <?= $data->invoice_number; ?> <br>
-                                    <?= $data->invoice_date; ?>
-                                </td>
-                            <?php else : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase"></td>
-                            <?php endif; ?>
-                        </tr>
+                    <tr class="">
+                        <td class="text-center border-bottom-0"><?= $n; ?></td>
+                        <?php if ($n == '1' || $n > count($details)) : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase">
+                            N/M
+                        </td>
+                        <?php else : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase"></td>
+                        <?php endif; ?>
+                        <td class="text- border-bottom-0">
+                            <div class="tx-uppercase">
+                                <?= numberTowords(number_format($dt->package, 0, '', '')); ?>
+                                <?= ($dt->package) ? '(' . number_format($dt->package, 0) . ') ' . $data->package . " OF" : ''; ?>
+                                <?= $dt->product_name; ?>
+                                <?= (strtolower($dt->specification) != 'null') ? (($dt->hide_spec == 'N') ? $dt->specification : '') : ''; ?><br>
+                                HS CODE: <?= substr(substr_replace($dt->local_hscode, ".", 4, 0), 0, 7); ?>
+                                <p class=" tx-dark tx-bold">
+                                    <small class="tx-bold"> <?= $dt->mix; ?></small>
+                                </p>
+                            </div>
+                        </td>
+                        <td class="text-center border-bottom-0">"PE"</td>
+                        <td class="text-center tx-uppercase border-bottom-0">
+                            <?= ($dt->hide_qty == 'Y') ? '' : (number_format($dt->qty, 0, '', '') . " " . strtoupper($dt->unit) . '<br>'); ?>
+                            <?= ($dt->hide_nw == 'Y') ? '' : (number_format($dt->gross_weight, 0, '', '') . " KGS N.W <br>"); ?>
+                            <?= ($dt->hide_gw == 'Y') ? '' : (number_format($dt->nett_weight, 0, '', '') . " KGS G.W <br>"); ?>
+                        </td>
+                        <?php if ($n == '1' || $n > count($details)) : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase">
+                            <?= $data->invoice_number; ?> <br>
+                            <?= $data->invoice_date; ?>
+                        </td>
+                        <?php else : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase"></td>
+                        <?php endif; ?>
+                    </tr>
                     <?php endforeach; ?>
 
                     <tr>
@@ -140,7 +150,9 @@
                         <td class="pt-5">
                             <div class="mb-2">
                                 <label for="">TOTAL :</label>
-                                <p class="tx-uppercase"><?= numberTowords(number_format($totalPkg, 0, '', '')) . " (" . number_format($totalPkg, 0, '', '') . ") " . $data->package; ?> ONLY</p>
+                                <p class="tx-uppercase">
+                                    <?= numberTowords(number_format($totalPkg, 0, '', '')) . " (" . number_format($totalPkg, 0, '', '') . ") " . $data->package; ?>
+                                    ONLY</p>
                             </div>
                             <div class="mb-2">
                                 <p>*********************************</p>
@@ -162,7 +174,9 @@
                                 <p class="tx-uppercase tx-bold text-center"><?= $data->exporter; ?></p>
                             </div>
                             <div class="mb-3">
-                                <label for="">and that they comply with the origin requirements specified for these goods in the ASEAN-CHINA Free trade Area referential Tariff for the goods exported to</label>
+                                <label for="">and that they comply with the origin requirements specified for these
+                                    goods in the ASEAN-CHINA Free trade Area referential Tariff for the goods exported
+                                    to</label>
                                 <p class="tx-uppercase tx-bold text-center"> <?= $data->importing; ?></p>
                             </div>
                             <div class="text">
@@ -172,7 +186,8 @@
                         </td>
                         <td colspan="3">
                             <label for="">12. Certification</label>
-                            <p>It is hereby certified, on the basis of control carried out, that the Declaration by the exporter is correct.</p>
+                            <p>It is hereby certified, on the basis of control carried out, that the Declaration by the
+                                exporter is correct.</p>
                             <br>
                             <br>
                             <br>

@@ -6,19 +6,30 @@
                 <div class="col-md-6">
                     <!-- <hr class="border-dark"> -->
                     <div class="form-group">
-                        <label for="" class="tx-dark tx-bold">1. Goods consigned from (exporter’s business name, address, country)<span class="tx-danger">*</span></label>
-                        <input type="text" name="supplier_name" id="supplier_name" class="form-control" value="<?= $data->supplier_name; ?>" placeholder="Shipper Name" required data-parsley-inputs>
+                        <label for="" class="tx-dark tx-bold">1. Goods consigned from (exporter’s business name,
+                            address, country)<span class="tx-danger">*</span></label>
+                        <input type="text" name="supplier_name" id="supplier_name" class="form-control"
+                            value="<?= $data->supplier_name; ?>" placeholder="Shipper Name" required
+                            data-parsley-inputs>
                     </div>
                     <div class="form-group">
-                        <textarea name="supplier_address" required id="supplier_address" rows="3" class="form-control form-controlsm" placeholder="Address"><?= $data->supplier_address; ?></textarea>
+                        <textarea name="supplier_address" required id="supplier_address" rows="3"
+                            class="form-control form-controlsm"
+                            placeholder="Address"><?= $data->supplier_address; ?></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="tx-bold tx-dark">2. Goods consigned to (consignee’s name, address, country) <span class="tx-danger">*</span></label>
-                        <input type="text" name="company_name" required id="company_name" class="form-control form-controlsm" placeholder="Company Name" value="<?= $data->company_name; ?>">
-                        <textarea name="company_address" required id="company_address" rows="3" class="mt-2 form-control form-controlsm mb-2" placeholder="Address"><?= $data->company_address; ?></textarea>
+                        <label for="" class="tx-bold tx-dark">2. Goods consigned to (consignee’s name, address, country)
+                            <span class="tx-danger">*</span></label>
+                        <input type="text" name="company_name" required id="company_name"
+                            class="form-control form-controlsm" placeholder="Company Name"
+                            value="<?= $data->company_name; ?>">
+                        <textarea name="company_address" required id="company_address" rows="3"
+                            class="mt-2 form-control form-controlsm mb-2"
+                            placeholder="Address"><?= $data->company_address; ?></textarea>
                         <label for="" class="text-uppercase tx-dark tx-bold">NPWP</label>
-                        <input type="text" name="vat" required id="vat" class="form-control form-controlsm" placeholder="VAT/NPWP" value="<?= $data->vat; ?>">
+                        <input type="text" name="vat" required id="vat" class="form-control form-controlsm"
+                            placeholder="VAT/NPWP" value="<?= $data->vat; ?>">
                     </div>
 
                     <div class="form-group">
@@ -29,7 +40,8 @@
                                     Departure date
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="date" name="departure_date" placeholder="" value="<?= $data->departure_date; ?>" class="form-control form-control-sm">
+                                    <input type="date" name="departure_date" placeholder=""
+                                        value="<?= $data->departure_date; ?>" class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="mb-2 row">
@@ -37,7 +49,8 @@
                                     Vessel’s name / Aircraft etc.
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="from" placeholder="From" value="<?= $data->from; ?>" class="form-control form-control-sm">
+                                    <input type="text" name="from" placeholder="From" value="<?= $data->from; ?>"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="mb-2 row">
@@ -45,7 +58,8 @@
                                     Port of discharge
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="to" placeholder="To" value="<?= $data->to; ?>" class="form-control form-control-sm">
+                                    <input type="text" name="to" placeholder="To" value="<?= $data->to; ?>"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="mb-2 row text-uppercase">
@@ -55,8 +69,10 @@
                                 <div class="col-md-8">
                                     <select name="import_by" required class="form-control form-control-sm">
                                         <option value="">~ Select By ~</option>
-                                        <option value="SEA" <?= ($data->import_by  == 'SEA') ? 'selected' : ''; ?>>SEA</option>
-                                        <option value="AIR" <?= ($data->import_by  == 'AIR') ? 'selected' : ''; ?>>AIR</option>
+                                        <option value="SEA" <?= ($data->import_by  == 'SEA') ? 'selected' : ''; ?>>SEA
+                                        </option>
+                                        <option value="AIR" <?= ($data->import_by  == 'AIR') ? 'selected' : ''; ?>>AIR
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -99,9 +115,11 @@
                     <tr>
                         <td class="text-center align-top" style="width:50px">Item Number</td>
                         <td class="text-center align-top" style="width:120px">Marks and numbers on packages</td>
-                        <td class="text-center align-top" style="width:120px">Number and type of packages, description of goods (including quantity where appropriate and HS number in six digit code)</td>
+                        <td class="text-center align-top" style="width:120px">Number and type of packages, description
+                            of goods (including quantity where appropriate and HS number in six digit code)</td>
                         <td class="text-center align-top" style="width:100px">Origin criterion (see Notes overleaf)</td>
-                        <td class="text-center align-top" style="width:100px">Gross weight or net weight or other quantity and value (FOB) only when RVC criterion is applied</td>
+                        <td class="text-center align-top" style="width:100px">Gross weight or net weight or other
+                            quantity and value (FOB) only when RVC criterion is applied</td>
                         <td class="text-center align-top" style="width:100px">Number and date of invoices </td>
                     </tr>
                 </thead>
@@ -110,36 +128,43 @@
                     if ($details) foreach ($details as $dt) :
                         $n++;
                         $totalPkg += $dt->package; ?>
-                        <tr class="">
-                            <td class="text-center border-bottom-0"><?= $n; ?></td>
-                            <?php if ($n == '1' || $n > count($details)) : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase">N/M</td>
-                            <?php else : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase"></td>
-                            <?php endif; ?>
-                            <td class="text- border-bottom-0">
-                                <div class="tx-uppercase">
-                                    <?= numberTowords(number_format($dt->package, 0, '', '')); ?> <?= ($dt->package) ? '(' . number_format($dt->package, 0) . ') ' . $data->package . " OF" : ''; ?>
-                                    <?= $dt->product_name; ?> <?= (strtolower($dt->specification) != 'null') ? (($dt->hide_spec == 'N') ? $dt->specification : '') : ''; ?><br>
-                                    HS CODE: <?= substr(substr_replace($dt->local_hscode, ".", 4, 0), 0, 7); ?>
-                                </div>
-                            </td>
-                            <td class="text-center border-bottom-0">"PE"</td>
-                            <td class="text-center border-bottom-0">
-                                <?= ($dt->hide_qty == 'Y') ? '' : (number_format($dt->qty, 0, '', '') . " " . strtoupper($dt->unit) . '<br>'); ?>
-                                <?= ($dt->hide_nw == 'Y') ? '' : (number_format($dt->gross_weight, 0, '', '') . " KGS N.W <br>"); ?>
-                                <?= ($dt->hide_gw == 'Y') ? '' : (number_format($dt->nett_weight, 0, '', '') . " KGS G.W <br>"); ?>
+                    <tr class="">
+                        <td class="text-center border-bottom-0"><?= $n; ?>
+                            <input type="hidden" name="details[<?= $n; ?>][id]" value="<?= $dt->id; ?>">
+                        </td>
+                        <?php if ($n == '1' || $n > count($details)) : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase">N/M</td>
+                        <?php else : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase"></td>
+                        <?php endif; ?>
+                        <td class="text- border-bottom-0">
+                            <div class="tx-uppercase">
+                                <?= numberTowords(number_format($dt->package, 0, '', '')); ?>
+                                <?= ($dt->package) ? '(' . number_format($dt->package, 0) . ') ' . $data->package . " OF" : ''; ?>
+                                <?= $dt->product_name; ?>
+                                <?= (strtolower($dt->specification) != 'null') ? (($dt->hide_spec == 'N') ? $dt->specification : '') : ''; ?><br>
+                                HS CODE: <?= substr(substr_replace($dt->local_hscode, ".", 4, 0), 0, 7); ?>
+                                <input type="text"
+                                    class=" tx-dark tx-bold form-control form-control-sm p-0 h-0 border-top-0 border-right-0 border-left-0 rounded-0 "
+                                    name="details[<?= $n; ?>][mix]" value="<?= $dt->mix; ?>" placeholder="Mix">
+                            </div>
+                        </td>
+                        <td class="text-center border-bottom-0">"PE"</td>
+                        <td class="text-center border-bottom-0">
+                            <?= ($dt->hide_qty == 'Y') ? '' : (number_format($dt->qty, 0, '', '') . " " . strtoupper($dt->unit) . '<br>'); ?>
+                            <?= ($dt->hide_nw == 'Y') ? '' : (number_format($dt->gross_weight, 0, '', '') . " KGS N.W <br>"); ?>
+                            <?= ($dt->hide_gw == 'Y') ? '' : (number_format($dt->nett_weight, 0, '', '') . " KGS G.W <br>"); ?>
 
-                            </td>
-                            <?php if ($n == '1' || $n > count($details)) : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase">
-                                    <?= $data->invoice_number; ?> <br>
-                                    <?= $data->invoice_date; ?>
-                                </td>
-                            <?php else : ?>
-                                <td class="text-center border-bottom-0 tx-uppercase"></td>
-                            <?php endif; ?>
-                        </tr>
+                        </td>
+                        <?php if ($n == '1' || $n > count($details)) : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase">
+                            <?= $data->invoice_number; ?> <br>
+                            <?= $data->invoice_date; ?>
+                        </td>
+                        <?php else : ?>
+                        <td class="text-center border-bottom-0 tx-uppercase"></td>
+                        <?php endif; ?>
+                    </tr>
                     <?php endforeach; ?>
 
                     <tr>
@@ -148,12 +173,14 @@
                         <td class="pt-5">
                             <div class="mb-2">
                                 <label for="">TOTAL :</label>
-                                <textarea name="total_text" class="form-control tx-uppercase" rows="3"><?= numberTowords(number_format($totalPkg, 0, '', '')) . " (" . number_format($totalPkg, 0, '', '') . ") " . $data->package; ?> ONLY</textarea>
+                                <textarea name="total_text" class="form-control tx-uppercase"
+                                    rows="3"><?= numberTowords(number_format($totalPkg, 0, '', '')) . " (" . number_format($totalPkg, 0, '', '') . ") " . $data->package; ?> ONLY</textarea>
                             </div>
                             <div class="mb-2">
                                 <p>*********************************</p>
                                 <label for="">MANUFACTURER :</label>
-                                <textarea name="manufacturer" id="manufacturer" class="form-control tx-uppercase" rows="3"><?= $data->manufacturer; ?></textarea>
+                                <textarea name="manufacturer" id="manufacturer" class="form-control tx-uppercase"
+                                    rows="3"><?= $data->manufacturer; ?></textarea>
                             </div>
                         </td>
                         <td></td>
@@ -167,11 +194,17 @@
                                     The undersigned hereby declares that the above details and
                                     Statement are correct, that all the goods were produced
                                 </label>
-                                <input type="text" name="exporter" value="<?= $data->exporter; ?>" class="form-control border-0 text-center tx-18 tx-bold" placeholder="..............................................................">
+                                <input type="text" name="exporter" value="<?= $data->exporter; ?>"
+                                    class="form-control border-0 text-center tx-18 tx-bold"
+                                    placeholder="..............................................................">
                             </div>
                             <div class="mb-3">
-                                <label for="">and that they comply with the origin requirements specified for these goods in the ASEAN-CHINA Free trade Area referential Tariff for the goods exported to</label>
-                                <input type="text" name="importing" value="<?= $data->importing; ?>" class="form-control border-0 text-center tx-bold tx-18" value="INDONESIA" placeholder=".............................................................">
+                                <label for="">and that they comply with the origin requirements specified for these
+                                    goods in the ASEAN-CHINA Free trade Area referential Tariff for the goods exported
+                                    to</label>
+                                <input type="text" name="importing" value="<?= $data->importing; ?>"
+                                    class="form-control border-0 text-center tx-bold tx-18" value="INDONESIA"
+                                    placeholder=".............................................................">
                             </div>
                             <div class="text">
                                 (Importing Country)<br>
@@ -180,14 +213,17 @@
                         </td>
                         <td colspan="3">
                             <label for="">12. Certification</label>
-                            <p>It is hereby certified, on the basis of control carried out, that the Declaration by the exporter is correct.</p>
+                            <p>It is hereby certified, on the basis of control carried out, that the Declaration by the
+                                exporter is correct.</p>
                             <br>
                             <br>
                             <br>
                             <br>
                             <br>
                             <br>
-                            <input type="text" name="signature" value="<?= $data->signature; ?>" class="form-control border-top-0 border-left-0 border-right-0 rounded-0 border-dashed-h pd-5 ht-30" placeholder="..........................................................">
+                            <input type="text" name="signature" value="<?= $data->signature; ?>"
+                                class="form-control border-top-0 border-left-0 border-right-0 rounded-0 border-dashed-h pd-5 ht-30"
+                                placeholder="..........................................................">
                             <label for="">Place and date, Signature and stamp of certifying authority</label>
                         </td>
                     </tr>
@@ -195,7 +231,8 @@
             </table>
 
             <div class="text-center mg-t-20">
-                <button type="submit" class="btn btn-primary text-center wd-100" id="save-bl"><i class="fa fa-save"></i> Save</button>
+                <button type="submit" class="btn btn-primary text-center wd-100" id="save-bl"><i class="fa fa-save"></i>
+                    Save</button>
             </div>
         </div>
     </div>

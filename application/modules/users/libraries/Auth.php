@@ -27,7 +27,7 @@ class Auth
 
     public function user_id()
     {
-        return $this->user['id_user'];
+        return isset($this->user['id_user']) ? $this->user['id_user'] : '';
     }
 
     public function user_name()

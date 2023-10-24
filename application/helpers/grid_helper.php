@@ -233,6 +233,7 @@ function numberTowords($num)
 		"trillion",
 		"quadrillion"
 	); //limit t quadrillion
+
 	$num = number_format($num, 2, ".", ",");
 	$num_arr = explode(".", $num);
 	$wholenum = $num_arr[0];
@@ -241,7 +242,9 @@ function numberTowords($num)
 	krsort($whole_arr);
 	$rettxt = "";
 	foreach ($whole_arr as $key => $i) {
-		if ($i < 20) {
+		if ($i < 1) {
+			$rettxt .= '';
+		} elseif ($i < 20) {
 			$rettxt .= $ones[$i];
 		} elseif ($i < 100) {
 			$rettxt .= $tens[substr($i, 0, 1)];

@@ -182,18 +182,19 @@
                             <td style="vertical-align: bottom;">:</td>
                             <td class="tx-bold" style="vertical-align: bottom;">
                                 <?= $data->company_name; ?>
-                               
+
                             </td>
                         </tr>
                         <tr>
-                            <td class="">
+                            <td class="" style="vertical-align: top;">
                                 <p class="fontA">地址</p>
                                 Address
                             </td>
-                            <td style="vertical-align: bottom;">:</td>
-                            <td style="vertical-align: bottom;">
+                            <td style="vertical-align: top;">:</td>
+                            <td style="vertical-align: top;">
                                 <?= $data->company_address; ?> <br>
-                                NWPW : <?= $data->vat; ?> <br>
+                                NPWP : <?= $data->vat; ?> <br>
+                                EMAIL : <?= strtoupper($data->email); ?> <br>
                             </td>
                         </tr>
                         <tr>
@@ -250,7 +251,8 @@
         </tr>
     </table>
     <p class="fontA">兹经买卖双方同意成交下列商品订立条款如下</p>
-    <p class="ext-center">The undersigned sellers and buyers have agreed to close the following transactions according to the terms and conditions stipulated below:</p>
+    <p class="ext-center">The undersigned sellers and buyers have agreed to close the following transactions according
+        to the terms and conditions stipulated below:</p>
     <table class="bordered" style="width:100%">
         <thead>
             <tr style="background-color: #eee;">

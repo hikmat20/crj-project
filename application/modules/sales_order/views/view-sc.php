@@ -19,17 +19,23 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <p for="" class="tx-bold tx-dark">No. :</p>
-                        <?= $dataSO->sc_number; ?>
+                    <div class="form-group row">
+                        <label for="" class="tx-bold tx-dark col-3">No.</label>
+                        <div class="col-6">:
+                            <?= $dataSO->sc_number; ?>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <p for="" class="tx-bold tx-dark">DATE :</p>
-                        <?= $dataSO->sc_date; ?>
+                    <div class="form-group row">
+                        <label for="" class="tx-bold tx-dark col-3">DATE</label>
+                        <div class="col-6">:
+                            <?= $dataSO->sc_date; ?>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <p for="" class="tx-bold tx-dark">Signed At :</p>
-                        <?= $dataSO->signed_at; ?>
+                    <div class="form-group row">
+                        <label for="" class="tx-bold tx-dark col-3">Signed At</label>
+                        <div class="col-6">:
+                            <?= $dataSO->signed_at; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -42,14 +48,28 @@
                     </div>
                     <div class="form-group">
                         <?= $dataSO->company_address; ?> <br>
-                        NPWP:<?= $dataSO->vat; ?>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <p for="" class="tx-bold tx-dark">Fax. :</p>
-                        <?= $dataSO->company_fax; ?>
+                    <div class="form-group row">
+                        <label for="" class="tx-bold tx-dark col-3">Fax.</label>
+                        <div class="col-9">:
+                            <?= $dataSO->company_fax; ?>
+                        </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="" class="tx-bold tx-dark col-3">NPWP</label>
+                        <div class="col-9">:
+                            <?= $dataSO->vat; ?>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="tx-bold tx-dark col-3">EMAIL</label>
+                        <div class="col-9">:
+                            <?= strtoupper($dataSO->email) ?>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <br>
@@ -61,8 +81,10 @@
                         <th class="text-center align-top">Specification</th>
                         <th class="text-center align-top" style="width:100px">QTY</th>
                         <th class="text-center align-top" style="width:100px">Unit</th>
-                        <th class="text-center align-top" style="width:150px">Unit Price (<?= $symbol[$dataSO->currency]; ?>)</th>
-                        <th class="text-center align-top" style="width:150px">Amount (<?= $symbol[$dataSO->currency]; ?>)</th>
+                        <th class="text-center align-top" style="width:150px">Unit Price
+                            (<?= $symbol[$dataSO->currency]; ?>)</th>
+                        <th class="text-center align-top" style="width:150px">Amount
+                            (<?= $symbol[$dataSO->currency]; ?>)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,30 +92,31 @@
                     foreach ($details as $dtl) :
                         $n++;
                         $total += $dtl->total_price ?>
-                        <tr>
-                            <td class="text-center"><?= $n; ?></td>
-                            <td class="text-center"><?= $dtl->product_name; ?></td>
-                            <td class="text-center"><?= $dtl->specification; ?></td>
-                            <td class="text-center"><?= $dtl->qty; ?></td>
-                            <td class="text-center text-uppercase"><?= $dtl->unit; ?></td>
-                            <td class="text-right">
-                                <div class="d-flex justify-content-between">
-                                    <span><?= $symbol[$dataSO->currency]; ?></span>
-                                    <span> <?= number_format($dtl->unit_price, 2); ?></span>
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                <div class="d-flex justify-content-between">
-                                    <span><?= $symbol[$dataSO->currency]; ?></span>
-                                    <span><?= number_format($dtl->total_price, 2); ?></span>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="text-center"><?= $n; ?></td>
+                        <td class="text-center"><?= $dtl->product_name; ?></td>
+                        <td class="text-center"><?= $dtl->specification; ?></td>
+                        <td class="text-center"><?= $dtl->qty; ?></td>
+                        <td class="text-center text-uppercase"><?= $dtl->unit; ?></td>
+                        <td class="text-right">
+                            <div class="d-flex justify-content-between">
+                                <span><?= $symbol[$dataSO->currency]; ?></span>
+                                <span> <?= number_format($dtl->unit_price, 2); ?></span>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="d-flex justify-content-between">
+                                <span><?= $symbol[$dataSO->currency]; ?></span>
+                                <span><?= number_format($dtl->total_price, 2); ?></span>
+                            </div>
+                        </td>
+                    </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr class="bg-light  tx-bold">
-                        <td colspan="6" class="text-right text-uppercase">Total <?= substr($dataSO->incoterm, 0, 3); ?></td>
+                        <td colspan="6" class="text-right text-uppercase">Total <?= substr($dataSO->incoterm, 0, 3); ?>
+                        </td>
                         <td class="text-right text-uppercase">
                             <div class="d-flex justify-content-between">
                                 <span><?= $symbol[$dataSO->currency]; ?></span>
@@ -140,7 +163,8 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Quality,quantity and weight certified by the China Commodity Inspection Bureau or the Sellers
+                    <td colspan="2">Quality,quantity and weight certified by the China Commodity Inspection Bureau or
+                        the Sellers
                         as per the former's Inspection Certificate or the latter's certificate,are to be taken as final.
                     </td>
                     <td></td>

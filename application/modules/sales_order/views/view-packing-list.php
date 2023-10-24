@@ -101,6 +101,7 @@
                     <th class="align-middle text-center" width="50">HIDE QTY</th>
                     <th class="align-middle text-center" width="50">HIDE N.W</th>
                     <th class="align-middle text-center" width="50">HIDE G.W</th>
+                    <th class="align-middle text-center" width="50">HIDE FE</th>
                     <th class="align-middle text-center" width="50">QTY</th>
                     <th class="align-middle text-center" width="50">UNIT</th>
                     <th class="align-middle text-center" width="50">PACKAGE</th>
@@ -118,11 +119,24 @@
                         <td><?= $n; ?></td>
                         <td><?= $dtl->product_name; ?></td>
                         <td><?= $dtl->specification; ?></td>
-                        <td class="text-center"><?= ($dtl->flag_bl == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?> </td>
-                        <td class="text-center"><?= ($dtl->hide_spec == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?> </td>
-                        <td class="text-center"><?= ($dtl->hide_qty == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?> </td>
-                        <td class="text-center"><?= ($dtl->hide_nw == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?> </td>
-                        <td class="text-center"><?= ($dtl->hide_gw == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?> </td>
+                        <td class="text-center">
+                            <?= ($dtl->flag_bl == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?>
+                        </td>
+                        <td class="text-center">
+                            <?= ($dtl->hide_spec == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?>
+                        </td>
+                        <td class="text-center">
+                            <?= ($dtl->hide_qty == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?>
+                        </td>
+                        <td class="text-center">
+                            <?= ($dtl->hide_nw == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?>
+                        </td>
+                        <td class="text-center">
+                            <?= ($dtl->hide_gw == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?>
+                        </td>
+                        <td class="text-center">
+                            <?= ($dtl->hide_fe == 'Y') ? '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '-'; ?>
+                        </td>
                         <td class="text-center"><?= $dtl->qty; ?></td>
                         <td class="text-center"><?= $dtl->unit; ?></td>
                         <td class="text-center"><?= $dtl->package; ?></td>
@@ -135,7 +149,8 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="10" class="align-middle text-center tx-bold border-right-0 border-left-0 border">TOTOAL</th>
+                    <th colspan="11" class="align-middle text-center tx-bold border-right-0 border-left-0 border">TOTOAL
+                    </th>
                     <th class="text-center tx-bold border-right-0 border"><?= $data->total_package; ?></th>
                     <th class="text-center tx-bold border-right-0 border"><?= ($data->package); ?></th>
                     <th class="text-center tx-bold border-right-0 border"><?= $data->total_nett_weight; ?></th>

@@ -4,123 +4,123 @@
 <head>
     <title><?= $data->supplier_name; ?> [<?= $data->invoice_number; ?>]</title>
     <style>
-        body {
+    body {
 
-            font-family: Arial;
-            font-size: 8pt;
-            margin: 0;
-            padding: 0;
-        }
+        font-family: Arial;
+        font-size: 8pt;
+        margin: 0;
+        padding: 0;
+    }
 
 
-        .page {
-            height: 297mm;
-            width: 210mm;
-            page-break-after: always;
-        }
+    .page {
+        height: 297mm;
+        width: 210mm;
+        page-break-after: always;
+    }
 
-        table.bordered {
-            border: 1px solid #000;
-            border-spacing: 0;
-            border-collapse: collapse;
-        }
+    table.bordered {
+        border: 1px solid #000;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
 
-        table.bordered td,
-        table.bordered th {
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
-            padding: 2px;
-        }
+    table.bordered td,
+    table.bordered th {
+        border-right: 1px solid #000;
+        border-bottom: 1px solid #000;
+        padding: 2px;
+    }
 
-        table.colored tr:nth-child(even) {
-            background-color: #eee;
-        }
+    table.colored tr:nth-child(even) {
+        background-color: #eee;
+    }
 
-        th {
-            text-align: left;
-            text-transform: uppercase;
-            font-size: 9.5px;
-        }
+    th {
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 9.5px;
+    }
 
-        table.heading {
-            height: 20mm;
-        }
+    table.heading {
+        height: 20mm;
+    }
 
-        h1.heading {
-            font-size: 14pt;
-            color: #000;
-            font-weight: normal;
-        }
+    h1.heading {
+        font-size: 14pt;
+        color: #000;
+        font-weight: normal;
+    }
 
-        h2.heading {
-            font-size: 9pt;
-            color: #000;
-            font-weight: normal;
-        }
+    h2.heading {
+        font-size: 9pt;
+        color: #000;
+        font-weight: normal;
+    }
 
-        hr {
-            color: #ccc;
-            background: #ccc;
-        }
+    hr {
+        color: #ccc;
+        background: #ccc;
+    }
 
-        .text-center {
-            text-align: center;
-        }
+    .text-center {
+        text-align: center;
+    }
 
-        .text-right {
-            text-align: right;
-        }
+    .text-right {
+        text-align: right;
+    }
 
-        .text-left {
-            text-align: left;
-        }
+    .text-left {
+        text-align: left;
+    }
 
-        #footer {
-            /*width:180mm;*/
-            margin: 0 15mm;
-            padding-bottom: 3mm;
-        }
+    #footer {
+        /*width:180mm;*/
+        margin: 0 15mm;
+        padding-bottom: 3mm;
+    }
 
-        #footer table {
-            width: 100%;
-            border-left: 1px solid #ccc;
-            border-top: 1px solid #ccc;
-            background: #eee;
-            border-spacing: 0;
-            border-collapse: collapse;
-        }
+    #footer table {
+        width: 100%;
+        border-left: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+        background: #eee;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
 
-        #footer table td {
-            width: 25%;
-            text-align: center;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-        }
+    #footer table td {
+        width: 25%;
+        text-align: center;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
 
-        img.resize {
-            max-width: 12%;
-            max-height: 12%;
-        }
+    img.resize {
+        max-width: 12%;
+        max-height: 12%;
+    }
 
-        .fontA {
-            font-family: "Sun-ExtA";
-        }
+    .fontA {
+        font-family: "Sun-ExtA";
+    }
 
-        .fontB {
-            font-family: "Sun-ExtB";
-        }
+    .fontB {
+        font-family: "Sun-ExtB";
+    }
 
-        .font-normal {
-            font-weight: normal;
-        }
+    .font-normal {
+        font-weight: normal;
+    }
 
-        .tx-bold {
-            font-weight: bold;
-        }
+    .tx-bold {
+        font-weight: bold;
+    }
 
-        .pt-3 {
-            padding-top: 3px;
-        }
+    .pt-3 {
+        padding-top: 3px;
+    }
     </style>
 </head>
 
@@ -182,7 +182,8 @@
             <td>4. For official use</td>
         </tr>
         <tr>
-            <td class="fontA" style="padding-left: 10px;vertical-align: top;text-transform: uppercase;border-right: 1px solid;">
+            <td class="fontA"
+                style="padding-left: 10px;vertical-align: top;text-transform: uppercase;border-right: 1px solid;">
                 Departure date : <?= $data->departure_date; ?><br>
                 Vessel’s name / Aircraft etc. : <?= $data->vessel; ?><br>
                 Port of discharge : <?= $data->port_of_discharge; ?><br>
@@ -206,9 +207,12 @@
                     Item Number
                 </td>
                 <td style="width:120px;vertical-align: top;height: fit-content;">Marks and numbers on packages</td>
-                <td style="width:120px;vertical-align: top;height: fit-content;">Number and type of packages, description of goods (including quantity where appropriate and HS number in six digit code)</td>
-                <td style="width:100px;vertical-align: top;height: fit-content;">Origin criterion (see Notes overleaf)</td>
-                <td style="width:100px;vertical-align: top;height: fit-content;">Gross weight or net weight or other quantity and value (FOB) only when RVC criterion is applied</td>
+                <td style="width:120px;vertical-align: top;height: fit-content;">Number and type of packages,
+                    description of goods (including quantity where appropriate and HS number in six digit code)</td>
+                <td style="width:100px;vertical-align: top;height: fit-content;">Origin criterion (see Notes overleaf)
+                </td>
+                <td style="width:100px;vertical-align: top;height: fit-content;">Gross weight or net weight or other
+                    quantity and value (FOB) only when RVC criterion is applied</td>
                 <td style="width:100px;vertical-align: top;height: fit-content;">Number and date of invoices </td>
             </tr>
         </thead>
@@ -217,36 +221,43 @@
             if ($details) foreach ($details as $dt) :
                 $n++;
                 $totalPkg += $dt->package; ?>
-                <tr class="fontA">
-                    <td class="text-center" style="border-bottom:0;border-top:0"><?= $n; ?></td>
-                    <?php if ($n == '1' || $n > count($details)) : ?>
-                        <td class="text-center fontA" style="border-bottom:0;border-top:0">N/M</td>
-                    <?php else : ?>
-                        <td style="border-bottom:0;border-top:0"></td>
-                    <?php endif; ?>
-                    <td class="border-bottom-0" style="border-bottom:0;border-top:0">
-                        <div class="fontA" style="text-transform: uppercase;">
-                            <?= numberTowords(number_format($dt->package, 0, '', '')); ?> <?= ($dt->package) ? '(' . number_format($dt->package, 0) . ') ' . $data->package . " OF" : ''; ?>
-                            <?= $dt->product_name; ?> <?= (strtolower($dt->specification) != 'null') ? (($dt->hide_spec == 'N') ? $dt->specification : '') : ''; ?><br>
-                            HS CODE: <?= substr(substr_replace($dt->local_hscode, ".", 4, 0), 0, 7); ?>
-                        </div>
-                    </td>
-                    <td class="text-center fontA" style="border-bottom:0;border-top:0">"PE"</td>
-                    <td class="text-center fontA" style="border-bottom:0;border-top:0;">
-                        <?= ($dt->hide_qty == 'Y') ? '' : (number_format($dt->qty, 0, '', '') . " " . strtoupper($dt->unit) . '<br>'); ?>
-                        <?= ($dt->hide_nw == 'Y') ? '' : (number_format($dt->gross_weight, 0, '', '') . " KGS N.W <br>"); ?>
-                        <?= ($dt->hide_gw == 'Y') ? '' : (number_format($dt->nett_weight, 0, '', '') . " KGS G.W <br>"); ?>
+            <tr class="fontA">
+                <td class="text-center" style="border-bottom:0;border-top:0;vertical-align:top"><?= $n; ?></td>
+                <?php if ($n == '1' || $n > count($details)) : ?>
+                <td class="text-center fontA" style="border-bottom:0;border-top:0;vertical-align:top">N/M</td>
+                <?php else : ?>
+                <td style="border-bottom:0;border-top:0;vertical-align:top"></td>
+                <?php endif; ?>
+                <td class="border-bottom-0" style="border-bottom:0;border-top:0;vertical-align:top">
+                    <div class="fontA" style="text-transform: uppercase;">
+                        <?= numberTowords(number_format($dt->package, 0, '', '')); ?>
+                        <?= ($dt->package) ? '(' . number_format($dt->package, 0) . ') ' . $data->package . " OF" : ''; ?>
+                        <?= $dt->product_name; ?>
+                        <?= (strtolower($dt->specification) != 'null') ? (($dt->hide_spec == 'N') ? $dt->specification : '') : ''; ?><br>
+                        HS CODE: <?= substr(substr_replace($dt->local_hscode, ".", 4, 0), 0, 7); ?>
+                        <br>
+                        <small>
+                            <strong> <?= $dt->mix; ?></strong>
+                        </small>
+                    </div>
+                </td>
+                <td class="text-center fontA" style="border-bottom:0;border-top:0;vertical-align:top">"PE"</td>
+                <td class="text-center fontA" style="border-bottom:0;border-top:0;vertical-align:top;">
+                    <?= ($dt->hide_qty == 'Y') ? '' : (number_format($dt->qty, 0, '', '') . " " . strtoupper($dt->unit) . '<br>'); ?>
+                    <?= ($dt->hide_nw == 'Y') ? '' : (number_format($dt->gross_weight, 0, '', '') . " KGS N.W <br>"); ?>
+                    <?= ($dt->hide_gw == 'Y') ? '' : (number_format($dt->nett_weight, 0, '', '') . " KGS G.W <br>"); ?>
 
-                    </td>
-                    <?php if ($n == '1' || $n > count($details)) : ?>
-                        <td class="text-center fontA" style="border-bottom:0;border-top:0;text-transform: uppercase;">
-                            <?= $data->invoice_number; ?> <br>
-                            <?= $data->invoice_date; ?>
-                        </td>
-                    <?php else : ?>
-                        <td style="border-bottom:0;border-top:0"></td>
-                    <?php endif; ?>
-                </tr>
+                </td>
+                <?php if ($n == '1' || $n > count($details)) : ?>
+                <td class="text-center fontA"
+                    style="vertical-align:top;border-bottom:0;border-top:0;text-transform: uppercase;">
+                    <?= $data->invoice_number; ?> <br>
+                    <?= $data->invoice_date; ?>
+                </td>
+                <?php else : ?>
+                <td style="border-bottom:0;border-top:0;vertical-align:top"></td>
+                <?php endif; ?>
+            </tr>
             <?php endforeach; ?>
 
             <tr>
@@ -259,7 +270,8 @@
                         <br>
                         <label for="">TOTAL : </label>
                         <p style="text-transform: uppercase;">
-                            <?= numberTowords(number_format($totalPkg, 0, '', '')) . " (" . number_format($totalPkg, 0, '', '') . ") " . $data->package; ?> ONLY
+                            <?= numberTowords(number_format($totalPkg, 0, '', '')) . " (" . number_format($totalPkg, 0, '', '') . ") " . $data->package; ?>
+                            ONLY
                         </p>
                     </div>
                     <br>
@@ -283,9 +295,11 @@
 
                     <br>
                     <br>
-                    <p class="tx-bold fontA" style="text-transform: uppercase;text-align: center;"><?= ($data->exporter); ?></p>
+                    <p class="tx-bold fontA" style="text-transform: uppercase;text-align: center;">
+                        <?= ($data->exporter); ?></p>
                     <br>
-                    <label for="">and that they comply with the origin requirements specified for these goods in the ASEAN-CHINA Free trade Area referential Tariff for the goods exported to</label>
+                    <label for="">and that they comply with the origin requirements specified for these goods in the
+                        ASEAN-CHINA Free trade Area referential Tariff for the goods exported to</label>
                     <br>
                     <br>
                     <div class="tx-uppercase tx-bold text-center fontA"><?= strtoupper($data->importing); ?></div>
@@ -298,7 +312,8 @@
                 </td>
                 <td colspan="3" style="vertical-align: top;">
                     <label for="">12. Certification</label>
-                    <p>It is hereby certified, on the basis of control carried out, that the Declaration by the exporter is correct.</p>
+                    <p>It is hereby certified, on the basis of control carried out, that the Declaration by the exporter
+                        is correct.</p>
                     <br>
                     <br>
                     <br>

@@ -760,8 +760,11 @@ class Sales_order extends Admin_Controller
             $dataDetail[$k] = $dtl;
             // $dataDetail[$k]['id']                = ($data['id'] . "-" . sprintf("%03d", $k));
             $dataDetail[$k]['flag_bl']              = isset($dtl['flag_bl']) ? $dtl['flag_bl'] : 'N';
-            $dataDetail[$k]['hide_qty']         = isset($dtl['hide_qty']) ? $dtl['hide_qty'] : 'N';
-            $dataDetail[$k]['hide_spec']         = isset($dtl['hide_spec']) ? $dtl['hide_spec'] : 'N';
+            $dataDetail[$k]['hide_qty']             = isset($dtl['hide_qty']) ? $dtl['hide_qty'] : 'N';
+            $dataDetail[$k]['hide_spec']            = isset($dtl['hide_spec']) ? $dtl['hide_spec'] : 'N';
+            $dataDetail[$k]['hide_nw']              = isset($dtl['hide_nw']) ? $dtl['hide_nw'] : 'N';
+            $dataDetail[$k]['hide_gw']              = isset($dtl['hide_gw']) ? $dtl['hide_gw'] : 'N';
+            $dataDetail[$k]['hide_fe']              = isset($dtl['hide_fe']) ? $dtl['hide_fe'] : 'N';
             // $dataDetail[$k]['created_by']        = $this->auth->user_id();
             // $dataDetail[$k]['created_at']        = date('Y-m-d H:i:s');
         }
@@ -1172,7 +1175,7 @@ class Sales_order extends Admin_Controller
     function createFE($id)
     {
         $dataSO         = $this->db->get_where('sales_order', ['id' => $id])->row();
-        $details        = $this->db->get_where('sales_order_details', ['so_id' => $id])->result();
+        $details        = $this->db->get_where('sales_order_details', ['so_id' => $id, 'hide_fe' => 'N'])->result();
 
         $data = [
             'dataSO'        => $dataSO,
@@ -1200,12 +1203,16 @@ class Sales_order extends Admin_Controller
     {
         $post                   = $this->input->post();
         $data                   = $post;
+        $details                = $data['details'];
         $data['flag_fe']        = 'Y';
         $data['departure_date'] = ($data['departure_date']) ?: null;
 
-        unset($data['detail']);
+        unset($data['details']);
         $this->db->trans_begin();
         $this->db->update('sales_order', $data, ['id' => $data['id']]);
+        if ($details) {
+            $this->db->update_batch('sales_order_details', $details, 'id');
+        }
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -1240,7 +1247,8 @@ class Sales_order extends Admin_Controller
     function editFormE($id)
     {
         $data     = $this->db->get_where('sales_order', ['id' => $id])->row();
-        $details  = $this->db->get_where('sales_order_details', ['so_id' => $id])->result();
+        $details        = $this->db->get_where('sales_order_details', ['so_id' => $id, 'hide_fe' => 'N'])->result();
+
 
         $data = [
             'data'    => $data,
@@ -1254,7 +1262,7 @@ class Sales_order extends Admin_Controller
     function viewFormE($id)
     {
         $data     = $this->db->get_where('sales_order', ['id' => $id])->row();
-        $details  = $this->db->get_where('sales_order_details', ['so_id' => $id])->result();
+        $details        = $this->db->get_where('sales_order_details', ['so_id' => $id, 'hide_fe' => 'N'])->result();
 
         $data = [
             'data'    => $data,
@@ -1353,7 +1361,7 @@ class Sales_order extends Admin_Controller
 
         // $mpdf = new \Mpdf\Mpdf();
         $dataSO         = $this->db->get_where('sales_order', ['id' => $id])->row();
-        $details      = $this->db->get_where('sales_order_details', ['so_id' => $id])->result();
+        $details        = $this->db->get_where('sales_order_details', ['so_id' => $id, 'hide_fe' => 'N'])->result();
         $mpdf->AddPage('P', '', '', '', '', 10, 10, 10, 5, 5, 0);
 
         $data = [

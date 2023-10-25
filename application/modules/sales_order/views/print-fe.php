@@ -186,8 +186,8 @@
                 style="padding-left: 10px;vertical-align: top;text-transform: uppercase;border-right: 1px solid;">
                 Departure date : <?= $data->departure_date; ?><br>
                 Vessel’s name / Aircraft etc. : <?= $data->vessel; ?><br>
-                Port of discharge : <?= $data->port_of_discharge; ?><br>
-                From <?= $data->from; ?> To <?= $data->to; ?><br>
+                Port of discharge : <?= $data->to; ?><br>
+                From <?= $data->from; ?> To <?= $data->to; ?> BY <?= $data->import_by ; ?><br>
             </td>
             <td></td>
         </tr>

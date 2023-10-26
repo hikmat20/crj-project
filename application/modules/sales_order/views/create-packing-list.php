@@ -123,18 +123,58 @@
                         <th class="align-middle text-center" width="50">NO</th>
                         <th class="align-middle text-center">DESCRIPTION OF GOODS</th>
                         <th class="align-middle text-center">SPECIFICATION</th>
-                        <th class="align-middle text-center">BL</th>
-                        <th class="align-middle text-center">HIDE SPEC.</th>
-                        <th class="align-middle text-center">HIDE QTY</th>
-                        <th class="align-middle text-center">HIDE N.W</th>
-                        <th class="align-middle text-center">HIDE G.W</th>
-                        <th class="align-middle text-center">HIDE FE</th>
+                        <th class="align-middle text-center">BL
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-bl">
+                                <span></span>
+                            </label>
+                        </th>
+                        <th class="align-middle text-center" width="50">HIDE SPEC.
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-spec">
+                                <span></span>
+                            </label>
+                        </th>
+                        <th class="align-middle text-center" width="50">HIDE QTY
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-Hqty">
+                                <span></span>
+                            </label>
+                        </th>
+                        <th class="align-middle text-center" width="50">HIDE N.W
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-nw">
+                                <span></span>
+                            </label>
+                        </th>
+                        <th class="align-middle text-center" width="50">HIDE G.W
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-gw">
+                                <span></span>
+                            </label>
+                        </th>
+                        <th class="align-middle text-center" width="50">HIDE FE
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-fe">
+                                <span></span>
+                            </label>
+                        </th>
                         <th class="align-middle text-center" width="100">QTY</th>
                         <th class="align-middle text-center" width="100">UNIT</th>
                         <th class="align-middle text-center" width="100">PACKAGES</th>
                         <th class="align-middle text-center" width="100">UNIT PKGS</th>
-                        <th class="align-middle text-center" width="100">N.W (KGS)</th>
-                        <th class="align-middle text-center" width="100">G.W (KGS)</th>
+                        <th class="align-middle text-center" width="100">N.W (KGS)
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-nw">
+                                <span></span>
+                            </label>
+                        </th>
+                        <th class="align-middle text-center" width="100">G.W (KGS)
+                            <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
+                                <input type="checkbox" id="ckAll-gw">
+                                <span></span>
+                            </label>
+                        </th>
                         <th class="align-middle text-center" width="100">CBM</th>
                     </tr>
                 </thead>
@@ -151,37 +191,39 @@
                         <td><?= $dtl->specification; ?></td>
                         <td>
                             <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
-                                <input type="checkbox" name="detail[<?= $n; ?>][flag_bl]" class="wd-1" value="Y">
+                                <input type="checkbox" name="detail[<?= $n; ?>][flag_bl]" class="wd-1 ckBl" value="Y">
                                 <span></span>
                             </label>
                         </td>
                         <td>
                             <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
-                                <input type="checkbox" name="detail[<?= $n; ?>][hide_spec]" class="wd-1" value="Y">
+                                <input type="checkbox" name="detail[<?= $n; ?>][hide_spec]" class="wd-1 ckSpec"
+                                    value="Y">
                                 <span></span>
                             </label>
                         </td>
                         <td>
                             <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
-                                <input type="checkbox" name="detail[<?= $n; ?>][hide_qty]" class="wd-1" value="Y">
+                                <input type="checkbox" name="detail[<?= $n; ?>][hide_qty]" class="wd-1 ckHqty"
+                                    value="Y">
                                 <span></span>
                             </label>
                         </td>
                         <td>
                             <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
-                                <input type="checkbox" name="detail[<?= $n; ?>][hide_nw]" class="wd-1" value="Y">
+                                <input type="checkbox" name="detail[<?= $n; ?>][hide_nw]" class="wd-1 ckNw" value="Y">
                                 <span></span>
                             </label>
                         </td>
                         <td>
                             <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
-                                <input type="checkbox" name="detail[<?= $n; ?>][hide_gw]" class="wd-1" value="Y">
+                                <input type="checkbox" name="detail[<?= $n; ?>][hide_gw]" class="wd-1 ckGw" value="Y">
                                 <span></span>
                             </label>
                         </td>
                         <td>
                             <label class="ckbox ckbox-primary tx-bold tx-dark wd-1">
-                                <input type="checkbox" name="detail[<?= $n; ?>][hide_fe]" class="wd-1" value="Y">
+                                <input type="checkbox" name="detail[<?= $n; ?>][hide_fe]" class="wd-1 ckFe" value="Y">
                                 <span></span>
                             </label>
                         </td>

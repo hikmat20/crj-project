@@ -217,7 +217,8 @@
                     </form>
                 </div>
                 <div class="text-center mb-4">
-                    <button type="button" class="btn btn-primary wd-100" id="import"><i class="fa fa-file-import"></i> Import</button>
+                    <button type="button" class="btn btn-primary wd-100" id="import"><i class="fa fa-file-import"></i>
+                        Import</button>
                 </div>
 
                 <div id="message-import"></div>
@@ -467,27 +468,37 @@
                 data: formData,
                 success: function(result) {
                     if (result) {
-                        btn.html('<i class="fa fa-spinner"></i> Loading...').prop('disabled', true)
-                        $('#message-import').fadeIn('fast').html('<div class="progress mg-b-20"><div class="progress-bar progress-bar-animated progress-bar-striped wd-100p" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div></div>')
+                        btn.html('<i class="fa fa-spinner"></i> Loading...').prop('disabled',
+                            true)
+                        $('#message-import').fadeIn('fast').html(
+                            '<div class="progress mg-b-20"><div class="progress-bar progress-bar-animated progress-bar-striped wd-100p" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div></div>'
+                        )
 
                         setTimeout(() => {
                             let color = "success"
                             if (result.log_import.status == 'Error!') {
                                 color = "danger"
                             }
-                            $('#message-import').html('<div class="alert alert-' + color + ' alert-bordered" role="alert">' + result.log_import.status + '. ' + result.log_import.msg + '</div>')
+                            $('#message-import').html('<div class="alert alert-' +
+                                color + ' alert-bordered" role="alert">' + result
+                                .log_import.status + '. ' + result.log_import.msg +
+                                '</div>')
                             $.each(result.data, (i, data) => {
                                 $('#packages_' + data.id).val(data.package)
-                                $('#unit_package_' + data.id).val(data.unit_package)
-                                $('#nett_weight_' + data.id).val(data.nett_weight)
-                                $('#gross_weight_' + data.id).val(data.gross_weight)
+                                $('#unit_package_' + data.id).val(data
+                                    .unit_package)
+                                $('#nett_weight_' + data.id).val(data
+                                    .nett_weight)
+                                $('#gross_weight_' + data.id).val(data
+                                    .gross_weight)
                                 $('#cbm_' + data.id).val(data.cbm)
                             })
                             getTotalDetail()
                         }, 3000)
 
                         setTimeout(() => {
-                            btn.html('<i class="fa fa-file-import"></i> Import').prop('disabled', false)
+                            btn.html('<i class="fa fa-file-import"></i> Import').prop(
+                                'disabled', false)
                             $('#message-import').fadeOut('slow')
                         }, 10000)
                     }
@@ -1267,7 +1278,139 @@
             })
         })
 
+        /* check nett weight */
+        $(document).on('change', '#ckAll-nw', function() {
 
+            $('.ckNw').prop('checked', false)
+            if ($(this).is(':checked') == true) {
+                $('.ckNw').prop('checked', true)
+            }
+        })
+
+        $(document).on('change', '.ckNw', function() {
+            let row = $('#detailItem tbody tr').length
+            let ckdNw = 0;
+            $('.ckNw').each(function() {
+                ckdNw += Number($(this).is(':checked'))
+            })
+
+            if (row == ckdNw) {
+                $('#ckAll-nw').prop('checked', true)
+            } else {
+                $('#ckAll-nw').prop('checked', false)
+            }
+        })
+
+        /* check gross weight */
+        $(document).on('change', '#ckAll-gw', function() {
+            $('.ckGw').prop('checked', false)
+            if ($(this).is(':checked') == true) {
+                $('.ckGw').prop('checked', true)
+            }
+        })
+
+        $(document).on('change', '.ckGw', function() {
+            let row = $('#detailItem tbody tr').length
+            let ckdGw = 0;
+            $('.ckGw').each(function() {
+                ckdGw += Number($(this).is(':checked'))
+            })
+
+            if (row == ckdGw) {
+                $('#ckAll-gw').prop('checked', true)
+            } else {
+                $('#ckAll-gw').prop('checked', false)
+            }
+
+        })
+
+        /* check Hide FE */
+        $(document).on('change', '#ckAll-fe', function() {
+            $('.ckFe').prop('checked', false)
+            if ($(this).is(':checked') == true) {
+                $('.ckFe').prop('checked', true)
+            }
+        })
+
+        $(document).on('change', '.ckFe', function() {
+            let row = $('#detailItem tbody tr').length
+            let ckdFe = 0;
+            $('.ckFe').each(function() {
+                ckdFe += Number($(this).is(':checked'))
+            })
+
+            if (row == ckdFe) {
+                $('#ckAll-fe').prop('checked', true)
+            } else {
+                $('#ckAll-fe').prop('checked', false)
+            }
+        })
+
+        /* check Show BL */
+        $(document).on('change', '#ckAll-bl', function() {
+            $('.ckBl').prop('checked', false)
+            if ($(this).is(':checked') == true) {
+                $('.ckBl').prop('checked', true)
+            }
+        })
+
+        $(document).on('change', '.ckBl', function() {
+            let row = $('#detailItem tbody tr').length
+            let ckdBl = 0;
+            $('.ckBl').each(function() {
+                ckdBl += Number($(this).is(':checked'))
+            })
+
+            if (row == ckdBl) {
+                $('#ckAll-bl').prop('checked', true)
+            } else {
+                $('#ckAll-bl').prop('checked', false)
+            }
+        })
+
+        /* check Hide Spec */
+        $(document).on('change', '#ckAll-spec', function() {
+            $('.ckSpec').prop('checked', false)
+            if ($(this).is(':checked') == true) {
+                $('.ckSpec').prop('checked', true)
+            }
+        })
+
+        $(document).on('change', '.ckSpec', function() {
+            let row = $('#detailItem tbody tr').length
+            let ckdSpec = 0;
+            $('.ckSpec').each(function() {
+                ckdSpec += Number($(this).is(':checked'))
+            })
+
+            if (row == ckdSpec) {
+                $('#ckAll-spec').prop('checked', true)
+            } else {
+                $('#ckAll-spec').prop('checked', false)
+            }
+        })
+
+        /* check Hide Qty */
+        $(document).on('change', '#ckAll-Hqty', function() {
+            $('.ckHqty').prop('checked', false)
+            if ($(this).is(':checked') == true) {
+                $('.ckHqty').prop('checked', true)
+            }
+        })
+
+        $(document).on('change', '.ckHqty', function() {
+            let row = $('#detailItem tbody tr').length
+            let ckdHqty = 0;
+            $('.ckHqty').each(function() {
+                ckdHqty += Number($(this).is(':checked'))
+            })
+
+            if (row == ckdHqty) {
+                $('#ckAll-Hqty').prop('checked', true)
+            } else {
+                $('#ckAll-Hqty').prop('checked', false)
+            }
+        })
     })
 
     function edit() {
@@ -1275,7 +1418,9 @@
             placeholder: "Let's write",
             height: 100,
             focus: true,
-            fontSizes: ['8', '9', '10', '12', '14', '16', '18', '20', '22', '24', '28', '30', '32', '34', '36', '38', '40', '44', '48'],
+            fontSizes: ['8', '9', '10', '12', '14', '16', '18', '20', '22', '24', '28', '30', '32', '34', '36',
+                '38', '40', '44', '48'
+            ],
             toolbar: [
                 ['style', ['bold', 'italic', 'underline', 'clear']],
                 ['font', ['strikethrough', 'superscript', 'subscript']],

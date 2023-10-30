@@ -22,9 +22,9 @@
                         <th class="desktop mobile tablet tx-dark tx-center">Project Name</th>
                         <th class="desktop mobile tablet text-center" width="110">Date</th>
                         <th class="desktop text-center" width="100">Marketing</th>
-                        <th class="desktop text-center no-sort" width="60">Status</th>
+                        <th class="desktop text-center no-sort" width="100">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
-                            <th class="desktop text-center no-sort" width="30">Opsi</th>
+                            <th class="desktop text-center no-sort" width="70">Opsi</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -50,7 +50,7 @@
 
 <!-- Modal -->
 <div class="modal fade effect-scale" id="dialog-popup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg mx-wd-95p-force">
+    <div class="modal-dialog modal-lg">
         <form id="data-form" data-parsley-validate>
             <div class="modal-content">
                 <div class="modal-header">
@@ -69,23 +69,6 @@
     </div>
 </div>
 
-<div class="modal fade effect-scale" id="dialog-cancel" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form id="data-form-cancel" data-parsley-validate>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title tx-bold text-dark" id="myModalLabel"><span class="fa fa-users"></span></h4>
-                    <button type="button" class="btn btn-default close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn wd-100 btn btn-danger" data-dismiss="modal">
-                        <span class="fa fa-times"></span> Close</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- page script -->
 <script type="text/javascript">
@@ -102,17 +85,9 @@
             });
         <?php endif; ?>
 
-        $(document).on('click', '.view', function(e) {
+        $(document).on('click', '.release_so', function(e) {
             var id = $(this).data('id');
-            var number = $(this).data('number');
-            $('#dialog-popup .modal-title').html("<i class='<?= $template['page_icon']; ?>'></i> View Quotation [" + number + "]")
-            $("#dialog-popup").modal();
-            $("#dialog-popup .modal-body").load(siteurl + thisController + 'view/' + id);
-            $("#save").addClass('d-none');
-        });
-
-
-        $(document).on('click', '.cancel', function(e) {
+            // var number = $(this).data('number');
             e.preventDefault()
             var swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -121,77 +96,54 @@
                 },
                 buttonsStyling: false
             })
-            let id = $(this).data('id');
+
             swalWithBootstrapButtons.fire({
                 title: "Confirm!",
-                text: "Are you sure to Cancel this Quotation?",
+                html: "Are you sure to <strong class='tx-dark'>Release SO</strong>?.",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "<i class='fa fa-check'></i> Yes",
                 cancelButtonText: "<i class='fa fa-ban'></i> No",
                 showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return $.ajax({
+                        type: 'POST',
+                        url: siteurl + thisController + 'releaseSO',
+                        dataType: "JSON",
+                        data: {
+                            id
+                        },
+                        error: function() {
+                            Lobibox.notify('error', {
+                                title: 'Error!!!',
+                                icon: 'fa fa-times',
+                                position: 'top right',
+                                showClass: 'zoomIn',
+                                hideClass: 'zoomOut',
+                                soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
+                                msg: 'Internal server error. Ajax process failed.'
+                            });
+                        }
+                    })
+                },
                 allowOutsideClick: true
             }).then((val) => {
+                console.log(val);
                 if (val.isConfirmed) {
-                    $('#dialog-cancel').modal('show')
-                    $('#dialog-cancel .modal-body').load(siteurl + thisController + 'cancelForm/' + id)
-                }
-            })
-        })
-
-        $(document).on('click', 'input[name="rdio"]', function() {
-            if ($(this).val() == '0') {
-                $('#cancel_reason').prop('readonly', false)
-            } else {
-                $('#cancel_reason').prop('readonly', true).val('')
-            }
-        })
-
-        $(document).on('submit', '#data-form-cancel', function(e) {
-            e.preventDefault()
-            var swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-primary mg-r-10 wd-100',
-                    cancelButton: 'btn btn-danger wd-100'
-                },
-                buttonsStyling: false
-            })
-            let formData = new FormData($('#data-form-cancel')[0]);
-            $.ajax({
-                type: 'POST',
-                url: siteurl + thisController + 'cancel',
-                dataType: "JSON",
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                error: function() {
-                    Lobibox.notify('error', {
-                        title: 'Error!!!',
-                        icon: 'fa fa-times',
-                        position: 'top right',
-                        showClass: 'zoomIn',
-                        hideClass: 'zoomOut',
-                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                        msg: 'Internal server error. Ajax process failed.'
-                    });
-                },
-                success: (result) => {
-                    if (result.status == '1') {
+                    if (val.value.status == '1') {
                         Lobibox.notify('success', {
                             icon: 'fa fa-check',
-                            msg: result.msg,
+                            msg: val.value.msg,
                             position: 'top right',
                             showClass: 'zoomIn',
                             hideClass: 'zoomOut',
                             soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
                         });
-                        $("#dialog-cancel").modal('hide');
                         loadData('')
                     } else {
                         Lobibox.notify('warning', {
                             icon: 'fa fa-ban',
-                            msg: result.msg,
+                            msg: val.value.msg,
                             position: 'top right',
                             showClass: 'zoomIn',
                             hideClass: 'zoomOut',
@@ -200,7 +152,7 @@
                     };
                 }
             })
-        })
+        });
 
         $(document).on('submit', '#data-form', function(e) {
             e.preventDefault()
@@ -288,14 +240,6 @@
             })
         })
 
-        $(document).on('click', '#all', function() {
-            $('button.active').each(function() {
-                $(this).removeClass('active').children('i').remove()
-            })
-            $(this).addClass('active')
-            loadData('');
-        })
-
         $(document).on('click', '.btn-filter', function() {
             let filter = "";
             $('button#all').removeClass('active').find('i').remove()
@@ -317,44 +261,6 @@
             $('.dataTables_length select').select2({
                 minimumResultsForSearch: -1
             })
-        })
-
-        $(document).on('click', '.quotation', function(e) {
-            var id = $(this).data('id');
-            $('#dialog-popup .modal-title').html("<i class='fas fa-file-invoice'></i> Create Quotation")
-            $("#dialog-popup").modal();
-            $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
-            $("#save").removeClass('d-none');
-        });
-
-        $(document).on('change', 'select', function() {
-            $(this).parsley().validate();
-        })
-        $(document).on('change', '#price_type', function() {
-            change_price()
-            load_price()
-        })
-        $(document).on('change', '#container_id', function() {
-            load_price()
-        })
-        $(document).on('input', '#fee', function() {
-            fee_csj();
-        })
-        $(document).on('input', '#shipping', function() {
-            shipping();
-        })
-        $(document).on('input', '#custom_clearance', function() {
-            custom_clearance();
-        })
-        $(document).on('input', '#trucking', function() {
-            trucking();
-        })
-        $(document).on('change', '#stacking_days', function() {
-            storage();
-        })
-        $(document).on('input change', '#qty_container,#fee_type', function() {
-            storage();
-            load_price();
         })
 
     })
@@ -456,178 +362,4 @@
             minimumResultsForSearch: -1
         })
     }
-
-
-    function change_price() {
-        let price_type = $('#price_type').val()
-        let price = 0;
-        if ((price_type != undefined) && (price_type == 'FOB')) {
-            price = $('#totalFOB').text()
-        } else {
-            price = $('#totalCIF').text()
-        }
-        $('#tx-total-product').text(price)
-    }
-
-    function surveyor() {
-        let svy = parseInt($('#surveyor').val().replace(/[\,]/g, "") || 0)
-        $('#tx-surveyor').text(new Intl.NumberFormat().format(svy.toFixed()))
-    }
-
-    function fee_csj() {
-        let total_fee;
-        let totalProduct = parseInt($('#tx-total-product').text().replace(/[\,]/g, "") || 0)
-        let fee = parseInt($('#fee').val())
-        total_fee = totalProduct * (fee / 100)
-        $('#tx-fee-csj').text(new Intl.NumberFormat().format(total_fee.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function ocean_freight() {
-        let total;
-        let qty = parseInt($('#qty_container').val())
-        let Ofr = parseInt($('#ocean_freight').val().replace(/[\,]/g, "") || 0)
-        total = Ofr * qty
-        $('#tx-ocean-freight').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function shipping() {
-        let qty = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let thc = parseInt($('#shipping').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = qty * thc
-        $('#tx-shipping').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function custom_clearance() {
-        let cc = parseInt($('#custom_clearance').val().replace(/[\,]/g, "") || 0)
-        let qty_container = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = cc * qty_container
-        $('#tx-custome-clearance').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function storage() {
-        let days = $('#stacking_days').val()
-        let container = $('#container_id').val()
-        let cost_value = 0;
-        $.ajax({
-            url: siteurl + thisController + 'load_storage',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                days,
-                container
-            },
-            success: (result) => {
-                if (result.storage) {
-                    cost_value = new Intl.NumberFormat().format(result.storage.cost_value)
-                }
-                $('#storage').val(cost_value)
-                $('#tx-storage').text(cost_value)
-            }
-        })
-        // est_as_per_bill()
-    }
-
-    function trucking() {
-        let truck = parseInt($('#trucking').val().replace(/[\,]/g, "") || 0)
-        let qty_container = parseInt($('#qty_container').val().replace(/[\,]/g, "") || 0)
-        let total
-        total = truck * qty_container
-        $('#tx-trucking').text(new Intl.NumberFormat().format(total.toFixed()))
-        // est_as_per_bill()
-    }
-
-    function load_price() {
-        let dest_city = $('#dest_city').val() || 0
-        let src_city = $('#source_port').val() || 0
-        let qty = $('#qty_container').val() || 0
-        let container = $('#container_id').val() || 0
-        let fee_type = $('#fee_type').val()
-        let product_price = $('#tx-total-product').text().replace(/[\,]/g, "") || 0
-        if (qty && container && src_city) {
-            $.ajax({
-                url: siteurl + thisController + 'load_price',
-                type: 'POST',
-                dataType: 'JSON',
-                data: {
-                    container,
-                    qty,
-                    dest_city,
-                    src_city,
-                    fee_type,
-                    product_price,
-                },
-                success: (result) => {
-                    $('#ocean_freight').val('0');
-                    if ($('#price_type').val() == 'FOB') {
-                        $('#ocean_freight').val(result.ocean_freight);
-                    }
-                    $('#shipping').val(result.thc);
-                    $('#custom_clearance').val(result.custom_clearance);
-                    $('#trucking').val(result.trucking);
-                    $('#surveyor').val(result.surveyor);
-                    $('#fee').val(result.fee);
-                    console.log(result.fee);
-                    shipping();
-                    fee_csj();
-                    custom_clearance();
-                    storage();
-                    trucking();
-                    surveyor();
-                    ocean_freight()
-                    // est_as_per_bill()
-                },
-                error: (result) => {
-                    Lobibox.notify('error', {
-                        icon: 'fa fa-times',
-                        msg: 'Error!! Server timeout.',
-                        position: 'top right',
-                        showClass: 'zoomIn',
-                        hideClass: 'zoomOut',
-                        soundPath: '<?= base_url(); ?>themes/bracket/assets/lib/lobiani/sounds/',
-                    });
-                }
-            })
-        }
-    }
-
-    // function est_as_per_bill() {
-    //     let total_product = $('#tx-total-product').text()
-    //     let ocean_freight = $('#tx-ocean-freight').text()
-    //     let thc = $('#tx-shipping').text()
-    //     let surveyor = $('#tx-surveyor').text()
-    //     let handling = $('#tx-handling').text()
-    //     let storage = $('#tx-cc-storage').text()
-    //     let trucking = $('#tx-trucking').text()
-    //     let fee_lartas = $('#tx-fee-lartas').text()
-    //     let fee_undername = $('#tx-fee-csj').text()
-
-    //     let subtotal = $('#tx-').text()
-    //     let total_bm = $('#tx-').text()
-    //     let total_pph = $('#tx-').text()
-    //     let ppn = $('#tx-').text()
-    //     let gTotal_ppn = $('#tx-').text()
-    //     let gTotal_n_ppn = $('#tx-').text()
-
-    //     $('#apb-total_product').text(total_product)
-    //     $('#apb-ocean_freight').text(ocean_freight)
-    //     $('#apb-thc').text(thc)
-    //     $('#apb-surveyor').text(surveyor)
-    //     $('#apb-handling').text(handling)
-    //     $('#apb-storage').text(storage)
-    //     $('#apb-trucking').text(trucking)
-    //     $('#apb-fee_lartas').text(fee_lartas)
-    //     $('#apb-fee_undername').text(fee_undername)
-    //     $('#apb-subtotal').text(subtotal)
-    //     $('#apb-total_bm').text(total_bm)
-    //     $('#apb-total_pph').text(total_pph)
-    //     $('#apb-ppn').text(ppn)
-    //     $('#apb-gTotal_ppn').text(gTotal_ppn)
-    //     $('#apb-gTotal_n_ppn').text(gTotal_n_ppn)
-    // }
 </script>

@@ -74,15 +74,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="" class="tx-dark tx-bold">PL Number :</label>
-                        <input type="text" name="invoice_number" class="form-control form-control-sm"
-                            value=" <?= $dataSO->invoice_number; ?>" placeholder="Invoice Number"
-                            aria-describedby="helpId">
+                        <input type="text" name="pl_number" class="form-control form-control-sm"
+                            value=" <?= $dataSO->pl_number; ?>" placeholder="PL Number" aria-describedby="helpId">
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="tx-dark tx-bold">Invoice Date :</label>
-                        <input type="date" name="invoice_date" class="form-control form-control-sm"
-                            value="<?= $dataSO->invoice_date; ?>" placeholder="Invoice Date" aria-describedby="helpId">
+                        <label for="" class="tx-dark tx-bold">PL Date :</label>
+                        <input type="date" name="pl_date" class="form-control form-control-sm"
+                            value="<?= $dataSO->pl_date; ?>" placeholder="PL Date" aria-describedby="helpId">
                     </div>
 
                     <div class="form-group">

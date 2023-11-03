@@ -190,12 +190,12 @@ class Sales_order extends Admin_Controller
         $this->template->title('Detail Sales Order');
         $SO             = $this->db->get_where('sales_order', ['id' => $id])->row();
         $header         = $this->db->get_where('view_sales_order', ['id' => $id])->row();
-        $formE          = $this->db->get_where('form_e', ['so_id' => $id])->row();
+        // $formE          = $this->db->get_where('form_e', ['so_id' => $id])->row();
 
         $data = [
             'header'        => $header,
             'SO'            => $SO,
-            'FE'            => $formE,
+            // 'FE'            => $formE,
         ];
 
         $this->template->set($data);

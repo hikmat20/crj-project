@@ -103,8 +103,6 @@ class Sales_order extends Admin_Controller
             'CNL' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
         ];
 
-
-
         /* Button */
         foreach ($query->result_array() as $row) {
             $buttons = '';
@@ -120,6 +118,12 @@ class Sales_order extends Admin_Controller
                 (($row['flag_po'] == 'Y') ? '<label class="bg-pink tx-white pd-5 tx-11 tx-bold rounded-5">PO</label>' . ' ' : '') .
                 (($row['flag_sc'] == 'Y') ? '<label class="bg-purple tx-white pd-5 tx-11 tx-bold rounded-5">SC</label>' : '');
 
+            $flagAll = (($row['flag_invoice'] == 'Y') &&
+                ($row['flag_pl'] == 'Y') &&
+                ($row['flag_bl'] == 'Y') &&
+                ($row['flag_fe'] == 'Y') &&
+                ($row['flag_po'] == 'Y') &&
+                ($row['flag_sc'] == 'Y')) ? 'Y' : 'N';
             if (
                 $asc_desc == 'asc'
             ) {
@@ -131,8 +135,8 @@ class Sales_order extends Admin_Controller
                 $nomor = ($total_data - $start_dari) - $urut2;
             }
 
-            $view         = '<a href="' . base_url($this->uri->segment(1) . '/detail/' . $row['id']) . '" class="btn btn-primary btn-sm" title="Detail" data-id="' . $row['id'] . '" data-number="' . $row['number'] . '"><i class="fa fa-list"></i></a>';
-            $edit         = '<a href="' . base_url($this->uri->segment(1) . '/edit/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Edit" data-id="' . $row['id'] . '"><i class="icon ion-edit text-success"></i> Edit</a>';
+            $opsi         = '<a href="' . base_url($this->uri->segment(1) . '/detail/' . $row['id']) . '" class="btn btn-primary btn-sm" title="Detail" data-id="' . $row['id'] . '" data-number="' . $row['number'] . '"><i class="fa fa-pen"></i></a>';
+            $rel          = '<button type="button"  class="btn bg-royal text-white btn-sm release_so" data-toggle="tooltip" title="Release SO" data-id="' . $row['id'] . '"><i class="fa fa-paper-plane"></i></button>';
             $revision     = '<a href="' . base_url($this->uri->segment(1) . '/revision/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Revision" data-id="' . $row['id'] . '"><i class="icon ion-edit text-warning"></i> Revison</a>';
             $deal         = '<a href="javascript:void(0)" class="nav-link" data-toggle="tooltip" title="Create Quotation" data-id="' . $row['id'] . '"><i class="fas fa-handshake text-primary"></i> Deal</a>';
             $printAI      = '<a href="' . base_url($this->uri->segment(1) . '/print_all_in/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print All-In" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> Print All-In</a>';
@@ -140,8 +144,15 @@ class Sales_order extends Admin_Controller
             $printDDU     = '<a href="' . base_url($this->uri->segment(1) . '/print_ddu/' . $row['id']) . '" class="nav-link" data-toggle="tooltip" title="Print As Per-Bill" data-id="' . $row['id'] . '" target="_blank"><i class="icon ion-printer text-info"></i> <span class="">Print DDU</span></a>';
             $cancel       = '<a href="javascript:void(0)" class="nav-link cancel" data-toggle="tooltip" title="Cancel" data-id="' . $row['id'] . '"><i class="icon ion-minus-circled text-danger"></i> Cancel</a>';
             $printBTN     = '';
+            $buttons     = $opsi;
 
-            $buttons     = $view;
+            if ($row['flag_release'] == 'N') {
+                if ($flagAll == 'Y') {
+                    $buttons     = $opsi . " " . $rel;
+                }
+            } else {
+                $buttons     = '<label class="bg-success tx-white px-2 tx-bold rounded-20">Release</label>';
+            }
 
             $nestedData   = array();
             $nestedData[]  = $nomor;
@@ -153,16 +164,6 @@ class Sales_order extends Admin_Controller
             $nestedData[]  = ($flags != '') ? $flags : $status[$row['status']];
             $nestedData[]  = $buttons;
 
-            // $nestedData[]  = '<div class="dropdown">
-            // 					<a href="#" class="btn btn-primary btn-sm" data-toggle="dropdown">
-            // 						<i class="fa fa-list"></i>
-            // 					</a>
-            // 					<div class="dropdown-menu dropdown-menu-right wd-100">
-            // 						<nav class="nav nav-style-2 flex-column">
-            // 						' . $buttons . '
-            // 						</nav>
-            // 					</div>
-            // 				</div>';
             $data[] = $nestedData;
             $urut1++;
             $urut2++;
@@ -187,7 +188,7 @@ class Sales_order extends Admin_Controller
     function detail($id)
     {
         $this->template->title('Detail Sales Order');
-        $SO        = $this->db->get_where('sales_order', ['id' => $id])->row();
+        $SO             = $this->db->get_where('sales_order', ['id' => $id])->row();
         $billOfLading   = $this->db->get_where('bill_of_lading', ['so_id' => $id])->row();
         $header         = $this->db->get_where('view_sales_order', ['id' => $id])->row();
         $formE          = $this->db->get_where('form_e', ['so_id' => $id])->row();
@@ -1790,5 +1791,63 @@ class Sales_order extends Admin_Controller
         $mpdf->WriteHTML($html);
         $name = $dataSO->supplier_name . " " . str_replace("/", "-", $dataSO->po_number);
         $mpdf->Output($name, 'I');
+    }
+
+
+    /* Release SO */
+
+    function releaseSO()
+    {
+        $id = $this->input->post('id');
+        if ($id) {
+            $this->db->trans_begin();
+            $data = [
+                'flag_release'    => 'Y',
+                'release_date'    => date('Y-m-d H:i:s'),
+                'release_by'      => $this->auth->user_id(),
+            ];
+            $this->db->update('sales_order', $data, ['id' => $id]);
+
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $return = [
+                    'msg'       => 'FAILED Release this SO, Please try again. ',
+                    'status'    => 0,
+                ];
+                $keterangan     = "FAILED";
+                $status         = 1;
+                $nm_hak_akses   = $this->addPermission;
+                $kode_universal = $id;
+                $jumlah         = 1;
+                $sql            = $this->db->last_query();
+            } else {
+                $this->db->trans_commit();
+                $return = [
+                    'msg'       => 'SUCCESS Release this SO.',
+                    'status'    => 1,
+                ];
+                $keterangan     = "SUCCESS";
+                $status         = 1;
+                $nm_hak_akses   = $this->addPermission;
+                $kode_universal = $id;
+                $jumlah         = 1;
+                $sql            = $this->db->last_query();
+                $this->session->set_flashdata('msg', 'Success Release this SO.');
+            }
+            simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
+        } else {
+            $return = [
+                'msg'       => 'Not action processed.',
+                'status'    => 0,
+            ];
+            $keterangan     = "Not Action";
+            $status         = 1;
+            $nm_hak_akses   = $this->addPermission;
+            $kode_universal = '';
+            $jumlah         = 1;
+            $sql            = "";
+        }
+
+        echo json_encode($return);
     }
 }

@@ -64,6 +64,7 @@ class Quotations extends Admin_Controller
 		OR `number` LIKE '%$string%'
         OR `project_name` LIKE '%$string%'
         OR `date` LIKE '%$string%'
+        OR `service_type` LIKE '%$string%'
         OR `employee_name` LIKE '%$string%'
         OR `status` LIKE '%$string%')";
 
@@ -73,9 +74,11 @@ class Quotations extends Admin_Controller
 		$columns_order_by = array(
 			0 => 'num',
 			1 => 'customer_name',
-			2 => 'project_name',
-			3 => 'date',
-			4 => 'employee_name',
+			2 => 'number',
+			3 => 'project_name',
+			4 => 'date',
+			5 => 'employee_name',
+			6 => 'service_type',
 		);
 
 		$sql .= " ORDER BY `modified_at` DESC, " . $columns_order_by[$column] . " " . $dir . " ";
@@ -93,6 +96,10 @@ class Quotations extends Admin_Controller
 			'RVI' => '<span class="bg-warning tx-white pd-5 tx-11 tx-bold rounded-5">Revision</span>',
 			'HIS' => '<span class="bg-light pd-5 tx-11 tx-bold rounded-5">History</span>',
 			'CNL' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
+		];
+		$service_type = [
+			'undername' => '<span class="bg-pink tx-white pd-5 tx-11 tx-bold rounded-5">Undename</span>',
+			'ddu' => '<span class="bg-teal tx-white pd-5 tx-11 tx-bold rounded-5">DDU</span>',
 		];
 
 		/* Button */
@@ -147,6 +154,7 @@ class Quotations extends Admin_Controller
 			$nestedData[]  = $row['project_name'];
 			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
 			$nestedData[]  = $row['employee_name'];
+			$nestedData[]  = $service_type[$row['service_type']];
 			$nestedData[]  = ($row['revision_count']) ? "Rev-" . $row['revision_count'] : '-';
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = '<div class="dropdown">
@@ -570,14 +578,14 @@ class Quotations extends Admin_Controller
 		$post = $this->input->post();
 		$data = $post;
 
-		$data['total_product'] 			= str_replace(",", "", $post['total_product']);
+		$data['total_product'] 			= isset($post['total_product'])?str_replace(",", "", $post['total_product']):null;
 		$data['tax'] 					= str_replace(",", "", $post['tax']);
 		$data['total_tax'] 				= str_replace(",", "", $post['total_tax']);
-		$data['total_bm'] 				= str_replace(",", "", $post['total_bm']);
-		$data['total_pph'] 				= str_replace(",", "", $post['total_pph']);
+		$data['total_bm'] 				= isset($post['total_bm'])?str_replace(",", "", $post['total_bm']):null;
+		$data['total_pph'] 				= isset($post['total_pph'])?str_replace(",", "", $post['total_pph']):null;
 		$data['grand_total'] 			= str_replace(",", "", $post['grand_total']);
-		$data['discount_value'] 		= str_replace(",", "", $post['discount_value']);
-		$data['grand_total_exclude_price'] 			= 	str_replace(",", "", $post['grand_total_exclude_price']);
+		$data['discount_value'] 		= isset($post['discount_value'])?str_replace(",", "", $post['discount_value']):null;
+		$data['grand_total_exclude_price'] = isset($post['grand_total_exclude_price'])?str_replace(",", "", $post['grand_total_exclude_price']):null;
 
 		$data['exchange'] 				= str_replace(",", "", $post['exchange']);
 		$data['subtotal'] 				= str_replace(",", "", $post['subtotal']);
@@ -592,7 +600,7 @@ class Quotations extends Admin_Controller
 		$detail 						= isset($data['detail']) ? $data['detail'] : '';
 		$detail_lartas 					= isset($data['detail_fee_lartas']) ? $data['detail_fee_lartas'] : '';
 		$costing 						= $data['costing'];
-		$payment_term 					= $data['payment_term'];
+		$payment_term 					= isset($data['payment_term'])?$data['payment_term']:null;
 		$deleteItem 					= $data['deleteItem'];
 		$deleteItemOth 					= $data['deleteItemOth'];
 
@@ -838,7 +846,6 @@ class Quotations extends Admin_Controller
 	function load_price()
 	{
 		$post 					= $this->input->post();
-
 		$container 				= $post['container'];
 		$dest_area 				= $post['dest_area'];
 		$src_city 				= $post['src_city'];
@@ -853,9 +860,16 @@ class Quotations extends Admin_Controller
 		$total_price_non_lartas = str_replace(",", "", $post['total_price_non_lartas']);
 		$ocean_freight 			= $this->db->get_where('ocean_freights', ['container_id' => $container, 'status' => '1', 'port_id' => $src_city])->row();
 		$shipping 				= $this->db->get_where('shipping_line_cost', ['container_id' => $container, 'status' => '1'])->row();
-		$custom_clearance 		= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
 		$trucking 				= $this->db->get_where('trucking_containers', ['area like' => "%$dest_area%", 'status' => '1'])->row();
 
+		if($service_type == 'undername'){
+			$custom_clearance 		= $this->db->get_where('custom_clearance', ['container_id' => $container, 'status' => '1'])->row();
+		} else if($service_type == 'ddu'){
+			$custom_clearance 		= $this->db->get_where('view_custom_clearance_customer_details', ['id_customer'=>$customer,'container_id' => $container,'fee_type'=>'ddu', 'status' => '1'])->row();
+		} else if($service_type == 'msk'){
+			$custom_clearance 		= $this->db->get_where('view_custom_clearance_customer_details', ['id_customer'=>$customer,'container_id' => $container,'fee_type'=>'msk', 'status' => '1'])->row();
+		}
+		
 		$storage 				= $this->db->get_where('storages', ['day_stacking' => $days, 'status' => '1'])->row();
 		$storage_dtl 			= '';
 		if ($storage) {
@@ -893,9 +907,10 @@ class Quotations extends Admin_Controller
 			} else if (isset($fee_type) && $fee_type == 'C') {
 				$err_fee_customer 		= 'Fee Customer not available in this Customer.';
 				$feeCust 				= $this->db->get_where('fee_customers', ['customer_id' => $customer, 'status' => '1'])->row();
-
+			
 				if ($feeCust && $container) {
 					$feeDetail 			= $this->db->get_where('fee_customer_details', ['fee_customer_id' => $feeCust->id, 'fee_type' => $service_type, 'container_id' => $container])->row();
+					
 					$fee_customer_id 	= $feeCust->id;
 					$fee_customer_value = ($feeDetail->cost_value);
 					$err_fee_customer 	= '';
@@ -1582,7 +1597,7 @@ class Quotations extends Admin_Controller
 		$ArrHscode 		= [];
 		$ArrDocs 		= [];
 		$ArrPorts 		= [];
-		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result();
+		$feeLartas 		= $this->db->get_where('quotation_detail_lartas', ['quotation_id' => $id])->result_array();
 
 		$hMargin = 35;
 		if ($header->grand_total > 0) {
@@ -1615,9 +1630,9 @@ class Quotations extends Admin_Controller
 		$totalLartas = 0;
 		foreach ($feeLartas as $fla) {
 			if ($fla->unit == 'TNE') {
-				$tonase += $fla->qty;
+				$tonase += $fla['qty'];
 			}
-			$totalLartas += $fla->total_foreign_currency;
+			$totalLartas += $fla['total_foreign_currency'];
 		}
 
 		foreach ($this->currency as $curr) {
@@ -1654,7 +1669,10 @@ class Quotations extends Admin_Controller
 			'ArrCosting' 	=> $ArrCosting,
 			'otherCost' 	=> $otherCost,
 			'DP' 			=> $DP,
+			'feeLartas' 	=> $feeLartas,
 		];
+
+		
 		$this->template->set($data);
 		$html = $this->template->load_view('print_ddu');
 		$mpdf->WriteHTML($html);

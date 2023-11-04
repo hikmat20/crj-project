@@ -183,21 +183,6 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="mg-b-10 row">
-            <label for="fee_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Type <span
-                    class="text-danger tx-bold">*</span></label>
-            <div class="col-md-6 px-0">
-                <div id="slWrFee" class="parsley-select">
-                    <select name="fee_type" id="fee_type" class="form-control select" required data-parsley-inputs
-                        data-parsley-class-handler="#slWrFee" data-parsley-errors-container="#errFee">
-                        <option value=""></option>
-                        <option value="V">Fee Standard (CSJ)</option>
-                        <option value="C">Fee Coporate (Customer)</option>
-                    </select>
-                </div>
-                <div id="errFee"></div>
-            </div>
-        </div>
         <div class="form-group row">
             <label for="container_id" class="tx-dark tx-bold col-md-3 pd-x-0">Container <span
                     class="text-danger tx-bold">*</span></label>
@@ -227,6 +212,21 @@
                     <div id="errConteSize1" class="col-md-6"></div>
                     <div id="errConteSize2" class="col-md-6"></div>
                 </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="fee_type" class="tx-dark tx-bold col-md-3 pd-x-0">Fee Type <span
+                    class="text-danger tx-bold">*</span></label>
+            <div class="col-md-6 px-0">
+                <div id="slWrFee" class="parsley-select">
+                    <select name="fee_type" id="fee_type" class="form-control select" required data-parsley-inputs
+                        data-parsley-class-handler="#slWrFee" data-parsley-errors-container="#errFee">
+                        <option value=""></option>
+                        <option value="V">Fee Standard (CSJ)</option>
+                        <option value="C">Fee Coporate (Customer)</option>
+                    </select>
+                </div>
+                <div id="errFee"></div>
             </div>
         </div>
         <div class="form-group row">

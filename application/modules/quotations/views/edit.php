@@ -217,24 +217,12 @@
                                 <div id="errAmount"></div>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row d-none">
                             <label for="service_type" class="tx-dark tx-bold col-md-3 pd-x-0">Service Type <span
                                     class="text-danger tx-bold">*</span></label>
                             <div class="col-md-7 px-0">
-                                <div id="slWrService" class="parsley-select">
-                                    <select name="service_type" id="service_type" class="form-control select" required
-                                        data-parsley-inputs data-parsley-class-handler="#slWrService"
-                                        data-parsley-errors-container="#errService">
-                                        <option value=""></option>
-                                        <option value="undername"
-                                            <?= ($header && $header->service_type == 'undername') ? 'selected' : ''; ?>>
-                                            Undername</option>
-                                        <option value="ddu"
-                                            <?= ($header && $header->service_type == 'ddu') ? 'selected' : ''; ?>>DDU
-                                        </option>
-                                    </select>
-                                </div>
-                                <div id="errService"></div>
+                                <input type="hidden" name="service_type" id="service_type"
+                                    value="<?= $header->service_type ; ?>">
                             </div>
                         </div>
                     </div>
@@ -1185,6 +1173,7 @@
                         <hr>
                         <div class="card mg-b-15">
                             <div class="card-body">
+                                <?php if($header->service_type == 'undername'): ?>
                                 <table class="table table-sm table table-striped">
                                     <tbody class="tx-dark">
                                         <tr>
@@ -1346,9 +1335,108 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <?php elseif($header->service_type == 'ddu'): ?>
+                                <table class="table table-sm table table-striped">
+                                    <tbody class="tx-dark">
+                                        <tr>
+                                            <th class="align-middle">Custom Clearance</th>
+                                            <td class="align-middle">
+                                                <div class="input-group input-group-sm tx-16-force">
+                                                    <div class="input-group-prepend">
+                                                        <span
+                                                            class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" readonly autocomplete="off"
+                                                        value="<?= number_format($ArrCosting['custom_clearance']->total_foreign_currency, 2); ?>"
+                                                        class="form-control foreign_currency_custom_clearance bg-transparent border-0 text-right"
+                                                        placeholder="0">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-middle">Fee</th>
+                                            <td class="align-middle">
+                                                <div class="input-group input-group-sm tx-16-force">
+                                                    <div class="input-group-prepend">
+                                                        <span
+                                                            class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" readonly autocomplete="off"
+                                                        value="<?= number_format($ArrCosting['fee_csj']->total_foreign_currency, 2); ?>"
+                                                        class="form-control foreign_currency_fee_csj bg-transparent border-0 text-right"
+                                                        placeholder="0">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-middle">Trucking</th>
+                                            <td class="align-middle">
+                                                <div class="input-group input-group-sm tx-16-force">
+                                                    <div class="input-group-prepend">
+                                                        <span
+                                                            class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" readonly autocomplete="off"
+                                                        value="<?= number_format($ArrCosting['trucking']->total_foreign_currency, 2); ?>"
+                                                        class="form-control foreign_currency_trucking bg-transparent border-0 text-right"
+                                                        placeholder="0">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="table-secondary">
+                                            <td class="align-middle tx-dark tx-bold">SUBTOTAL</td>
+                                            <td class="align-middle">
+                                                <div class="input-group input-group-sm tx-16-force">
+                                                    <div class="input-group-prepend">
+                                                        <span
+                                                            class="input-group-text border-0 bg-white tx-16-force bg-transparent "><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" name="subtotal" id="subtotal"
+                                                        value="<?= number_format($header->subtotal, 2); ?>"
+                                                        class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold"
+                                                        placeholder="0" readonly autocomplete="off">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-middle">Tax (<?= $header->tax; ?>%)
+                                                <input type="hidden" name="tax" value="<?= $header->tax; ?>">
+                                            </th>
+                                            <td class="align-middle">
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span
+                                                            class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" name="total_tax" id="total_tax"
+                                                        value="<?= number_format($header->total_tax, 2); ?>"
+                                                        class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold"
+                                                        placeholder="0" readonly autocomplete="off">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="table-secondary">
+                                            <td class="align-middle tx-dark tx-bold">GRAND TOTAL</td>
+                                            <td class="align-middle">
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span
+                                                            class="input-group-text border-0 bg-transparent tx-16-force"><?= $currency; ?></span>
+                                                    </div>
+                                                    <input type="text" name="grand_total" id="grand_total"
+                                                        value="<?= number_format($header->grand_total, 2); ?>"
+                                                        class="bg-transparent form-control border-0 text-right bg-white tx-16-force tx-dark tx-bold"
+                                                        placeholder="0" readonly autocomplete="off">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <?php endif; ?>
                             </div>
                         </div>
 
+                        <?php if($header->service_type =='undername'): ?>
                         <h6 class="tx-dark tx-bold">Term of Payment Include PPN : </h6>
                         <table class="table table-sm table- border table-striped">
                             <thead class="tx-dark bg-secondary">
@@ -1461,6 +1549,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -2411,8 +2500,6 @@ function getItemLartas() {
             }
         })
     }
-
-
 }
 
 function getProductPrice() {
@@ -2444,8 +2531,8 @@ function getProductPrice() {
     $('#total_product').val(new Intl.NumberFormat().format(totalPrice.toFixed(2)));
     $('#min_total_product').val("(" + new Intl.NumberFormat().format(totalPrice.toFixed(2)) + ")");
 
-    subtotal()
     load_price()
+    subtotal()
 }
 
 function getDiscount() {
@@ -2551,7 +2638,7 @@ function load_price() {
             contentType: false,
             cache: false,
             success: (result) => {
-                console.log(result);
+                // console.log(result);
 
                 // Ocean Freight
                 if ($('#price_type').val() == 'FOB') {
@@ -2574,7 +2661,8 @@ function load_price() {
                 // Custom Clearance
                 $('#custom_clearance').val(result.custom_clearance.price);
                 $('#total_custom_clearance').val(result.custom_clearance.total);
-                $('#foreign_currency_custom_clearance').val(result.custom_clearance.total_foreign_currency);
+                $('#foreign_currency_custom_clearance,.foreign_currency_custom_clearance ').val(result
+                    .custom_clearance.total_foreign_currency);
 
                 // Storage
                 $('#storage').val(result.storage.price);
@@ -2584,7 +2672,8 @@ function load_price() {
                 // Trucking
                 $('#trucking').val(result.trucking.price);
                 $('#total_trucking').val(result.trucking.total);
-                $('#foreign_currency_trucking').val(result.trucking.total_foreign_currency);
+                $('#foreign_currency_trucking,.foreign_currency_trucking').val(result.trucking
+                    .total_foreign_currency);
                 $('#trucking_id').val(result.trucking.trucking_id);
 
                 // Surveyor
@@ -2596,11 +2685,17 @@ function load_price() {
                 $('#fee').val(result.totalFeeCSJ.fee);
                 $('#fee_value').val(result.totalFeeCSJ.price);
                 $('#total_fee_value').val(result.totalFeeCSJ.total);
-                $('#total_fee_value_foreign_currency').val(result.totalFeeCSJ.total_foreign_currency);
+                $('#total_fee_value_foreign_currency,.foreign_currency_fee_csj').val(result
+                    .totalFeeCSJ.total_foreign_currency);
                 $('#fee_customer').val(result.totalFeeCSJ.fee_customer);
                 $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
-                total_costing()
-                getDiscount()
+                console.log($('#service_type').val())
+                if ($('#service_type').val() == 'undername') {
+                    total_costing()
+                    getDiscount()
+                } else {
+                    subtotal()
+                }
 
                 if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                     Lobibox.notify('warning', {
@@ -2701,19 +2796,31 @@ function total_costing() {
 }
 
 function subtotal() {
-    let productPrice = parseFloat($('#total_product').val().replace(/,/g, '') || 0)
-    let totalCosting = parseFloat($('#total_costing_and_others').val().replace(/,/g, '') || 0)
-    let subtotal = productPrice + totalCosting
-    $('#subtotal').val(new Intl.NumberFormat().format(subtotal.toFixed(2)))
+    if ($('#service_type').val() == 'undername') {
+        let productPrice = parseFloat($('#total_product').val().replace(/,/g, '') || 0)
+        let totalCosting = parseFloat($('#total_costing_and_others').val().replace(/,/g, '') || 0)
+        let subTotal = productPrice + totalCosting
+        $('#subtotal').val(new Intl.NumberFormat().format(subTotal.toFixed(2)))
 
-    let bm = parseFloat($('#total_bm').val().replace(/,/g, '') || 0)
-    let total_pph = parseFloat($('#total_pph').val().replace(/,/g, '') || 0)
-    let tax = ((subtotal + bm + total_pph) * 11) / 100
-    $('#total_tax').val(new Intl.NumberFormat().format(tax.toFixed(2)))
-    let grand_total = subtotal + tax + bm + total_pph
-    $('#grand_total').val(new Intl.NumberFormat().format(grand_total.toFixed(2)))
-    let grand_total_excl = grand_total - productPrice
-    $('#grand_total_exclude_price').val(new Intl.NumberFormat().format(grand_total_excl.toFixed(2)))
-    payment_term()
+        let bm = parseFloat($('#total_bm').val().replace(/,/g, '') || 0)
+        let total_pph = parseFloat($('#total_pph').val().replace(/,/g, '') || 0)
+        let tax = ((subTotal + bm + total_pph) * 11) / 100
+        $('#total_tax').val(new Intl.NumberFormat().format(tax.toFixed(2)))
+        let grand_total = subTotal + tax + bm + total_pph
+        $('#grand_total').val(new Intl.NumberFormat().format(grand_total.toFixed(2)))
+        let grand_total_excl = grand_total - productPrice
+        $('#grand_total_exclude_price').val(new Intl.NumberFormat().format(grand_total_excl.toFixed(2)))
+        payment_term()
+    } else {
+        let cc = parseFloat($('.foreign_currency_custom_clearance').val().replace(/,/g, '') || 0)
+        let fee = parseFloat($('.foreign_currency_fee_csj').val().replace(/,/g, '') || 0)
+        let truck = parseFloat($('.foreign_currency_trucking').val().replace(/,/g, '') || 0)
+        let subTotal = cc + fee + truck
+        $('#subtotal').val(new Intl.NumberFormat('en-US').format(subTotal.toFixed(2)))
+        let tax = ((subTotal) * 1.1) / 100
+        $('#total_tax').val(new Intl.NumberFormat('en-US').format(tax.toFixed(2)))
+        let grand_total = subTotal + tax
+        $('#grand_total').val(new Intl.NumberFormat('en-US').format(grand_total.toFixed(2)))
+    }
 }
 </script>

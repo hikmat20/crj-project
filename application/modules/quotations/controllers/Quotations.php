@@ -97,9 +97,10 @@ class Quotations extends Admin_Controller
 			'HIS' => '<span class="bg-light pd-5 tx-11 tx-bold rounded-5">History</span>',
 			'CNL' => '<span class="bg-secondary tx-white pd-5 tx-11 tx-bold rounded-5">Cancel</span>',
 		];
+
 		$service_type = [
-			'undername' => '<span class="bg-pink tx-white pd-5 tx-11 tx-bold rounded-5">Undename</span>',
-			'ddu' => '<span class="bg-teal tx-white pd-5 tx-11 tx-bold rounded-5">DDU</span>',
+			'undername' => '<div class="bg-pink tx-white pd-5 tx-11 tx-bold rounded-5">Undename</div>',
+			'ddu' => '<span class="bg-warning tx-white pd-5 tx-11 tx-bold rounded-5">DDU</span>',
 		];
 
 		/* Button */
@@ -154,8 +155,8 @@ class Quotations extends Admin_Controller
 			$nestedData[]  = $row['project_name'];
 			$nestedData[]  = date("d/m/Y", strtotime($row['date']));
 			$nestedData[]  = $row['employee_name'];
-			$nestedData[]  = $service_type[$row['service_type']];
-			$nestedData[]  = ($row['revision_count']) ? "Rev-" . $row['revision_count'] : '-';
+			$nestedData[]  = ($row['service_type'])?$service_type[$row['service_type']]:'-';
+			// $nestedData[]  = ($row['revision_count']) ? "Rev-" . $row['revision_count'] : '-';
 			$nestedData[]  = $status[$row['status']];
 			$nestedData[]  = '<div class="dropdown">
 								<a href="#" class="btn btn-primary btn-sm" data-toggle="dropdown">
@@ -186,6 +187,28 @@ class Quotations extends Admin_Controller
 	{
 		$this->auth->restrict($this->viewPermission);
 		$this->template->render('index');
+	}
+
+	function getSupplier()
+	{
+		$supplier_id 	= $this->input->get('supplier_id');
+		$data = [];
+		if ($supplier_id) {
+			$data['supplier'] = $this->db->get_where('suppliers', ['id' => $supplier_id])->row();
+		}
+
+		echo json_encode($data);
+	}
+
+	function getCompany()
+	{
+		$company_id 	= $this->input->get('company_id');
+		$data = [];
+		if ($company_id) {
+			$data['company'] = $this->db->get_where('companies', ['id' => $company_id])->row();
+		}
+
+		echo json_encode($data);
 	}
 
 	public function edit($id)
@@ -340,27 +363,6 @@ class Quotations extends Admin_Controller
 
 		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
 		echo json_encode($return);
-	}
-
-
-	public function revision($id)
-	{
-		$this->auth->restrict($this->managePermission);
-		$request 			= $this->db->get_where('view_check_hscodes', ['id' => $id])->row();
-		$dtlRequest 		= $this->db->get_where('check_hscode_detail', ['check_hscode_id' => $id])->result();
-		$customers 			= $this->db->get_where('customers', ['status' => '1'])->result();
-		$countries 			= $this->db->get_where('countries')->result();
-		$flag_revision 		= true;
-		$data = [
-			'subtitle' 		=> 'Revision Check HS Code',
-			'request' 		=> $request,
-			'customers' 	=> $customers,
-			'countries' 	=> $countries,
-			'dtlRequest' 	=> $dtlRequest,
-			'flag_revision' => $flag_revision,
-		];
-		$this->template->set($data);
-		$this->template->render('form');
 	}
 
 	public function view($id)
@@ -551,27 +553,6 @@ class Quotations extends Admin_Controller
 		$this->template->render('reviewQuotation');
 	}
 
-	function getSupplier()
-	{
-		$supplier_id 	= $this->input->get('supplier_id');
-		$data = [];
-		if ($supplier_id) {
-			$data['supplier'] = $this->db->get_where('suppliers', ['id' => $supplier_id])->row();
-		}
-
-		echo json_encode($data);
-	}
-	function getCompany()
-	{
-		$company_id 	= $this->input->get('company_id');
-		$data = [];
-		if ($company_id) {
-			$data['company'] = $this->db->get_where('companies', ['id' => $company_id])->row();
-		}
-
-		echo json_encode($data);
-	}
-
 	public function save()
 	{
 		$this->auth->restrict($this->addPermission);
@@ -757,48 +738,6 @@ class Quotations extends Admin_Controller
 		echo json_encode($return);
 	}
 
-	public function delete()
-	{
-		$this->auth->restrict($this->deletePermission);
-		$id = $this->input->post('id');
-		$dt = $this->db->get_where('Requests')->row_array();
-		$data = [
-			'status' => '0',
-			'deleted_by' => $this->auth->user_id(),
-			'deleted_at' => date('Y-m-d H:i:s'),
-		];
-		$this->db->trans_begin();
-		$this->db->update('Requests', $data, ['id' => $id]);
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->db->trans_rollback();
-			$return	= array(
-				'msg'		=> 'Failed delete data Requests.  Please try again.',
-				'status'	=> 0
-			);
-			$keterangan     = "FAILD delete data Requests " . $dt['id'];
-			$status         = 1;
-			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $dt['id'];
-			$jumlah         = 1;
-			$sql            = $this->db->last_query();
-		} else {
-			$this->db->trans_commit();
-			$return	= array(
-				'msg'		=> 'Success delete data Requests.',
-				'status'	=> 1
-			);
-			$keterangan     = "SUCCESS delete data Requests " . $dt['id'];
-			$status         = 1;
-			$nm_hak_akses   = $this->deletePermission;
-			$kode_universal = $dt['id'];
-			$jumlah         = 1;
-			$sql            = $this->db->last_query();
-		}
-		simpan_aktifitas($nm_hak_akses, $kode_universal, $keterangan, $jumlah, $sql, $status);
-		echo json_encode($return);
-	}
-
 	public function change_image()
 	{
 		$config['upload_path'] 		= './assets/temp/';
@@ -827,10 +766,6 @@ class Quotations extends Admin_Controller
 		}
 
 		echo json_encode($return);
-	}
-
-	function saveQuotation()
-	{
 	}
 
 	function getArea()
@@ -1363,6 +1298,25 @@ class Quotations extends Admin_Controller
 	}
 
 
+	/* QUOTATION MSK */
+
+	function create_qtt_msk() {
+		$this->auth->restrict($this->addPermission);
+		$customers 	= $this->db->get_where('customers',['status'=>'1'])->result();
+		$companies 	= $this->db->get_where('companies',['status'=>'1'])->result();
+		$containers = $this->db->get_where('containers', ['status' => '1'])->result();
+		$cities 	= $this->db->get_where('cities', ['country_id' => '102', 'flag' => '1'])->result();
+		
+		$data = [
+			'customers'		=>$customers,
+			'companies'		=>$companies,
+			'containers'	=>$containers,
+			'cities'		=>$cities,
+		];
+	
+		$this->template->set($data);
+		$this->template->render('form-quotation-msk');
+	}
 
 	/* PRINT QUOTATION */
 	function print_all_in($id)

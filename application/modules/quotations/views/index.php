@@ -18,11 +18,14 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
 </div>
 <?php endif; ?>
 
-<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-start align-items-center">
+<div class="pd-x-20 pd-sm-x-30 pd-t-25 mg-b-20 mg-sm-b-30 d-flex justify-content-between align-items-center">
     <?php if ($ENABLE_ADD) : ?>
-    <div class="tx-dark">Status : &nbsp;</div>
-    <!-- <a href="<?= base_url($this->uri->segment(1) . '/add'); ?>" class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Add"><i class="fa fa-plus">&nbsp;</i>Create New Request</a> -->
-    <div class="right">
+    <a href="<?= base_url($this->uri->segment(1)."/create_qtt_msk") ; ?>" id="createQttMSK"
+        class="btn btn-primary btn-oblong" data-toggle="tooltip" title="Create Quotation MSK">
+        <i class="fa fa-plus">&nbsp;</i>Create Quotation MSK</a>
+    <?php endif; ?>
+    <div class="">
+        <label class="tx-dark">Status : &nbsp;</label>
         <button class="btn btn-sm btn-outline-teal btn-oblong active" id="all">All</button>
         <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="OPN" title="New">New</button>
         <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="DEAL" title="Checked">Deal</button>
@@ -31,7 +34,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
         <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="CNL" title="Cancel">Cancel</button>
         <!-- <button class="btn btn-sm btn-outline-teal btn-oblong btn-filter" data-sts="HIS" title="History">History</button> -->
     </div>
-    <?php endif; ?>
+
 </div>
 
 <div class="br-pagebody pd-x-20 pd-sm-x-30 mg-y-3">
@@ -47,7 +50,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                         <th class="desktop mobile tablet text-center" width="110">Date</th>
                         <th class="desktop text-center" width="100">Marketing</th>
                         <th class="desktop tablet text-center" width="50">Type</th>
-                        <th class="desktop tablet text-center no-sort" width="50">Rev.</th>
+                        <!-- <th class="desktop tablet text-center no-sort" width="50">Rev.</th> -->
                         <th class="desktop text-center no-sort" width="60">Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                         <th class="desktop text-center no-sort" width="30">Opsi</th>
@@ -64,7 +67,7 @@ $ENABLE_DELETE  = has_permission('Quotations.Delete');
                         <th>Date</th>
                         <th>Marketing</th>
                         <th>Type</th>
-                        <th>Rev.</th>
+                        <!-- <th>Rev.</th> -->
                         <th>Status</th>
                         <?php if ($ENABLE_MANAGE) : ?>
                         <th>Opsi</th>
@@ -390,20 +393,6 @@ $(document).ready(function() {
         })
     })
 
-    $(document).on('click', '.quotation', function(e) {
-        var id = $(this).data('id');
-        $('#dialog-popup .modal-title').html("<i class='fas fa-file-invoice'></i> Create Quotation")
-        $("#dialog-popup").modal();
-        $("#dialog-popup .modal-body").html(`
-                <div class="sk-three-bounce">
-                    <div class="sk-child sk-bounce1 bg-danger"></div>
-                    <div class="sk-child sk-bounce2 bg-warning"></div>
-                    <div class="sk-child sk-bounce3 bg-primary"></div>
-                    <label class="tx-dark tx-bold">Loading...</label>
-                </div>`);
-        $("#dialog-popup .modal-body").load(siteurl + thisController + 'createQuotation/' + id);
-        $("#save").removeClass('d-none');
-    });
 
     $(document).on('change', 'select', function() {
         $(this).parsley().validate();

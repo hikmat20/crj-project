@@ -927,8 +927,12 @@ function load_price() {
                 $('#fee_customer').val(result.totalFeeCSJ.fee_customer);
                 $('#fee_customer_id').val(result.totalFeeCSJ.fee_customer_id);
 
-                total_costing()
-                getDiscount()
+                if ($('#service_type').val() == 'undername') {
+                    total_costing()
+                    getDiscount()
+                } else {
+                    subtotal()
+                }
                 if ((result.err_fee_customer != undefined) && (result.err_fee_customer != '')) {
                     Lobibox.notify('warning', {
                         icon: 'fa fa-exclamation',
@@ -1030,33 +1034,33 @@ function total_costing() {
 }
 
 function subtotal() {
-    let productPrice = parseFloat($('#total_product').val().replace(/,/g, '') || 0)
-    let totalCosting = parseFloat($('#total_costing_and_others').val().replace(/,/g, '') || 0)
-    let subtotal = productPrice + totalCosting
-    $('#subtotal').val(new Intl.NumberFormat('en-US').format(subtotal.toFixed(2)))
+    if ($('#service_type').val() == 'undername') {
+        let productPrice = parseFloat($('#total_product').val().replace(/,/g, '') || 0)
+        let totalCosting = parseFloat($('#total_costing_and_others').val().replace(/,/g, '') || 0)
+        let subTotal = productPrice + totalCosting
+        $('#subtotal').val(new Intl.NumberFormat('en-US').format(subTotal.toFixed(2)))
 
-    let bm = parseFloat($('#total_bm').val().replace(/,/g, '') || 0)
-    let total_pph = parseFloat($('#total_pph').val().replace(/,/g, '') || 0)
-    let tax = ((subtotal + total_pph + bm) * 11) / 100
-    $('#total_tax').val(new Intl.NumberFormat('en-US').format(tax.toFixed(2)))
-    let grand_total = subtotal + tax + bm + total_pph
-    $('#grand_total').val(new Intl.NumberFormat('en-US').format(grand_total.toFixed(2)))
-    let grand_total_excl = grand_total - productPrice
-    $('#grand_total_exclude_price').val(new Intl.NumberFormat('en-US').format(grand_total_excl.toFixed(2)))
-
-    if ($('#service_type').val() == 'ddu') {
+        let bm = parseFloat($('#total_bm').val().replace(/,/g, '') || 0)
+        let total_pph = parseFloat($('#total_pph').val().replace(/,/g, '') || 0)
+        let tax = ((subTotal + total_pph + bm) * 11) / 100
+        $('#total_tax').val(new Intl.NumberFormat('en-US').format(tax.toFixed(2)))
+        let grand_total = subTotal + tax + bm + total_pph
+        $('#grand_total').val(new Intl.NumberFormat('en-US').format(grand_total.toFixed(2)))
+        let grand_total_excl = grand_total - productPrice
+        $('#grand_total_exclude_price').val(new Intl.NumberFormat('en-US').format(grand_total_excl.toFixed(2)))
+        payment_term()
+    } else if ($('#service_type').val() == 'ddu') {
         let cc = parseFloat($('.foreign_currency_custom_clearance').val().replace(/,/g, '') || 0)
         let fee = parseFloat($('.foreign_currency_fee_csj').val().replace(/,/g, '') || 0)
         let truck = parseFloat($('.foreign_currency_trucking').val().replace(/,/g, '') || 0)
-        let subtotal = cc + fee + truck
-        $('#subtotal').val(new Intl.NumberFormat('en-US').format(subtotal.toFixed(2)))
-        let tax = ((subtotal) * 1.1) / 100
+        let subTotal = cc + fee + truck
+        $('#subtotal').val(new Intl.NumberFormat('en-US').format(subTotal.toFixed(2)))
+        let tax = ((subTotal) * 1.1) / 100
         $('#total_tax').val(new Intl.NumberFormat('en-US').format(tax.toFixed(2)))
-        let grand_total = subtotal + tax
+        let grand_total = subTotal + tax
         $('#grand_total').val(new Intl.NumberFormat('en-US').format(grand_total.toFixed(2)))
-    } else {
-        payment_term()
     }
+
 
 }
 

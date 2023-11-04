@@ -255,10 +255,7 @@ class Fee_customers extends Admin_Controller
 		$this->auth->restrict($this->addPermission);
 		$post = $this->input->post();
 		$data = $post;
-		// echo '<pre>';
-		// print_r($data);
-		// echo '</pre>';
-		// exit;
+
 		$undername 	= $data['detail_undername'];
 		$ddu 		= $data['detail_ddu'];
 
